@@ -83,74 +83,74 @@ public:
 
 std::vector<bool> HelpJulieWithCommands(std::vector<std::vector<int>>& commands) {
    
-    int command_size = commands.size();
-    if (command_size < 1 || command_size > 15 * 10000) {
-        throw std::invalid_argument("Invalid number of commands");
-    }
-    
-    std::vector<int> lengths(1e5, 0);
-    std::set<int> obstacles;
-    obstacles.insert(0);
-    obstacles.insert(1e5 - 1);
-    lengths[1e5 - 1] = 1e5 - 1;
-    SegmentTree seg_tree(1e5, 0);
-    seg_tree.build(lengths, 0, 0, 1e5 - 1);
-    std::vector<bool> results;
-    
-    bool type_2_present = false;
-    for (const vector<int> command : commands) {
-    
-        if (command.size() < 2 || command.size() > 3) {
-            throw std::invalid_argument("Invalid command");
-        }
+int command_size = commands.size();
+if (command_size < 1 || command_size > 15 * 10000) {
+    throw std::invalid_argument("Invalid number of commands");
+}
 
-        if (command[0] != 1 && command[0] != 2) {
-            throw std::invalid_argument("Invalid command type");
+std::vector<int> lengths(1e5, 0);
+std::set<int> obstacles;
+obstacles.insert(0);
+obstacles.insert(1e5 - 1);
+lengths[1e5 - 1] = 1e5 - 1;
+SegmentTree seg_tree(1e5, 0);
+seg_tree.build(lengths, 0, 0, 1e5 - 1);
+std::vector<bool> results;
+
+bool type_2_present = false;
+for (const std::vector<int> command : commands) {
+    
+    if (command.size() < 2 || command.size() > 3) {
+        throw std::invalid_argument("Invalid command");
+    }
+
+    if (command[0] != 1 && command[0] != 2) {
+        throw std::invalid_argument("Invalid command type");
+    }
+    if (command[0] == 2) {
+        type_2_present = true;
+    }
+    if (command[0] == 1) {
+        int dist = command[1];
+        if (dist < 1 || dist > std::min(5 * 10000, 3 * command_size)) {
+            throw std::invalid_argument("Invalid distance");
         }
-        if (command[0] == 2) {
-            type_2_present = true;
-        }
-        if (command[0] == 1) {
-            int distance = command[1];
-            if (distance < 1 || distance > std::min(5 * 10000, 3 * command_size)) {
-                throw std::invalid_argument("Invalid distance");
-            }
-            auto it = obstacles.lower_bound(distance);
-            int upper = *it;
-            it--;
-            int lower = *it;
-            lengths[upper] = upper - distance;
-            lengths[distance] = distance - lower;
-            obstacles.insert(distance);
-            seg_tree.update(0, 0, 1e5 - 1, upper, lengths[upper]);
-            seg_tree.update(0, 0, 1e5 - 1, distance, lengths[distance]);
-            
-        } else {
-            int distance = command[1];
-            int block_size = command[2];
-            if (distance < 1 || distance > std::min(5 * 10000, 3 * command_size) || block_size < 1 || block_size > std::min(5 * 10000, 3 * command_size)) {
-                throw std::invalid_argument("Invalid distance or block size");
-            }
-            auto it = obstacles.lower_bound(distance);
-            it--;
-            if (distance - (*it) >= block_size) {
-                results.push_back(true);
-                continue;
-            }
-            int end = *it;
-            int maximum = seg_tree.query(0, 0, 1e5 - 1, 0, end);
-            if (maximum >= block_size) {
-                results.push_back(true);
-            } else {
-                results.push_back(false);
-            }
-        }
+        std::set<int>::iterator iterator_pointer = obstacles.lower_bound(dist);
+        int upper = *iterator_pointer;
+        iterator_pointer--;
+        int lower = *iterator_pointer;
+        lengths[upper] = upper - dist;
+        lengths[dist] = dist - lower;
+        obstacles.insert(dist);
+        seg_tree.update(0, 0, 1e5 - 1, upper, lengths[upper]);
+        seg_tree.update(0, 0, 1e5 - 1, dist, lengths[dist]);
         
+    } else {
+        int dist = command[1];
+        int block_size = command[2];
+        if (dist < 1 || dist > std::min(5 * 10000, 3 * command_size) || block_size < 1 || block_size > std::min(5 * 10000, 3 * command_size)) {
+            throw std::invalid_argument("Invalid distance or block size");
+        }
+        std::set<int>::iterator iterator_pointer = obstacles.lower_bound(dist);
+        iterator_pointer--;
+        if (dist - (*iterator_pointer) >= block_size) {
+            results.push_back(true);
+            continue;
+        }
+        int end = *iterator_pointer;
+        int maximum = seg_tree.query(0, 0, 1e5 - 1, 0, end);
+        if (maximum >= block_size) {
+            results.push_back(true);
+        } else {
+            results.push_back(false);
+        }
     }
-    if (!type_2_present) {
-        throw std::invalid_argument("At least one command of type 2 must be present");
-    }
-    return results;
+    
+}
+if (!type_2_present) {
+    throw std::invalid_argument("At least one command of type 2 must be present");
+}
+return results;
 }
 
 
