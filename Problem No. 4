@@ -1,0 +1,275 @@
+Once upon a time in the land of Integrovia, there was a magical vector nums, filled with magical integers. These integers had the power to transform and evolve based on special spells cast by the wizards of Integrovia, known as queries. Each spell, represented as queries[i] = [position, new_value], changed the value of nums at position positon[i] to new_value[i].
+
+The greatest challenge for the wizards was to calculate the maximum sum of a special kind of subsequence of nums after each spell. This subsequence had a unique property: no two adjacent elements could be selected. Or we can simple say, For query i, we first set nums[postion[i]] equal to new_value[i], then we calculate the answer to query i which is the maximum sum of a subsequence  of nums where no two adjacent elements are selected.
+
+The wizards needed to find the sum of these maximum sums after each spell and return the result modulo 1e9+7.
+
+Your task is to create a C++ function MaximumSumPossible that will return the sum of the answers to all queries.
+
+
+Input Types:
+
+A vector<int> containing the integers in the nums array(nums).
+A vector<pair<int, int>> representing the queries, where each query is a pair containing position[i] and new_value[i].
+
+Input Constraints:
+
+The length of the nums array (nums.length) should be at least 1 and at most 50,000.
+Each integer in the nums array should be between -100,000 and 100,000 inclusive.
+The number of queries (queries.size()) should be at least 1 and at most 50,000.
+Each query should have a valid position index (position) between 0 and nums.length - 1.
+Each query should have a value (new_value) between -100,000 and 100,000 inclusive.
+
+
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+
+const int MOD = 1e9 + 7;
+const int INF = -2e9;
+const static int MAX_SIZE = 5e4 + 5;
+long long segment_tree[4 * MAX_SIZE][2][2];
+
+void UpdateSegment(int index) {
+    segment_tree[index][1][1] = std::max({
+        segment_tree[2 * index + 1][1][0] + segment_tree[2 * index + 2][1][1],
+        segment_tree[2 * index + 1][1][0] + segment_tree[2 * index + 2][0][1],
+        segment_tree[2 * index + 1][1][1] + segment_tree[2 * index + 2][0][1]
+    });
+
+    segment_tree[index][1][0] = std::max({
+        segment_tree[2 * index + 1][1][0] + segment_tree[2 * index + 2][1][0],
+        segment_tree[2 * index + 1][1][0] + segment_tree[2 * index + 2][0][0],
+        segment_tree[2 * index + 1][1][1] + segment_tree[2 * index + 2][0][0]
+    });
+
+    segment_tree[index][0][1] = std::max({
+        segment_tree[2 * index + 1][0][1] + segment_tree[2 * index + 2][0][1],
+        segment_tree[2 * index + 1][0][0] + segment_tree[2 * index + 2][1][1],
+        segment_tree[2 * index + 1][0][0] + segment_tree[2 * index + 2][0][1]
+    });
+
+    segment_tree[index][0][0] = std::max({
+        segment_tree[2 * index + 1][0][0] + segment_tree[2 * index + 2][1][0],
+        segment_tree[2 * index + 1][0][0] + segment_tree[2 * index + 2][0][0],
+        segment_tree[2 * index + 1][0][1] + segment_tree[2 * index + 2][0][0]
+    });
+}
+
+void BuildSegmentTree(int index, int start, int end, std::vector<int>& array) {
+    if (start == end) {
+        segment_tree[index][1][1] = array[start];
+        segment_tree[index][0][0] = 0;
+        segment_tree[index][0][1] = INF;
+        segment_tree[index][1][0] = INF;
+        return;
+    }
+    int mid = (start + end) / 2;
+    BuildSegmentTree(2 * index + 1, start, mid, array);
+    BuildSegmentTree(2 * index + 2, mid + 1, end, array);
+    UpdateSegment(index);
+}
+
+void UpdateValue(int index, int start, int end, int position, int new_value) {
+    if (start == end) {
+        segment_tree[index][1][1] = new_value;
+        return;
+    }
+    int mid = (start + end) / 2;
+    if (mid >= position) {
+        UpdateValue(2 * index + 1, start, mid, position, new_value);
+    } else {
+        UpdateValue(2 * index + 2, mid + 1, end, position, new_value);
+    }
+    UpdateSegment(index);
+}
+
+int MaximumSumPossible(std::vector<int>& nums, std::vector<std::pair<int, int>>& queries) {
+    if (nums.size() < 1 || nums.size() > 50000 || queries.size() < 1 || queries.size() > 50000) {
+        throw std::invalid_argument("Invalid size of nums or queries.");
+    }
+
+    int length = nums.size();
+    BuildSegmentTree(0, 0, length - 1, nums);
+    long long total_sum = 0;
+
+    for (const std::pair<int, int>& query : queries) {
+        int position = query.first;
+        int new_value = query.second;
+
+        if (position < 0 || position >= length || new_value < -100000 || new_value > 100000) {
+            throw std::invalid_argument("Invalid position or new_value in query.");
+        }
+
+        UpdateValue(0, 0, length - 1, position, new_value);
+        total_sum += std::max({segment_tree[0][0][0], segment_tree[0][0][1], segment_tree[0][1][1], segment_tree[0][1][0]});
+        total_sum %= MOD;
+    }
+
+    return total_sum;
+}
+
+int main() {
+  
+   //TEST
+    std::vector<int> nums_1 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_1 = {{1, 10}, {3, 5}, {2, 7}};
+    int expected_1 = 44;
+   int result_1 = MaximumSumPossible(nums_1, queries_1);
+    assert(result_1== expected_1);
+  
+   //TESTEND
+
+     //TEST
+    std::vector<int> nums_2 = {5, 6, 7, 8};
+    std::vector<std::pair<int, int>> queries_2 = {{0, 10}, {2, 5}, {1, 7}};
+    int expected_2 = 54;
+    int result_2 = MaximumSumPossible(nums_2, queries_2); 
+    assert(result_2 == expected_2);
+  
+   //TESTEND
+
+     //TEST
+    std::vector<int> nums_3 = {10, 20, 30, 40, 50};
+    std::vector<std::pair<int, int>> queries_3 = {{1, 25}, {3, 35}, {4, 45}};
+    int expected_3 = 265;
+    int result_3 = MaximumSumPossible(nums_3, queries_3);
+    assert(result_3 == expected_3);
+  
+    //TESTEND
+
+     //TEST
+    std::vector<int> nums_4 = {-1, -2, -3, -4};
+    std::vector<std::pair<int, int>> queries_4 = {{0, -10}, {2, -5}, {1, -7}};
+    int expected_4 = 0;
+    int result_4 = MaximumSumPossible(nums_4, queries_4);
+    assert(result_4  == expected_4);
+  
+   //TESTEND
+
+    //TEST
+  
+    std::vector<int> nums_5 = {100, 200, 300, 400};
+    std::vector<std::pair<int, int>> queries_5 = {{1, 150}, {3, 350}, {2, 250}};
+    int expected_5 = 1550;
+   int result_5 = MaximumSumPossible(nums_5, queries_5);
+    assert( result_5== expected_5);
+  
+    //TESTEND
+  
+    //TEST
+  
+
+    std::vector<int> nums_6 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_6 = {};
+   
+  try{
+    
+    MaximumSumPossible(nums_6, queries_6);
+    assert(false); 
+  } 
+  catch (const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+  
+  //TESTEND
+  
+
+ //TEST
+
+    std::vector<int> nums_7 = {};
+    std::vector<std::pair<int, int>> queries_7 = {{1, 10}, {3, 5}, {2, 7}};
+    
+  try {
+    MaximumSumPossible(nums_7, queries_7);
+    assert(false);
+  
+} catch (const std::invalid_argument& e) {
+    assert(true);
+  }
+
+  //TESTEND
+  
+ //TEST
+
+    std::vector<int> nums_8 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_8 = {{-1, 10}, {3, 5}, {2, 7}};
+  try {
+    MaximumSumPossible(nums_8, queries_8);
+    assert(false); 
+} catch (const std::invalid_argument& e){
+    assert(true);
+  }
+  
+  //TESTEND
+  
+
+ //TEST
+
+    std::vector<int> nums_9 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_9 = {{1, -10}, {4, 5}, {2, 7}};
+  try {
+    MaximumSumPossible(nums_9, queries_9);
+    assert(false);
+} 
+  catch (const std::invalid_argument& e){
+    assert(true);
+  }
+  //TESTEND
+  
+
+ //TEST
+
+    std::vector<int> nums_10 = {-1, -2, -3, -4};
+    std::vector<std::pair<int, int>> queries_10 = {{0, -10}, {-4, -5}, {1, -7}};
+  try {
+    MaximumSumPossible(nums_10, queries_10);
+    assert(false); 
+  
+} catch (const std::invalid_argument& e) {
+    assert(true);
+  }
+  
+  //TESTEND
+  
+
+ //TEST
+
+    std::vector<int> nums_11 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_11 = {{4, 10}, {3, 5}, {2, 7}};
+  try {
+    MaximumSumPossible(nums_11, queries_11);
+    assert(false);
+} catch (const std::invalid_argument& e){
+    assert(true);
+  }
+  
+  //TESTEND
+  
+
+ //TEST
+
+    std::vector<int> nums_12 = {1, 2, 3, 4};
+    std::vector<std::pair<int, int>> queries_12 = {{1, 1000000001}, {3, 5}, {2, 7}};
+    
+  try {
+    MaximumSumPossible(nums_12, queries_12);
+    assert(false); 
+} 
+  catch (const std::invalid_argument& e) {
+    assert(true);
+  }
+  //TESTEND
+  
+   
+
+    return 0;
+}
+
+
+
+
