@@ -1,0 +1,366 @@
+/*
+In the quaint town of Pointsville, lies a network of homes, each represented by a point on a 2D-plane. These homes, inhabited by friendly townsfolk, desire stronger bonds and connections with their neighbors.
+
+However, the town's current infrastructure lacks efficient pathways, leaving its residents feeling isolated. To remedy this, the town council has tasked you, a skilled planner, with designing a network of roads that will connect all the homes while minimizing costs.
+
+Each home has its own unique charm, with coordinates given as [x_i, y_i]. The cost of connecting any two homes is measured in Manhattan distance, representing the distance one would travel horizontally and vertically to reach from one point to another.
+
+Your task is clear, create a C++ function named MinCostForPath design a network of roads that ensures there is exactly one simple path between any two homes, fostering a sense of community and unity among the townsfolk. As you embark on this endeavor, you'll carefully calculate the minimum cost required to weave together the fabric of Pointsville, ensuring that no home is left isolated and every resident feels a part of the vibrant tapestry of the town.
+
+Note : The cost of connecting two points [x_i, y_i] and [x_j, y_j] is the manhattan distance between them: |x_i - x_j| + |y_i - y_j|, where |val| denotes the absolute value of val.
+
+Input Type
+
+A vector<vector<int>> representing the points on 2D - plane (points)
+
+Input Constraints:
+
+The length of the points array should be at least 1 and at most 1000.
+Each coordinate x_i and y_i should be between -10^6 and 10^6 inclusive.
+Each coordinate x_i and y_i are distict
+
+*/
+
+//Code
+
+#include <vector>
+#include <unordered_map>
+#include <list>
+#include <algorithm>
+#include <cmath>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+#include <set>
+
+
+struct HashPair {
+    template <class T1, class T2>
+    std::size_t operator()(const std::pair<T1, T2>& pair) const {
+        std::size_t hash_1 = std::hash<T1>{}(pair.first);
+        std::size_t hash_2 = std::hash<T2>{}(pair.second);
+
+
+        if (hash_1 != hash_2) {
+            return hash_1 ^ hash_2;
+        }
+        return hash_1;
+    }
+};
+
+
+struct Edge {
+    std::pair<int, int> point_1;
+    std::pair<int, int> point_2;
+    int distance;
+};
+
+
+bool CompareEdges(Edge edge_1, Edge edge_2) {
+    return (edge_1.distance < edge_2.distance);
+}
+
+
+class DisjointSetUnion {
+    std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPair> parent;
+    std::unordered_map<std::pair<int, int>, int, HashPair> rank;
+
+
+public:
+    DisjointSetUnion(std::vector<std::vector<int>>& points) {
+        for (std::vector<int> point : points) {
+            std::pair<int, int> p = std::make_pair(point[0], point[1]);
+            rank[p] = 1;
+        }
+    }
+
+
+    std::pair<int, int> Find(std::pair<int, int> point) {
+        if (parent.find(point) == parent.end()) {
+            return point;
+        }
+        return parent[point] = Find(parent[point]);
+    }
+
+
+    void Unite(std::pair<int, int> point_1, std::pair<int, int> point_2) {
+        std::pair<int, int> set_1 = Find(point_1);
+        std::pair<int, int> set_2 = Find(point_2);
+        if (!(set_1 == set_2)) {
+            if (rank[set_1] < rank[set_2]) {
+                parent[set_1] = set_2;
+                rank[set_2] += rank[set_1];
+            } else {
+                parent[set_2] = set_1;
+                rank[set_1] += rank[set_2];
+            }
+        }
+    }
+};
+
+
+class Graph {
+    int vertices;
+    std::unordered_map<std::pair<int, int>, std::list<std::pair<std::pair<int, int>, int>>, HashPair> graph;
+
+
+public:
+    Graph(int vertices) {
+        this->vertices = vertices;
+    }
+
+
+    void AddEdge(std::pair<int, int>& point_1, std::pair<int, int>& point_2) {
+        int distance = std::abs(point_1.first - point_2.first) + std::abs(point_1.second - point_2.second);
+        std::pair<std::pair<int, int>, int> edge = std::make_pair(point_2, distance);
+        graph[point_1].push_back(edge);
+    }
+
+
+    std::vector<Edge> SortEdges() {
+        std::vector<Edge> edges;
+        for (std::pair<std::pair<int, int>, std::list<std::pair<std::pair<int, int>, int>>> pair : graph) {
+            Edge edge;
+            edge.point_1 = pair.first;
+            std::list<std::pair<std::pair<int, int>, int>> neighbor_list = pair.second;
+            for (std::pair<std::pair<int, int>, int> neighbor : neighbor_list) {
+                edge.point_2 = neighbor.first;
+                edge.distance = neighbor.second;
+                edges.push_back(edge);
+            }
+        }
+        std::sort(edges.begin(), edges.end(), CompareEdges);
+        return edges;
+    }
+
+
+    int ComputeMinimumSpanningTree(std::vector<std::vector<int>>& points) {
+        std::vector<Edge> edge_list = SortEdges();
+        DisjointSetUnion dsu(points);
+        int total_distance = 0;
+        for (Edge edge : edge_list) {
+            int distance = edge.distance;
+            std::pair<int, int> point_1 = edge.point_1;
+            std::pair<int, int> point_2 = edge.point_2;
+            if (dsu.Find(point_1) != dsu.Find(point_2)) {
+                dsu.Unite(point_1, point_2);
+                total_distance += distance;
+            }
+        }
+        return total_distance;
+    }
+};
+
+
+    int MinCostForPath(std::vector<std::vector<int>>& points) {
+        if (points.size() < 1 || points.size() > 1000) {
+            throw std::invalid_argument("Invalid number of points");
+        }
+     
+       std::set<std::pair<int,int>>duplicate_check;
+     
+        for (std::vector<int> point : points) {
+            if (point[0] < -1000000 || point[0] > 1000000 || point[1] < -1000000 || point[1] > 1000000) {
+                throw std::invalid_argument("Invalid point coordinates");
+            }
+            if(duplicate_check.count({point[0],point[1]}))
+            {
+               throw std::invalid_argument("Duplicate point coordinates found");
+            }
+            duplicate_check.insert({point[0],point[1]});
+        }
+        int vertex_count = points.size();
+        Graph graph(vertex_count);
+        for (int i = 0; i < points.size(); i++) {
+            for (int j = i + 1; j < points.size(); j++) {
+                std::pair<int, int> point_1 = {points[i][0], points[i][1]};
+                std::pair<int, int> point_2 = {points[j][0], points[j][1]};
+                graph.AddEdge(point_1, point_2);
+            }
+        }
+        return graph.ComputeMinimumSpanningTree(points);
+    }
+
+
+
+
+int main() {
+   
+  // Test1
+ 
+    std::vector<std::vector<int>>points_1 =  {{0,0},{2,2},{3,10},{5,2},{7,0}};
+    int expected_1 = 20;
+    int result_1 = MinCostForPath(points_1);
+    assert(result_1 == expected_1);
+
+
+    // TEST_END
+ 
+ 
+  // Test2
+ 
+    std::vector<std::vector<int>> points_2 = { {3,12},{-2,5},{-4,1} };
+    int expected_2 = 18;
+    int result_2 = MinCostForPath(points_2);
+    assert(result_2 == expected_2);
+
+
+    // TEST_END
+
+
+// Test3
+ 
+    std::vector<std::vector<int>> points_3 = { {-14,-14},{-18,5},{18,-10},{18,18},{10,-2} };
+    int expected_3 = 102;
+    int result_3 = MinCostForPath(points_3);
+    assert(result_3 == expected_3);
+
+
+    // TEST_END
+
+
+// Test4
+ 
+    std::vector<std::vector<int>> points_4 = { {5,6}, {9,6} };
+    int expected_4 = 4;
+    int result_4 = MinCostForPath(points_4);
+    assert(result_4 == expected_4);
+
+
+    // TEST_END
+
+
+// Test5
+ 
+    std::vector<std::vector<int>> points_5 = { {0,0}, {-1,-1} };
+    int expected_5 = 2;
+    int result_5 = MinCostForPath(points_5);
+    assert(result_5 == expected_5);
+
+
+    // TEST_END
+ 
+ 
+   // Test6
+
+
+    std::vector<std::vector<int>> points_6 = {};
+    try {
+        MinCostForPath(points_6);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+ 
+ 
+
+
+// Test7
+
+
+    std::vector<std::vector<int>> points_7 = {{0, 0}};
+    int expected_7 = 0;
+    int result_7 = MinCostForPath(points_7);
+    assert(result_7 == expected_7);
+
+
+    // TEST_END
+ 
+ 
+ 
+  // Test8
+
+
+    std::vector<std::vector<int>> points_8 = { {0, 0}, {-1000000001, 1000000001} };
+    try {
+        MinCostForPath(points_8);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+
+
+ 
+ 
+ 
+   // Test9
+
+
+    std::vector<std::vector<int>> points_9 = { {0, 0},{-1000000001, -1000000001}};
+    try {
+        MinCostForPath(points_9);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+ 
+ 
+ 
+
+
+ 
+ 
+ 
+  // Test10
+
+
+    std::vector<std::vector<int>> points_10 = { {0, 0}, {-1, -1}, {1000000001, 1000000001}};
+    try {
+        MinCostForPath(points_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+ 
+ 
+  // Test11
+
+
+    std::vector<std::vector<int>> points_11 = { {0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {4,4}};
+    try {
+        MinCostForPath(points_11);
+        assert(false);
+    }
+  catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+
+
+// Test12
+
+
+    std::vector<std::vector<int>> points_12 = { {0, 0}, {0,0}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}, {9, 9}, {10,10} };
+    try {
+        MinCostForPath(points_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+
+    // TEST_END
+ 
+ 
+
+
+ 
+ 
+    return 0;
+}
+
+
