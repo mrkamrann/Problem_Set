@@ -1,0 +1,232 @@
+Once upon a time in the kingdom of Numland, there lived a young girl named Julie. She had a vector of integers called nums. Out of curiosity, Julie wanted to know the count of distinct values of each and every subarray of the vector. A subarray is a contiguous non-empty sequence of elements within a vector.
+
+Since Julie loves squares, she wants you to help her calculate the sum of squares of distinct values of all subarrays present in nums. Since the answer may be very large, return it modulo 1e9 + 7.
+
+To help Julie, create a C++ function SumOfCounts, that will return the sum of squares of distinct values of all subarrays present in nums
+
+
+Input types:
+
+A vector<int> representing the elements of the vector nums.
+
+Input Constraints:
+
+The size of the vector nums should be at least 1 and at most 1e5.
+Each element in the vector nums should be an integer within the range [1, 1e5] inclusive.
+
+
+#include <vector>
+#include <unordered_map>
+#include <stdexcept>
+#include <cassert>
+
+const int MAX_SIZE = 100005;
+const int MOD = 1000000007;
+
+   long long int elements[MAX_SIZE];
+   long long int segment_tree[4 * MAX_SIZE], segment_squares[4 * MAX_SIZE], lazy_updates[4 * MAX_SIZE];
+
+    void build_segment_tree(int node, long long int start, long long int end) {
+        if (start == end) {
+            segment_tree[node] = elements[start];
+            segment_squares[node] = (elements[start] * elements[start]) % MOD;
+            return;
+        }
+        long long int mid = (start + end) >> 1;
+        build_segment_tree(node << 1, start, mid);
+        build_segment_tree(node << 1 | 1, mid + 1, end);
+        segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % MOD;
+        segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % MOD;
+    }
+
+    void update_segment_tree(int node, long long int start, long long int end, int left, int right, int value) {
+        if (lazy_updates[node] != 0) {
+            segment_squares[node] += ((end - start + 1) * (lazy_updates[node] * lazy_updates[node]) % MOD + 2LL * lazy_updates[node] * segment_tree[node]) % MOD;
+            segment_squares[node] %= MOD;
+            segment_tree[node] += ((end - start + 1) * lazy_updates[node]) % MOD;
+            segment_tree[node] %= MOD;
+            if (start != end) {
+                lazy_updates[node << 1] += lazy_updates[node];
+                lazy_updates[node << 1 | 1] += lazy_updates[node];
+            }
+            lazy_updates[node] = 0;
+        }
+        if (start > end || start > right || end < left) return;
+        if (left <= start && end <= right) {
+            segment_squares[node] += ((end - start + 1) * (value * value) % MOD + 2 * value * segment_tree[node]) % MOD;
+            segment_squares[node] %= MOD;
+            segment_tree[node] += ((end - start + 1) * value) % MOD;
+            segment_tree[node] %= MOD;
+            if (start != end) {
+                lazy_updates[node << 1] += value;
+                lazy_updates[node << 1 | 1] += value;
+            }
+            return;
+        }
+        long long int mid = (start + end) >> 1;
+        update_segment_tree(node << 1, start, mid, left, right, value);
+        update_segment_tree(node << 1 | 1, mid + 1, end, left, right, value);
+        segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % MOD;
+        segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % MOD;
+    }
+
+
+int SumOfCounts(std::vector<int>& nums) {
+    const int MAX_SIZE = 100005;
+    const int MOD = 1000000007;
+
+    if (nums.size() < 1 || nums.size() > 100000) {
+        throw std::invalid_argument("Invalid size of nums.");
+    }
+
+    for (int num : nums) {
+        if (num < 1 || num > 100000) {
+            throw std::invalid_argument("Invalid element in nums.");
+        }
+    }
+    memset(elements,0, sizeof(elements));
+    memset(segment_tree,0, sizeof(segment_tree));
+    memset(segment_squares,0, sizeof(segment_squares));
+    memset(lazy_updates,0, sizeof(lazy_updates));
+  
+    int size = nums.size();
+    std::fill(elements, elements + MAX_SIZE, 0);
+    build_segment_tree(1, 1, size);
+    std::unordered_map<int, int> last_occurrence;
+    long long int total_sum = 0;
+    for (int i = size - 1; i >= 0; i--) {
+        if (last_occurrence.find(nums[i]) == last_occurrence.end()) {
+            update_segment_tree(1, 1, size, i + 1, size, 1);
+        } else {
+            update_segment_tree(1, 1, size, i + 1, last_occurrence[nums[i]] - 1, 1);
+        }
+        last_occurrence[nums[i]] = i + 1;
+        total_sum = (total_sum + segment_squares[1]) % MOD;
+    }
+    return total_sum;
+}
+
+int main(){
+  
+  
+    //TEST
+    std::vector<int> nums_1 = {1,2,1};
+    int expected_1 = 15;
+    int result_1 = SumOfCounts(nums_1);
+    assert(result_1 == expected_1);
+  
+   //TESTEND
+  
+  //TEST
+    std::vector<int> nums_2 = {3};
+    int expected_2 = 1;
+    int result_2 = SumOfCounts(nums_2);
+    assert(result_2 == expected_2);
+  
+   //TESTEND
+
+   //TEST
+    std::vector<int> nums_3 = {5, 2};
+    int expected_3 = 6;
+    int result_3 = SumOfCounts(nums_3);
+    assert(result_3 == expected_3);
+  
+   //TESTEND
+
+   //TEST
+    std::vector<int> nums_4 = {100000, 1};
+    int expected_4 = 6;
+  
+    int result_4 = SumOfCounts(nums_4);
+    assert(result_4 == expected_4);
+  
+   //TESTEND
+
+   //TEST
+    std::vector<int> nums_5 = {2,2};
+    int expected_5 = 3;
+    int result_5 = SumOfCounts(nums_5);
+    assert(result_5 == expected_5);
+  
+   //TESTEND
+
+   //TEST
+    std::vector<int> nums_6 = {1, 2, 3, 4, 5};
+    int expected_6 = 105;
+    int result_6 = SumOfCounts(nums_6);
+    assert(result_6 == expected_6);
+  
+   //TESTEND
+
+   //TEST
+    std::vector<int> nums_7 = {3,5,9,8,7,5,6,9,8};
+    int expected_7 = 599;
+    int result_7 = SumOfCounts(nums_7);
+    assert(result_7 == expected_7);
+  
+   //TESTEND
+  
+  //TEST
+    std::vector<int> nums_8 = {1,1,1,1,1,1};
+    int expected_8 = 21;
+    int result_8 = SumOfCounts(nums_8);
+    assert(result_8 == expected_8);
+  
+   //TESTEND
+  
+  //TEST
+    std::vector<int> nums_9 = {};
+    
+    try{
+       SumOfCounts(nums_9);
+       assert(false);
+    }
+    catch(const std::invalid_argument& e){
+      assert(true);
+    }
+    
+  
+   //TESTEND
+  
+  //TEST
+std::vector<int> nums_10 = {1, 100001};
+
+try {
+    SumOfCounts(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TESTEND
+
+//TEST
+std::vector<int> nums_11 = {-6666, 100002};
+
+try {
+    SumOfCounts(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TESTEND
+
+//TEST
+std::vector<int> nums_12 = {-999999, -1000000};
+
+try {
+    SumOfCounts(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TESTEND
+
+   
+  
+  
+
+
+  
+  return 0;
+}
+
