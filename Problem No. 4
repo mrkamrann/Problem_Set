@@ -28,10 +28,10 @@ Each query should have a value (new_value) between -100,000 and 100,000 inclusiv
 #include <iostream>
 #include <cassert>
 
-const int MOD = 1e9 + 7;
-const int INF = -2e9;
-const static int MAX_SIZE = 5e4 + 5;
-long long segment_tree[4 * MAX_SIZE][2][2];
+const int modulo = 1e9 + 7;
+const int infinity = -2e9;
+const static int max_size = 5e4 + 5;
+long long segment_tree[4 * max_size][2][2];
 
 void UpdateSegment(int index) {
     segment_tree[index][1][1] = std::max({
@@ -63,8 +63,8 @@ void BuildSegmentTree(int index, int start, int end, std::vector<int>& array) {
     if (start == end) {
         segment_tree[index][1][1] = array[start];
         segment_tree[index][0][0] = 0;
-        segment_tree[index][0][1] = INF;
-        segment_tree[index][1][0] = INF;
+        segment_tree[index][0][1] = infinity;
+        segment_tree[index][1][0] = infinity;
         return;
     }
     int mid = (start + end) / 2;
@@ -106,11 +106,12 @@ int MaximumSumPossible(std::vector<int>& nums, std::vector<std::pair<int, int>>&
 
         UpdateValue(0, 0, length - 1, position, new_value);
         total_sum += std::max({segment_tree[0][0][0], segment_tree[0][0][1], segment_tree[0][1][1], segment_tree[0][1][0]});
-        total_sum %= MOD;
+        total_sum %= modulo;
     }
 
     return total_sum;
 }
+
 
 int main() {
   
