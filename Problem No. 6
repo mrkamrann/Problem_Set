@@ -115,7 +115,7 @@ int main(){
     int result_1 = SumOfCounts(nums_1);
     assert(result_1 == expected_1);
   
-   //TESTEND
+   //TEST_END
   
   //TEST
     std::vector<int> nums_2 = {3};
@@ -123,7 +123,7 @@ int main(){
     int result_2 = SumOfCounts(nums_2);
     assert(result_2 == expected_2);
   
-   //TESTEND
+   //TEST_END
 
    //TEST
     std::vector<int> nums_3 = {5, 2};
@@ -131,7 +131,7 @@ int main(){
     int result_3 = SumOfCounts(nums_3);
     assert(result_3 == expected_3);
   
-   //TESTEND
+   //TEST_END
 
    //TEST
     std::vector<int> nums_4 = {100000, 1};
@@ -140,7 +140,7 @@ int main(){
     int result_4 = SumOfCounts(nums_4);
     assert(result_4 == expected_4);
   
-   //TESTEND
+   //TEST_END
 
    //TEST
     std::vector<int> nums_5 = {2,2};
@@ -148,7 +148,7 @@ int main(){
     int result_5 = SumOfCounts(nums_5);
     assert(result_5 == expected_5);
   
-   //TESTEND
+   //TEST_END
 
    //TEST
     std::vector<int> nums_6 = {1, 2, 3, 4, 5};
@@ -156,7 +156,7 @@ int main(){
     int result_6 = SumOfCounts(nums_6);
     assert(result_6 == expected_6);
   
-   //TESTEND
+   //TEST_END
 
    //TEST
     std::vector<int> nums_7 = {3,5,9,8,7,5,6,9,8};
@@ -164,7 +164,7 @@ int main(){
     int result_7 = SumOfCounts(nums_7);
     assert(result_7 == expected_7);
   
-   //TESTEND
+   //TEST_END
   
   //TEST
     std::vector<int> nums_8 = {1,1,1,1,1,1};
@@ -186,7 +186,7 @@ int main(){
     }
     
   
-   //TESTEND
+  //TEST_END
   
   //TEST
 std::vector<int> nums_10 = {1, 100001};
@@ -197,7 +197,7 @@ try {
 } catch(const std::invalid_argument& e) {
     assert(true);
 }
-//TESTEND
+//TEST_END
 
 //TEST
 std::vector<int> nums_11 = {-6666, 100002};
@@ -208,7 +208,7 @@ try {
 } catch(const std::invalid_argument& e) {
     assert(true);
 }
-//TESTEND
+//TEST_END
 
 //TEST
 std::vector<int> nums_12 = {-999999, -1000000};
@@ -219,7 +219,7 @@ try {
 } catch(const std::invalid_argument& e) {
     assert(true);
 }
-//TESTEND
+//TEST_END
 
    
   
