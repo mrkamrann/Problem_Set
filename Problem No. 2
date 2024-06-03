@@ -186,7 +186,7 @@ public:
 
 int main() {
    
-  // Test1
+  //TEST
  
     std::vector<std::vector<int>>points_1 =  {{0,0},{2,2},{3,10},{5,2},{7,0}};
     int expected_1 = 20;
@@ -197,7 +197,7 @@ int main() {
     // TEST_END
  
  
-  // Test2
+  //TEST
  
     std::vector<std::vector<int>> points_2 = { {3,12},{-2,5},{-4,1} };
     int expected_2 = 18;
@@ -208,7 +208,7 @@ int main() {
     // TEST_END
 
 
-// Test3
+//TEST
  
     std::vector<std::vector<int>> points_3 = { {-14,-14},{-18,5},{18,-10},{18,18},{10,-2} };
     int expected_3 = 102;
@@ -219,7 +219,7 @@ int main() {
     // TEST_END
 
 
-// Test4
+//TEST
  
     std::vector<std::vector<int>> points_4 = { {5,6}, {9,6} };
     int expected_4 = 4;
@@ -230,7 +230,7 @@ int main() {
     // TEST_END
 
 
-// Test5
+//TEST
  
     std::vector<std::vector<int>> points_5 = { {0,0}, {-1,-1} };
     int expected_5 = 2;
@@ -241,7 +241,7 @@ int main() {
     // TEST_END
  
  
-   // Test6
+   //TEST
 
 
     std::vector<std::vector<int>> points_6 = {};
@@ -258,7 +258,7 @@ int main() {
  
 
 
-// Test7
+//TEST
 
 
     std::vector<std::vector<int>> points_7 = {{0, 0}};
@@ -271,7 +271,7 @@ int main() {
  
  
  
-  // Test8
+  //TEST
 
 
     std::vector<std::vector<int>> points_8 = { {0, 0}, {-1000000001, 1000000001} };
@@ -289,7 +289,7 @@ int main() {
  
  
  
-   // Test9
+   //TEST
 
 
     std::vector<std::vector<int>> points_9 = { {0, 0},{-1000000001, -1000000001}};
@@ -310,7 +310,7 @@ int main() {
  
  
  
-  // Test10
+  //TEST
 
 
     std::vector<std::vector<int>> points_10 = { {0, 0}, {-1, -1}, {1000000001, 1000000001}};
@@ -325,7 +325,7 @@ int main() {
     // TEST_END
  
  
-  // Test11
+  //TEST
 
 
     std::vector<std::vector<int>> points_11 = { {0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}, {4,4}};
@@ -341,7 +341,7 @@ int main() {
     // TEST_END
 
 
-// Test12
+//TEST
 
 
     std::vector<std::vector<int>> points_12 = { {0, 0}, {0,0}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}, {9, 9}, {10,10} };
