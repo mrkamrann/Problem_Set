@@ -108,7 +108,7 @@ int main(){
     int result_1 = CountRangeSum(numbers_1, lower_1, upper_1);
     assert(result_1== expected_1);
 
-  //TESTEND
+  //TEST_END
   
    //TEST
   
@@ -119,7 +119,7 @@ int main(){
     int result_2 = CountRangeSum(numbers_2, lower_2, upper_2);
     assert(result_2 == expected_2);
   
-   //TESTEND
+   //TEST_END
 
     //TEST
   
@@ -130,7 +130,7 @@ int main(){
     int result_3 = CountRangeSum(numbers_3, lower_3, upper_3);
     assert(result_3 == expected_3);
   
-  //TESTEND
+  //TEST_END
 
     //TEST
   
@@ -141,7 +141,7 @@ int main(){
     int result_4 = CountRangeSum(numbers_4, lower_4, upper_4);
     assert(result_4 == expected_4);
   
-  //TESTEND
+  //TEST_END
 
     //TEST
     std::vector<int> numbers_5 = {-1, 0, -1, 0, -1};
@@ -151,7 +151,7 @@ int main(){
     int result_5 = CountRangeSum(numbers_5, lower_5, upper_5);
     assert(result_5 == expected_5);
   
-   //TESTEND
+   //TEST_END
   
   //TEST
     std::vector<int> numbers_6 = {0};
@@ -161,7 +161,7 @@ int main(){
     int result_6 = CountRangeSum(numbers_6, lower_6, upper_6);
     assert(result_6 == expected_6);
   
-   //TESTEND
+   //TEST_END
   
   //TEST
   
@@ -177,7 +177,7 @@ int main(){
         assert(true);
     } 
   
-  //TESTEND
+  //TEST_END
   
 
    //TEST
@@ -194,7 +194,7 @@ int main(){
         assert(true);
     }
   
-  //TESTEND
+  //TEST_END
 
    //TEST
     
@@ -210,7 +210,7 @@ int main(){
         assert(true);
     }
   
-  //TESTEND
+  //TEST_END
 
    //TEST
     
@@ -224,7 +224,7 @@ int main(){
         assert(true);
     }
   
-  //TESTEND
+  //TEST_END
 
     //TEST
    
@@ -238,7 +238,7 @@ int main(){
         assert(true);
     }
   
-  //TESTEND
+  //TEST_END
 
     //TEST
     
@@ -253,7 +253,7 @@ int main(){
         assert(true);
     }
   
-//TESTEND
+//TEST_END
    
  
    
