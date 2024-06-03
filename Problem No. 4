@@ -121,7 +121,7 @@ int main() {
    int result_1 = MaximumSumPossible(nums_1, queries_1);
     assert(result_1== expected_1);
   
-   //TESTEND
+   //TEST_END
 
      //TEST
     std::vector<int> nums_2 = {5, 6, 7, 8};
@@ -130,7 +130,7 @@ int main() {
     int result_2 = MaximumSumPossible(nums_2, queries_2); 
     assert(result_2 == expected_2);
   
-   //TESTEND
+   //TEST_END
 
      //TEST
     std::vector<int> nums_3 = {10, 20, 30, 40, 50};
@@ -139,7 +139,7 @@ int main() {
     int result_3 = MaximumSumPossible(nums_3, queries_3);
     assert(result_3 == expected_3);
   
-    //TESTEND
+    //TEST_END
 
      //TEST
     std::vector<int> nums_4 = {-1, -2, -3, -4};
@@ -148,7 +148,7 @@ int main() {
     int result_4 = MaximumSumPossible(nums_4, queries_4);
     assert(result_4  == expected_4);
   
-   //TESTEND
+   //TEST_END
 
     //TEST
   
@@ -158,7 +158,7 @@ int main() {
    int result_5 = MaximumSumPossible(nums_5, queries_5);
     assert( result_5== expected_5);
   
-    //TESTEND
+    //TEST_END
   
     //TEST
   
@@ -176,7 +176,7 @@ int main() {
     assert(true);
   }
   
-  //TESTEND
+  //TEST_END
   
 
  //TEST
@@ -192,7 +192,7 @@ int main() {
     assert(true);
   }
 
-  //TESTEND
+  //TEST_END
   
  //TEST
 
@@ -205,7 +205,7 @@ int main() {
     assert(true);
   }
   
-  //TESTEND
+  //TEST_END
   
 
  //TEST
@@ -219,7 +219,7 @@ int main() {
   catch (const std::invalid_argument& e){
     assert(true);
   }
-  //TESTEND
+  //TEST_END
   
 
  //TEST
@@ -234,7 +234,7 @@ int main() {
     assert(true);
   }
   
-  //TESTEND
+  //TEST_END
   
 
  //TEST
@@ -248,7 +248,7 @@ int main() {
     assert(true);
   }
   
-  //TESTEND
+  //TEST_END
   
 
  //TEST
@@ -263,7 +263,7 @@ int main() {
   catch (const std::invalid_argument& e) {
     assert(true);
   }
-  //TESTEND
+  //TEST_END
   
    
 
