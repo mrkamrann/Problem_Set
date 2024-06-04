@@ -1,0 +1,314 @@
+/*
+
+Julie has the task of delivering packages from storage to various harbours using a single ship. However, this ship has limits on the number of packages it can carry and the total weight it can handle at one time.
+
+She is given:
+
+A vector packages, where each packages[i] = [harbour[i], weight[i]] represents the harbour and weight of the ith package.
+Three integers: harbour_count, max_packages, and max_load, representing the total number of harbours, the maximum number of packages the ship can carry at once, and the maximum load the ship can carry at once, respectively.
+
+Julie needs to follow these steps:
+
+Load some packages from the queue, ensuring she does not exceed max_packages or max_load.
+For each loaded package, in order, deliver it to its designated harbour. If the ship is already at the correct harbour, she can immediately deliver the package.
+Return to storage to pick up more packages and repeat until all packages are delivered.
+
+The goal is to determine the minimum number of trips Julie's ship needs to make to deliver all the packages to their respective harbours and return to storage. 
+
+Create a C++ Function DeliverPackages that will return an integer denoting the minimum number of trips required. 
+
+
+Input Type
+
+A vector<vector<int>> denoting packages
+An integer denoting harbour_count 
+An integer denoting max_packages
+An integer denoting max_load
+
+
+
+Input Constraints:
+
+The length of packages should be at least 1 and at most 10^5 inclusive.
+Each value of packages[i][0] should be in the range [1, harbour_count] inclusive.
+Each value of packages[i][1] should be in the range [1, max_load] inclusive.
+The values for harbor_count, max_packages, and max_load should be in the range [1, 10^5] inclusive.
+
+
+*/
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+
+class SegmentTree {
+public:
+    std::vector<int> segment_tree;
+    const int infinity = 1000000000;
+    SegmentTree(int num_packages) {
+        segment_tree.resize(4 * num_packages + 1, infinity);
+    }
+    int Query(int index, int left, int right, int low, int high) {
+        if (left <= low && high <= right) {
+            return segment_tree[index];
+        }
+        int mid = low + (high - low) / 2;
+        int child1 = index * 2, child2 = child1 + 1;
+        int left_value = infinity, right_value = infinity;
+        if (left <= mid) {
+            left_value = std::min(left_value, Query(child1, left, right, low, mid));
+        }
+        if (right > mid) {
+            right_value = std::min(right_value, Query(child2, left, right, mid + 1, high));
+        }
+        return std::min(left_value, right_value);
+    }
+
+    void Update(int index, int position, int value, int low, int high) {
+        if (low == high) {
+            segment_tree[index] = value;
+            return;
+        }
+        int mid = low + (high - low) / 2;
+        int child1 = index * 2, child2 = child1 + 1;
+        if (position <= mid) {
+            Update(child1, position, value, low, mid);
+        }
+        else {
+            Update(child2, position, value, mid + 1, high);
+        }
+        segment_tree[index] = std::min(segment_tree[child1], segment_tree[child2]);
+    }
+};
+
+
+	int DeliverPackages(std::vector<std::vector<int>> &packages, int harbour_count,
+                       int max_packages, int max_load) {
+
+
+        if (packages.size() < 1 || packages.size() > 100000) {
+    throw std::invalid_argument("The length of packages should be between 1 and 10^5 inclusive.");
+}
+
+for (const auto& package : packages) {
+    if (package[0] < 1 || package[0] > harbour_count) {
+        throw std::invalid_argument("Each value of packages[i][0] should be in the range [1, harbour_count] inclusive.");
+    }
+    if (package[1] < 1 || package[1] > max_load) {
+        throw std::invalid_argument("Each value of packages[i][1] should be in the range [1, max_load] inclusive.");
+    }
+}
+
+if (harbour_count < 1 || harbour_count > 100000 || max_packages < 1 || max_packages > 100000 || max_load < 1 || max_load > 100000) {
+    throw std::invalid_argument("The values for harbour_count, max_packages, and max_load should be in the range [1, 10^5] inclusive.");
+}
+
+
+        int num_packages = packages.size();
+        
+
+        std::vector<int> min_left(num_packages + 1);
+        int current_left = num_packages, current_num_packages = 0, current_load = 0;
+        for (int i = num_packages - 1; i >= 0; i--) {
+            current_left = std::min(i + 1, current_left);
+            while (current_left > 0 && current_num_packages + 1 <= max_packages &&
+                   current_load + packages[current_left - 1][1] <= max_load) {
+                current_left--;
+                current_num_packages++;
+                current_load += packages[current_left][1];
+            }
+            min_left[i] = current_left;
+            current_num_packages--;
+            current_load -= packages[i][1];
+        }
+        std::vector<int> diff_prefix(num_packages + 1);
+        diff_prefix[0] = 0;
+        for (int i = 1; i < num_packages; i++) {
+            diff_prefix[i] = diff_prefix[i - 1];
+            if (packages[i][0] != packages[i - 1][0]) {
+                diff_prefix[i]++;
+            }
+        }
+
+        SegmentTree seg_tree(num_packages);
+        std::vector<int> dp_array(num_packages + 1);
+        dp_array[0] = 0;
+        seg_tree.Update(1, 0, 0, 0, num_packages);
+        for (int i = 0; i < num_packages; i++) {
+            int min_dp_j = seg_tree.Query(1, min_left[i], i + 1, 0, num_packages);
+            dp_array[i] = min_dp_j + diff_prefix[i] + 2;
+            if (i == num_packages - 1) {
+                break;
+            }
+            seg_tree.Update(1, i + 1, dp_array[i] - diff_prefix[i + 1], 0, num_packages);
+        }
+        return dp_array[num_packages - 1];
+    }
+
+int main(){
+  
+  //TEST
+
+  std::vector<std::vector<int>>packages_1 = {{1,1},{2,1},{1,1}};
+  int harbour_count_1 = 2;
+  int max_packages_1 = 3;
+  int max_load_1 = 3;
+  int expected_1 = 4;
+  int result_1 = DeliverPackages(packages_1, harbour_count_1, max_packages_1, max_load_1);
+  assert(result_1 == expected_1);
+  
+  //TEST_END
+  
+  
+  //TEST
+
+std::vector<std::vector<int>> packages_2 = {{1,2},{3,3},{3,1},{3,1},{2,4}};
+int harbour_count_2 = 3;
+int max_packages_2 = 3;
+int max_load_2 = 6;
+int expected_2 = 6;
+int result_2 = DeliverPackages(packages_2, harbour_count_2, max_packages_2, max_load_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_3 = {{1,4},{1,2},{2,1},{2,1},{3,2},{3,4}};
+int harbour_count_3 = 3;
+int max_packages_3 = 6;
+int max_load_3 = 7;
+int expected_3 = 6;
+int result_3 = DeliverPackages(packages_3, harbour_count_3, max_packages_3, max_load_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_4 = {{1,2},{3,1},{2,1}};
+int harbour_count_4 = 3;
+int max_packages_4 = 3;
+int max_load_4 = 3;
+int expected_4 = 5;
+int result_4 = DeliverPackages(packages_4, harbour_count_4, max_packages_4, max_load_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_5 = {{1,1},{1,2},{2,1},{2,2}};
+int harbour_count_5 = 2;
+int max_packages_5 = 4;
+int max_load_5 = 4;
+int expected_5 = 4;
+int result_5 = DeliverPackages(packages_5, harbour_count_5, max_packages_5, max_load_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_6 = {{1,1},{2,1},{3,1},{4,1},{5,1}};
+int harbour_count_6 = 5;
+int max_packages_6 = 5;
+int max_load_6 = 5;
+int expected_6 = 6;
+int result_6 = DeliverPackages(packages_6, harbour_count_6, max_packages_6, max_load_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_7 = {{1,2},{1,3},{1,4},{2,2},{2,3},{2,4},{3,2},{3,3},{3,4}};
+int harbour_count_7 = 3;
+int max_packages_7 = 7;
+int max_load_7 = 10;
+int expected_7 = 6;
+int result_7 = DeliverPackages(packages_7, harbour_count_7, max_packages_7, max_load_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+  
+ 
+//TEST
+
+std::vector<std::vector<int>> packages_8 = {};
+int harbour_count_8 = 2;
+int max_packages_8 = 3;
+int max_load_8 = 3;
+try {
+    DeliverPackages(packages_8, harbour_count_8, max_packages_8, max_load_8);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+//TEST
+
+std::vector<std::vector<int>> packages_9 = {{1,1},{2,2},{1,6}};
+int harbour_count_9 = 2;
+int max_packages_9 = 5;
+int max_load_9 = 3;
+try {
+    DeliverPackages(packages_9, harbour_count_9, max_packages_9, max_load_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_10 = {{-5,1},{2,2},{1,3},{1,2}};
+int harbour_count_10 = -3;
+int max_packages_10 = 6;
+int max_load_10 = 3;
+try {
+    DeliverPackages(packages_10, harbour_count_10, max_packages_10, max_load_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_11 = {{1,1},{2,1},{1,1}};
+int harbour_count_11 = -2;
+int max_packages_11 = 5;
+int max_load_11 = 1;
+try {
+    DeliverPackages(packages_11, harbour_count_11, max_packages_11, max_load_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> packages_12 = {{5,1},{2,2},{0,3},{1,2}};
+int harbour_count_12 = 9;
+int max_packages_12 = -9;
+int max_load_12 = -9;
+try {
+    DeliverPackages(packages_12, harbour_count_12, max_packages_12, max_load_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
+  return 0;
+}
+
