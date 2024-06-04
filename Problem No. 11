@@ -1,0 +1,225 @@
+/*
+
+Julie is given vector of integers, nums. She needs to find the maximum sum she can obtain from a balanced subsequence of this vector. A subsequence is balanced if for every consecutive elements in the subsequence, the difference between the elements is at least the difference between their indices in the original vector. Julie wants to make sure she gets the highest possible sum from any balanced subsequence she can find. How should she go about solving this problem.
+
+A subsequence of an vector is a new non-empty vector that is formed from the original vector by deleting some (possibly none) of the elements without disturbing the relative positions of the remaining elements.
+
+To help Julie Create a C++ Function MaxBalancedSum that will return a long long integer denoting the  maximum possible sum of elements in a balanced subsequence of nums. 
+
+
+Input Types:
+
+A vector<int> denoting nums.
+
+
+Input Constraints:
+
+The length of nums should be at least 1 and at most 10^5 both inclusive.
+Each value in nums i.e. nums[i] should be in the range [-10^9, 10^9] both inclusive.
+
+*/
+
+
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <stdexcept>
+
+struct SegmentTree
+{
+    int size;
+    std::vector<long long> tree;
+    SegmentTree(int n) : size(n), tree(4 * n, -1e18) {}
+    void Update(int index, long long value)
+    {
+        std::function<void(int, int, int)> updateHelper = [&](int left, int right, int node) -> void
+        {
+            if (left == right)
+                tree[node] = std::max(tree[node], value);
+            else
+            {
+                int mid = (left + right) / 2;
+                if (index <= mid)
+                    updateHelper(left, mid, 2 * node);
+                else
+                    updateHelper(mid + 1, right, 2 * node + 1);
+                tree[node] = std::max(tree[2 * node], tree[2 * node + 1]);
+            }
+        };
+        updateHelper(0, size - 1, 1);
+    }
+    long long Query(int queryLeft, int queryRight)
+    {
+        std::function<long long(int, int, int, int, int)> queryHelper = [&](int left, int right, int queryLeft, int queryRight, int node) -> long long
+        {
+            if (queryLeft > queryRight)
+                return 0;
+            if (left == queryLeft && right == queryRight)
+                return tree[node];
+            int mid = (left + right) / 2;
+            return std::max(queryHelper(left, mid, queryLeft, std::min(queryRight, mid), 2 * node),
+                            queryHelper(mid + 1, right, std::max(queryLeft, mid + 1), queryRight, 2 * node + 1));
+        };
+        return queryHelper(0, size - 1, queryLeft, queryRight, 1);
+    }
+};
+
+
+    long long MaxBalancedSum(vector<int>& nums) {
+      
+        int size = nums.size();
+   
+        if (size < 1 || size > 100000)
+            throw std::invalid_argument("Invalid length of nums");
+        
+        for (int i = 0; i < size; i++)
+        {
+            if (nums[i] < -1000000000 || nums[i] > 1000000000)
+                throw std::invalid_argument("nums element out of range");
+        }
+        std::set<int> uniqueDifferences;
+        for (int i = 0; i < size; i++)
+            uniqueDifferences.insert(nums[i] - i);
+        std::vector<int> sortedDifferences(uniqueDifferences.begin(), uniqueDifferences.end());
+        SegmentTree segmentTree(size);
+        long long maxSum = -1e18;
+        for (int i = 0; i < size; i++)
+        {
+            int right = std::lower_bound(sortedDifferences.begin(), sortedDifferences.end(), nums[i] - i) - sortedDifferences.begin();
+            long long previousMax = segmentTree.Query(0, right);
+            long long currentSum = std::max(nums[i] + (previousMax == -1e18 ? 0 : previousMax), 1LL * nums[i]);
+            maxSum = std::max(maxSum, currentSum);
+            segmentTree.Update(right, currentSum);
+        }
+        return maxSum; 
+    }
+
+
+int main(){
+  
+  //TEST
+  
+  std::vector<int>nums_1 = {3,3,5,6};
+  int expected_1 = 14;
+  int result_1 = MaxBalancedSum(nums_1);
+  assert(result_1 == expected_1);
+  
+  //TEST_END
+  
+//TEST
+
+std::vector<int> nums_2 = {5,-1,-3,8};
+int expected_2 = 13;
+int result_2 = MaxBalancedSum(nums_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_3 = {-2,-1};
+int expected_3 = -1;
+int result_3 = MaxBalancedSum(nums_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_4 = {-5,-9,1,2,6,-8,-6,0};
+int expected_4 = 9;
+int result_4 = MaxBalancedSum(nums_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_5 = {1,2,3,6,-5,-1,9,45,69,52,67,-89,3,0,8};
+int expected_5 = 185;
+int result_5 = MaxBalancedSum(nums_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_6 = {-1};
+int expected_6 = -1;
+int result_6 = MaxBalancedSum(nums_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_7 = {77,3,-33,107,141,3,-99};
+int expected_7 = 325;
+int result_7 = MaxBalancedSum(nums_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_8 = {0,0,0,0,0,0};
+int expected_8 = 0;
+int result_8 = MaxBalancedSum(nums_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+  
+//TEST
+
+std::vector<int> nums_9 = {1,2,3,4,5,-5,-4,-3,-2,-1,0};
+int expected_9 = 15;
+int result_9 = MaxBalancedSum(nums_9);
+assert(result_9 == expected_9);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_10 = {1000000009,1,2,3};
+
+try {
+    int result_10 = MaxBalancedSum(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_11 = {0,1,2,-1000000007,1,-2,-3};
+
+try {
+    int result_11 = MaxBalancedSum(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_12 = {};
+
+try {
+    int result_12 = MaxBalancedSum(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+  
+  return 0;
+}
+
