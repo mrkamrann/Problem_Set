@@ -1,0 +1,309 @@
+Jimmy is working on a programming challenge where he needs to analyze a string. The string, referred to as word, consists of len lowercase English letters. His task involves constructing a special matrix, longest_common_prefix, based on the word. Here's how the matrix is defined:
+
+The longest_common_prefix matrix is a len x len grid.
+
+The element longest_common_prefix[i][j] represents the length of the longest common prefix between the substrings word[i,len-1] and word[j,len-1].
+
+Given a len x len matrix longest_common_prefix, Jimmy's challenge is to find the alphabetically smallest string word that matches the given longest_common_prefix matrix. If no such string exists, he should return an empty string.
+
+A string a is considered lexicographically smaller than a string b (of the same length) if, at the first position where a and b differ, the character in a appears earlier in the alphabet than the corresponding character in b. For instance, the string "aabd" is lexicographically smaller than "aaca" because the first position they differ is at the third letter, and 'b' comes before 'c'.
+
+Create a C++ Function FindTheString  to help Jimmy that will return a string i.e. the alphabetically smallest string that satisfies the longest_common_prefix matrix, or conclude that no such string can be constructed.
+
+
+Input Types:
+
+A  vector<vector<int>> containing the elements of the matrix (longest_common_prefix).
+
+
+Input Constraints:
+
+The number of rows(len) in the matrix and the number of columns(len) in the longest_common_prefix matrix should be equal and should be at least 1 and at most 1000.
+
+Each element in the LongestCommonPrefix matrix (longest_common_prefix[i][j]) should be between [0, len] inclusive.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Hashing {
+private:
+    int length;
+    long long prime;
+    long long modulus;
+    std::vector<long long> p_values;
+    std::vector<long long> hash_values;
+public:
+    Hashing(int prime_value, int mod_value, int max_length) {
+        length = max_length;
+        modulus = mod_value;
+        prime = prime_value;
+        p_values.resize(length + 1);
+        hash_values.resize(length + 1);
+    }
+    void Init(std::string& str) {
+        p_values[0] = 1;
+        for(int i = 1; i <= length; i++) {
+            p_values[i] = (p_values[i - 1] % modulus * prime % modulus) % modulus;
+            hash_values[i] = (hash_values[i - 1] % modulus + ((str[i - 1] - 'a' + 1) * p_values[i]) % modulus) % modulus;
+        }
+    }
+    long long Value(int start, int sub_length) {
+        int left = start;
+        int right = start + sub_length - 1;
+        long long result = (hash_values[right] - hash_values[left - 1] + modulus) % modulus;
+        return result;
+    }
+    bool Possible(int start_1, int start_2, int sub_length) {
+        long long left_hash = (Value(start_1, sub_length) % modulus * p_values[start_2 - start_1] % modulus) % modulus;
+        long long right_hash = Value(start_2, sub_length) % modulus;
+        return (left_hash == right_hash);
+    }
+};
+
+
+    int parent[1000];
+    
+    int Find(int node) {
+        if(node == parent[node]) {
+            return node;
+        }
+        return parent[node] = Find(parent[node]);
+    }
+    
+    void Unite(int node_a, int node_b) {
+        node_a = Find(node_a);
+        node_b = Find(node_b);
+        parent[node_a] = node_b;
+    }
+
+std::string FindTheString(std::vector<std::vector<int>>& longest_common_prefix) {
+         int len = longest_common_prefix.size();
+      
+        if(len < 1 || len > 1000) {
+            throw std::invalid_argument("Matrix size out of range");
+        }
+        
+        for(int i = 0; i < len; i++) {
+            for(int j = 0; j < len; j++) {
+                if(longest_common_prefix[i][j] > len || longest_common_prefix[i][j] < 0) {
+                    throw std::invalid_argument("Value out of range");
+                }
+                if(longest_common_prefix[i].size() != len) {
+                    throw std::invalid_argument("Invalid test case");
+                }
+            }
+        }
+      
+        for(int i = 0; i < len; i++) {
+            for(int j = 0; j < len; j++) {
+                if(longest_common_prefix[i][j] != longest_common_prefix[j][i]) {
+                    return "";
+                }
+                if(std::min(len - i, len - j) < longest_common_prefix[i][j]) {
+                    return "";
+                }
+            }
+        }
+        
+        for(int i = 0; i < len; i++) {
+            parent[i] = i;
+        }
+        
+        for(int i = 0; i < len; i++) {
+            for(int j = 0; j < len; j++) {
+                if(longest_common_prefix[i][j]) {
+                    Unite(i, j);
+                }
+            }
+        }
+        
+        int char_counter = 0;
+        std::string result;
+        std::unordered_map<int, int> assignment;
+        
+        for(int i = 0; i < len; i++) {
+            int group = Find(i);
+            if(assignment.find(group) == assignment.end()) {
+                if(char_counter < 26) {
+                    assignment[group] = char_counter;
+                    char_counter++;
+                } else {
+                    return "";
+                }
+            }
+            result.push_back(assignment[group] + 'a');
+        }
+        
+        Hashing hash1(31, 1000000007, len);
+        Hashing hash2(37, 1000000009, len);
+        hash1.Init(result);
+        hash2.Init(result);
+        
+        for(int i = 0; i < len; i++) {
+            for(int j = i; j < len; j++) {
+                int max_length = 0;
+                int low = 1, high = len - j;
+                while(low <= high) {
+                    int mid = (low + high) >> 1;
+                    if(hash1.Possible(i + 1, j + 1, mid) && hash2.Possible(i + 1, j + 1, mid)) {
+                        max_length = mid;
+                        low = mid + 1;
+                    } else {
+                        high = mid - 1;
+                    }
+                }
+                if(max_length != longest_common_prefix[i][j]) {
+                    return "";
+                }
+            }
+        }
+        return result;
+    }
+
+int main(){
+  
+  //TEST
+  
+std::vector<std::vector<int>>longest_common_prefix_1 ={{4,0,2,0},{0,3,0,1},{2,0,2,0},{0,1,0,1}};
+string expected_1 = "abab";
+string result_1 = FindTheString(longest_common_prefix_1);
+assert(expected_1 == result_1);
+
+//TEST_END
+
+
+//TEST
+
+std::vector<std::vector<int>>longest_common_prefix_2 ={{4,3,2,1},{3,3,2,1},{2,2,2,1},{1,1,1,1}};
+std::string expected_2 = "aaaa";
+std::string result_2 = FindTheString(longest_common_prefix_2);
+assert(expected_2 == result_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>longest_common_prefix_3 = {{4,3,2,1},{3,3,2,1},{2,2,2,1},{1,1,1,3}};
+std::string expected_3 = "";
+std::string result_3 = FindTheString(longest_common_prefix_3);
+assert(expected_3 == result_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_4 = {{1,2},{2,1}};
+std::string expected_4 = "";
+std::string result_4 = FindTheString(longest_common_prefix_4);
+assert(expected_4 == result_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_5 = {{2, 1, 0}, {1, 2, 1}, {0, 1, 2}};
+std::string expected_5 = "";
+std::string result_5 = FindTheString(longest_common_prefix_5);
+assert(expected_5 == result_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_6 = {{4, 3, 2, 1}, {3, 3, 2, 1}, {2, 2, 2, 1}, {1, 1, 1, 1}};
+std::string expected_6 = "aaaa";
+std::string result_6 = FindTheString(longest_common_prefix_6);
+assert(expected_6 == result_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_7 = {{4, 0, 2, 0}, {0, 3, 0, 1}, {2, 0, 2, 0}, {0, 1, 0, 1}};
+std::string expected_7 = "abab";
+std::string result_7 = FindTheString(longest_common_prefix_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_8 = {{1}};
+std::string expected_8 = "a";
+std::string result_8 = FindTheString(longest_common_prefix_8);
+assert(expected_8 == result_8);
+
+//TEST_END
+  
+//TEST
+  
+std::vector<std::vector<int>> longest_common_prefix_9 = {};
+
+try{
+  FindTheString(longest_common_prefix_9);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_10 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
+try{
+FindTheString(longest_common_prefix_10);
+assert(false);
+}
+
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_11 = {{1, 2, 3, 4, 5}, {4, 5, 6, 7, 8}};
+try{
+FindTheString(longest_common_prefix_11);
+assert(false);
+}
+
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> longest_common_prefix_12 = {{1, 2, -3}, {4, 5, 6}, {7, 8, -9}};
+try{
+FindTheString(longest_common_prefix_12);
+assert(false);
+}
+
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+
+
+  
+  return 0;
+}
