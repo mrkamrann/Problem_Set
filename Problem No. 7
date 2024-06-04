@@ -1,0 +1,283 @@
+Jimmy is on an adventure through a matrix world represented by a 0-indexed rows x columns integer matrix. He starts at the top-left cell (0, 0) and wants to reach the bottom-right cell (rows - 1, columns - 1). However, his movement is limited:
+
+From any cell (i, j), Jimmy can only move 
+rightward to a cell (i, k) where j < k <= matrix[i][j] + j, or
+downward to a cell (k, j) where i < k <= matrix[i][j] + i.
+
+Jimmy wants to find the minimum number of cells he needs to visit to reach his destination. If there's no valid path to the bottom-right cell, Jimmy will be disappointed and you should inform him by returning -1.
+
+So, Jimmy's quest is to navigate this matrix with these specific movement rules, aiming to reach the bottom-right cell while minimising the number of cells he visits.
+
+Create a C++ Function MinimumCellsVisit that will return the minimum number of cells you need to visit to reach the bottom-right cell. If there is no valid path, return -1.
+
+
+Input Types:
+
+A  vector<vector<int>> containing the elements of the matrix (matrix).
+
+
+Input Constraints:
+
+The number of rows in the matrix (rows) should be at least 1 and at most 1e5.
+The number of columns in the matrix (columns) should be at least 1 and at most 1e5.
+The total number of cells in the matrix (rows * columns) should be at least 1 and at most 1e5.
+Each element in the matrix (matrix[i][j]) should be between [0 , (rows * columns) ] inclusive.
+The bottom-right cell of the matrix (matrix[rows - 1][columns - 1]) should be 0.
+
+
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <limits.h>
+#include <iostream>
+#include <cassert>
+
+class SegmentTree {
+private:
+    std::vector<int> tree;
+
+public:
+    SegmentTree(int size = 0) {
+        tree.resize(4 * (size + 1), INT_MAX);
+    }
+
+    void UpdateTree(int node, int left, int right, int index, int value) {
+        if (index < left || index > right) {
+            return;
+        }
+        if (left == right) {
+            tree[node] = value;
+            return;
+        }
+        int mid = (right + left) / 2;
+        UpdateTree(node * 2, left, mid, index, value);
+        UpdateTree(node * 2 + 1, mid + 1, right, index, value);
+        tree[node] = std::min(tree[node * 2], tree[node * 2 + 1]);
+    }
+
+    int GetTreeMin(int node, int left, int right, int query_left, int query_right) {
+        if (query_left > right || query_right < left) {
+            return INT_MAX;
+        }
+        if (query_left <= left && right <= query_right) {
+            return tree[node];
+        }
+        int mid = (right + left) / 2;
+        int left_node = GetTreeMin(node * 2, left, mid, query_left, query_right);
+        int right_node = GetTreeMin(node * 2 + 1, mid + 1, right, query_left, query_right);
+        return std::min(left_node, right_node);
+    }
+};
+
+    int MinimumCellsVisit(std::vector<std::vector<int>>& matrix) {
+
+        const int rows = matrix.size();
+        const int columns = matrix[0].size();
+
+        if (rows < 1 || rows > 100000)
+        throw std::invalid_argument("Number of rows should be between 1 and 100000.");
+
+    if (columns < 1 || columns > 100000)
+        throw std::invalid_argument("Number of columns should be between 1 and 100000.");
+
+    if (rows * columns < 1 || rows * columns > 100000)
+        throw std::invalid_argument("Total number of cells should be between 1 and 100000.");
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            if (matrix[i][j] < 0 || matrix[i][j] >= rows * columns)
+                throw std::invalid_argument("Each element in the matrix should be between 0 and (rows * columns).");
+        }
+    }
+
+    if (matrix[rows - 1][columns - 1] != 0)
+        throw std::invalid_argument("The bottom-right cell of the matrix should be 0.");
+
+        
+        SegmentTree vertical_segment_trees[rows], horizontal_segment_trees[columns];
+        
+        for (int i = 0; i < rows; ++i) {
+            SegmentTree seg_tree(columns);
+            vertical_segment_trees[i] = seg_tree;
+        }
+        
+        for (int i = 0; i < columns; ++i) {
+            SegmentTree seg_tree(rows);
+            horizontal_segment_trees[i] = seg_tree;
+        }
+
+        int dp_arr[rows][columns];
+
+        for (int i = rows - 1; i >= 0; --i) {
+            for (int j = columns - 1; j >= 0; --j) {
+                if (i == rows - 1 && j == columns - 1) {
+                    dp_arr[i][j] = 1;
+                } else {
+                    dp_arr[i][j] = INT_MAX;
+                    int right_reward = vertical_segment_trees[i].GetTreeMin(1, 0, columns - 1, j + 1, std::min(matrix[i][j] + j, columns - 1));
+                    int down_reward = horizontal_segment_trees[j].GetTreeMin(1, 0, rows - 1, i + 1, std::min(matrix[i][j] + i, rows - 1));
+                    if (right_reward == INT_MAX && down_reward == INT_MAX) {
+                        continue;
+                    }
+                    dp_arr[i][j] = std::min(dp_arr[i][j], 1 + std::min(right_reward, down_reward));
+                }
+                vertical_segment_trees[i].UpdateTree(1, 0, columns - 1, j, dp_arr[i][j]);
+                horizontal_segment_trees[j].UpdateTree(1, 0, rows - 1, i, dp_arr[i][j]);
+            }
+        }
+
+        return dp_arr[0][0] == INT_MAX ? -1 : dp_arr[0][0];
+    }
+
+
+int main() {
+  
+  
+      //TEST
+  
+std::vector<std::vector<int>>matrix_1 = {{3,4,2,1},{4,2,3,1},{2,1,0,0},{2,4,0,0}};
+int expected_1 = 4;
+int result_1 = MinimumCellsVisit(matrix_1);
+assert(expected_1 == result_1);
+
+//TEST_END
+
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_2 = {{3,4,2,1},{4,2,1,1},{2,1,1,0},{3,4,1,0}};
+int expected_2 = 3;
+int result_2 = MinimumCellsVisit(matrix_2);
+assert(expected_2 == result_2);
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_3 = {{2,1,0},{1,0,0}};
+int expected_3 = -1;
+int result_3 = MinimumCellsVisit(matrix_3);
+assert(expected_3 == result_3);
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_4 = {{0}};
+int expected_4 = 1;
+int result_4 = MinimumCellsVisit(matrix_4);
+assert(expected_4 == result_4);
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_5 = {{7,1,0},{1,8,0},{1,1,0}};
+int expected_5 = 4;
+int result_5 = MinimumCellsVisit(matrix_5);
+assert(expected_5 == result_5);
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_6 = {{1,0,0},{1,0,1},{0,2,0}};
+int expected_6 = -1;
+int result_6 = MinimumCellsVisit(matrix_6);
+assert(expected_6 == result_6);
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_7 = {{1, 0, 11},{1, 14, 10},{12, 10, 2},{2, 0, 0},{13, 0, 0}};
+int expected_7 = 5;
+int result_7 = MinimumCellsVisit(matrix_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_8 = {{12, 10, 2},{2, 0, 0},{13, 0, 5}};
+
+try{
+  MinimumCellsVisit(matrix_8);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_9 = {{}};
+
+try{
+  MinimumCellsVisit(matrix_9);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+//TEST
+  
+std::vector<std::vector<int>> matrix_10 = {{1,2,3}, {-1,0,-5}, {-6,0,0}};
+
+try{
+  MinimumCellsVisit(matrix_10);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::vector<int>> matrix_11 = {{1, 2, 3, 4},{5, 6, 7, 8},{9, 10, 11, 99}};
+
+try{
+  MinimumCellsVisit(matrix_11);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+ 
+  
+//TEST
+  
+std::vector<std::vector<int>> matrix_12 = {{1, 2},{3, 4}};
+
+
+try{
+  MinimumCellsVisit(matrix_12);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+
+
+
+    return 0;
+}
