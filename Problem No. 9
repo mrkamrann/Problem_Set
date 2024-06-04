@@ -1,0 +1,278 @@
+
+Jimmy has a vector of strings called words, where each string consists of lowercase English letters only, and no letter occurs more than once in any string of words.
+
+Two strings, str_1 and str_2, are said to be connected if the set of letters of str_2 can be obtained from the set of letters of str_1 by any one of the following operations:
+
+Adding exactly one letter to the set of letters of str_1.
+Deleting exactly one letter from the set of letters of str_1.
+Replacing exactly one letter from the set of letters of str_1 with any letter, including itself.
+
+Jimmy needs to divide the vector words into one or more non-intersecting groups. A string belongs to a group if any one of the following is true:
+
+It is connected to at least one other string in the group.
+It is the only string present in the group.
+
+The strings in words should be grouped in such a manner that a string belonging to one group cannot be connected to a string present in any other group. It can be proven that such an arrangement is always unique.
+
+Help Jimmy to create a C++ function  GrouptheStrings  that will return a vector result of size 2 where:
+
+result[0] is the maximum number of groups words can be divided into.
+result[1] is the size of the largest group.
+
+
+
+
+Input Types:
+
+A  vector<string> denoting the vector words.
+
+
+Input Constraints:
+
+The number of strings (words.length) should be at least 1 and at most 20,000.
+The length of each string (words[i].length) should be at least 1 and at most 26.
+Each string (words[i]) consists of lowercase English letters only.
+No letter occurs more than once in each string (words[i]).
+
+
+
+
+
+
+
+
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+    class DisjointSet {
+    public:
+        std::vector<int> parent, size;
+        
+        DisjointSet(int count) {
+            parent.resize(count);
+            size.resize(count);
+            for (int index = 0; index < count; index++) {
+                parent[index] = index;
+                size[index] = 1;
+            }
+        }
+
+        int Find(int node) {
+            if (node == parent[node])
+                return node;
+            return parent[node] = Find(parent[node]);
+        }
+
+        void UnionBySize(int node_u, int node_v) {
+            int root_u = Find(node_u);
+            int root_v = Find(node_v);
+            if (root_u == root_v) return;
+            if (size[root_u] < size[root_v]) {
+                parent[root_u] = root_v;
+                size[root_v] += size[root_u];
+            } else {
+                parent[root_v] = root_u;
+                size[root_u] += size[root_v];
+            }
+        }
+    };
+
+    std::vector<int> GroupTheStrings(std::vector<std::string>& words) {
+      
+        if (words.empty() || words.size() > 20000) {
+            throw std::invalid_argument("The number of strings should be at least 1 and at most 20,000.");
+        }
+
+        for (const std::string& word : words) {
+            if (word.length() < 1 || word.length() > 26) {
+                throw std::invalid_argument("The length of each string should be at least 1 and at most 26.");
+            }
+
+            std::vector<bool> char_presence(26, false);
+            for (char ch : word) {
+                if (ch < 'a' || ch > 'z') {
+                    throw std::invalid_argument("Each string should consist of lowercase English letters only.");
+                }
+                if (char_presence[ch - 'a']) {
+                    throw std::invalid_argument("No letter should occur more than once in each string.");
+                }
+                char_presence[ch - 'a'] = true;
+            }
+        }
+        
+        int word_count = words.size();
+        std::unordered_map<int, int> mask_map;
+        DisjointSet disjoint_set(word_count);
+
+        for (int word_index = 0; word_index < word_count; word_index++) {
+            int mask = 0;
+            for (char ch : words[word_index]) {
+                int position = ch - 'a';
+                mask |= (1 << position);
+            }
+
+            for (int i = 0; i < 26; i++) {
+                int reduced_mask = mask ^ (1 << i);
+                if (mask_map.count(reduced_mask)) {
+                    disjoint_set.UnionBySize(word_index, mask_map[reduced_mask]);
+                }
+            }
+
+            for (int i = 0; i < 26; i++) {
+                if (mask & (1 << i)) {
+                    int reduced_mask = mask ^ (1 << i);
+                    for (int j = 0; j < 26; j++) {
+                        if (mask & (1 << j)) {
+                            continue;
+                        }
+                        int new_mask = reduced_mask ^ (1 << j);
+                        if (mask_map.count(new_mask)) {
+                            disjoint_set.UnionBySize(word_index, mask_map[new_mask]);
+                        }
+                    }
+                }
+            }
+
+            if (mask_map.count(mask)) {
+                disjoint_set.UnionBySize(word_index, mask_map[mask]);
+            } else {
+                mask_map[mask] = word_index;
+            }
+        }
+
+        int largest_group_size = 0;
+        int group_count = 0;
+        for (int i = 0; i < word_count; i++) {
+            if (disjoint_set.parent[i] == i) {
+                group_count++;
+            }
+            largest_group_size = std::max(largest_group_size, disjoint_set.size[i]);
+        }
+
+        return {group_count, largest_group_size};
+    }
+
+
+int main() {
+
+   //TEST
+  
+std::vector<std::string>words_1 ={"a","b","ab","cde"};
+std::vector<int>expected_1 = {2,3};
+std::vector<int>result_1 = GroupTheStrings(words_1);
+assert(expected_1 == result_1);
+
+//TEST_END
+  
+// TEST
+std::vector<std::string> words_2 = {"abc", "bcd", "acef", "xyz", "az", "ba", "a", "z"};
+std::vector<int> expected_2 = {3,6};
+std::vector<int> result_2 = GroupTheStrings(words_2);
+assert(expected_2 == result_2);
+
+// TEST 
+std::vector<std::string> words_3 = {"a", "b", "ab", "abc"};
+std::vector<int> expected_3 = {1,4};
+std::vector<int> result_3 = GroupTheStrings(words_3);
+assert(expected_3 == result_3);
+
+// TEST 
+std::vector<std::string> words_4 = {"abc", "def", "ghi"};
+std::vector<int> expected_4 = {3, 1};
+std::vector<int> result_4 = GroupTheStrings(words_4);
+assert(expected_4 == result_4);
+
+// TEST 
+std::vector<std::string> words_5 = {"abcd", "abce", "abcf", "bcde"};
+std::vector<int> expected_5 = {1, 4};
+std::vector<int> result_5 = GroupTheStrings(words_5);
+assert(expected_5 == result_5);
+
+// TEST 
+std::vector<std::string> words_6 = {"mno", "nop", "opq", "pqr", "qrs"};
+std::vector<int> expected_6 = {1, 5};
+std::vector<int> result_6 = GroupTheStrings(words_6);
+assert(expected_6 == result_6);
+
+// TEST
+std::vector<std::string> words_7 = {"a","ab","abc"};
+std::vector<int> expected_7 = {1, 3};
+std::vector<int> result_7 = GroupTheStrings(words_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+  
+// TEST
+std::vector<std::string> words_8 = {};
+try{
+  GroupTheStrings(words_8);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+  
+
+// TEST
+std::vector<std::string> words_9 = {"A", "B"};
+try{
+  GroupTheStrings(words_9);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+// TEST
+std::vector<std::string> words_10 = {"", "abc", ""};
+try{
+  GroupTheStrings(words_10);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+// TEST
+std::vector<std::string> words_11 = {"?", "bjsd"};
+try{
+  GroupTheStrings(words_11);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+  
+// TEST
+std::vector<std::string> words_12 = {"abc", "abb", "a", "a"};
+try{
+  GroupTheStrings(words_12);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+    return 0;
+}
+
