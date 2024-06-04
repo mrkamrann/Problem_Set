@@ -1,0 +1,306 @@
+/*
+
+Julie has two strings, start_string and end_string both of length len. She also has a third string called “forbidden_string” Julie wants to find out how many "good" strings of length len exist that meet the following criteria:
+
+A good string is alphabetically greater than or equal tostart_string
+
+A good string is alphabetically smaller than or equal to end_string
+
+A good string does not contain the substring "forbidden_string". Since the number of good strings can be extremely large, Julie wants the result to be given modulo 1e9+7.
+
+Create a C++ function FindGoodStrings to help Julie, that will return an integer counter denoting the count of the number of such good strings.
+
+
+Input Types:
+
+A string denoting start_string.
+A string denoting end_string.
+A string denoting forbidden_string.
+
+Input Constraints:
+
+The length of start_string and end_string should be strictly equal.
+The length of both start_string and end_string should be at least 1 and at most 500.
+The length of forbidden_string is at least 1 and at most 50.
+All strings consist of lowercase English letters.
+The string start_string is lexicographically less than or equal to end_string.
+
+
+*/
+
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <stdexcept>
+
+
+   int FindGoodStrings(std::string start_string, std::string end_string, std::string forbidden_string) {
+    // Check constraints
+    if (start_string.length() != end_string.length()) {
+        throw std::invalid_argument("start_string and end_string must have the same length.");
+    }
+    if (start_string.length() < 1 || start_string.length() > 500 || end_string.length() < 1 || end_string.length() > 500) {
+        throw std::invalid_argument("start_string and end_string length must be between 1 and 500 (inclusive).");
+    }
+    if (forbidden_string.length() < 1 || forbidden_string.length() > 50) {
+        throw std::invalid_argument("forbidden_string length must be between 1 and 50 (inclusive).");
+    }
+    for (char ch : start_string) {
+        if (ch < 'a' || ch > 'z') {
+            throw std::invalid_argument("start_string must consist of lowercase English letters.");
+        }
+    }
+    for (char ch : end_string) {
+        if (ch < 'a' || ch > 'z') {
+            throw std::invalid_argument("end_string must consist of lowercase English letters.");
+        }
+    }
+    for (char ch : forbidden_string) {
+        if (ch < 'a' || ch > 'z') {
+            throw std::invalid_argument("forbidden_string must consist of lowercase English letters.");
+        }
+    }
+    if (start_string > end_string) {
+        throw std::invalid_argument("start_string must be lexicographically less than or equal to end_string.");
+    }
+
+    int string_length = start_string.length();
+      
+    const int modulus = 1000000007;
+    const int forbidden_length = forbidden_string.size();
+
+    int temp_arr[forbidden_length];
+    temp_arr[0] = 0;
+    for (int i = 1, j = 0; i < forbidden_length; ++i) {
+        while (j != 0 && forbidden_string[i] != forbidden_string[j]) {
+            j = temp_arr[j-1];
+        }
+        if (forbidden_string[i] == forbidden_string[j]) {
+            ++j;
+        }
+        temp_arr[i] = j;
+    }
+
+    int next[forbidden_length + 1][26];
+    for (int i = 0; i <= forbidden_length; ++i) {
+        for (int j = 0; j < 26; ++j) {
+            if (i < forbidden_length && forbidden_string[i] == 'a' + j) {
+                next[i][j] = i + 1;
+            } else {
+                next[i][j] = i == 0 ? 0 : next[temp_arr[i - 1]][j];
+            }
+        }
+    }
+
+    long long dp_arr[string_length + 1][forbidden_length + 1][2][2];
+    std::memset(dp_arr, 0, sizeof(dp_arr));
+    dp_arr[0][0][1][1] = 1;
+
+    for (int i = 0; i < string_length; ++i) {
+        for (int j = 0; j < forbidden_length; ++j) {
+            for (int c = 0; c < 26; ++c) {
+                int k = next[j][c];
+                char character = 'a' + c;
+
+                dp_arr[i + 1][k][0][0] += dp_arr[i][j][0][0];
+
+                if (dp_arr[i][j][1][1]) {
+                    if (character > start_string[i] && character < end_string[i]) {
+                        dp_arr[i + 1][k][0][0] += dp_arr[i][j][1][1];
+                    } else if (character == start_string[i] && character == end_string[i]) {
+                        dp_arr[i + 1][k][1][1] += dp_arr[i][j][1][1];
+                    } else if (character == start_string[i]) {
+                        dp_arr[i + 1][k][1][0] += dp_arr[i][j][1][1];
+                    } else if (character == end_string[i]) {
+                        dp_arr[i + 1][k][0][1] += dp_arr[i][j][1][1];
+                    }
+                }
+
+                if (dp_arr[i][j][1][0]) {
+                    if (character > start_string[i]) {
+                        dp_arr[i + 1][k][0][0] += dp_arr[i][j][1][0];
+                    } else if (character == start_string[i]) {
+                        dp_arr[i + 1][k][1][0] += dp_arr[i][j][1][0];
+                    }
+                }
+
+                if (dp_arr[i][j][0][1]) {
+                    if (character < end_string[i]) {
+                        dp_arr[i + 1][k][0][0] += dp_arr[i][j][0][1];
+                    } else if (character == end_string[i]) {
+                        dp_arr[i + 1][k][0][1] += dp_arr[i][j][0][1];
+                    }
+                }
+
+                dp_arr[i + 1][k][0][0] %= modulus;
+            }
+        }
+    }
+
+    long long ans = 0;
+    for (int i = 0; i < forbidden_length; ++i) {
+        ans += dp_arr[string_length][i][0][0] + dp_arr[string_length][i][0][1] + dp_arr[string_length][i][1][0];
+        ans %= modulus;
+    }
+    return ans;
+}
+
+
+int main(){
+
+  
+  //TEST
+
+std::string start_string_1 = "aa";
+std::string end_string_1 = "da";
+std::string forbidden_string_1 = "b";
+int expected_1 = 51;
+int result_1 = FindGoodStrings(start_string_1, end_string_1, forbidden_string_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_2 = "leetcode";
+std::string end_string_2 = "leetgoes";
+std::string forbidden_string_2 = "leet";
+int expected_2 = 0;
+int result_2 = FindGoodStrings(start_string_2, end_string_2, forbidden_string_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_3 = "gx";
+std::string end_string_3 = "gz";
+std::string forbidden_string_3 = "x";
+int expected_3 = 2;
+int result_3 = FindGoodStrings(start_string_3, end_string_3, forbidden_string_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_4 = "cat";
+std::string end_string_4 = "dog";
+std::string forbidden_string_4 = "elephant";
+int expected_4 = 1028;
+int result_4 = FindGoodStrings(start_string_4, end_string_4, forbidden_string_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_5 = "apple";
+std::string end_string_5 = "grape";
+std::string forbidden_string_5 = "mango";
+int expected_5 = 2766973;
+int result_5 = FindGoodStrings(start_string_5, end_string_5, forbidden_string_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_6 = "madam";
+std::string end_string_6 = "zebra";
+std::string forbidden_string_6 = "russia";
+int expected_6 = 6010071;
+int result_6 = FindGoodStrings(start_string_6, end_string_6, forbidden_string_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_7 = "chicken";
+std::string end_string_7 = "djmloip";
+std::string forbidden_string_7 = "ababababab";
+int expected_7 = 334667427;
+int result_7 = FindGoodStrings(start_string_7, end_string_7, forbidden_string_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+
+//TEST
+
+std::string start_string_8 = "aaa";
+std::string end_string_8 = "adC";
+std::string forbidden_string_8 = "xxy";
+try {
+    FindGoodStrings(start_string_8, end_string_8, forbidden_string_8);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_9 = "ggg";
+std::string end_string_9 = "hhh";
+std::string forbidden_string_9 = "";
+try {
+    FindGoodStrings(start_string_9, end_string_9, forbidden_string_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_10 = "";
+std::string end_string_10 = "";
+std::string forbidden_string_10 = "abc";
+try {
+    FindGoodStrings(start_string_10, end_string_10, forbidden_string_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_11 = "zzz";
+std::string end_string_11 = "aaa";
+std::string forbidden_string_11 = "abc";
+try {
+    FindGoodStrings(start_string_11, end_string_11, forbidden_string_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_12 = "aaa";
+std::string end_string_12 = "zz";
+std::string forbidden_string_12 = "abc";
+try {
+    FindGoodStrings(start_string_12, end_string_12, forbidden_string_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
+
+  
+  return 0;
+}
+
+
