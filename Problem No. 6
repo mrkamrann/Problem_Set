@@ -1,6 +1,8 @@
+/*
+
 Once upon a time in the kingdom of Numland, there lived a young girl named Julie. She had a vector of integers called nums. Out of curiosity, Julie wanted to know the count of distinct values of each and every subarray of the vector. A subarray is a contiguous non-empty sequence of elements within a vector.
 
-Since Julie loves squares, she wants you to help her calculate the sum of squares of distinct values of all subarrays present in nums. Since the answer may be very large, return it modulo 1e9 + 7.
+Since Julie loves squares, she wants you to help her calculate the sum of squares of distinct values of all subarrays present in nums. Since the answer may be very large, return it modulo 10^9 + 7.
 
 To help Julie, create a C++ function SumOfCounts, that will return the sum of squares of distinct values of all subarrays present in nums
 
@@ -11,100 +13,106 @@ A vector<int> representing the elements of the vector nums.
 
 Input Constraints:
 
-The size of the vector nums should be at least 1 and at most 1e5.
-Each element in the vector nums should be an integer within the range [1, 1e5] inclusive.
+The size of the vector nums should be at least 1 and at most 10^5.
+Each element in the vector nums should be an integer within the range [1, 10^5] inclusive.
 
+*/
 
 #include <vector>
 #include <unordered_map>
 #include <stdexcept>
 #include <cassert>
+#include <cstring>
 
+struct SegmentTree {
+    static const int max_size = 100005;
+    static const int modulo = 1000000007;
 
-const int modulo = 1000000007;
-const int max_size = 100005;
+    long long int elements[max_size];
+    long long int segment_tree[4 * max_size], segment_squares[4 * max_size], lazy_updates[4 * max_size];
 
-long long int elements[max_size];
-long long int segment_tree[4 * max_size], segment_squares[4 * max_size], lazy_updates[4 * max_size];
-
-void BuildSegmentTree(int node, long long int start, long long int end) {
-    if (start == end) {
-        segment_tree[node] = elements[start];
-        segment_squares[node] = (elements[start] * elements[start]) % modulo;
-        return;
+    SegmentTree() {
+        memset(elements, 0, sizeof(elements));
+        memset(segment_tree, 0, sizeof(segment_tree));
+        memset(segment_squares, 0, sizeof(segment_squares));
+        memset(lazy_updates, 0, sizeof(lazy_updates));
     }
-    long long int mid = (start + end) >> 1;
-    BuildSegmentTree(node << 1, start, mid);
-    BuildSegmentTree(node << 1 | 1, mid + 1, end);
-    segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % modulo;
-    segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % modulo;
-}
 
-void UpdateSegmentTree(int node, long long int start, long long int end, int left, int right, int value) {
-    if (lazy_updates[node] != 0) {
-        segment_squares[node] += ((end - start + 1) * (lazy_updates[node] * lazy_updates[node]) % modulo + 2LL * lazy_updates[node] * segment_tree[node]) % modulo;
-        segment_squares[node] %= modulo;
-        segment_tree[node] += ((end - start + 1) * lazy_updates[node]) % modulo;
-        segment_tree[node] %= modulo;
-        if (start != end) {
-            lazy_updates[node << 1] += lazy_updates[node];
-            lazy_updates[node << 1 | 1] += lazy_updates[node];
+    void BuildSegmentTree(int node, long long int start, long long int end) {
+        if (start == end) {
+            segment_tree[node] = elements[start];
+            segment_squares[node] = (elements[start] * elements[start]) % modulo;
+            return;
         }
-        lazy_updates[node] = 0;
+        long long int mid = (start + end) >> 1;
+        BuildSegmentTree(node << 1, start, mid);
+        BuildSegmentTree(node << 1 | 1, mid + 1, end);
+        segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % modulo;
+        segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % modulo;
     }
-    if (start > end || start > right || end < left) return;
-    if (left <= start && end <= right) {
-        segment_squares[node] += ((end - start + 1) * (value * value) % modulo + 2 * value * segment_tree[node]) % modulo;
-        segment_squares[node] %= modulo;
-        segment_tree[node] += ((end - start + 1) * value) % modulo;
-        segment_tree[node] %= modulo;
-        if (start != end) {
-            lazy_updates[node << 1] += value;
-            lazy_updates[node << 1 | 1] += value;
+
+    void UpdateSegmentTree(int node, long long int start, long long int end, int left, int right, int value) {
+        if (lazy_updates[node] != 0) {
+            segment_squares[node] += ((end - start + 1) * (lazy_updates[node] * lazy_updates[node]) % modulo + 2LL * lazy_updates[node] * segment_tree[node]) % modulo;
+            segment_squares[node] %= modulo;
+            segment_tree[node] += ((end - start + 1) * lazy_updates[node]) % modulo;
+            segment_tree[node] %= modulo;
+            if (start != end) {
+                lazy_updates[node << 1] += lazy_updates[node];
+                lazy_updates[node << 1 | 1] += lazy_updates[node];
+            }
+            lazy_updates[node] = 0;
         }
-        return;
+        if (start > end || start > right || end < left) return;
+        if (left <= start && end <= right) {
+            segment_squares[node] += ((end - start + 1) * (value * value) % modulo + 2 * value * segment_tree[node]) % modulo;
+            segment_squares[node] %= modulo;
+            segment_tree[node] += ((end - start + 1) * value) % modulo;
+            segment_tree[node] %= modulo;
+            if (start != end) {
+                lazy_updates[node << 1] += value;
+                lazy_updates[node << 1 | 1] += value;
+            }
+            return;
+        }
+        long long int mid = (start + end) >> 1;
+        UpdateSegmentTree(node << 1, start, mid, left, right, value);
+        UpdateSegmentTree(node << 1 | 1, mid + 1, end, left, right, value);
+        segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % modulo;
+        segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % modulo;
     }
-    long long int mid = (start + end) >> 1;
-    UpdateSegmentTree(node << 1, start, mid, left, right, value);
-    UpdateSegmentTree(node << 1 | 1, mid + 1, end, left, right, value);
-    segment_tree[node] = (segment_tree[node << 1] + segment_tree[node << 1 | 1]) % modulo;
-    segment_squares[node] = (segment_squares[node << 1] + segment_squares[node << 1 | 1]) % modulo;
-}
+};
 
 int SumOfCounts(std::vector<int>& nums) {
-    const int max_size = 100005;
-    const int modulo = 1000000007;
-
-    if (nums.size() < 1 || nums.size() > 100000) {
+    if (nums.size() < 1 || nums.size() > SegmentTree::max_size - 5) {
         throw std::invalid_argument("Invalid size of nums.");
     }
 
     for (int num : nums) {
-        if (num < 1 || num > 100000) {
+        if (num < 1 || num > SegmentTree::max_size - 5) {
             throw std::invalid_argument("Invalid element in nums.");
         }
     }
-    memset(elements, 0, sizeof(elements));
-    memset(segment_tree, 0, sizeof(segment_tree));
-    memset(segment_squares, 0, sizeof(segment_squares));
-    memset(lazy_updates, 0, sizeof(lazy_updates));
-  
+
+    SegmentTree tree;
     int size = nums.size();
-    std::fill(elements, elements + max_size, 0);
-    BuildSegmentTree(1, 1, size);
+    std::fill(tree.elements, tree.elements + SegmentTree::max_size, 0);
+    tree.BuildSegmentTree(1, 1, size);
     std::unordered_map<int, int> last_occurrence;
     long long int total_sum = 0;
+
     for (int i = size - 1; i >= 0; i--) {
         if (last_occurrence.find(nums[i]) == last_occurrence.end()) {
-            UpdateSegmentTree(1, 1, size, i + 1, size, 1);
+            tree.UpdateSegmentTree(1, 1, size, i + 1, size, 1);
         } else {
-            UpdateSegmentTree(1, 1, size, i + 1, last_occurrence[nums[i]] - 1, 1);
+            tree.UpdateSegmentTree(1, 1, size, i + 1, last_occurrence[nums[i]] - 1, 1);
         }
         last_occurrence[nums[i]] = i + 1;
-        total_sum = (total_sum + segment_squares[1]) % modulo;
+        total_sum = (total_sum + tree.segment_squares[1]) % SegmentTree::modulo;
     }
     return total_sum;
 }
+
 
 int main(){
   
@@ -221,12 +229,8 @@ try {
 }
 //TEST_END
 
-   
-  
-  
-
-
-  
   return 0;
 }
+
+
 
