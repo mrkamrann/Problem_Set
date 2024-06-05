@@ -1,0 +1,264 @@
+/*
+
+
+Jack has a directed graph that initially started as a rooted tree with node_count nodes, each node having distinct values from 1 to node_count. In this rooted tree, there is exactly one node (the root) 
+for which all other nodes are descendants, and every node has exactly one parent, except for the root node which has no parent.
+Jack added one additional directed edge to this tree, selecting two different vertices from 1 to node_count, ensuring that the added edge was not already present in the tree.
+The resulting graph is given as a 2D vector of edges. Each element of the edges vector is a pair [parent, child] representing a directed edge from node parent to node child.
+Help Jack create a C++ function FindRedundantDirectedConnection that will return a vector<int> denoting an edge that can be removed so that the resulting graph becomes a rooted tree of node_count nodes again.
+If there are multiple possible answers, return the one that occurs last in the given 2D-vector.
+
+Input Type:
+
+A vector<vector<int>> denoting the vector edges
+
+Input Constraints:
+
+1. node_count is equal to the length of the edges vector.
+2. The minimum value for node_count is 3 and the maximum value is 1000.
+3. Each element in the edges vector has exactly 2 values.
+4. Each value in the edges vector is between 1 and node_count inclusive.
+5. The values edge[i][0] and edge[i][1] are not equal for any edge.
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+class DisjointSet {
+    std::vector<int> parent, rank;
+public:
+    DisjointSet(int node_count) {
+        rank.resize(node_count + 1, 0);
+        parent.resize(node_count + 1, 0);
+        for (int i = 0; i <= node_count; i++)
+            parent[i] = i;
+    }
+
+    int FindUltimateParent(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = FindUltimateParent(parent[node]);
+    }
+
+    void UnionByRank(int node_one, int node_two) {
+        int ultimate_parent_one = FindUltimateParent(node_one);
+        int ultimate_parent_two = FindUltimateParent(node_two);
+        if (rank[ultimate_parent_one] < rank[ultimate_parent_two]) {
+            parent[ultimate_parent_one] = ultimate_parent_two;
+        } else if (rank[ultimate_parent_one] > rank[ultimate_parent_two]) {
+            parent[ultimate_parent_two] = ultimate_parent_one;
+        } else {
+            parent[ultimate_parent_one] = ultimate_parent_two;
+            rank[ultimate_parent_two] += 1;
+        }
+    }
+};
+
+    std::vector<int> CheckDisjointSetUnion(std::vector<std::vector<int>>& edges, int node_count, std::vector<int>& blacklist) {
+        DisjointSet disjoint_set(node_count);
+        std::vector<int> conflict_edge;
+
+        for (int i = 0; i < edges.size(); i++) {
+            if (blacklist.size() > 0 && edges[i] == blacklist)
+                continue;
+
+            if (disjoint_set.FindUltimateParent(edges[i][0]) == disjoint_set.FindUltimateParent(edges[i][1])) {
+                conflict_edge = edges[i];
+                return conflict_edge;
+            } else {
+                disjoint_set.UnionByRank(edges[i][0], edges[i][1]);
+            }
+        }
+        return conflict_edge;
+    }
+
+    std::vector<int> FindRedundantDirectedConnection(std::vector<std::vector<int>>& edges) {
+        
+      int node_count = edges.size();
+      
+        if (node_count < 3 || node_count > 1000) {
+    throw std::invalid_argument("Node count is not within the range [3, 1000].");
+}
+
+for (const auto& edge : edges) {
+    if (edge.size() != 2) {
+        throw std::invalid_argument("Each element in the edges vector must have exactly 2 values.");
+    }
+    
+    if (edge[0] < 1 || edge[0] > node_count || edge[1] < 1 || edge[1] > node_count) {
+        throw std::invalid_argument("Each value in the edges vector must be between 1 and node_count inclusive.");
+    }
+    
+    if (edge[0] == edge[1]) {
+        throw std::invalid_argument("The values edge[i][0] and edge[i][1] cannot be equal for any edge.");
+    }
+}
+        
+        std::vector<int> in_degree(node_count + 1, -1);
+        std::vector<int> redundant_edge;
+
+        for (int i = 0; i < edges.size(); i++) {
+            if (in_degree[edges[i][1]] != -1) {
+                std::vector<int> blacklist = edges[i];
+                redundant_edge = CheckDisjointSetUnion(edges, node_count, blacklist);
+                if (!redundant_edge.empty())
+                    return edges[in_degree[edges[i][1]]];
+                else
+                    return blacklist;
+            } else {
+                in_degree[edges[i][1]] = i;
+            }
+        }
+
+        std::vector<int> no_blacklist;
+        redundant_edge = CheckDisjointSetUnion(edges, node_count, no_blacklist);
+        return redundant_edge;
+    }
+
+int main(){
+  
+//TEST
+
+std::vector<std::vector<int>> edges_1 = {{1, 2}, {1, 3}, {2, 3}};
+std::vector<int> expected_1 = {2, 3};
+std::vector<int> result_1 = FindRedundantDirectedConnection(edges_1);
+assert(result_1 == expected_1);
+  
+//TEST_END
+  
+//TEST
+
+std::vector<std::vector<int>> edges_2 = {{1, 2}, {2, 3}, {3, 4}, {4, 1}};
+std::vector<int> expected_2 = {4, 1};
+std::vector<int> result_2 = FindRedundantDirectedConnection(edges_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_3 = {{1, 2}, {2, 3}, {3, 1}};
+std::vector<int> expected_3 = {3, 1};
+std::vector<int> result_3 = FindRedundantDirectedConnection(edges_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_4 = {{1, 2}, {2, 3}, {3, 4}, {4, 2}};
+std::vector<int> expected_4 = {4, 2};
+std::vector<int> result_4 = FindRedundantDirectedConnection(edges_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 1}};
+std::vector<int> expected_5 = {5, 1};
+std::vector<int> result_5 = FindRedundantDirectedConnection(edges_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_6 = {{1, 2}, {2, 1}, {3, 2}};
+std::vector<int> expected_6 = {1, 2};
+std::vector<int> result_6 = FindRedundantDirectedConnection(edges_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_7 = {{1, 2}, {2, 3}, {3, 1}, {1, 4}};
+std::vector<int> expected_7 = {3,1};
+std::vector<int> result_7 = FindRedundantDirectedConnection(edges_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> edges_8 = {{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 5}};
+std::vector<int> expected_8 = {4, 1};
+std::vector<int> result_8 = FindRedundantDirectedConnection(edges_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+  
+//TEST
+
+std::vector<std::vector<int>> edges_9 = {{1, 1}};
+
+try{
+  FindRedundantDirectedConnection(edges_9);
+  assert(false);
+}
+  catch(const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+
+
+//TEST_END
+  
+
+  //TEST
+
+std::vector<std::vector<int>> edges_10 = {{1, 2}, {2, 3}, {3, 1}, {4, 4}};
+
+try{
+  FindRedundantDirectedConnection(edges_10);
+  assert(false);
+}
+  catch(const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+
+
+//TEST_END
+  
+  //TEST
+
+std::vector<std::vector<int>> edges_11 = {{-1, 2}, {2, 3}, {3, 1}, {1, 4}};
+
+try{
+  FindRedundantDirectedConnection(edges_11);
+  assert(false);
+}
+  catch(const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+
+
+//TEST_END
+
+  
+  //TEST
+
+std::vector<std::vector<int>> edges_12 = {{1, 2}, {2, 3}, {3, 1, 4}, {1, 4}};
+
+try{
+  FindRedundantDirectedConnection(edges_12);
+  assert(false);
+}
+  catch(const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+
+
+//TEST_END
+
+  
+  return 0;
+}
+
