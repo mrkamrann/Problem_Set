@@ -32,10 +32,11 @@ The string start_string is lexicographically less than or equal to end_string.
 #include <string>
 #include <cstring>
 #include <stdexcept>
+#include <cassert>
 
 
-   int FindGoodStrings(std::string start_string, std::string end_string, std::string forbidden_string) {
-    // Check constraints
+int FindGoodStrings(std::string start_string, std::string end_string, std::string forbidden_string) {
+
     if (start_string.length() != end_string.length()) {
         throw std::invalid_argument("start_string and end_string must have the same length.");
     }
@@ -45,18 +46,18 @@ The string start_string is lexicographically less than or equal to end_string.
     if (forbidden_string.length() < 1 || forbidden_string.length() > 50) {
         throw std::invalid_argument("forbidden_string length must be between 1 and 50 (inclusive).");
     }
-    for (char ch : start_string) {
-        if (ch < 'a' || ch > 'z') {
+    for (char character : start_string) {
+        if (character < 'a' || character > 'z') {
             throw std::invalid_argument("start_string must consist of lowercase English letters.");
         }
     }
-    for (char ch : end_string) {
-        if (ch < 'a' || ch > 'z') {
+    for (char character : end_string) {
+        if (character < 'a' || character > 'z') {
             throw std::invalid_argument("end_string must consist of lowercase English letters.");
         }
     }
-    for (char ch : forbidden_string) {
-        if (ch < 'a' || ch > 'z') {
+    for (char character : forbidden_string) {
+        if (character < 'a' || character > 'z') {
             throw std::invalid_argument("forbidden_string must consist of lowercase English letters.");
         }
     }
@@ -144,6 +145,162 @@ The string start_string is lexicographically less than or equal to end_string.
     }
     return ans;
 }
+
+int main(){
+
+  
+  //TEST
+
+std::string start_string_1 = "aa";
+std::string end_string_1 = "da";
+std::string forbidden_string_1 = "b";
+int expected_1 = 51;
+int result_1 = FindGoodStrings(start_string_1, end_string_1, forbidden_string_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_2 = "leetcode";
+std::string end_string_2 = "leetgoes";
+std::string forbidden_string_2 = "leet";
+int expected_2 = 0;
+int result_2 = FindGoodStrings(start_string_2, end_string_2, forbidden_string_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_3 = "gx";
+std::string end_string_3 = "gz";
+std::string forbidden_string_3 = "x";
+int expected_3 = 2;
+int result_3 = FindGoodStrings(start_string_3, end_string_3, forbidden_string_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_4 = "cat";
+std::string end_string_4 = "dog";
+std::string forbidden_string_4 = "elephant";
+int expected_4 = 1028;
+int result_4 = FindGoodStrings(start_string_4, end_string_4, forbidden_string_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_5 = "apple";
+std::string end_string_5 = "grape";
+std::string forbidden_string_5 = "mango";
+int expected_5 = 2766973;
+int result_5 = FindGoodStrings(start_string_5, end_string_5, forbidden_string_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_6 = "madam";
+std::string end_string_6 = "zebra";
+std::string forbidden_string_6 = "russia";
+int expected_6 = 6010071;
+int result_6 = FindGoodStrings(start_string_6, end_string_6, forbidden_string_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::string start_string_7 = "chicken";
+std::string end_string_7 = "djmloip";
+std::string forbidden_string_7 = "ababababab";
+int expected_7 = 334667427;
+int result_7 = FindGoodStrings(start_string_7, end_string_7, forbidden_string_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+
+//TEST
+
+std::string start_string_8 = "aaa";
+std::string end_string_8 = "adC";
+std::string forbidden_string_8 = "xxy";
+try {
+    FindGoodStrings(start_string_8, end_string_8, forbidden_string_8);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_9 = "ggg";
+std::string end_string_9 = "hhh";
+std::string forbidden_string_9 = "";
+try {
+    FindGoodStrings(start_string_9, end_string_9, forbidden_string_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_10 = "";
+std::string end_string_10 = "";
+std::string forbidden_string_10 = "abc";
+try {
+    FindGoodStrings(start_string_10, end_string_10, forbidden_string_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_11 = "zzz";
+std::string end_string_11 = "aaa";
+std::string forbidden_string_11 = "abc";
+try {
+    FindGoodStrings(start_string_11, end_string_11, forbidden_string_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string start_string_12 = "aaa";
+std::string end_string_12 = "zz";
+std::string forbidden_string_12 = "abc";
+try {
+    FindGoodStrings(start_string_12, end_string_12, forbidden_string_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+ 
+  return 0;
+}
+
 
 
 int main(){
