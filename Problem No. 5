@@ -1,8 +1,10 @@
-Once upon a time, in the land of Algorithms, there existed a vector of integers known as numbers. Alongside this vector, dwelled two powerful integers, Lower and Upper, guarding the gates of a mystical realm called the Range.
+/*
 
-The mission was clear: to count the number of range sums that lay within the boundaries of Lower and Upper, inclusive. But what exactly were these "range sums"? Imagine traversing the vector numbers from one index to another, summing up all the elements encountered on the way. This sum, my friend, is what we call a "Range sum". Mathematically, Range sum is RangeSum(i,j)  defined as the sum of the elements in nums between indices i and j inclusive, where i <= j.
+Once upon a time, in the land of Algorithms, there existed a vector of integers known as numbers. Alongside this vector, dwelled two powerful integers, lower and upper, guarding the gates of a mystical realm called the range.
 
-Return a C++ Function CountRangeSum to count all these range sums that fell within the kingdom of [Lower, Upper]. 
+The mission was clear: to count the number of range sums that lay within the boundaries of lower and upper, inclusive. But what exactly were these "range sums"? Imagine traversing the vector numbers from one index to another, summing up all the elements encountered on the way. This sum, my friend, is what we call a "Range sum". Mathematically, Range sum is RangeSum(i,j)  defined as the sum of the elements in nums between indices i and j inclusive, where i <= j.
+
+Return a C++ Function CountRangeSum to count all these range sums that fell within the kingdom of [lower, upper]. 
 
 
 Input types:
@@ -12,10 +14,11 @@ Two integers representing the lower and upper bounds, denoted as lower and upper
 
 Input Constraints:
 
-The size of the vector numbers should be at least 1 and at most 1e5.
-Each element in the vector numbers should be an integer within the range [-1e8, 1e8].
-The values of lower and upper should be integers within the range inclusive [-1e5, 1e5], where lower is less than or equal to upper.
+The size of the vector numbers should be at least 1 and at most 10^5.
+Each element in the vector numbers should be an integer within the range [-10^8, 10^8].
+The values of lower and upper should be integers within the range inclusive [-10^5, 10^5], where lower is less than or equal to upper.
 
+*/
 
 #include <vector>
 #include <algorithm>
@@ -31,71 +34,71 @@ struct FenwickTree {
         bit.assign(size, 0);
     }
 
-    FenwickTree(std::vector<int>array) : FenwickTree(array.size()) {
+    FenwickTree(std::vector<int> array) : FenwickTree(array.size()) {
         for (size_t i = 0; i < array.size(); i++)
-            add(i, array[i]);
+            Add(i, array[i]);
     }
 
-    int getSum(int right) {
+    int GetSum(int right) {
         int result = 0;
         for (; right >= 0; right = (right & (right + 1)) - 1)
             result += bit[right];
         return result;
     }
 
-    int getSum(int left, int right) {
-        return getSum(right) - getSum(left - 1);
+    int GetSum(int left, int right) {
+        return GetSum(right) - GetSum(left - 1);
     }
 
-    void add(int index, int delta) {
+    void Add(int index, int delta) {
         for (; index < size; index = index | (index + 1))
             bit[index] += delta;
     }
 };
 
-    int CountRangeSum(std::vector<int>& numbers, int lower, int upper) {
+int CountRangeSum(std::vector<int>& numbers, int lower, int upper) {
        
-        int length = numbers.size();
-      
-        if (length < 1 || length > 100000) {
-            throw std::invalid_argument("Invalid size of numbers");
-        }
-        if (lower > upper || lower < -100000 || upper > 100000 || upper < -100000 || lower > 100000) {
-            throw std::invalid_argument("Invalid bounds");
-        }
-        std::vector<std::pair<long, int>> sumIndexPairs;
-        int count = 0;
-        long currentSum = 0;
+    int length = numbers.size();
+  
+    if (length < 1 || length > 100000) {
+        throw std::invalid_argument("Invalid size of numbers");
+    }
+    if (lower > upper || lower < -100000 || upper > 100000 || upper < -100000 || lower > 100000) {
+        throw std::invalid_argument("Invalid bounds");
+    }
+    std::vector<std::pair<long, int>> sum_index_pairs;
+    int count = 0;
+    long current_sum = 0;
 
-        for(int i = 0; i < length; i++){
-          
-             if (numbers[i] > 10000000 || numbers[i] < -10000000) {
+    for (int i = 0; i < length; i++) {
+        if (numbers[i] > 10000000 || numbers[i] < -10000000) {
             throw std::invalid_argument("Out of range value in numbers");
         }
-            currentSum += numbers[i];
-            sumIndexPairs.push_back(std::make_pair(currentSum, i));
-        }
-        std::sort(sumIndexPairs.begin(), sumIndexPairs.end());
-
-        FenwickTree tree(length);
-        int left = 0, right = 0;
-        for(int i = 0; i < length; i++){
-            while(right < length && (sumIndexPairs[i].first - sumIndexPairs[right].first) >= static_cast<long>(lower)){
-                tree.add(sumIndexPairs[right].second, 1);
-                right++;
-            }
-            while(left < length && (sumIndexPairs[i].first - sumIndexPairs[left].first) > static_cast<long>(upper)){
-                tree.add(sumIndexPairs[left].second, -1);
-                left++;
-            }
-
-            count += tree.getSum(sumIndexPairs[i].second - 1);
-            if(sumIndexPairs[i].first >= lower && sumIndexPairs[i].first <= upper)
-                count++;
-        }
-
-        return count;
+        current_sum += numbers[i];
+        sum_index_pairs.push_back(std::make_pair(current_sum, i));
     }
+    std::sort(sum_index_pairs.begin(), sum_index_pairs.end());
+
+    FenwickTree tree(length);
+    int left = 0, right = 0;
+    for (int i = 0; i < length; i++) {
+        while (right < length && (sum_index_pairs[i].first - sum_index_pairs[right].first) >= static_cast<long>(lower)) {
+            tree.Add(sum_index_pairs[right].second, 1);
+            right++;
+        }
+        while (left < length && (sum_index_pairs[i].first - sum_index_pairs[left].first) > static_cast<long>(upper)) {
+            tree.Add(sum_index_pairs[left].second, -1);
+            left++;
+        }
+
+        count += tree.GetSum(sum_index_pairs[i].second - 1);
+        if (sum_index_pairs[i].first >= lower && sum_index_pairs[i].first <= upper)
+            count++;
+    }
+
+    return count;
+}
+
 
 int main(){
   
@@ -255,11 +258,7 @@ int main(){
   
 //TEST_END
    
- 
-   
-  
-  
-
+ return 0;
   
 }
 
