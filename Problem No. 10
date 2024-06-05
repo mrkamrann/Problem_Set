@@ -40,6 +40,7 @@ The values for harbor_count, max_packages, and max_load should be in the range [
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <cassert>
 
 class SegmentTree {
 public:
@@ -53,13 +54,13 @@ public:
             return segment_tree[index];
         }
         int mid = low + (high - low) / 2;
-        int child1 = index * 2, child2 = child1 + 1;
+        int child_1 = index * 2, child_2 = child_1 + 1;
         int left_value = infinity, right_value = infinity;
         if (left <= mid) {
-            left_value = std::min(left_value, Query(child1, left, right, low, mid));
+            left_value = std::min(left_value, Query(child_1, left, right, low, mid));
         }
         if (right > mid) {
-            right_value = std::min(right_value, Query(child2, left, right, mid + 1, high));
+            right_value = std::min(right_value, Query(child_2, left, right, mid + 1, high));
         }
         return std::min(left_value, right_value);
     }
@@ -70,80 +71,77 @@ public:
             return;
         }
         int mid = low + (high - low) / 2;
-        int child1 = index * 2, child2 = child1 + 1;
+        int child_1 = index * 2, child_2 = child_1 + 1;
         if (position <= mid) {
-            Update(child1, position, value, low, mid);
+            Update(child_1, position, value, low, mid);
         }
         else {
-            Update(child2, position, value, mid + 1, high);
+            Update(child_2, position, value, mid + 1, high);
         }
-        segment_tree[index] = std::min(segment_tree[child1], segment_tree[child2]);
+        segment_tree[index] = std::min(segment_tree[child_1], segment_tree[child_2]);
     }
 };
 
 
-	int DeliverPackages(std::vector<std::vector<int>> &packages, int harbour_count,
-                       int max_packages, int max_load) {
+int DeliverPackages(std::vector<std::vector<int>>& packages, int harbour_count,
+                   int max_packages, int max_load) {
 
-
-        if (packages.size() < 1 || packages.size() > 100000) {
-    throw std::invalid_argument("The length of packages should be between 1 and 10^5 inclusive.");
-}
-
-for (const auto& package : packages) {
-    if (package[0] < 1 || package[0] > harbour_count) {
-        throw std::invalid_argument("Each value of packages[i][0] should be in the range [1, harbour_count] inclusive.");
+    if (packages.size() < 1 || packages.size() > 100000) {
+        throw std::invalid_argument("The length of packages should be between 1 and 10^5 inclusive.");
     }
-    if (package[1] < 1 || package[1] > max_load) {
-        throw std::invalid_argument("Each value of packages[i][1] should be in the range [1, max_load] inclusive.");
+
+    for (const std::vector<int>& package : packages) {
+        if (package[0] < 1 || package[0] > harbour_count) {
+            throw std::invalid_argument("Each value of packages[i][0] should be in the range [1, harbour_count] inclusive.");
+        }
+        if (package[1] < 1 || package[1] > max_load) {
+            throw std::invalid_argument("Each value of packages[i][1] should be in the range [1, max_load] inclusive.");
+        }
     }
-}
 
-if (harbour_count < 1 || harbour_count > 100000 || max_packages < 1 || max_packages > 100000 || max_load < 1 || max_load > 100000) {
-    throw std::invalid_argument("The values for harbour_count, max_packages, and max_load should be in the range [1, 10^5] inclusive.");
-}
-
-
-        int num_packages = packages.size();
-        
-
-        std::vector<int> min_left(num_packages + 1);
-        int current_left = num_packages, current_num_packages = 0, current_load = 0;
-        for (int i = num_packages - 1; i >= 0; i--) {
-            current_left = std::min(i + 1, current_left);
-            while (current_left > 0 && current_num_packages + 1 <= max_packages &&
-                   current_load + packages[current_left - 1][1] <= max_load) {
-                current_left--;
-                current_num_packages++;
-                current_load += packages[current_left][1];
-            }
-            min_left[i] = current_left;
-            current_num_packages--;
-            current_load -= packages[i][1];
-        }
-        std::vector<int> diff_prefix(num_packages + 1);
-        diff_prefix[0] = 0;
-        for (int i = 1; i < num_packages; i++) {
-            diff_prefix[i] = diff_prefix[i - 1];
-            if (packages[i][0] != packages[i - 1][0]) {
-                diff_prefix[i]++;
-            }
-        }
-
-        SegmentTree seg_tree(num_packages);
-        std::vector<int> dp_array(num_packages + 1);
-        dp_array[0] = 0;
-        seg_tree.Update(1, 0, 0, 0, num_packages);
-        for (int i = 0; i < num_packages; i++) {
-            int min_dp_j = seg_tree.Query(1, min_left[i], i + 1, 0, num_packages);
-            dp_array[i] = min_dp_j + diff_prefix[i] + 2;
-            if (i == num_packages - 1) {
-                break;
-            }
-            seg_tree.Update(1, i + 1, dp_array[i] - diff_prefix[i + 1], 0, num_packages);
-        }
-        return dp_array[num_packages - 1];
+    if (harbour_count < 1 || harbour_count > 100000 || max_packages < 1 || max_packages > 100000 || max_load < 1 || max_load > 100000) {
+        throw std::invalid_argument("The values for harbour_count, max_packages, and max_load should be in the range [1, 10^5] inclusive.");
     }
+
+    int num_packages = packages.size();
+    std::vector<int> min_left(num_packages + 1);
+    int current_left = num_packages, current_num_packages = 0, current_load = 0;
+    for (int i = num_packages - 1; i >= 0; i--) {
+        current_left = std::min(i + 1, current_left);
+        while (current_left > 0 && current_num_packages + 1 <= max_packages &&
+               current_load + packages[current_left - 1][1] <= max_load) {
+            current_left--;
+            current_num_packages++;
+            current_load += packages[current_left][1];
+        }
+        min_left[i] = current_left;
+        current_num_packages--;
+        current_load -= packages[i][1];
+    }
+
+    std::vector<int> diff_prefix(num_packages + 1);
+    diff_prefix[0] = 0;
+    for (int i = 1; i < num_packages; i++) {
+        diff_prefix[i] = diff_prefix[i - 1];
+        if (packages[i][0] != packages[i - 1][0]) {
+            diff_prefix[i]++;
+        }
+    }
+
+    SegmentTree seg_tree(num_packages);
+    std::vector<int> dp_array(num_packages + 1);
+    dp_array[0] = 0;
+    seg_tree.Update(1, 0, 0, 0, num_packages);
+    for (int i = 0; i < num_packages; i++) {
+        int min_dp_j = seg_tree.Query(1, min_left[i], i + 1, 0, num_packages);
+        dp_array[i] = min_dp_j + diff_prefix[i] + 2;
+        if (i == num_packages - 1) {
+            break;
+        }
+        seg_tree.Update(1, i + 1, dp_array[i] - diff_prefix[i + 1], 0, num_packages);
+    }
+    return dp_array[num_packages - 1];
+}
 
 int main(){
   
@@ -311,4 +309,3 @@ try {
 
   return 0;
 }
-
