@@ -1,3 +1,5 @@
+/*
+
 Jimmy is working on a programming challenge where he needs to analyze a string. The string, referred to as word, consists of len lowercase English letters. His task involves constructing a special matrix, longest_common_prefix, based on the word. Here's how the matrix is defined:
 
 The longest_common_prefix matrix is a len x len grid.
@@ -23,17 +25,15 @@ The number of rows(len) in the matrix and the number of columns(len) in the long
 Each element in the LongestCommonPrefix matrix (longest_common_prefix[i][j]) should be between [0, len] inclusive.
 
 
+*/
 
 
-
-
-
-
-
-
-
-
-
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <unordered_map>
+#include <algorithm>
+#include <cassert>
 
 class Hashing {
 private:
@@ -70,9 +70,9 @@ public:
     }
 };
 
-
+struct DisjointSet {
     int parent[1000];
-    
+
     int Find(int node) {
         if(node == parent[node]) {
             return node;
@@ -85,91 +85,92 @@ public:
         node_b = Find(node_b);
         parent[node_a] = node_b;
     }
+};
 
 std::string FindTheString(std::vector<std::vector<int>>& longest_common_prefix) {
-         int len = longest_common_prefix.size();
-      
-        if(len < 1 || len > 1000) {
-            throw std::invalid_argument("Matrix size out of range");
-        }
-        
-        for(int i = 0; i < len; i++) {
-            for(int j = 0; j < len; j++) {
-                if(longest_common_prefix[i][j] > len || longest_common_prefix[i][j] < 0) {
-                    throw std::invalid_argument("Value out of range");
-                }
-                if(longest_common_prefix[i].size() != len) {
-                    throw std::invalid_argument("Invalid test case");
-                }
-            }
-        }
-      
-        for(int i = 0; i < len; i++) {
-            for(int j = 0; j < len; j++) {
-                if(longest_common_prefix[i][j] != longest_common_prefix[j][i]) {
-                    return "";
-                }
-                if(std::min(len - i, len - j) < longest_common_prefix[i][j]) {
-                    return "";
-                }
-            }
-        }
-        
-        for(int i = 0; i < len; i++) {
-            parent[i] = i;
-        }
-        
-        for(int i = 0; i < len; i++) {
-            for(int j = 0; j < len; j++) {
-                if(longest_common_prefix[i][j]) {
-                    Unite(i, j);
-                }
-            }
-        }
-        
-        int char_counter = 0;
-        std::string result;
-        std::unordered_map<int, int> assignment;
-        
-        for(int i = 0; i < len; i++) {
-            int group = Find(i);
-            if(assignment.find(group) == assignment.end()) {
-                if(char_counter < 26) {
-                    assignment[group] = char_counter;
-                    char_counter++;
-                } else {
-                    return "";
-                }
-            }
-            result.push_back(assignment[group] + 'a');
-        }
-        
-        Hashing hash1(31, 1000000007, len);
-        Hashing hash2(37, 1000000009, len);
-        hash1.Init(result);
-        hash2.Init(result);
-        
-        for(int i = 0; i < len; i++) {
-            for(int j = i; j < len; j++) {
-                int max_length = 0;
-                int low = 1, high = len - j;
-                while(low <= high) {
-                    int mid = (low + high) >> 1;
-                    if(hash1.Possible(i + 1, j + 1, mid) && hash2.Possible(i + 1, j + 1, mid)) {
-                        max_length = mid;
-                        low = mid + 1;
-                    } else {
-                        high = mid - 1;
-                    }
-                }
-                if(max_length != longest_common_prefix[i][j]) {
-                    return "";
-                }
-            }
-        }
-        return result;
+    int len = longest_common_prefix.size();
+  
+    if(len < 1 || len > 1000) {
+        throw std::invalid_argument("Matrix size out of range");
     }
-
+    
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < len; j++) {
+            if(longest_common_prefix[i][j] > len || longest_common_prefix[i][j] < 0) {
+                throw std::invalid_argument("Value out of range");
+            }
+            if(longest_common_prefix[i].size() != len) {
+                throw std::invalid_argument("Invalid test case");
+            }
+        }
+    }
+  
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < len; j++) {
+            if(longest_common_prefix[i][j] != longest_common_prefix[j][i]) {
+                return "";
+            }
+            if(std::min(len - i, len - j) < longest_common_prefix[i][j]) {
+                return "";
+            }
+        }
+    }
+    
+    DisjointSet disjoint_set;
+    for(int i = 0; i < len; i++) {
+        disjoint_set.parent[i] = i;
+    }
+    
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < len; j++) {
+            if(longest_common_prefix[i][j]) {
+                disjoint_set.Unite(i, j);
+            }
+        }
+    }
+    
+    int char_counter = 0;
+    std::string result;
+    std::unordered_map<int, int> assignment;
+    
+    for(int i = 0; i < len; i++) {
+        int group = disjoint_set.Find(i);
+        if(assignment.find(group) == assignment.end()) {
+            if(char_counter < 26) {
+                assignment[group] = char_counter;
+                char_counter++;
+            } else {
+                return "";
+            }
+        }
+        result.push_back(assignment[group] + 'a');
+    }
+    
+    Hashing hash_1(31, 1000000007, len);
+    Hashing hash_2(37, 1000000009, len);
+    hash_1.Init(result);
+    hash_2.Init(result);
+    
+    for(int i = 0; i < len; i++) {
+        for(int j = i; j < len; j++) {
+            int max_length = 0;
+            int low = 1, high = len - j;
+            while(low <= high) {
+                int mid = (low + high) >> 1;
+                if(hash_1.Possible(i + 1, j + 1, mid) && hash_2.Possible(i + 1, j + 1, mid)) {
+                    max_length = mid;
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            if(max_length != longest_common_prefix[i][j]) {
+                return "";
+            }
+        }
+    }
+    return result;
+}
 int main(){
   
   //TEST
@@ -302,8 +303,6 @@ assert(true);
 
 //TEST_END
 
-
-
-  
+ 
   return 0;
 }
