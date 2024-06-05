@@ -1,0 +1,250 @@
+/*
+
+
+Jack has a collection of unique positive integers represented by an array called nums. He's exploring a graph where each integer in nums is a node, labeled accordingly. Jack connects two nodes 
+with an undirected edge if the corresponding integers share a common factor greater than 1. Or we can say : 
+
+. There are nums_length nodes, labeled nums[0] to nums[nums_length - 1],
+. There is an undirected edge between nums[i] and nums[j] if nums[i] and nums[j] share a common factor greater than 1.
+
+Help Jack create a C++ Function LargestComponentSize that will return an intger denoting the size of the 
+largest connected component in his graph.
+
+Input Type:
+
+A vector<<int> denoting the vector nums
+
+Input Constraints:
+
+1. The value of nums_length is between [1, 20000] both inclusive.
+2. Each value in the nums vector lies in the range [1 , 10^5] both inclusive.
+3. All the values of nums are unique.
+
+*/
+
+
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <unordered_set>
+#include <cassert>
+
+class DisjointSet {
+public:
+    std::vector<int> rank, component_size, parent;
+    DisjointSet(int nums_length) {
+      
+        rank.resize(nums_length + 1, 0);
+        component_size.resize(nums_length + 1, 1);
+        parent.resize(nums_length + 1);
+        for (int i = 0; i <= nums_length; ++i) {
+            parent[i] = i;
+        }
+    }
+    int FindUltimateParent(int node) {
+        return node == parent[node] ? node : parent[node] = FindUltimateParent(parent[node]);
+    }
+    void UnionByRank(int value_x, int value_y) {
+        int root_x = FindUltimateParent(value_x);
+        int root_y = FindUltimateParent(value_y);
+        if (root_x == root_y) return;
+        if (rank[root_x] < rank[root_y]) {
+            parent[root_x] = root_y;
+        }
+        else if (rank[root_x] > rank[root_y]) {
+            parent[root_y] = root_x;
+        }
+        else {
+            parent[root_x] = root_y;
+            rank[root_y]++;
+        }
+    }
+    void UnionBySize(int value_x, int value_y) {
+        int root_x = FindUltimateParent(value_x);
+        int root_y = FindUltimateParent(value_y);
+        if (root_x == root_y) return;
+        if (component_size[root_x] < component_size[root_y]) {
+            parent[root_x] = root_y;
+            component_size[root_y] += component_size[root_x];
+        }
+        else if (component_size[root_x] > component_size[root_y]) {
+            parent[root_y] = root_x;
+            component_size[root_x] += component_size[root_y];
+        }
+        else {
+            parent[root_x] = root_y;
+            component_size[root_y] += component_size[root_x];
+        }
+    }
+};
+
+    int LargestComponentSize(std::vector<int>& nums) {
+        if (nums.empty() || nums.size() > 20000)
+            throw std::invalid_argument("Size of nums must be between 1 and 20000 (inclusive).");
+
+        std::unordered_set<int> unique_values;
+        for (int num : nums) {
+            if (num < 1 || num > 100000)
+                throw std::invalid_argument("Each value in nums must be between 1 and 100000 (inclusive).");
+            if (unique_values.count(num) > 0)
+                throw std::invalid_argument("All values in nums must be unique.");
+            unique_values.insert(num);
+        }
+
+        std::map<int, std::vector<int>> prime_factors;
+        int nums_length = nums.size();
+        for (int i = 0; i < nums_length; ++i) {
+            for (int j = 2; j * j <= nums[i]; ++j) {
+                if (nums[i] % j == 0) {
+                    prime_factors[j].push_back(i);
+                    while (nums[i] % j == 0) nums[i] /= j;
+                }
+            }
+            if (nums[i] > 1) prime_factors[nums[i]].push_back(i);
+        }
+        DisjointSet disjoint_set(nums_length);
+        for (std::map<int, std::vector<int>>::iterator it = prime_factors.begin(); it != prime_factors.end(); ++it) {
+            std::vector<int> positions = it->second;
+            for (int i = 1; i < positions.size(); ++i) {
+                disjoint_set.UnionBySize(positions[i - 1], positions[i]);
+            }
+        }
+        int max_component_size = 0;
+        for (int i = 0; i < nums_length; ++i) {
+            max_component_size = std::max(max_component_size, disjoint_set.component_size[i]);
+        }
+        return max_component_size;
+    }
+
+
+int main(){
+  
+//TEST
+
+std::vector<int> nums_1 = {4,6,15,35};
+int expected_1 = 4;
+int result_1 = LargestComponentSize(nums_1);
+assert(result_1 == expected_1);
+  
+//TEST_END
+  
+//TEST
+
+std::vector<int> nums_2 = {20,50,9,63};
+int expected_2 = 2;
+int result_2 = LargestComponentSize(nums_2);
+assert(result_2 == expected_2);
+  
+  //TEST_END
+
+ //TEST
+  
+std::vector<int> nums_3 = {2,3,6,7,4,12,21,39};
+int expected_3 = 8;
+int result_3 = LargestComponentSize(nums_3);
+assert(result_3 == expected_3);
+  
+  //TEST_END
+
+ //TEST
+  
+std::vector<int> nums_4 = {2,3,5,7};
+int expected_4 = 1;
+int result_4 = LargestComponentSize(nums_4);
+assert(result_4 == expected_4);
+  
+  //TEST_END
+
+ //TEST
+  
+std::vector<int> nums_5 = {13, 17, 19, 23};
+int expected_5 = 1;
+int result_5 = LargestComponentSize(nums_5);
+assert(result_5 == expected_5);
+
+  //TEST_END
+  
+ //TEST
+  
+std::vector<int> nums_6 = {2, 4, 6, 8, 10};
+int expected_6 = 5;
+int result_6 = LargestComponentSize(nums_6);
+assert(result_6 == expected_6);
+  
+  //TEST_END
+
+ //TEST
+  
+std::vector<int> nums_7 = {3, 6, 9, 12};
+int expected_7 = 4;
+int result_7 = LargestComponentSize(nums_7);
+assert(result_7 == expected_7);
+  
+  //TEST_END
+
+ //TEST
+  
+std::vector<int> nums_8 = {11, 13, 17, 19};
+int expected_8 = 1;
+int result_8 = LargestComponentSize(nums_8);
+assert(result_8 == expected_8);
+  
+  //TEST_END
+  
+
+ //TEST
+  
+std::vector<int> nums_9 = {5, 25, 125, 625};
+int expected_9 = 4;
+int result_9 = LargestComponentSize(nums_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+  //TEST
+
+std::vector<int> nums_10 = {};
+
+try{
+  LargestComponentSize(nums_10);
+  assert(false);
+}
+  catch(const std::invalid_argument& e)
+  {
+    assert(true);
+  }
+
+
+//TEST_END
+  
+   //TEST
+  
+std::vector<int> nums_11 = {4, 4, 2, 2};
+
+try {
+    LargestComponentSize(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+  //TEST
+  
+std::vector<int> nums_12 = {-999};
+
+try {
+    LargestComponentSize(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+ 
+
+  
+  
+  return 0;
+}
+
