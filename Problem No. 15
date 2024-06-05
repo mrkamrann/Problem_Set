@@ -1,0 +1,354 @@
+/*
+
+Jack, a passionate graph enthusiast, was given an intriguing challenge. He had a positive integer nodes_count, representing the number of nodes in an undirected graph, labeled from 1 to nodes_count. 
+Additionally, he received a 2D integer vector called edges, where each element edges[i] = [node_a, node_b] indicated a bidirectional edge between nodes node_a and node_b.
+Jack quickly noticed that the graph might be disconnected, which added an extra layer of complexity.
+
+Jack's mission was to divide the nodes of the graph into max_count groups, labeled from 1 to max_count, while ensuring:
+
+1. Every node in the graph belonged to exactly one group.
+
+2. For every pair of nodes connected by an edge [node_a, node_b], if node node_a belonged to group grp_x and node node_b belonged to group grp_y then the absolute difference between grp_x and grp_y must be
+exactly 1;
+
+Help Jack to create a C++ Function MagnificentSets that will return an integer denoting the maximum number of groups max_count into which he could divide the nodes. However, if it was impossible 
+to meet the given conditions, he had to return -1. 
+
+Input Type:
+
+1. An integer denoting nodes_count 
+2. A vector<vector<int>> denoting the vector edges
+
+Input Constraints:
+
+1.The number of nodes (nodes_count) should be at least 1 and at most 500 inclusive.
+2.The length of edges should be at least 1 and at most 10000 inclusive.
+3.Each edges[i] should contain exactly 2 elements.
+4.Each value edges[i] should be in the range [1, nodes_count] inclusive.
+5.There should be at most one edge between any pair of vertices.
+
+
+*/
+
+
+
+#include <vector>
+#include <queue>
+#include <map>
+#include <stdexcept>
+#include <iostream>
+#include <set>
+#include <cassert>
+
+class UnionFind {
+public:
+    int size;
+    std::vector<int> parent;
+
+    UnionFind(int size) {
+        this->size = size;
+        parent.resize(size);
+        for(int index = 0; index < size; index++) {
+            parent[index] = index;
+        }
+    }
+
+    int Find(int node) {
+        if(node == parent[node]) {
+            return node;
+        } else {
+            return parent[node] = Find(parent[node]);
+        }
+    }
+
+    void Union(int node_a, int node_b) {
+        node_a = Find(node_a);
+        node_b = Find(node_b);
+        parent[node_a] = node_b;
+    }
+};
+
+    bool IsBipartite(std::vector<std::vector<int>>& adjacency_list, std::vector<int>& visited, int start_node) {
+        visited[start_node] = 1;
+        std::queue<int> nodes_queue;
+        nodes_queue.push(start_node);
+
+        while(!nodes_queue.empty()) {
+            int current_level_size = nodes_queue.size();
+            while(current_level_size--) {
+                int current_node = nodes_queue.front();
+                nodes_queue.pop();
+                int next_color = (visited[current_node] == 1) ? 2 : 1;
+
+                for(int neighbor : adjacency_list[current_node]) {
+                    if(visited[neighbor] == 0) {
+                        nodes_queue.push(neighbor);
+                        visited[neighbor] = next_color;
+                    } else if(visited[neighbor] == next_color) {
+                        continue;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    int CalculateDepth(std::vector<std::vector<int>>& adjacency_list, int start_node, int total_nodes) {
+        std::queue<int> nodes_queue;
+        nodes_queue.push(start_node);
+        std::vector<int> visited(total_nodes + 1, 0);
+        visited[start_node] = 1;
+        int max_depth = 0;
+
+        while(!nodes_queue.empty()) {
+            int current_level_size = nodes_queue.size();
+            max_depth++;
+            while(current_level_size--) {
+                int current_node = nodes_queue.front();
+                nodes_queue.pop();
+                for(int neighbor : adjacency_list[current_node]) {
+                    if(visited[neighbor] == 0) {
+                        nodes_queue.push(neighbor);
+                        visited[neighbor] = 1;
+                    }
+                }
+            }
+        }
+        return max_depth;
+    }
+
+    int MagnificentSets(int nodes_count, std::vector<std::vector<int>>& edges) {
+        if (nodes_count < 1 || nodes_count > 500) {
+            throw std::invalid_argument("Number of nodes must be between 1 and 500 inclusive.");
+        }
+
+        if (edges.size() < 1 || edges.size() > 10000) {
+            throw std::invalid_argument("Number of edges must be between 1 and 10000 inclusive.");
+        }
+
+        std::set<std::pair<int, int>> unique_edges;
+        for (std::vector<int>& edge : edges) {
+            if (edge.size() != 2) {
+                throw std::invalid_argument("Each edge must contain exactly 2 elements.");
+            }
+            int node_a = edge[0];
+            int node_b = edge[1];
+
+            if (node_a < 1 || node_a > nodes_count || node_b < 1 || node_b > nodes_count) {
+                throw std::invalid_argument("Node values in edges must be in the range [1, nodes_count] inclusive.");
+            }
+
+            if (node_a == node_b) {
+                throw std::invalid_argument("An edge cannot connect a node to itself.");
+            }
+
+            if (unique_edges.count({std::min(node_a, node_b), std::max(node_a, node_b)})) {
+                throw std::invalid_argument("There should be at most one edge between any pair of vertices.");
+            }
+
+            unique_edges.insert({std::min(node_a, node_b), std::max(node_a, node_b)});
+        }
+
+        std::vector<std::vector<int>> adjacency_list(nodes_count + 1);
+        UnionFind union_find(nodes_count + 1);
+
+        for(std::vector<int>& edge : edges) {
+            adjacency_list[edge[0]].push_back(edge[1]);
+            adjacency_list[edge[1]].push_back(edge[0]);
+            union_find.Union(edge[0], edge[1]);
+        }
+
+        std::vector<int> visited(nodes_count + 1, 0);
+        for(int node = 1; node <= nodes_count; node++) {
+            if(visited[node] == 0) {
+                if(!IsBipartite(adjacency_list, visited, node)) {
+                    return -1;
+                }
+            }
+        }
+
+        std::map<int, int> group_max_depth;
+        std::vector<int> max_depths(nodes_count + 1, 0);
+        for(int node = 1; node <= nodes_count; node++) {
+            max_depths[node] = CalculateDepth(adjacency_list, node, nodes_count);
+        }
+
+        for(int node = 1; node <= nodes_count; node++) {
+            int root = union_find.Find(node);
+            group_max_depth[root] = std::max(group_max_depth[root], max_depths[node]);
+        }
+
+        int total_max_depth = 0;
+        for(std::pair<int, int> group : group_max_depth) {
+            total_max_depth += group.second;
+        }
+
+        return total_max_depth;
+    }
+
+
+int main() {
+  
+  //TEST
+
+  int nodes_count_1 = 6;
+  std::vector<std::vector<int>>edges_1 = {{1,2},{1,4},{1,5},{2,6},{2,3},{4,6}};
+  int expected_1 = 4;
+  int result_1 = MagnificentSets(nodes_count_1, edges_1);
+  assert(result_1 == expected_1);
+
+  //TEST_END
+  
+  
+  
+  //TEST
+
+
+int nodes_count_2 = 5;
+std::vector<std::vector<int>> edges_2 = {{1, 2}, {2, 5}};
+int expected_2 = 5;
+int result_2 = MagnificentSets(nodes_count_2, edges_2);
+assert(result_2 == expected_2);
+  
+  //TEST_END
+
+  //TEST
+  
+int nodes_count_3 = 3;
+std::vector<std::vector<int>> edges_3 = {{1,2}, {2,3}, {3,1}}; 
+int expected_3 = -1;
+int result_3 = MagnificentSets(nodes_count_3, edges_3);
+assert(result_3 == expected_3);
+  
+  //TEST_END
+
+  //TEST
+int nodes_count_4 = 8;
+std::vector<std::vector<int>> edges_4 = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+int expected_4 = 8;
+int result_4 = MagnificentSets(nodes_count_4, edges_4);
+assert(result_4 == expected_4);
+  
+//TEST_END
+  
+
+  //TEST
+  
+  
+int nodes_count_5 = 10;
+std::vector<std::vector<int>> edges_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+int expected_5 = 10;
+int result_5 = MagnificentSets(nodes_count_5, edges_5);
+assert(result_5 == expected_5);
+
+  
+  //TEST_END
+  
+
+  //TEST
+  
+  
+int nodes_count_6 = 5;
+std::vector<std::vector<int>> edges_6 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 1}};
+int expected_6 = -1;
+int result_6 = MagnificentSets(nodes_count_6, edges_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+  
+  //TEST
+  
+  
+int nodes_count_7 = 8;
+std::vector<std::vector<int>> edges_7 = {{1, 2}, {2, 3}, {2, 4}, {4, 5}, {5, 1}};
+int expected_7 = 7;
+int result_7 = MagnificentSets(nodes_count_7, edges_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+ 
+  //TEST
+  
+  
+int nodes_count_8 = 8;
+std::vector<std::vector<int>> edges_8 = {{1, 1}, {2, 3}, {2, 4}, {4, 5}, {5, 1}};
+try{
+  MagnificentSets(nodes_count_8, edges_8);
+  assert(false);
+}
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+
+//TEST_END
+  
+//TEST
+
+int nodes_count_9 = 6;
+std::vector<std::vector<int>> edges_9 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {1, 2}};
+try {
+  MagnificentSets(nodes_count_9, edges_9);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+  
+  //TEST_END
+
+//TEST
+  
+int nodes_count_10 = 1;
+std::vector<std::vector<int>> edges_10 = {{1, 1}};
+try {
+    MagnificentSets(nodes_count_10, edges_10);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+  //TEST_END
+  
+  
+  //TEST
+
+int nodes_count_11 = 3;
+std::vector<std::vector<int>> edges_11 = {{1,2},{500,2}}; 
+try {
+    MagnificentSets(nodes_count_11, edges_11);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+  
+  //TEST_END
+  
+
+//TEST
+  
+int nodes_count_12 = 8;
+std::vector<std::vector<int>> edges_12 = {{1, 2, 5}, {3, 4}, {5, 6}, {7, 8}};
+try {
+   MagnificentSets(nodes_count_12, edges_12);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
+  
+
+  
+    return 0;
+}
+
+
+
+
+
+
+
+
