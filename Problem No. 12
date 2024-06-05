@@ -6,7 +6,7 @@ A good string is alphabetically greater than or equal tostart_string
 
 A good string is alphabetically smaller than or equal to end_string
 
-A good string does not contain the substring "forbidden_string". Since the number of good strings can be extremely large, Julie wants the result to be given modulo 1e9+7.
+A good string does not contain the substring forbidden_string. Since the number of good strings can be extremely large, Julie wants the result to be given modulo 1e9+7.
 
 Create a C++ function FindGoodStrings to help Julie, that will return an integer counter denoting the count of the number of such good strings.
 
