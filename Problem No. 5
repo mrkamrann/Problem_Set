@@ -23,6 +23,7 @@ The values of lower and upper should be integers within the range inclusive [-10
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <stdexcept>
 #include <cassert>
 
 struct FenwickTree {
