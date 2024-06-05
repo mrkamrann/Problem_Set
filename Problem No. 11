@@ -23,16 +23,21 @@ Each value in nums i.e. nums[i] should be in the range [-10^9, 10^9] both inclus
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <functional>
 #include <stdexcept>
+#include <cassert>
+
 
 struct SegmentTree
 {
     int size;
     std::vector<long long> tree;
+
     SegmentTree(int n) : size(n), tree(4 * n, -1e18) {}
+
     void Update(int index, long long value)
     {
-        std::function<void(int, int, int)> updateHelper = [&](int left, int right, int node) -> void
+        std::function<void(int, int, int)> UpdateHelper = [&](int left, int right, int node) -> void
         {
             if (left == right)
                 tree[node] = std::max(tree[node], value);
@@ -40,59 +45,62 @@ struct SegmentTree
             {
                 int mid = (left + right) / 2;
                 if (index <= mid)
-                    updateHelper(left, mid, 2 * node);
+                    UpdateHelper(left, mid, 2 * node);
                 else
-                    updateHelper(mid + 1, right, 2 * node + 1);
+                    UpdateHelper(mid + 1, right, 2 * node + 1);
                 tree[node] = std::max(tree[2 * node], tree[2 * node + 1]);
             }
         };
-        updateHelper(0, size - 1, 1);
+        UpdateHelper(0, size - 1, 1);
     }
-    long long Query(int queryLeft, int queryRight)
+
+    long long Query(int query_left, int query_right)
     {
-        std::function<long long(int, int, int, int, int)> queryHelper = [&](int left, int right, int queryLeft, int queryRight, int node) -> long long
+        std::function<long long(int, int, int, int, int)> QueryHelper = [&](int left, int right, int query_left, int query_right, int node) -> long long
         {
-            if (queryLeft > queryRight)
+            if (query_left > query_right)
                 return 0;
-            if (left == queryLeft && right == queryRight)
+            if (left == query_left && right == query_right)
                 return tree[node];
             int mid = (left + right) / 2;
-            return std::max(queryHelper(left, mid, queryLeft, std::min(queryRight, mid), 2 * node),
-                            queryHelper(mid + 1, right, std::max(queryLeft, mid + 1), queryRight, 2 * node + 1));
+            return std::max(QueryHelper(left, mid, query_left, std::min(query_right, mid), 2 * node),
+                            QueryHelper(mid + 1, right, std::max(query_left, mid + 1), query_right, 2 * node + 1));
         };
-        return queryHelper(0, size - 1, queryLeft, queryRight, 1);
+        return QueryHelper(0, size - 1, query_left, query_right, 1);
     }
 };
 
+long long MaxBalancedSum(std::vector<int>& nums) 
+{
+    int size = nums.size();
+    if (size < 1 || size > 100000)
+        throw std::invalid_argument("Invalid length of nums");
 
-    long long MaxBalancedSum(vector<int>& nums) {
-      
-        int size = nums.size();
-   
-        if (size < 1 || size > 100000)
-            throw std::invalid_argument("Invalid length of nums");
-        
-        for (int i = 0; i < size; i++)
-        {
-            if (nums[i] < -1000000000 || nums[i] > 1000000000)
-                throw std::invalid_argument("nums element out of range");
-        }
-        std::set<int> uniqueDifferences;
-        for (int i = 0; i < size; i++)
-            uniqueDifferences.insert(nums[i] - i);
-        std::vector<int> sortedDifferences(uniqueDifferences.begin(), uniqueDifferences.end());
-        SegmentTree segmentTree(size);
-        long long maxSum = -1e18;
-        for (int i = 0; i < size; i++)
-        {
-            int right = std::lower_bound(sortedDifferences.begin(), sortedDifferences.end(), nums[i] - i) - sortedDifferences.begin();
-            long long previousMax = segmentTree.Query(0, right);
-            long long currentSum = std::max(nums[i] + (previousMax == -1e18 ? 0 : previousMax), 1LL * nums[i]);
-            maxSum = std::max(maxSum, currentSum);
-            segmentTree.Update(right, currentSum);
-        }
-        return maxSum; 
+    for (int i = 0; i < size; i++)
+    {
+        if (nums[i] < -1000000000 || nums[i] > 1000000000)
+            throw std::invalid_argument("nums element out of range");
     }
+
+    std::set<int> unique_differences;
+    for (int i = 0; i < size; i++)
+        unique_differences.insert(nums[i] - i);
+
+    std::vector<int> sorted_differences(unique_differences.begin(), unique_differences.end());
+    SegmentTree segment_tree(size);
+
+    long long max_sum = -1e18;
+    for (int i = 0; i < size; i++)
+    {
+        int right = std::lower_bound(sorted_differences.begin(), sorted_differences.end(), nums[i] - i) - sorted_differences.begin();
+        long long previous_max = segment_tree.Query(0, right);
+        long long current_sum = std::max(nums[i] + (previous_max == -1e18 ? 0 : previous_max), 1LL * nums[i]);
+        max_sum = std::max(max_sum, current_sum);
+        segment_tree.Update(right, current_sum);
+    }
+
+    return max_sum; 
+}
 
 
 int main(){
