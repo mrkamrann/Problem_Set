@@ -1,0 +1,235 @@
+/*
+
+
+John, a passionate puzzle solver, loves a good challenge. One day, he receives a mysterious message that presents him with an intriguing task involving a vector of distinct integers called nums. 
+The message explains that to solve the puzzle, John must repeatedly perform a specific set of operations on the vector until it is completely empty. The operations are as follows:
+
+If the first element of the vector is the smallest value in the entire vector, John removes it from the vector.
+Otherwise, John takes the first element and moves it to the end of the vector.
+
+John is eager to crack this puzzle but realizes that keeping track of the number of operations manually might be tedious. So, he turns to you for help. Can you write a function that determines the 
+number of operations John needs to perform to empty the vector? This will allow John to focus on the fun part of the challenge—seeing the vector gradually vanish before his eyes.
+
+Your task is to help John by creating a C++ function OperationsToEmpty that returns an integer denoting the number of operations required to make the vector empty. 
+This way, John can enjoy his puzzle without getting bogged down by the repetitive counting.
+
+Input Types:
+
+A vector<int> denoting the vector nums 
+
+Input Constraints:
+
+1. The length of nums is at least 1 and at most 10^5.
+2. Each element in nums is between -10^9 and 10^9 .
+3. All values in nums are distinct.
+
+
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <unordered_set>
+#include <cassert>
+
+    class SegmentTree {
+        int size;
+        std::vector<int> values;
+
+        int Update(int index, int position, int left, int segment_size, int value) {
+            if (position < left || position >= left + segment_size) {
+                return values[index];
+            }
+            if (segment_size == 1) {
+                return values[index] = value;
+            }
+            return values[index] = Update(2 * index + 1, position, left, segment_size / 2, value) + 
+                                   Update(2 * index + 2, position, left + segment_size / 2, segment_size - segment_size / 2, value);
+        }
+
+        int GetSums(int index, int segment_start, int segment_size, int query_left, int query_size) {
+            if (query_left >= segment_start + segment_size || segment_start >= query_left + query_size || segment_size == 0 || query_size == 0) {
+                return 0;
+            }
+            if (query_left <= segment_start && query_left + query_size >= segment_start + segment_size) {
+                return values[index];
+            }
+            return GetSums(2 * index + 1, segment_start, segment_size / 2, query_left, query_size) + 
+                   GetSums(2 * index + 2, segment_start + segment_size / 2, segment_size - segment_size / 2, query_left, query_size);
+        }
+
+    public:
+        SegmentTree(int size) : size(size), values(std::vector<int>(size * 4, 0)) {}
+
+        int Update(int position, int value) {
+            return Update(0, position, 0, size, value);
+        }
+
+        int GetSums(int query_left, int query_size) {
+            return GetSums(0, 0, size, query_left, query_size);
+        }
+    };
+
+    long long OperationsToEmpty(std::vector<int>& nums) {
+         if (nums.size() < 1 || nums.size() > 100000) {
+            throw std::invalid_argument("The length of nums must be at least 1 and at most 100000.");
+        }
+
+        for (const int& num : nums) {
+            if (num < -1000000000 || num > 1000000000) {
+                throw std::invalid_argument("Each element in nums must be between -1000000000 and 1000000000.");
+            }
+        }
+
+        std::unordered_set<int> unique_elements(nums.begin(), nums.end());
+        if (unique_elements.size() != nums.size()) {
+            throw std::invalid_argument("All values in nums must be distinct.");
+        }
+
+        std::vector<int> indices;
+        for (int i = 0; i < nums.size(); ++i) {
+            indices.push_back(i);
+        }
+
+        std::sort(indices.begin(), indices.end(), [&nums](const int& left, const int& right) {
+            return nums[left] < nums[right];
+        });
+
+        SegmentTree segment_tree(indices.size());
+        int current_position = 0;
+        long long operation_count = 0;
+
+        for (int i = 0; i < indices.size(); ++i) {
+            if (indices[i] < current_position) {
+                operation_count += (indices.size() - current_position) - segment_tree.GetSums(current_position, indices.size() - current_position);
+                current_position = 0;
+            }
+            operation_count += (indices[i] - current_position) - segment_tree.GetSums(current_position, indices[i] - current_position);
+            operation_count++;
+            current_position = indices[i] + 1;
+            segment_tree.Update(indices[i], 1);
+        }
+        return operation_count;
+    }
+
+
+int main() {
+   
+     //TEST
+    std::vector<int> nums_1 = {3,4,-1};
+    int expected_1 = 5;
+    int result_1 = OperationsToEmpty(nums_1);
+    assert(result_1 == expected_1);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_2 = {1,2,4,3};
+    int expected_2 = 5;
+    int result_2 = OperationsToEmpty(nums_2);
+    assert(result_2 == expected_2);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_3 = {1,2,3};
+    int expected_3 = 3;
+    int result_3 = OperationsToEmpty(nums_3);
+    assert(result_3 == expected_3);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_4 = {1,66,7,9,63,2,0,-45,-8,6,-99,1223,14};
+    int expected_4 = 55;
+  
+    int result_4 = OperationsToEmpty(nums_4);
+    assert(result_4 == expected_4);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_5 = {0,1,-2,-8,2,99};
+    int expected_5 = 15;
+    int result_5 = OperationsToEmpty(nums_5);
+    assert(result_5 == expected_5);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_6 = {-2,8,6,7,2,1,0};
+    int expected_6 = 20;
+    int result_6 = OperationsToEmpty(nums_6);
+    assert(result_6 == expected_6);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_7 = {99,88,66,22,11,-10,-78,-8};
+    int expected_7 = 30;
+    int result_7 = OperationsToEmpty(nums_7);
+    assert(result_7 == expected_7);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_8 = {1};
+    int expected_8 = 1;
+    int result_8 = OperationsToEmpty(nums_8);
+    assert(result_8 == expected_8);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_9 = {};
+    
+    try{
+       OperationsToEmpty(nums_9);
+       assert(false);
+    }
+    catch(const std::invalid_argument& e){
+      assert(true);
+    }
+    
+  
+  //TEST_END
+  
+  //TEST
+std::vector<int> nums_10 = {1, 1};
+
+try {
+    OperationsToEmpty(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {1000000005};
+
+try {
+    OperationsToEmpty(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_12 = {-1000000009, -1000000007, 1000000006};
+
+try {
+   OperationsToEmpty(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  return 0;
+}
+
+
+
