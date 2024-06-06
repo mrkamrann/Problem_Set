@@ -1,6 +1,10 @@
 /*
+Once upon a time, in a small village, there was a clever girl named Julie. Julie loved solving puzzles.
+One day, she found an old book with lots of tricky problem about strings. Since she is a good problem solver she has soilved all the problems except the last one.
+Since Julie found the problem to be difficult she wants your help.
 
-Julie has two strings, start_string and end_string both of length len. She also has a third string called “forbidden_string” Julie wants to find out how many "good" strings of length len exist that meet the following criteria:
+The Problem has two strings, start_string and end_string both of length len. It also has a third string called “forbidden_string” Julie has to 
+find out how many "good" strings of length len exist that meet the following criteria:
 
 A good string is alphabetically greater than or equal tostart_string
 
@@ -8,7 +12,7 @@ A good string is alphabetically smaller than or equal to end_string
 
 A good string does not contain the substring forbidden_string. Since the number of good strings can be extremely large, Julie wants the result to be given modulo 1e9+7.
 
-Create a C++ function FindGoodStrings to help Julie, that will return an integer counter denoting the count of the number of such good strings.
+Create a C++ function FindGoodStrings , that will return an integer counter denoting the count of the number of such good strings.
 
 
 Input Types:
