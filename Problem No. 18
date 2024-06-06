@@ -1,0 +1,237 @@
+/*
+
+
+John's company is preparing for a meeting, compiling a list of employee_count employees awaiting invitations who will play vital roles in the proceedings.The setting for this gathering is no ordinary 
+meeting room; instead, it's a circular table, specially chosen for its spaciousness and flexibility to accommodate any number of attendees.
+Each employee, numbered from 0 to employee_count - 1, holds a preference for sitting next to a particular colleague. They'll only attend if they can sit beside their favored coworker, excluding themselves.
+To tackle this, given an vector (favorite) of size employee_count indexed from 0, where favorite[i] represents the preferred coworker of the ith employee, calculate the maximum number of employees who can be invited to the meeting.
+Create a C++ function MaximumEmployees which will return an integer denoting the maximum number of employees who can be invited to the meeting.
+
+Input Type:
+
+vector<int> denoting the favorite vector
+
+Input Constraints:
+
+1. The number of employees (employee_count) is at least 2 and at most 10^5.
+2. Each element in the favorite vector lies in the range [0, employee_count-1] both inclusive.
+3. Any element favorite[i] in the favorite vector is not equal to the index i.
+
+
+*/
+
+#include <vector>
+#include <stack>
+#include <stdexcept>
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+
+class GraphHelper {
+public:
+    std::vector<std::vector<int>> graph;
+    std::stack<int> node_stack;
+    std::vector<std::vector<int>> reversed_graph;
+    std::vector<std::vector<int>> components;
+
+    void DepthFirstSearch(int node, std::vector<int>& visited) {
+        visited[node] = 1;
+        for (int neighbor : graph[node]) {
+            if (!visited[neighbor]) {
+                DepthFirstSearch(neighbor, visited);
+            }
+        }
+        node_stack.push(node);
+    }
+
+    void DepthFirstSearch_2(int node, std::vector<int>& visited, std::vector<int>& elements) {
+        visited[node] = 1;
+        for (int neighbor : reversed_graph[node]) {
+            if (!visited[neighbor]) {
+                DepthFirstSearch_2(neighbor, visited, elements);
+            }
+        }
+        elements.push_back(node);
+    }
+
+    int DepthFirstSearch_3(int start, int avoid) {
+        int max_length = 1;
+        for (int neighbor : graph[start]) {
+            if (neighbor == avoid) {
+                continue;
+            }
+            max_length = std::max(max_length, DepthFirstSearch_3(neighbor, avoid) + 1);
+        }
+        return max_length;
+    }
+};
+
+int MaximumInvitations(std::vector<int>& favorite) {
+  
+int employee_count = favorite.size();
+
+if (employee_count < 2 || employee_count > 100000) {
+    throw std::invalid_argument("Number of employees must be between 2 and 10^5.");
+}
+
+
+for (int i = 0; i < employee_count; i++) {
+    if (favorite[i] < 0 || favorite[i] >= employee_count) {
+        throw std::invalid_argument("Each element in the favorite vector must be in the range [0, employee_count-1].");
+    }
+}
+
+
+for (int i = 0; i < employee_count; i++) {
+    if (favorite[i] == i) {
+        throw std::invalid_argument("Each element in the favorite vector must be different from its index.");
+    }
+}
+
+GraphHelper my_graph;
+my_graph.graph.resize(employee_count);
+my_graph.reversed_graph.resize(employee_count);
+
+for (int i = 0; i < employee_count; i++) {
+    my_graph.graph[favorite[i]].push_back(i);
+    my_graph.reversed_graph[i].push_back(favorite[i]);
+}
+
+std::vector<int> visited(employee_count, 0);
+for (int i = 0; i < employee_count; i++) {
+    if (!visited[i]) {
+        my_graph.DepthFirstSearch(i, visited);
+    }
+}
+
+std::fill(visited.begin(), visited.end(), 0);
+while (!my_graph.node_stack.empty()) {
+    int current_node = my_graph.node_stack.top();
+    my_graph.node_stack.pop();
+    if (!visited[current_node]) {
+        std::vector<int> elements;
+        my_graph.DepthFirstSearch_2(current_node, visited, elements);
+        my_graph.components.push_back(elements);
+    }
+}
+
+unsigned long max_invitations = 0;
+for (const std::vector<int>& component : my_graph.components) {
+    if (component.size() == 2) {
+        int node_a = component[0];
+        int node_b = component[1];
+        max_invitations += my_graph.DepthFirstSearch_3(node_a, node_b) + my_graph.DepthFirstSearch_3(node_b, node_a);
+    }
+}
+
+for (const std::vector<int>& component : my_graph.components) {
+    max_invitations = std::max(max_invitations, static_cast<unsigned long>(component.size()));
+}
+
+return max_invitations;
+
+}
+
+int main() {
+  
+   //TEST
+std::vector<int> favorite_1 = {3,2,0,0};
+int expected_1 = 4;
+int result_1 = MaximumInvitations(favorite_1);
+
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_2 = {1,2,4,2,0,0};
+int expected_2 = 4;
+int result_2 = MaximumInvitations(favorite_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_3 = {1,0,0};
+int expected_3 = 3;
+int result_3 = MaximumInvitations(favorite_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_4 = {1,0,1};
+int expected_4 = 3;
+int result_4 = MaximumInvitations(favorite_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_5 = {2,5,4,2,2,1};
+int expected_5 = 5;
+int result_5 = MaximumInvitations(favorite_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_6 = {2,8,6,7,2,1,0,1,1};
+int expected_6 = 4;
+int result_6 = MaximumInvitations(favorite_6);
+assert(result_6 == expected_6);
+  
+//TEST_END
+
+//TEST
+std::vector<int> favorite_7 = {9,8,7,6,5,4,3,2,1,0};
+int expected_7 = 10;
+int result_7 = MaximumInvitations(favorite_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_8 = {1,0,0,0,0,0,2,2,2,2,2,3,3,3,3,3};
+int expected_8 = 4;
+int result_8 = MaximumInvitations(favorite_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> favorite_9 = {0};
+try {
+    MaximumInvitations(favorite_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> favorite_10 = {};
+try {
+    MaximumInvitations(favorite_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> favorite_11 = {0,1};
+try {
+    MaximumInvitations(favorite_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> favorite_12 = {9,8};
+try {
+    MaximumInvitations(favorite_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+   
+    return 0;
+}
