@@ -1,0 +1,321 @@
+/*
+
+John is given an integer person_count, indicating there are person_count people numbered from 0 to person_count - 1. Additionally, John receives a 0-indexed 2D integer vector meetings where 
+each meetings[i] = [person_1_i, person_2_i, time_i] indicates that person person_1_i and person person_2_i have a meeting at time_i. A person may attend multiple meetings at the same time. 
+Finally, John is given an integer first_person.
+Person 0 has a secret and initially shares the secret with person first_person at time 0. This secret is then shared every time a meeting takes place with a person that has the secret. More formally, 
+for every meeting, if a person person_1_i has the secret at time_i, then they will share the secret with person person_2_i, and vice versa.The secrets are shared instantaneously. 
+That is, a person may receive the secret and share it with people in other meetings within the same time frame.
+
+John needs to return a list of all the people that have the secret after all the meetings have taken place. The order of the people in the list does not matter. Help him create a C++ function FindAllPeople
+that will return a vector<int> denoting the list of all the people.
+
+Input Types:
+
+An integer denoting person_count
+vector<vector<int>> denoting the 2D vector meetings
+An integer denoting first_person
+
+
+Input Constraints:
+
+1. person_count should be at least 2 and at most 10^5.
+2. The length of meetings should be at least 1 and at most 10^5.
+3. Each element in meetings should consist of exactly 3 integers.
+4. person_1_i and person_2_i should be within the range from 0 to person_count - 1.
+5. person_1_i should not be equal to person_2_i.
+6. time_i should be within the range from 1 to 10^5.
+7. first_person should be at least 1 and at most person_count - 1.
+
+
+
+*/
+
+
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+
+class UnionFind{
+private:
+    std::vector<int> parent;
+    std::vector<int> rank;
+
+public:
+    UnionFind(int size) {
+        parent.resize(size);
+        rank.resize(size);
+    }
+
+    void Initialize(int node) {
+        parent[node] = node;
+        rank[node] = 1;
+    }
+
+    int Find(int node) {
+        if (parent[node] != node) {
+            return parent[node] = Find(parent[node]);
+        }
+        return node;
+    }
+
+    void Union(int node_1, int node_2) {
+        int parent_1 = Find(node_1);
+        int parent_2 = Find(node_2);
+
+        if (parent_1 == parent_2) return;
+
+        if (rank[parent_1] < rank[parent_2]) {
+            std::swap(parent_1, parent_2);
+        }
+        parent[parent_2] = parent_1;
+        ++rank[parent_1];
+    }
+};
+
+    std::vector<int> FindAllPeople(int person_count, std::vector<std::vector<int>>& meetings, int first_person) {
+        
+        if (person_count < 2 || person_count > 100000) {
+            throw std::invalid_argument("person_count must be between 2 and 100000");
+        }
+
+        if (meetings.size() < 1 || meetings.size() > 100000) {
+            throw std::invalid_argument("The length of meetings must be between 1 and 100000");
+        }
+
+        for (const std::vector<int>& meeting : meetings) {
+            if (meeting.size() != 3) {
+                throw std::invalid_argument("Each meeting must consist of exactly 3 integers");
+            }
+            int person_1 = meeting[0];
+            int person_2 = meeting[1];
+            int time = meeting[2];
+
+            if (person_1 < 0 || person_1 >= person_count || person_2 < 0 || person_2 >= person_count) {
+                throw std::invalid_argument("person_1 and person_2 must be within the range from 0 to person_count - 1");
+            }
+            if (person_1 == person_2) {
+                throw std::invalid_argument("person_1 must not be equal to person_2");
+            }
+            if (time < 1 || time > 100000) {
+                throw std::invalid_argument("time must be within the range from 1 to 100000");
+            }
+        }
+
+        if (first_person < 1 || first_person >= person_count) {
+            throw std::invalid_argument("first_person must be at least 1 and at most person_count - 1");
+        }
+        std::sort(meetings.begin(), meetings.end(), [](std::vector<int>& meeting1, std::vector<int>& meeting2) {
+            return meeting1[2] < meeting2[2];
+        });
+
+        UnionFind disjoint_set(person_count);
+
+        meetings.push_back({-1, -1, 100001});
+
+        std::unordered_map<int, bool> knows_secret;
+        knows_secret[0] = true;
+        knows_secret[first_person] = true;
+
+        int current_time = 0;
+
+        for (int left = 0, right = 0; right < meetings.size(); ++right) {
+            if (meetings[right][2] == current_time) continue;
+
+            for (int i = left; i < right; ++i) {
+                int person_1 = meetings[i][0];
+                int person_2 = meetings[i][1];
+                disjoint_set.Initialize(person_1);
+                disjoint_set.Initialize(person_2);
+            }
+
+            for (int i = left; i < right; ++i) {
+                int person_1 = meetings[i][0];
+                int person_2 = meetings[i][1];
+                disjoint_set.Union(person_1, person_2);
+            }
+
+            for (int i = left; i < right; ++i) {
+                int person_1 = meetings[i][0];
+                int person_2 = meetings[i][1];
+                if (knows_secret[person_1] || knows_secret[person_2]) {
+                    knows_secret[disjoint_set.Find(person_1)] = true;
+                }
+            }
+
+            for (int i = left; i < right; ++i) {
+                int person_1 = meetings[i][0];
+                int person_2 = meetings[i][1];
+                if (knows_secret[disjoint_set.Find(person_1)]) {
+                    knows_secret[person_1] = true;
+                    knows_secret[person_2] = true;
+                }
+            }
+
+            left = right;
+            current_time = meetings[right][2];
+        }
+
+        std::vector<int> result;
+        for (int i = 0; i < person_count; ++i) {
+            if (knows_secret[i]) {
+                result.push_back(i);
+            }
+        }
+        return result;
+    }
+
+int main(){
+  
+  //TEST
+  
+  int person_count_1 = 6;
+  std::vector<std::vector<int>>meetings_1 = {{1,2,5},{2,3,8},{1,5,10}};
+  int first_person_1 = 1;
+  std::vector<int> expected_1 = {0,1,2,3,5};
+  std::vector<int> result_1 = FindAllPeople(person_count_1,meetings_1,first_person_1);
+  assert(expected_1 == result_1);
+ 
+  //TEST_END
+  
+  //TEST
+  int person_count_2 = 4;
+  std::vector<std::vector<int>> meetings_2 = {{3,1,3},{1,2,2},{0,3,3}};
+  int first_person_2 = 3;
+  std::vector<int> expected_2 = {0,1,3};
+  std::vector<int> result_2 = FindAllPeople(person_count_2, meetings_2, first_person_2);
+  assert(expected_2 == result_2);
+//TEST_END
+
+//TEST
+  int person_count_3 = 5;
+  std::vector<std::vector<int>> meetings_3 = {{3,4,2},{1,2,1},{2,3,1}};
+  int first_person_3 = 1;
+  std::vector<int> expected_3 = {0,1,2,3,4};
+  std::vector<int> result_3 = FindAllPeople(person_count_3, meetings_3, first_person_3);
+  assert(expected_3 == result_3);
+//TEST_END
+
+//TEST
+  int person_count_4 = 7;
+  std::vector<std::vector<int>> meetings_4 = {{1,3,6},{2,4,9},{1,5,11}};
+  int first_person_4 = 4;
+  std::vector<int> expected_4 = {0,2,4};
+  std::vector<int> result_4 = FindAllPeople(person_count_4, meetings_4, first_person_4);
+ 
+  assert(expected_4 == result_4);
+//TEST_END
+
+//TEST
+  int person_count_5 = 6;
+  std::vector<std::vector<int>> meetings_5 = {{1,2,7},{2,3,1},{1,4,3}};
+  int first_person_5 = 1;
+  std::vector<int> expected_5 = {0,1,2,4};
+  std::vector<int> result_5 = FindAllPeople(person_count_5, meetings_5, first_person_5);
+  assert(expected_5 == result_5);
+//TEST_END
+
+//TEST
+  int person_count_6 = 8;
+  std::vector<std::vector<int>> meetings_6 = {{1,3,6},{2,5,8},{1,4,10},{3,4,2},{7,2,19}};
+  int first_person_6 = 5;
+  std::vector<int> expected_6 = {0,2,5,7};
+  std::vector<int> result_6 = FindAllPeople(person_count_6, meetings_6, first_person_6);
+  assert(expected_6 == result_6);
+//TEST_END
+
+//TEST
+  
+  int person_count_7 = 10;
+  std::vector<std::vector<int>> meetings_7 = {{1,4,1},{2,3,8},{1,4,10},{9,2,30},{3,1,14},{6,7,17}};
+  int first_person_7 = 9;
+  std::vector<int> expected_7 = {0,2,9};
+  std::vector<int> result_7 = FindAllPeople(person_count_7, meetings_7, first_person_7);
+  assert(expected_7 == result_7);
+  
+//TEST_END
+
+//TEST
+  int person_count_8 = 1;
+  std::vector<std::vector<int>> meetings_8 = {{1,4,1},{2,3,8},{1,4,10},{9,2,30},{3,1,14},{6,7,17}};
+  int first_person_8 = 1;
+
+  try{
+    FindAllPeople(person_count_8, meetings_8, first_person_8);
+    assert(false);
+  }
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+
+//TEST_END
+
+//TEST
+  int person_count_9 = 6;
+  std::vector<std::vector<int>> meetings_9 = {{1,4,1},{2,3,8},{1,4,10},{9,2,30},{3,1,14},{6,7,17}};
+  int first_person_9 = -1;
+
+  try{
+    FindAllPeople(person_count_9, meetings_9, first_person_9);
+    assert(false);
+  }
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+  
+//TEST_END
+
+//TEST
+  int person_count_10 = 8;
+  std::vector<std::vector<int>> meetings_10 = {};
+  int first_person_10 = 4;
+
+  try{
+    FindAllPeople(person_count_10, meetings_10, first_person_10);
+    assert(false);
+  }
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+  
+//TEST_END
+
+//TEST
+  int person_count_11 = 7;
+  std::vector<std::vector<int>> meetings_11 = {{1,2,5},{2,3,8},{1,5,10}};
+  int first_person_11 = 8;
+
+  try{
+    FindAllPeople(person_count_11, meetings_11, first_person_11);
+    assert(false);
+  }
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+  
+//TEST_END
+
+//TEST
+  int person_count_12 = 4;
+  std::vector<std::vector<int>> meetings_12 = {{1,2,5},{3,3,8},{1,5,10}};
+  int first_person_12 = 2;
+
+  try{
+    FindAllPeople(person_count_12, meetings_12, first_person_12);
+    assert(false);
+  }
+  catch(const std::invalid_argument& e){
+    assert(true);
+  }
+  
+//TEST_END
+
+
+  
+  return 0;
+}
+
+
