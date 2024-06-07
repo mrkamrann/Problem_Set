@@ -1,0 +1,278 @@
+/*
+
+Jimmy and Julie often found themselves engrossed in thrilling adventures, exploring every nook and cranny of their beloved town. One sunny afternoon, as they wandered through the cobblestone streets, 
+they stumbled upon a challenge: to find the perfect spot where they could marvel at the town's beauty together. So they want your help again.
+
+You're given a 0-indexed vector heights of positive integers, where heights[i] represents the height of the ith building.
+
+If a person is in building i, they can move to any other building j if and only if i < j and heights[i] < heights[j].
+
+You're also given another vector queries where queries[i] = [building_1, building_2]. On the ith query, Julie is in building building_1 while Jimmy is in building building_2.
+
+Create a C++ function BuildingQueries which returns a vector result where result[i] is the index of the leftmost building where Julie and Jimmy can meet on the ith query.
+If Julie and Jimmy cannot move to a common building on query i, set result[i] to -1.
+
+
+Input Type:
+
+vector<int> denoting vector heights
+vector<vector<int>> denoting the 2D-vector queries. 
+
+Input Constraints:
+
+
+1.The value of heights vector's length is between [1, 5*10^4], both inclusive.
+2.Each value in the heights vector lies in the range [1, 10^9], both inclusive.
+3.The value of queries vector's length is between [1, 5*10^4], both inclusive.
+4.Each pair [building_1, building_2] in the queries vector, where building_1 and building_2 represent indices whose value lies in the range [0 , length of heights vector - 1] both inclusive.
+
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+class SegmentTree
+{
+    std::vector<int> segment_tree;
+
+public:
+    SegmentTree(int nums_length)
+    {
+        segment_tree.resize(4 * nums_length + 1, 0);
+    }
+
+    void Build(int index, int low, int high, std::vector<int> &nums)
+    {
+        if (low == high)
+        {
+            segment_tree[index] = nums[low];
+            return;
+        }
+
+        int mid = low + ((high - low) / 2);
+        Build(2 * index + 1, low, mid, nums);
+        Build(2 * index + 2, mid + 1, high, nums);
+        segment_tree[index] = std::max(segment_tree[2 * index + 1], segment_tree[2 * index + 2]);
+    }
+
+    int Query(int index, int low, int high, int query_low, int query_high)
+    {
+        if (high < query_low || low > query_high)
+        {
+            return -1;
+        }
+
+        if (low >= query_low && high <= query_high)
+        {
+            return segment_tree[index];
+        }
+
+        int mid = low + ((high - low) / 2);
+        int left = Query(2 * index + 1, low, mid, query_low, query_high);
+        int right = Query(2 * index + 2, mid + 1, high, query_low, query_high);
+        return std::max(left, right);
+    }
+};
+
+
+    std::vector<int>BuildingQueries(std::vector<int> &heights, std::vector<std::vector<int>> &queries)
+    {
+        if (heights.size() < 1 || heights.size() > 50000)
+{
+    throw std::invalid_argument("Heights vector length is out of range [1, 20000].");
+}
+
+for (size_t i = 0; i < heights.size(); ++i)
+{
+    if (heights[i] < 1 || heights[i] > 1e9)
+    {
+        throw std::invalid_argument("Height value is out of range [1, 10^5].");
+    }
+}
+
+if (queries.size() < 1 || queries.size() > 50000)
+{
+    throw std::invalid_argument("Queries vector length is out of range [1, 20000].");
+}
+
+for (size_t i = 0; i < queries.size(); ++i)
+{
+    if (queries[i].size() != 2)
+    {
+        throw std::invalid_argument("Each query pair must contain exactly two elements.");
+    }
+    
+    if (queries[i][0] < 0 || queries[i][0] >= static_cast<int>(heights.size()) ||
+        queries[i][1] < 0 || queries[i][1] >= static_cast<int>(heights.size()))
+    {
+        throw std::invalid_argument("Query index is out of range [0, length of heights vector - 1].");
+    }
+}
+
+        int num_queries = queries.size();
+        int num_buildings = heights.size();
+        SegmentTree seg_tree(num_buildings);
+        seg_tree.Build(0, 0, num_buildings - 1, heights);
+        std::vector<int> result;
+        for (int i = 0; i < num_queries; i++)
+        {
+            int building_1 = queries[i][0];
+            int building_2 = queries[i][1];
+            if (building_1 == building_2 || heights[std::max(building_1, building_2)] > heights[std::min(building_1, building_2)])
+            {
+                result.push_back(std::max(building_1, building_2));
+            }
+            else
+            {
+                int max_height = std::max(heights[building_1], heights[building_2]);
+                int left_index = std::max(building_1, building_2) + 1;
+                int right_index = num_buildings - 1;
+                int current_index = -1;
+                while (left_index <= right_index)
+                {
+                    int mid_index = (left_index + right_index) / 2;
+                    int max_height_in_range = seg_tree.Query(0, 0, num_buildings - 1, left_index, mid_index);
+                    if (max_height_in_range > max_height)
+                    {
+                        current_index = mid_index;
+                        right_index = mid_index - 1;
+                    }
+                    else
+                    {
+                        left_index = mid_index + 1;
+                    }
+                }
+                result.push_back(current_index);
+            }
+        }
+        return result;
+    }
+
+
+int main(){
+  
+//TEST
+  
+std::vector<int>heights_1 = {5,3,8,2,6,1,4,6};
+std::vector<std::vector<int>>queries_1 = {{0,7},{3,5},{5,2},{3,0},{1,6}};
+std::vector<int>expected_1 = {7,6,-1,4,6};
+std::vector<int>result_1 = BuildingQueries(heights_1,queries_1);
+assert(expected_1 == result_1);
+
+//TEST_END
+  
+//TEST
+  
+std::vector<int> heights_2 = {1, 2, 3, 4, 5};
+std::vector<std::vector<int>> queries_2 = {{0, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 0}};
+std::vector<int> expected_2 = {4,3,2,3,4};
+std::vector<int> result_2 = BuildingQueries(heights_2, queries_2);
+assert(expected_2 == result_2);
+
+  //TEST_END
+  
+//TEST
+  
+std::vector<int> heights_3 = {10, 20, 30, 40, 50};
+std::vector<std::vector<int>> queries_3 = {{0, 2}, {1, 4}, {4, 0}, {3, 3}, {2, 1}};
+std::vector<int> expected_3 = {2,4,4,3,2};
+std::vector<int> result_3 = BuildingQueries(heights_3, queries_3);
+assert(expected_3 == result_3);
+//TEST_END
+  
+//TEST
+std::vector<int> heights_4 = {5, 10, 15, 20, 25};
+std::vector<std::vector<int>> queries_4 = {{1, 3}, {0, 4}, {2, 2}, {3, 0}, {4, 1}};
+std::vector<int> expected_4 = {3,4,2,3,4};
+std::vector<int> result_4 = BuildingQueries(heights_4, queries_4);
+assert(expected_4 == result_4);
+//TEST_END
+  
+//TEST
+std::vector<int> heights_5 = {1000000000, 999999999, 999999998, 999999997, 999999996};
+std::vector<std::vector<int>> queries_5 = {{0, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 0}};
+std::vector<int> expected_5 = {-1,-1,2,-1,-1};
+std::vector<int> result_5 = BuildingQueries(heights_5, queries_5);
+assert(expected_5 == result_5);
+//TEST_END
+  
+//TEST
+std::vector<int> heights_6 = {1};
+std::vector<std::vector<int>> queries_6 = {{0, 0}};
+std::vector<int> expected_6 = {0};
+std::vector<int> result_6 = BuildingQueries(heights_6, queries_6);
+assert(expected_6 == result_6);
+//TEST_END
+  
+//TEST
+std::vector<int> heights_7 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<std::vector<int>> queries_7 = {{0, 9}, {5, 5}, {2, 7}, {1, 8}, {4, 6}};
+std::vector<int> expected_7 = {9,5,7,8,6};
+std::vector<int> result_7 = BuildingQueries(heights_7, queries_7);
+assert(expected_7 == result_7);
+//TEST_END
+ 
+//TEST
+std::vector<int> heights_8 = {1, 2, 3, 4};
+std::vector<std::vector<int>> queries_8={{0, 1}, {1, 2}, {2, 3}, {1, 1}};
+std::vector<int> expected_8={1,2,3,1};
+std::vector<int> result_8 = BuildingQueries(heights_8, queries_8);
+assert(expected_8 == result_8);
+//TEST_END
+  
+//TEST
+
+std::vector<int> heights_9 = {};
+std::vector<std::vector<int>> queries_9 = {{0, 1}, {1, 2}, {2, 3}, {1, 1}};
+
+try {
+    BuildingQueries(heights_9, queries_9);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+std::vector<int> heights_10 = {0, 2, 3, 4};
+std::vector<std::vector<int>> queries_10 = {{0, 1}, {1, 2}, {2, 3}, {1, 4}};
+
+try {
+    BuildingQueries(heights_10, queries_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+std::vector<int> heights_11 = {1000000001};
+std::vector<std::vector<int>> queries_11 = {{0, 0}};
+
+try {
+    BuildingQueries(heights_11, queries_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+std::vector<int> heights_12 = {1,2,3,6};
+std::vector<std::vector<int>> queries_12 = {};
+
+try {
+    BuildingQueries(heights_12, queries_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+ 
+  
+  return 0;
+}
+
