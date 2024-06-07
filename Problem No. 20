@@ -1,0 +1,266 @@
+/*
+
+Jimmy is given two vectors of integer, first_vec and second_vec, both of length len, where each vector permutations of [0, 1, ..., len - 1] containing values from 0 to len - 1 each number occuring exactly once. 
+Now, Jimmy wants to find sets of three numbers (num_1, num_2, num_3) where:
+
+The numbers are distinct within each set.
+In first_vec, the indices of num_1, num_2, and num_3 are such that num_1 comes before num_2 and num_2 comes before num_3.
+Similarly, in second_vec, the indices of num_1, num_2, and num_3 follow the same pattern.
+For instance, if in first_vec, num_1 appears at index 0, num_2 at index 2, and num_3 at index 4, and in second_vec, num_1 appears at index 1, num_2 at index 3, and num_3 at index 5, 
+then (num_1, num_2, num_3) is a good triplet because the order of indices for each value is maintained in both lists.
+
+Jimmy's task is to count how many such good triplets exist in the given vectors first_vec and second_vec. Since Jimmy is bestfriend of yours help him solve this problem. Create a C++ function GoodTriplets that 
+will return an integer denoting count of good triplets.
+
+
+Input Type:
+
+vector<int> denoting first_vec
+vector<int> denoting second_vec
+
+
+Input Constraints:
+
+1.The length of first_vec and second_vec are both equal to len, and is in the range [3, 10^5].
+2.Each element in first_vec and second_vec is in the range [0, len - 1], where len is the length of the vectors.
+3.first_vec and second_vec are permutations of [0, 1, ..., len - 1].
+
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <set>
+#include <cassert>
+
+class SegmentTree {
+public:
+    std::vector<long long> segment_tree;
+    std::vector<long long> values;
+    long long size;
+
+    SegmentTree() {}
+
+    void Build(long long left, long long right, long long index = 1){
+        if(left == right){
+            segment_tree[index] = values[left];
+            return;
+        }
+        long long mid = (left + right) / 2;
+        Build(left, mid, 2 * index);
+        Build(mid + 1, right, 2 * index + 1);
+        segment_tree[index] = segment_tree[2 * index] + segment_tree[2 * index + 1];
+    }
+
+    long long Query(long long left, long long right, long long query_left, long long query_right, long long index = 1){
+        if(left > query_right || right < query_left){
+            return 0;
+        }
+        if(left >= query_left && right <= query_right){
+            return segment_tree[index];
+        }
+        long long mid = (left + right) / 2;
+        return Query(left, mid, query_left, query_right, 2 * index) + Query(mid + 1, right, query_left, query_right, 2 * index + 1);
+    }
+
+    void Update(long long left, long long right, long long index_to_update, long long index = 1){
+        if(index_to_update < left || index_to_update > right){
+            return;
+        }
+        if(left == right && left == index_to_update){
+            segment_tree[index] = 1;
+            return;
+        }
+        long long mid = (left + right) / 2;
+        Update(left, mid, index_to_update, 2 * index);
+        Update(mid + 1, right, index_to_update, 2 * index + 1);
+        segment_tree[index] = segment_tree[2 * index] + segment_tree[2 * index + 1];    
+    }
+};
+
+
+    long long GoodTriplets(std::vector<int>& first_vec, std::vector<int>& second_vec) {
+        long long len = first_vec.size();
+
+        
+        if (len < 3 || len > 100000)
+            throw std::invalid_argument("Length of vectors should be in the range [3, 10^5].");
+        
+        if (first_vec.size() != second_vec.size())
+            throw std::invalid_argument("Length of vectors should be same");
+        
+        std::set<int> seen;
+
+       
+        for (int i = 0; i < len; ++i) {
+            seen.insert(first_vec[i]);
+        }
+        for (int i = 0; i < len; ++i) {
+            if (seen.find(i) == seen.end())
+                throw std::invalid_argument("first_vec is not a permutation of 0 to len-1.");
+        }
+
+        seen.clear();
+
+  
+        for (int i = 0; i < len; ++i) {
+            seen.insert(second_vec[i]);
+        }
+        for (int i = 0; i < len; ++i) {
+            if (seen.find(i) == seen.end())
+                throw std::invalid_argument("second_vec is not a permutation of 0 to len-1.");
+        }
+
+        std::vector<long long> values(len + 1, 0);
+        long long good_triplets_count = 0;
+        std::map<long long, long long> index_map;
+        for (long long i = 0; i < len; ++i) {
+            index_map[second_vec[i] + 1] = i + 1;
+        }
+        SegmentTree segment_tree;
+        segment_tree.values = values; 
+        segment_tree.segment_tree.resize(4 * (len + 1)); 
+        segment_tree.Build(1, len);
+        for (int i = 1; i <= len; ++i) {
+            long long right_index = index_map[first_vec[i - 1] + 1];
+            long long less_than_right = segment_tree.Query(1, len, 1, right_index);
+            long long less_than_curr = i - less_than_right - 1;
+            long long greater_than_right = len - right_index - less_than_curr;
+            good_triplets_count += greater_than_right * less_than_right;
+            segment_tree.Update(1, len, right_index);
+        }
+        return good_triplets_count;
+    }
+
+int main(){
+  
+//TEST
+
+std::vector<int> first_vec_1 = {0,1,2,3};
+std::vector<int> second_vec_1 = {3,2,0,1}; 
+int expected_1 = 0;
+int result_1 = GoodTriplets(first_vec_1, second_vec_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+  
+//TEST
+std::vector<int> first_vec_2 = {0, 1, 2,3,4};
+std::vector<int> second_vec_2 = {3,4,1, 2, 0};
+int expected_2 = 0;
+int result_2 = GoodTriplets(first_vec_2, second_vec_2);
+assert(result_2 == expected_2);
+
+  //TEST_END
+ 
+//TEST
+std::vector<int> first_vec_3 = {0, 1, 2, 3, 4};
+std::vector<int> second_vec_3 = {4, 3, 2, 1, 0};
+int expected_3 = 0;
+int result_3 = GoodTriplets(first_vec_3, second_vec_3);
+assert(result_3 == expected_3);
+  //TEST_END
+ 
+//TEST
+  
+std::vector<int> first_vec_4 = {0, 1,4,3,5,2};
+std::vector<int> second_vec_4 = {0, 1, 2,3,4,5};
+int expected_4 = 8;
+int result_4 = GoodTriplets(first_vec_4, second_vec_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> first_vec_5 = {0, 1, 2, 3};
+std::vector<int> second_vec_5 = {1, 2, 0, 3};
+int expected_5 = 1;
+int result_5 = GoodTriplets(first_vec_5, second_vec_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> first_vec_6 = {0, 1, 2, 3, 4, 5};
+std::vector<int> second_vec_6 = {1, 0, 2, 5, 4, 3};
+int expected_6 = 6;
+int result_6 = GoodTriplets(first_vec_6, second_vec_6);
+assert(result_6 == expected_6);
+//TEST_END
+  
+//TEST
+std::vector<int> first_vec_7 = {0, 1, 2, 3, 4, 5, 6};
+std::vector<int> second_vec_7 = {0, 1, 2, 3, 4, 5, 6};
+int expected_7 = 35;
+int result_7 = GoodTriplets(first_vec_7, second_vec_7);
+assert(result_7 == expected_7);
+//TEST_END
+  
+//TEST
+std::vector<int> first_vec_8 = {0, 1, 2, 3, 4, 5, 6};
+std::vector<int> second_vec_8 = {6, 5, 4, 3, 2, 1, 0};
+int expected_8 = 0;
+int result_8 = GoodTriplets(first_vec_8, second_vec_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> first_vec_9 = {0, 1, 2, 3, 4, 5, 6};
+std::vector<int> second_vec_9 = {1, 0, 2, 6, 5, 4, 3};
+int expected_9 = 8;
+int result_9 = GoodTriplets(first_vec_9, second_vec_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+
+std::vector<int> first_vec_10 = {0, 1, 2, 3, 4, 5, 6};
+std::vector<int> second_vec_10 = {1, 0, 2, 6, 5, 4, 4};
+
+try {
+    GoodTriplets(first_vec_10, second_vec_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> first_vec_11 = {0, 1};
+std::vector<int> second_vec_11 = {0, 1};
+
+try {
+    GoodTriplets(first_vec_11, second_vec_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+  
+  //TEST_END
+
+//TEST
+std::vector<int> first_vec_12 = {0, 1, 2, 3};
+std::vector<int> second_vec_12 = {0, 2, 1};
+
+try {
+    GoodTriplets(first_vec_12, second_vec_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+ 
+  
+  
+  
+  return 0;
+}
+
+
+
+
+
