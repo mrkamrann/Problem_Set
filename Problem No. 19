@@ -1,0 +1,265 @@
+/*
+
+Jimmy, a curious mathematician, has a string num that represents the digits of a very large integer. Along with this string, he has an integer counter, which signifies the maximum number of swaps he can perform. 
+Each swap allows Jimmy to exchange any two adjacent digits in the integer.
+
+Being a perfectionist, Jimmy aims to transform the integer into the smallest possible value. However, he can only do this by swapping digits, and he must be mindful not to exceed the counter swaps limit. 
+The task is quite challenging because the integer is enormous, and every swap needs to be carefully considered to achieve the optimal result.
+
+Your mission is to assist Jimmy in this endeavor. You need to create a C++ function MinimumInteger that, given the string num and the integer counter, returns the smallest integer Jimmy 
+can form by making at most k adjacent swaps. The result should be presented as a string, reflecting the new, minimal integer Jimmy strives to obtain.
+
+Input Type:
+
+A string denoting num
+An integer denoting counter
+
+Input Constraints:
+
+1. The length of num is in the range [1,3*10^4] both inclusive.
+2. num consists of only digits and does not contain leading zeros.
+3. counter is in the range [1, 10^9] both inclusive.
+
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <string>
+#include <iostream>
+#include <cassert>
+
+class SegmentTree {
+public:
+    std::vector<int> segment_tree, lazy_tree;
+
+    SegmentTree(int size) {
+        segment_tree.resize(4 * size, 0);
+        lazy_tree.resize(4 * size, 0);
+    }
+
+    int Query(int index, int low, int high, int position) {
+        if (lazy_tree[index] != 0) {
+            segment_tree[index] += (high - low + 1) * lazy_tree[index];
+            if (low != high) {
+                lazy_tree[2 * index + 1] += lazy_tree[index];
+                lazy_tree[2 * index + 2] += lazy_tree[index];
+            }
+            lazy_tree[index] = 0;
+        }
+        if (low == high) return segment_tree[index];
+        int mid = (low + high) / 2;
+        if (position <= mid) return Query(2 * index + 1, low, mid, position);
+        return Query(2 * index + 2, mid + 1, high, position);
+    }
+
+    void Update(int index, int low, int high, int left, int right) {
+        if (lazy_tree[index] != 0) {
+            segment_tree[index] += (high - low + 1) * lazy_tree[index];
+            if (low != high) {
+                lazy_tree[2 * index + 1] += lazy_tree[index];
+                lazy_tree[2 * index + 2] += lazy_tree[index];
+            }
+            lazy_tree[index] = 0;
+        }
+        if (high < left || low > right) return;
+        if (low >= left && high <= right) {
+            segment_tree[index] += (high - low + 1);
+            if (low != high) {
+                lazy_tree[2 * index + 1] += 1;
+                lazy_tree[2 * index + 2] += 1;
+            }
+            return;
+        }
+        int mid = (low + high) / 2;
+        Update(2 * index + 1, low, mid, left, right);
+        Update(2 * index + 2, mid + 1, high, left, right);
+    }
+};
+
+    std::string MinInteger(std::string num, int counter) {
+        if (counter < 1 || counter > 1000000000) {
+            throw std::invalid_argument("Counter must be in the range [1, 10^9].");
+        }
+        int num_size = num.size();
+        if (num_size < 1 || num_size > 30000) {
+            throw std::invalid_argument("The length of num must be in the range [1, 3*10^4].");
+        }
+        bool leading_zero = false;
+bool all_digits = true;
+
+for (size_t i = 0; i < num.size(); ++i) {
+    if (i == 0 && num[i] == '0') {
+        leading_zero = true;
+        break;
+    }
+    if (!std::isdigit(num[i])) {
+        all_digits = false;
+        break;
+    }
+}
+
+if (leading_zero || !all_digits) {
+    throw std::invalid_argument("Num must consist of only digits and must not contain leading zeros.");
+}
+
+        std::vector<int> adj_list[10];
+      
+        SegmentTree segment_tree(num_size);
+        for (int i = num_size - 1; i >= 0; --i) {
+            adj_list[num[i] - '0'].push_back(i);
+        }
+        std::vector<bool> used(num_size, false);
+        std::string result;
+        for (int i = 0; i < num_size; ++i) {
+            if (used[i]) continue;
+            if (counter <= 0) {
+                result += num[i];
+                continue;
+            }
+            bool found = true;
+            int current_digit = num[i] - '0';
+            for (int j = 0; j < current_digit; ++j) {
+                if (adj_list[j].empty()) continue;
+                int position = adj_list[j].back();
+                int query_position = segment_tree.Query(0, 0, num_size - 1, position);
+                int query_i = segment_tree.Query(0, 0, num_size - 1, i);
+                int swaps = position - i - query_position + query_i;
+                if (swaps <= counter) {
+                    counter -= swaps;
+                    result += j + '0';
+                    used[position] = true;
+                    adj_list[j].pop_back();
+                    found = false;
+                    segment_tree.Update(0, 0, num_size - 1, position, num_size - 1);
+                    --i;
+                    break;
+                }
+            }
+            if (found) {
+                result += num[i];
+                used[i] = true;
+                adj_list[current_digit].pop_back();
+            }
+        }
+        return result;
+    }
+int main(){
+  
+// TEST 
+std::string num_1 = "4321";
+int counter_1 = 4;
+std::string expected_1 = "1342";
+std::string result_1 = MinInteger(num_1, counter_1);
+assert(expected_1 == result_1);
+  
+//TEST_END
+
+// TEST 
+    std::string num_2 = "100";
+    int counter_2 = 1;
+    std::string expected_2 = "010";
+    std::string result_2 = MinInteger(num_2, counter_2);
+    assert(expected_2 == result_2);
+    // TEST_END
+
+    // TEST 
+    std::string num_3 = "201";
+    int counter_3 = 1;
+    std::string expected_3 = "021";
+    std::string result_3 = MinInteger(num_3, counter_3);
+    assert(expected_3 == result_3);
+    // TEST_END
+
+    // TEST 
+    std::string num_4 = "987654";
+    int counter_4 = 10;
+    std::string expected_4 = "458976";
+    std::string result_4 = MinInteger(num_4, counter_4);
+    assert(expected_4 == result_4);
+    // TEST_END
+
+    // TEST 
+    std::string num_5 = "123456";
+    int counter_5 = 3;
+    std::string expected_5 = "123456";
+    std::string result_5 = MinInteger(num_5, counter_5);
+    assert(expected_5 == result_5);
+    // TEST_END
+
+    // TEST 
+    std::string num_6 = "31024";
+    int counter_6 = 2;
+    std::string expected_6 = "03124";
+    std::string result_6 = MinInteger(num_6, counter_6);
+    assert(expected_6 == result_6);
+    // TEST_END
+
+    // TEST 
+    std::string num_7 = "54932";
+    int counter_7 = 4;
+    std::string expected_7 = "25493";
+    std::string result_7 = MinInteger(num_7, counter_7);
+    assert(expected_7 == result_7);
+    // TEST_END
+
+    // TEST 
+    std::string num_8 = "6781";
+    int counter_8 = 3;
+    std::string expected_8 = "1678";
+    std::string result_8 = MinInteger(num_8, counter_8);
+    assert(expected_8 == result_8);
+    // TEST_END
+
+    // TEST 
+    std::string num_9 = "34512";
+    int counter_9 = 2;
+    std::string expected_9 = "31452";
+    std::string result_9 = MinInteger(num_9, counter_9);
+    assert(expected_9 == result_9);
+
+  // TEST_END
+  
+  // TEST
+  
+std::string num_10 = "";
+int counter_10 = 2;
+try{
+  MinInteger(num_10, counter_10);
+  assert(false);
+}
+
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+  // TEST
+std::string num_11 = "a1234";
+int counter_11 = 1;
+try {
+    MinInteger(num_11, counter_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string num_12 = "01234";
+int counter_12 = -1;
+try {
+    MinInteger(num_12, counter_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+  
+  
+  return 0;
+}
+
+
