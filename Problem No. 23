@@ -94,7 +94,7 @@ struct MathUtilities {
 };
 
     int IdealVectors(int vec_length, int max_value) {
-        if (vec_length <= 0 || max_value <= 0 ||vec_length >10000 ||max_value>10000) {
+        if (vec_length < 2 || max_value < 1 ||vec_length >10000 ||max_value>10000) {
             throw std::invalid_argument("Invalid input: vec_length and max_value are out of range.");
         }
         MathUtilities math_util;
@@ -145,7 +145,7 @@ int main(){
   
 int vec_length_2 = 3;
 int max_value_2 = 7;
-int expected_2 = 35;
+int expected_2 = 28;
 int result_2 = IdealVectors(vec_length_2, max_value_2);
 assert(expected_2 == result_2);
 
@@ -155,7 +155,7 @@ assert(expected_2 == result_2);
   
 int vec_length_3 = 4;
 int max_value_3 = 10;
-int expected_3 = 210;
+int expected_3 = 89;
 int result_3 = IdealVectors(vec_length_3, max_value_3);
 assert(expected_3 == result_3);
 
@@ -165,7 +165,7 @@ assert(expected_3 == result_3);
   
 int vec_length_4 = 5;
 int max_value_4 = 15;
-int expected_4 = 1554;
+int expected_4 = 271;
 int result_4 = IdealVectors(vec_length_4, max_value_4);
 assert(expected_4 == result_4);
 
@@ -173,9 +173,9 @@ assert(expected_4 == result_4);
 
 // TEST
   
-int vec_length_5 = 1;
+int vec_length_5 = 2;
 int max_value_5 = 20;
-int expected_5 = 20;
+int expected_5 = 66;
 int result_5 = IdealVectors(vec_length_5, max_value_5);
 assert(expected_5 == result_5);
 
@@ -205,7 +205,7 @@ assert(expected_7 == result_7);
   
 int vec_length_8 = 4;
 int max_value_8 = 6;
-int expected_8 = 41;
+int expected_8 = 39;
 int result_8 = IdealVectors(vec_length_8, max_value_8);
 assert(expected_8 == result_8);
 
@@ -215,13 +215,54 @@ assert(expected_8 == result_8);
   
 int vec_length_9 = 5;
 int max_value_9 = 8;
-int expected_9 = 102;
+int expected_9 = 96;
 int result_9 = IdealVectors(vec_length_9, max_value_9);
 assert(expected_9 == result_9);
 
 // TEST_END
   
-  return 0;
+// TEST
+
+int vec_length_10 = 1;
+int max_value_10 = 15;
+try {
+  IdealVectors(vec_length_10, max_value_10);
+  assert(false);
+}
+catch(const std::invalid_argument& e) {
+  assert(true);
 }
 
+// TEST_END
+
+// TEST
+
+int vec_length_11 = 0;
+int max_value_11 = 10;
+try {
+  IdealVectors(vec_length_11, max_value_11);
+  assert(false);
+}
+catch(const std::invalid_argument& e) {
+  assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int vec_length_12 = 3;
+int max_value_12 = -5;
+try {
+  IdealVectors(vec_length_12, max_value_12);
+  assert(false);
+}
+catch(const std::invalid_argument& e) {
+  assert(true);
+}
+
+// TEST_END
+
+  return 0;
+}
 
