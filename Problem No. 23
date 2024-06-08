@@ -1,0 +1,227 @@
+/*
+"
+Julie, who possesses exceptional proficiency in constructing vectors tailored to specific requirements, has been presented with a fresh challenge today. 
+Whether it's mathematical vectors, programming data structures, or any other form of vectorization, 
+Julie's adeptness allows her to efficiently craft solutions that precisely align with the given criteria
+
+Julie and two integers vec_length and max_value, which describe an ideal vector. Julie is tasked with creating a vector, which is considered ideal if the following conditions hold:
+
+Every element nums[i] in the vector is a value from 1 to max_value, for 0 <= i < vec_length.
+Every nums[i] is divisible by nums[i - 1], for 0 < i < vec_length.
+
+Julie needs to determine the number of distinct ideal vectors of length vec_length. Since the answer may be very large, she needs to return it modulo 10^9 + 7. Help her create a C++ function IdealVectors that
+will return an integer denoting the number of distinct ideal vectors.
+
+Input Type:
+
+An Integer denoting vec_length
+An Integer denoting max_value
+
+
+Input Constraints:
+
+1.The integer vec_length should be in the range [2, 10^4] inclusive. 
+2.The integer max_value should be in the range [1, 10^4] inclusive.
+
+
+*/
+
+
+#include <iostream>
+#include <vector>
+#include <cassert>
+#include <stdexcept>
+
+struct MathUtilities {
+    static const int mod = 1e9 + 7;
+    std::vector<int> factorial;
+    std::vector<int> inverse_factorial;
+
+    int LogTwo(int number) {
+        int result = -1;
+        assert(number > 0);
+        while (number) {
+            ++result;
+            number >>= 1;
+        }
+        return result;
+    }
+
+    int Add(int first, int second) {
+        if (first + second >= mod) {
+            return first + second - mod;
+        }
+        return first + second;
+    }
+
+    int Multiply(int multiplicand, int multiplier) {
+        return 1ll * multiplicand * multiplier % mod;
+    }
+
+    int Power(int base, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        } else if (exponent & 1) {
+            return Multiply(base, Power(base, exponent - 1));
+        } else {
+            int sqrt_base = Power(base, exponent >> 1);
+            return Multiply(sqrt_base, sqrt_base);
+        }
+    }
+
+    int Inverse(int number) {
+        return Power(number, mod - 2);
+    }
+
+    int Choose(int total, int select) {
+        if (total - select < 0) {
+            return 0;
+        }
+        return Multiply(factorial[total], Multiply(inverse_factorial[select], inverse_factorial[total - select]));
+    }
+
+    void SetUp(int size) {
+        factorial = inverse_factorial = std::vector<int>(size + 1);
+        factorial[0] = 1;
+        for (int i = 1; i <= size; ++i) {
+            factorial[i] = Multiply(factorial[i - 1], i);
+        }
+        inverse_factorial[size] = Inverse(factorial[size]);
+        for (int i = size - 1; i >= 0; --i) {
+            inverse_factorial[i] = Multiply(inverse_factorial[i + 1], i + 1);
+        }
+    }
+};
+
+    int IdealVectors(int vec_length, int max_value) {
+        if (vec_length <= 0 || max_value <= 0 ||vec_length >10000 ||max_value>10000) {
+            throw std::invalid_argument("Invalid input: vec_length and max_value are out of range.");
+        }
+        MathUtilities math_util;
+        math_util.SetUp(std::max(max_value, vec_length));
+        std::vector<std::vector<int>> path_lengths(max_value + 1, std::vector<int>(std::min(vec_length + 1, math_util.LogTwo(max_value) + 2), 0));
+
+        for (int i = 1; i <= max_value; ++i) {
+            for (int j = 2; j * j <= i; ++j) {
+                if (i % j) {
+                    continue;
+                }
+                for (int k = 1; k < path_lengths[i].size(); ++k) {
+                    path_lengths[i][k] = math_util.Add(path_lengths[i][k], path_lengths[j][k - 1]);
+                    if (j * j != i) {
+                        path_lengths[i][k] = math_util.Add(path_lengths[i][k], path_lengths[i / j][k - 1]);
+                    }
+                }
+            }
+            path_lengths[i][1] = math_util.Add(path_lengths[i][1], 1);
+            if (i > 1) {
+                path_lengths[i][2] = math_util.Add(path_lengths[i][2], 1);
+            }
+        }
+
+        int answer = 0;
+        for (int i = 0; i <= max_value; ++i) {
+            for (int j = 1; j < path_lengths[i].size(); ++j) {
+                answer = math_util.Add(answer, math_util.Multiply(path_lengths[i][j], math_util.Choose(vec_length - 1, j - 1)));
+            }
+        }
+
+        return answer;
+    }
+
+int main(){
+  
+  //TEST
+  
+  int vec_length_1 = 2;
+  int max_value_1 = 5;
+  int expected_1 = 10;
+  int result_1 = IdealVectors(vec_length_1, max_value_1);
+  assert(expected_1 == result_1);
+
+  //TEST_END
+  
+  // TEST
+  
+int vec_length_2 = 3;
+int max_value_2 = 7;
+int expected_2 = 35;
+int result_2 = IdealVectors(vec_length_2, max_value_2);
+assert(expected_2 == result_2);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_3 = 4;
+int max_value_3 = 10;
+int expected_3 = 210;
+int result_3 = IdealVectors(vec_length_3, max_value_3);
+assert(expected_3 == result_3);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_4 = 5;
+int max_value_4 = 15;
+int expected_4 = 1554;
+int result_4 = IdealVectors(vec_length_4, max_value_4);
+assert(expected_4 == result_4);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_5 = 1;
+int max_value_5 = 20;
+int expected_5 = 20;
+int result_5 = IdealVectors(vec_length_5, max_value_5);
+assert(expected_5 == result_5);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_6 = 3;
+int max_value_6 = 1;
+int expected_6 = 1;
+int result_6 = IdealVectors(vec_length_6, max_value_6);
+assert(expected_6 == result_6);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_7 = 3;
+int max_value_7 = 3;
+int expected_7 = 7;
+int result_7 = IdealVectors(vec_length_7, max_value_7);
+assert(expected_7 == result_7);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_8 = 4;
+int max_value_8 = 6;
+int expected_8 = 41;
+int result_8 = IdealVectors(vec_length_8, max_value_8);
+assert(expected_8 == result_8);
+
+// TEST_END
+
+// TEST
+  
+int vec_length_9 = 5;
+int max_value_9 = 8;
+int expected_9 = 102;
+int result_9 = IdealVectors(vec_length_9, max_value_9);
+assert(expected_9 == result_9);
+
+// TEST_END
+  
+  return 0;
+}
+
+
