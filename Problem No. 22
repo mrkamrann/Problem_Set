@@ -1,0 +1,295 @@
+/*
+
+Jimmy is working on a problem involving two vectors, nums and and_values, which have lengths len_1 and len_2 respectively.
+
+The task for Jimmy is to split the vector nums into len_2 disjoint contiguous subarrays. Each of these subarrays must meet a specific condition:
+the bitwise AND of all the elements in the subarray must be equal to the corresponding element in the and_values vector. Specifically, for the ith subarray, which spans from index left[i] to right[i] in nums, 
+the condition is that the bitwise AND of the elements from nums[left[i]] to nums[right[i]] must equal and_values[i].
+
+The value of each subarray is defined as the last element in that subarray (i.e., nums[right[i]] for the ith subarray).
+
+Jimmy's objective is to find a way to divide nums such that the sum of the values of these len_2 subarrays is minimized. However, if it is not possible to divide nums into len_2 subarrays that 
+satisfy the bitwise AND condition for each subarray, Jimmy should return -1. Help him Create a C++ function MinValSum that should return an integer, that is the answer to the problem.
+
+
+Input Types:
+
+vector<int> denoting nums vector
+vector<int> denoting and_values vector
+
+Input Constraints:
+
+1.The length of the nums array (len_1) is at least 1 and at most 10^4.
+2.The length of the and_values array (len_2) is at least 1 and at most min(len_1, 10).
+3.Each element in the nums array is in the range [1, 10^5).
+4.Each element in the and_values array is in the range [0, 10^5).
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <cmath>
+#include <algorithm>
+#include <limits.h>
+#include <iostream>
+#include <cassert>
+
+
+    long long HighestPowerOfTwo(long long value) {
+        value |= value >> 1;
+        value |= value >> 2;
+        value |= value >> 4;
+        value |= value >> 8;
+        value |= value >> 16;
+        value |= value >> 32;
+        return value ^ (value >> 1);
+    }
+
+    class SegmentTree {
+    private:
+        const long long default_val = (1ll << 60);
+        std::vector<long long> seg_tree;
+        int length;
+
+    public:
+        SegmentTree(int length) : length(length), seg_tree(length * 2, default_val) {}
+
+        void SetTree(int index, long long value) {
+            index += length;
+            seg_tree[index] = value;
+            for (; index > 1; index /= 2) {
+                seg_tree[index / 2] = std::min(seg_tree[index], seg_tree[index ^ 1]);
+            }
+        }
+
+        long long RangeMinimum(int start, int end) {
+            end++;
+            long long sum = default_val;
+            for (start += length, end += length; start < end; start /= 2, end /= 2) {
+                if (start % 2 == 1) { sum = std::min(sum, seg_tree[start++]); }
+                if (end % 2 == 1) { sum = std::min(sum, seg_tree[--end]); }
+            }
+            return sum;
+        }
+    };
+
+    struct MyStruct {
+        long long dp_arr[(int)1e5 + 3][15];
+        int sparse_table[(int)3e5][30];
+    } struct_data;
+
+    int Query(int left, int right) {
+        if (right == left)
+            return struct_data.sparse_table[right][0];
+        int distance = (int) log2(HighestPowerOfTwo(right - left));
+        return struct_data.sparse_table[left][distance] & struct_data.sparse_table[right - (1 << distance) + 1][distance];
+    }
+
+    int MinimumValueSum(std::vector<int>& nums, std::vector<int>& and_values) {
+        int len_1 = nums.size();
+        int len_2 = and_values.size();
+
+       
+        if (len_1 < 1 || len_1 > 10000) {
+            throw std::invalid_argument("Invalid input: len_1 must be between 1 and 10^4.");
+        }
+        if (len_2 < 1 || len_2 > std::min(len_1, 10)) {
+            throw std::invalid_argument("Invalid input: len_2 must be between 1 and min(len_1, 10).");
+        }
+        for (int num : nums) {
+            if (num < 1 || num >= 100000) {
+                throw std::invalid_argument("Invalid input: each element in nums must be between 1 and 10^5 - 1.");
+            }
+        }
+        for (int value : and_values) {
+            if (value < 0 || value >= 100000) {
+                throw std::invalid_argument("Invalid input: each element in and_values must be between 0 and 10^5 - 1.");
+            }
+        }
+
+        for (int i = 0; i < len_1; ++i)
+            struct_data.sparse_table[i][0] = nums[i];
+
+        int log_n = ceil(log2(len_1));
+        for (int j = 1; j < log_n; ++j) {
+            for (int i = 0; i < len_1 - (1 << j) + 1; ++i) {
+                struct_data.sparse_table[i][j] = struct_data.sparse_table[i][j - 1] & struct_data.sparse_table[i + (1 << (j - 1))][j - 1];
+            }
+        }
+
+        std::vector<SegmentTree> segment_trees(len_2 + 2, SegmentTree(len_1 + 3));
+        for (int w = 0; w <= len_2 + 2; ++w)
+            for (int i = 0; i <= len_1 + 2; ++i)
+                struct_data.dp_arr[i][w] = LONG_LONG_MAX / 3;
+        struct_data.dp_arr[len_1][len_2] = 0;
+
+        segment_trees[len_2].SetTree(len_1, nums[len_1 - 1]);
+
+        for (int w = len_2 - 1; w >= 0; --w) {
+            for (int i = len_1 - 1; i >= 0; --i) {
+                int left_boundary = len_1;
+                int left = i;
+                int right = len_1 - 1;
+                while ((right - left) > 1) {
+                    int mid = (right + left) >> 1;
+                    if (Query(i, mid) > and_values[w])
+                        left = mid + 1;
+                    else
+                        right = mid;
+                }
+                if (Query(i, left) == and_values[w])
+                    left_boundary = left;
+                else if (Query(i, right) == and_values[w])
+                    left_boundary = right;
+
+                int right_boundary = i;
+                left = i;
+                right = len_1 - 1;
+                while ((right - left) > 1) {
+                    int mid = (right + left) >> 1;
+                    if (Query(i, mid) < and_values[w])
+                        right = mid - 1;
+                    else
+                        left = mid;
+                }
+                if (Query(i, right) == and_values[w])
+                    right_boundary = right;
+                else if (Query(i, left) == and_values[w])
+                    right_boundary = left;
+
+                if (left_boundary <= right_boundary)
+                    struct_data.dp_arr[i][w] = segment_trees[w + 1].RangeMinimum(left_boundary + 1, right_boundary + 1);
+                if (i > 0)
+                    segment_trees[w].SetTree(i, struct_data.dp_arr[i][w] + nums[i - 1]);
+            }
+        }
+
+        return struct_data.dp_arr[0][0] > LONG_LONG_MAX / 10 ? -1 : struct_data.dp_arr[0][0];
+    }
+
+
+int main() {
+ 
+   //TEST
+    std::vector<int> nums_1 = {1,4,3,3,2};
+    std::vector<int> and_values_1 = {0,3,3,2};
+    int expected_1 = 12;
+    int result_1 = MinimumValueSum(nums_1, and_values_1);
+    assert(expected_1 == result_1);
+    //TEST_END
+   
+  //TEST
+    std::vector<int> nums_2 = {1,2};
+    std::vector<int> and_values_2 = {0};
+    int expected_2 = 2;
+    int result_2 = MinimumValueSum(nums_2, and_values_2);
+    assert(expected_2 == result_2);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_3 = {99999};
+    std::vector<int> and_values_3 = {99999};
+    int expected_3 = 99999;
+    int result_3 = MinimumValueSum(nums_3, and_values_3);
+    assert(expected_3 == result_3);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_4 = {1, 7, 10, 1, 9};
+    std::vector<int> and_values_4 = {5, 2, 4, 5};
+    int expected_4 = -1;
+    int result_4 = MinimumValueSum(nums_4, and_values_4);
+    assert(expected_4 == result_4);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_5 = {2,4,6,9};
+    std::vector<int> and_values_5 = {2,2,2};
+    int expected_5 = -1;
+    int result_5 = MinimumValueSum(nums_5, and_values_5);
+    assert(expected_5 == result_5);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_6 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> and_values_6 = {0};
+    int expected_6 = 10;
+    int result_6 = MinimumValueSum(nums_6, and_values_6);
+    assert(expected_6 == result_6);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_7 = {2,3,5,7,7,7,5};
+    std::vector<int> and_values_7 = {0,7,5};
+    int expected_7 = 17;
+    int result_7 = MinimumValueSum(nums_7, and_values_7);
+    assert(expected_7 == result_7);
+//TEST_END
+
+//TEST
+    std::vector<int> nums_8 = {99999, 99998, 99997, 99999};
+    std::vector<int> and_values_8 = {99997, 99998, 1000};
+    int expected_8 = -1;
+    int result_8 = MinimumValueSum(nums_8, and_values_8);
+    assert(expected_8 == result_8);
+//TEST_END
+  
+//TEST
+    std::vector<int> nums_9 = {100000};
+    std::vector<int> and_values_9 = {};
+    
+    try{
+       MinimumValueSum(nums_9, and_values_9);
+       assert(false);
+    }
+   catch(const std::invalid_argument& e){
+     assert(true);
+   }
+//TEST_END
+
+//TEST
+    std::vector<int> nums_10 = {};
+    std::vector<int> and_values_10 = {99999};
+    
+    try{
+       MinimumValueSum(nums_10, and_values_10);
+       assert(false);
+    }
+   catch(const std::invalid_argument& e){
+     assert(true);
+   }
+//TEST_END
+
+//TEST
+    std::vector<int> nums_11 = {99999, 100001};
+    std::vector<int> and_values_11 = {99999};
+    
+    try{
+       MinimumValueSum(nums_11, and_values_11);
+       assert(false);
+    }
+   catch(const std::invalid_argument& e){
+     assert(true);
+   }
+//TEST_END
+
+//TEST
+    std::vector<int> nums_12 = {100000, 99999};
+    std::vector<int> and_values_12 = {100001};
+    
+    try{
+       MinimumValueSum(nums_12, and_values_12);
+       assert(false);
+    }
+   catch(const std::invalid_argument& e){
+     assert(true);
+   }
+//TEST_END
+
+  
+  
+
+
+    return 0;
+}
+
