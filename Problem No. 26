@@ -1,0 +1,253 @@
+/*
+Once upon a time in the quaint village of Numeria, there lived a young lad named Jimmy. Jimmy had a peculiar habit of jotting down strings. One fine afternoon, while strolling through the village square,
+Jimmy was struck by a particularly mesmerizing string named input_string.
+
+The string input_string is of length len consisting of only lowercase English letters. In one operation, he can:
+
+Delete the entire string input_string, or
+Delete the first i letters of input_string if the first input_string letters of s are equal to the following i letters in input_string, for any i in the range 1 <= i <= len / 2.
+For example, if s = "ababc", then in one operation, he could delete the first two letters of s to get "abc", since the first two letters of input_string and the following two letters of input_string are 
+both equal to "ab".
+
+Help Jimmy create a C++ function that will return the maximum number of operations needed to delete all of input_string.
+
+Input Type:
+
+A string denoting input_string
+
+Input Constraints:
+
+1.The length of input_string should be at least 1 and at most 4000 both inclusive.
+2.input_string consists only of lowercase English letters
+
+*/
+
+#include <vector>
+#include <array>
+#include <stdexcept>
+#include <string>
+#include <functional>
+#include <cassert>
+
+class HashingHelper {
+public:
+    static constexpr long long modulus_0 = 127657753;
+    static constexpr long long modulus_1 = 987654319;
+    static constexpr long long prime_0 = 137;
+    static constexpr long long prime_1 = 277;
+
+    static long long BinPow(long long base, long long exponent, long long modulus) {
+        base %= modulus;
+        long long result = 1;
+        while (exponent > 0) {
+            if (exponent & 1) {
+                result = (result * base) % modulus;
+            }
+            base = (base * base) % modulus;
+            exponent >>= 1;
+        }
+        return result;
+    }
+
+    static long long Inverse(long long number, long long modulus) {
+        return BinPow(number, modulus - 2, modulus);
+    }
+
+    static std::vector<std::array<long long, 2>> power;
+    static std::vector<std::array<long long, 2>> inverse_power;
+
+    static void Initialize(int limit) {
+        if (power.empty()) power.push_back({1, 1});
+        while (static_cast<int>(power.size()) < limit + 1) {
+            power.push_back({
+                (power.back()[0] * prime_0) % modulus_0,
+                (power.back()[1] * prime_1) % modulus_1
+            });
+        }
+        if (inverse_power.empty()) {
+            inverse_power.push_back({1, 1});
+            inverse_power.push_back({
+                Inverse(prime_0, modulus_0),
+                Inverse(prime_1, modulus_1)
+            });
+        }
+        while (static_cast<int>(inverse_power.size()) < limit + 1) {
+            inverse_power.push_back({
+                (inverse_power.back()[0] * inverse_power[1][0]) % modulus_0,
+                (inverse_power.back()[1] * inverse_power[1][1]) % modulus_1
+            });
+        }
+    }
+};
+
+std::vector<std::array<long long, 2>> HashingHelper::power;
+std::vector<std::array<long long, 2>> HashingHelper::inverse_power;
+
+class Hashing {
+private:
+    std::vector<std::array<long long, 2>> prefix;
+    int size;
+
+public:
+    Hashing(const std::string& str) {
+        HashingHelper::Initialize(static_cast<int>(str.size()) + 1);
+        if (str.empty()) return;
+        prefix.push_back({(str[0] * HashingHelper::power[0][0]) % HashingHelper::modulus_0, 
+                          (str[0] * HashingHelper::power[0][1]) % HashingHelper::modulus_1});
+        for (int i = 1; i < static_cast<int>(str.size()); ++i) {
+            prefix.push_back({
+                (prefix[i - 1][0] + str[i] * HashingHelper::power[i][0]) % HashingHelper::modulus_0,
+                (prefix[i - 1][1] + str[i] * HashingHelper::power[i][1]) % HashingHelper::modulus_1
+            });
+        }
+        size = static_cast<int>(str.size());
+    }
+
+    std::array<long long, 2> GetHash(int left, int right) {
+        if (left < 0 || left > right || right >= size) {
+            throw std::invalid_argument("Invalid indices for hash calculation");
+        }
+        std::array<long long, 2> hash;
+        hash[0] = prefix[right][0] - (left - 1 >= 0 ? prefix[left - 1][0] : 0) + HashingHelper::modulus_0;
+        hash[1] = prefix[right][1] - (left - 1 >= 0 ? prefix[left - 1][1] : 0) + HashingHelper::modulus_1;
+        hash[0] = (hash[0] * HashingHelper::inverse_power[left][0]) % HashingHelper::modulus_0;
+        hash[1] = (hash[1] * HashingHelper::inverse_power[left][1]) % HashingHelper::modulus_1;
+        return hash;
+    }
+
+    std::array<long long, 2> GetHash() {
+        return GetHash(0, size - 1);
+    }
+};
+
+
+    int DeleteString(const std::string& input_string) {
+        if (input_string.length() < 1 || input_string.length() > 4000) {
+        throw std::invalid_argument("Input string length should be between 1 and 4000 (inclusive).");
+    }
+
+ 
+    for (char character : input_string) {
+        if (character < 'a' || character > 'z') {
+            throw std::invalid_argument("input_string consists only of lowercase English letters");
+        }
+    }
+      
+       const int length = static_cast<int>(input_string.size());
+        Hashing hasher(input_string);
+        std::vector<int> dp_arr(length + 1, -1);
+        std::function<int(int)> Compute = [&](int index) -> int {
+            if (index == length) return 0;
+            if (dp_arr[index] != -1) return dp_arr[index];
+            int max_deletions = 1;
+            for (int j = 0; index + 2 * j + 1 < length; ++j) {
+                if (hasher.GetHash(index, index + j) == hasher.GetHash(index + j + 1, index + 2 * j + 1)) {
+                    max_deletions = std::max(max_deletions, Compute(index + j + 1) + 1);
+                }
+            }
+            return dp_arr[index] = max_deletions;
+        };
+        return Compute(0);
+    }
+
+
+int main() {
+   
+  //TEST
+std::string input_string_1 = "abc";
+int expected_1 = 1;
+int result_1 = DeleteString(input_string_1);
+assert(expected_1 == result_1);
+//TEST_END
+
+//TEST
+std::string input_string_2 = "xxxxxsskejenc";
+int expected_2 = 5;
+int result_2 = DeleteString(input_string_2);
+assert(expected_2 == result_2);
+//TEST_END
+
+//TEST
+std::string input_string_3 = "tsgstyyeebhbaaajnn";
+int expected_3 = 1;
+int result_3 = DeleteString(input_string_3);
+assert(expected_3 == result_3);
+//TEST_END
+
+//TEST
+std::string input_string_4 = "aaaaaaa";
+int expected_4 = 7;
+int result_4 = DeleteString(input_string_4);
+assert(expected_4 == result_4);
+//TEST_END
+
+//TEST
+std::string input_string_5 = "sbdbjjnjnsjhbbshsbsjsj";
+int expected_5 = 1;
+int result_5 = DeleteString(input_string_5);
+assert(expected_5 == result_5);
+//TEST_END
+
+//TEST
+std::string input_string_6 = "aaaaaajjjjjjjjjjsnnnnnnnnncd";
+int expected_6 = 6;
+int result_6 = DeleteString(input_string_6);
+assert(expected_6 == result_6);
+//TEST_END
+
+//TEST
+std::string input_string_7 = "mksnksjbe";
+int expected_7 = 1;
+int result_7 = DeleteString(input_string_7);
+assert(expected_7 == result_7);
+//TEST_END
+
+//TEST
+std::string input_string_8 = "kjdkjsbjbjhb";
+int expected_8 = 1;
+int result_8 = DeleteString(input_string_8);
+assert(expected_8 == result_8);
+//TEST_END
+
+//TEST
+std::string input_string_9 = "aabbccsjs";
+int expected_9 = 2;
+int result_9 = DeleteString(input_string_9);
+assert(expected_9 == result_9);
+//TEST_END
+
+//TEST
+std::string input_string_10 = "123";
+try {
+    DeleteString(input_string_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string input_string_11 = "";
+try {
+    DeleteString(input_string_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string input_string_12 = "20a";
+try {
+    DeleteString(input_string_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  
+  return 0;
+   
+}
+
