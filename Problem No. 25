@@ -13,7 +13,7 @@ Since the answer may be large, return it modulo 10^9 + 7.
 
 Input Type:
 
-A string denoting num
+A string denoting input_string
 
 Input Constraints:
 
