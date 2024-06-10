@@ -1,0 +1,271 @@
+/*
+
+Jimmy is given an undirected, initially unrooted tree with len nodes indexed from 0 to len−1. He also has a 2D integer vector edges of length len−1, where edges[i] = [node_a[i], node_b[i]] 
+indicates that there is an edge between nodes node a and node b in the tree.
+
+Each node has an associated price. Jimmy is provided with an integer vector price, where price[i] is the price of the i-th node. The price sum of a given path is the sum of the prices of all nodes lying on that path.
+Jimmy can root the tree at any node of his choice. The incurred cost after choosing a root is the difference between the maximum and minimum price sum among all paths starting from that root.
+
+Help Jimmy with task and write a C++ function MaxOutput that will return an long long interger to determine the maximum possible cost he can get by choosing the best possible root.
+
+
+Input Type:
+
+An integer denoting len, the number of nodes in the tree.
+A vector<vector<int>> denoting the vector edges of length len - 1, where each element is a vector of two integers representing an edge between two nodes.
+A vector<int> denoting the vector price of length len, where each element represents the price of the corresponding node.
+
+Input Constraints:
+
+1.The number of nodes, len, should be at least 1 and at most 10^5 inclusive.
+2.The length of edges should be len−1.
+3.Each value of node_a and node_b should be in the range [0,len−1] inclusive.
+4.The length of the price vector should be len
+5.Each value of price[i] should be in the range [1,10^5] inclusive.
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <iostream>
+#include <cassert>
+
+    struct TreeData {
+        std::vector<std::vector<long long>> graph;
+        std::vector<long long> prices;
+        std::vector<long long> dp_arr;
+        std::vector<long long> result;
+    } tree_data;
+
+
+    long long DepthFirstSearch(int node, int parent) {
+        long long max_path_sum = 0LL;
+        for (std::vector<long long>::iterator ite = tree_data.graph[node].begin(); ite != tree_data.graph[node].end(); ++ite) {
+            int neighbor = *ite;
+            if (neighbor == parent) {
+                continue;
+            }
+            long long child_sum = DepthFirstSearch(neighbor, node);
+            max_path_sum = std::max(max_path_sum, child_sum);
+        }
+        tree_data.dp_arr[node] = max_path_sum + tree_data.prices[node];
+        return tree_data.dp_arr[node];
+    }
+
+    void DepthFirstSearch2(int node, int parent, long long parent_sum) {
+        int max_child = -1;
+        long long max_sum_1 = 0LL, max_sum_2 = 0LL;
+
+        for (std::vector<long long>::iterator ite = tree_data.graph[node].begin(); ite != tree_data.graph[node].end(); ++ite) {
+            int neighbor = *ite;
+            if (neighbor == parent) {
+                continue;
+            }
+            if (tree_data.dp_arr[neighbor] > max_sum_1) {
+                max_sum_2 = max_sum_1;
+                max_sum_1 = tree_data.dp_arr[neighbor];
+                max_child = neighbor;
+            } else if (tree_data.dp_arr[neighbor] > max_sum_2) {
+                max_sum_2 = tree_data.dp_arr[neighbor];
+            }
+        }
+
+        tree_data.result[node] = std::max(max_sum_1, parent_sum);
+
+        for (std::vector<long long>::iterator ite = tree_data.graph[node].begin(); ite != tree_data.graph[node].end(); ++ite) {
+            int neighbor = *ite;
+            if (neighbor == parent) {
+                continue;
+            }
+            if (neighbor == max_child) {
+                long long parent_sum_updated = std::max(max_sum_2, parent_sum) + tree_data.prices[node];
+                DepthFirstSearch2(neighbor, node, parent_sum_updated);
+            } else {
+                long long parent_sum_updated = std::max(max_sum_1, parent_sum) + tree_data.prices[node];
+                DepthFirstSearch2(neighbor, node, parent_sum_updated);
+            }
+        }
+    }
+
+    long long MaxOutput(int len, std::vector<std::vector<int>>& edges, std::vector<int>& price) {
+        if (len < 1 || len > 100000) {
+            throw std::invalid_argument("The number of nodes must be at least 1 and at most 100000.");
+        }
+        if (edges.size() != len - 1) {
+            throw std::invalid_argument("The length of edges should be len−1.");
+        }
+        for (std::vector<std::vector<int>>::iterator ite = edges.begin(); ite != edges.end(); ++ite) {
+            int node_a = (*ite)[0];
+            int node_b = (*ite)[1];
+            if (node_a < 0 || node_a >= len || node_b < 0 || node_b >= len) {
+                throw std::invalid_argument("Each value of node_a and node_b should be in the range [0, len−1].");
+            }
+        }
+        if (price.size() != len) {
+            throw std::invalid_argument("The length of the price vector should be len.");
+        }
+        for (int i = 0; i < len; ++i) {
+            if (price[i] < 1 || price[i] > 100000) {
+                throw std::invalid_argument("Each value of price[i] should be in the range [1, 100000].");
+            }
+        }
+
+        tree_data.graph.clear();
+        tree_data.prices.clear();
+        tree_data.dp_arr.clear();
+        tree_data.result.clear();
+        tree_data.graph.resize(len);
+        tree_data.prices.resize(len);
+        tree_data.dp_arr.resize(len);
+        tree_data.result.resize(len);
+
+        for (std::vector<std::vector<int>>::iterator ite = edges.begin(); ite != edges.end(); ++ite) {
+            int node_a = (*ite)[0];
+            int node_b = (*ite)[1];
+            tree_data.graph[node_a].push_back(node_b);
+            tree_data.graph[node_b].push_back(node_a);
+        }
+
+        for (int i = 0; i < len; ++i) {
+            tree_data.prices[i] = price[i];
+        }
+
+        DepthFirstSearch(0, -1);
+        DepthFirstSearch2(0, -1, 0);
+
+        long long max_result = 0;
+        for (int i = 0; i < len; ++i) {
+            max_result = std::max(max_result, tree_data.result[i]);
+        }
+        return max_result;
+    }
+
+
+int main() {
+  
+    // TEST
+    int len_1 = 3;
+    std::vector<std::vector<int>> edges_1 = {{0, 1}, {1, 2}};
+    std::vector<int> price_1 = {1, 1, 1};
+    long long expected_1 = 2; 
+    long long result_1 = MaxOutput(len_1, edges_1, price_1);
+    assert(result_1 == expected_1);
+    // TEST_END
+  
+    // TEST
+int len_2 = 5;
+std::vector<std::vector<int>> edges_2 = {{0, 1}, {0, 2}, {1, 3}, {1, 4}};
+std::vector<int> price_2 = {5, 3, 6, 1, 2};
+long long expected_2 = 14;
+long long result_2 = MaxOutput(len_2, edges_2, price_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+int len_3 = 4;
+std::vector<std::vector<int>> edges_3 = {{0, 1}, {0, 2}, {0, 3}};
+std::vector<int> price_3 = {5, 3, 6, 1};
+long long expected_3 = 11;
+long long result_3 = MaxOutput(len_3, edges_3, price_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+int len_4 = 7;
+std::vector<std::vector<int>> edges_4 = {{0, 1}, {1, 2}, {1, 3}, {2, 4}, {2, 5}, {3, 6}};
+std::vector<int> price_4 = {5, 3, 6, 1, 2, 4, 7};
+long long expected_4 = 17;
+long long result_4 = MaxOutput(len_4, edges_4, price_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+int len_5 = 6;
+std::vector<std::vector<int>> edges_5 = {{0, 1}, {0, 2}, {1, 3}, {1, 4}, {2, 5}};
+std::vector<int> price_5 = {3, 6, 2, 7, 4, 5};
+long long expected_5 = 18;
+long long result_5 = MaxOutput(len_5, edges_5, price_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+int len_6 = 3;
+std::vector<std::vector<int>> edges_6 = {{0, 1}, {0, 2}};
+std::vector<int> price_6 = {5, 2, 3};
+long long expected_6 = 8;
+long long result_6 = MaxOutput(len_6, edges_6, price_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+int len_7 = 4;
+std::vector<std::vector<int>> edges_7 = {{0, 1}, {1, 2}, {1, 3}};
+std::vector<int> price_7 = {1, 1, 1, 1};
+long long expected_7 = 2;
+long long result_7 = MaxOutput(len_7, edges_7, price_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+int len_8 = 5;
+std::vector<std::vector<int>> edges_8 = {{0, 1}, {0, 2}, {0, 3}, {0, 4}};
+std::vector<int> price_8 = {5, 6, 7, 8, 9};
+long long expected_8 = 14;
+long long result_8 = MaxOutput(len_8, edges_8, price_8);
+assert(result_8 == expected_8);
+// TEST_END
+  
+// TEST
+int len_9 = 5;
+std::vector<std::vector<int>> edges_9 = {{0, 1}, {0, 2}, {0, 3}, {0, 4},{0 , 5}};
+std::vector<int> price_9 = {5, 6, 7, 8, 9};
+try {
+    MaxOutput(len_9, edges_9, price_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_10 = 3;
+std::vector<std::vector<int>> edges_10 = {{0, 4}, {1, 2}};
+std::vector<int> price_10 = {5, 2, 3};
+try {
+    MaxOutput(len_10, edges_10, price_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_11 = 4;
+std::vector<std::vector<int>> edges_11 = {{0, 1}, {1, 2}, {1, 3}};
+std::vector<int> price_11 = {1, 1, 1};
+try {
+    MaxOutput(len_11, edges_11, price_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_12 = 5;
+std::vector<std::vector<int>> edges_12 = {{0, 1}, {1, 2}, {1, 3}, {2, 4}};
+std::vector<int> price_12 = {5, 3, 6, 1, 0};
+try {
+    MaxOutput(len_12, edges_12, price_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+  
+  
+    return 0;
+}
