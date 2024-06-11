@@ -1,0 +1,226 @@
+/*
+Julie stood before a directed graph, pondering its intricate connections. Each node, from 0 to len - 1, held a story waiting to unfold. With her trusty vector, edges, indicating the path from each node i to another,
+Julie embarked on a journey of discovery.
+She imagined a process: starting from a node x, she traversed through edges, visiting nodes one after another until she stumbled upon a familiar face, a node she had visited before on this same journey.
+edges vector is a 0-indexed array edges where edges[i] indicates that there is an edge from node i to node edges[i].
+In her quest for understanding, Julie sought to quantify the breadth of her exploration. She sought a vector, answer, where each answer[i] would signify the diverse array of nodes she would encounter if she 
+embarked on this process from node i.
+With determination in her heart, Julie set forth, ready to uncover the mysteries hidden within the graph's labyrinthine paths.
+
+Help Julie create a C++ function CountVisitedNodes that will return a vector<int> denoting answer.
+
+Input Type:
+
+vector<int> denoting edges
+
+Input Constraints:
+
+1.The length of edges is between 2 and 10^5.
+2.Each element in edges is between 0 and (length of edges) - 1.
+3.Each element in edges is not equal to its index.
+
+*/
+
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+struct GraphData {
+    std::vector<int> order, scc, visited;
+    std::map<int,int> scc_sizes;
+    std::vector<int> scc_depths;
+};
+
+    void DfsFirst(int start, int parent, std::vector<std::vector<int>>& graph, GraphData& data) {
+        data.visited[start] = 1;
+        for (int neighbor : graph[start]) {
+            if (!data.visited[neighbor])
+                DfsFirst(neighbor, start, graph, data);
+        }
+        data.order.push_back(start);
+    }
+
+    void DfsSecond(int start, int scc_index, std::vector<std::vector<int>>& reversed_graph, GraphData& data) {
+        data.scc[start] = scc_index;
+        data.visited[start] = 1;
+        data.scc_sizes[scc_index]++;
+        for (int neighbor : reversed_graph[start]) {
+            if (!data.visited[neighbor])
+                DfsSecond(neighbor, scc_index, reversed_graph, data);
+        }
+    }
+
+    void DfsThird(int start, int parent, std::vector<std::vector<int>>& scc_graph, int depth, GraphData& data) {
+        data.scc_depths[start] = depth;
+        for (int neighbor : scc_graph[start]) {
+            if (neighbor != parent)
+                DfsThird(neighbor, start, scc_graph, depth + 1, data);
+        }
+    }
+
+    std::vector<int> CountVisitedNodes(std::vector<int>& edges) {
+      if (edges.size() < 2 || edges.size() > 100000)
+    throw std::invalid_argument("Invalid input: length of edges");
+int counter = 0;
+for (int edge : edges) {
+    if (edge < 0 || edge >= edges.size())
+        throw std::invalid_argument("Invalid input: edge value out of range");
+    if (edge == counter)
+        throw std::invalid_argument("Invalid input: edge value cannot be its index");
+  counter++;
+}
+
+        int num_nodes = edges.size();
+        GraphData data;
+        data.visited.assign(num_nodes, 0);
+        data.scc_sizes.clear();
+        data.order.clear();
+        data.scc.assign(num_nodes, 0);
+
+        std::vector<std::vector<int>> graph(num_nodes), reversed_graph(num_nodes);
+        for (int i = 0; i < num_nodes; i++) {
+            graph[i].push_back(edges[i]);
+            reversed_graph[edges[i]].push_back(i);
+        }
+        for (int i = 0; i < num_nodes; i++) {
+            if (!data.visited[i])
+                DfsFirst(i, -1, graph, data);
+        }
+        std::reverse(data.order.begin(), data.order.end());
+        data.visited.assign(num_nodes, 0);
+        int scc_index = 0;
+        for (int &node : data.order) {
+            if (!data.visited[node]) {
+                DfsSecond(node, scc_index, reversed_graph, data);
+                scc_index++;
+            }
+        }
+        std::vector<int> node_depths(num_nodes);
+        std::vector<std::vector<int>> scc_graph(scc_index);
+        for (int i = 0; i < num_nodes; i++) {
+            for (int neighbor : graph[i]) {
+                int root_v = data.scc[i];
+                int root_u = data.scc[neighbor];
+                if (root_u != root_v)
+                    scc_graph[root_u].push_back(root_v);
+            }
+        }
+        data.scc_depths.assign(scc_index, 0);
+        for (auto &[scc_index, size] : data.scc_sizes) {
+            if (size > 1) {
+                DfsThird(scc_index, -1, scc_graph, size, data);
+            }
+        }
+        for (int i = 0; i < num_nodes; i++)
+            node_depths[i] = data.scc_depths[data.scc[i]];
+
+        return node_depths;
+    }
+
+
+
+int main() {
+   
+//TEST
+std::vector<int> edges_1 = {1,2,0};
+std::vector<int> expected_1 = {3,3,3};
+std::vector<int> result_1 = CountVisitedNodes(edges_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+std::vector<int> edges_2 = {3,2,1,0};
+std::vector<int> expected_2 = {2,2,2,2};
+std::vector<int> result_2 = CountVisitedNodes(edges_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> edges_3 = {5,2,3,0,1,4};
+std::vector<int> expected_3 = {6,6,6,6,6,6};
+std::vector<int> result_3 = CountVisitedNodes(edges_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> edges_4 = {8,7,6,1,0,2,3,5,4};
+std::vector<int> expected_4 = {3,6,6,6,3,6,6,6,3};
+std::vector<int> result_4 = CountVisitedNodes(edges_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> edges_5 = {1,0};
+std::vector<int> expected_5 = {2,2};
+std::vector<int> result_5 = CountVisitedNodes(edges_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> edges_6 = {4,3,1,2,5,0};
+std::vector<int> expected_6 = {3,3,3,3,3,3};
+std::vector<int> result_6 = CountVisitedNodes(edges_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> edges_7 = {1,3,1,0};
+std::vector<int> expected_7 = {3,3,4,3};
+std::vector<int> result_7 = CountVisitedNodes(edges_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> edges_8 = {1,0,5,4,3,2};
+std::vector<int> expected_8 = {2,2,2,2,2,2};
+std::vector<int> result_8 = CountVisitedNodes(edges_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> edges_9 = {};
+try {
+    CountVisitedNodes(edges_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> edges_10 = {1,2};
+try {
+    CountVisitedNodes(edges_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> edges_11 = {5,4,1};
+try {
+    CountVisitedNodes(edges_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> edges_12 = {-1000000009, -1000000007, 1000000006};
+try {
+    CountVisitedNodes(edges_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+  
+  return 0;
+}
