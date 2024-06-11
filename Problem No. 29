@@ -1,0 +1,267 @@
+/*
+
+Jimmy was tasked with fixing a bug in a file system that had resulted in numerous duplicate folders. He was given a 2D vector paths, where each paths[i] represented an 
+absolute path to the ith folder in the file system. For instance, ["one", "two", "three"] would correspond to the path /one/two/three.
+
+Jimmy discovered that two folders were considered identical if they contained the same non-empty set of identical subfolders and the same underlying subfolder structure, regardless of their level in the hierarchy.
+If two or more folders were identical, Jimmy needed to mark those folders and all their subfolders.
+He found an example in the file structure where folders /a and /b were identical:
+
+/a
+/a/x
+/a/x/y
+/a/z
+/b
+/b/x
+/b/x/y
+/b/z
+
+In this case, both /a and /b had the same subfolder structure, so Jimmy marked them along with all their subfolders. However, Jimmy also noted that if the file structure had an additional path such as 
+/b/w, then /a and /b would no longer be identical. Despite this, /a/x and /b/x would still be considered identical because their subfolder structures remained the same.
+After marking all identical folders and their subfolders, Jimmy's task was to delete all of them in one go. Importantly, the deletion process only ran once, meaning any folders that became identical after 
+the initial deletion would not be removed.
+
+Jimmy needed create a Solution class and inside of that write a C++ function DeleteDuplicateFolderto return a 2D vector ans containing the paths of the folders that remained after the deletion of all marked 
+folders. The order of the paths in the resulting vector didn't matter.
+
+Input Type:
+
+vector<vector<string>> denoting the 2D vector paths
+
+Input Constraints:
+
+The number of paths paths is at least 1 and at most 20,000.
+Each path paths[i] contains at least 1 folder name and at most 500 folder names.
+Each folder name paths[i][j] has a length of at least 1 and at most 10 characters.
+The total length of all folder names in a path sum(paths[i][j].length) is at most 200,000 characters.
+All folder names consist of lowercase English letters.
+
+*/
+
+#include <vector>
+#include <map>
+#include <unordered_set>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <iostream>
+#include <cctype>
+#include <cassert>
+
+class Trie {
+public:
+    void Insert(const std::vector<std::string>& path) {
+        Trie* node = this;
+        for (const std::string& folder : path) {
+            if (node->children.find(folder) == node->children.end()) {
+                node->children[folder] = std::make_unique<Trie>();
+            }
+            node = node->children[folder].get();
+        }
+    }
+
+    std::map<std::string, std::unique_ptr<Trie>> children;
+};
+
+class Solution {
+private:
+    Trie root;
+    std::map<std::string, Trie*> seen;
+    std::unordered_set<Trie*> to_delete;
+
+    std::string Deduplicate(Trie* node) {
+        std::string path;
+        for (std::map<std::string, std::unique_ptr<Trie>>::iterator child_itr = node->children.begin(); child_itr != node->children.end(); ++child_itr) {
+            path += child_itr->first + Deduplicate(child_itr->second.get());
+        }
+        if (path.empty()) return "";
+
+        if (seen.find(path) != seen.end()) {
+            to_delete.insert(seen[path]);
+            to_delete.insert(node);
+        } else {
+            seen[path] = node;
+        }
+
+        return "(" + path + ")";
+    }
+
+    void GetPaths(Trie* node, std::vector<std::vector<std::string>>& paths, std::vector<std::string>& current_path) {
+       for (std::map<std::string, std::unique_ptr<Trie>>::iterator child_itr = node->children.begin(); child_itr != node->children.end(); ++child_itr) {
+            if (to_delete.find(child_itr->second.get()) != to_delete.end()) continue;
+            current_path.push_back(child_itr->first);
+            GetPaths(child_itr->second.get(), paths, current_path);
+            current_path.pop_back();
+        }
+
+        if (!current_path.empty()) {
+            paths.push_back(current_path);
+        }
+    }
+
+public:
+    std::vector<std::vector<std::string>>DeleteDuplicateFolder(std::vector<std::vector<std::string>>& paths) {
+       if (paths.size() < 1 || paths.size() > 20000) {
+            throw std::invalid_argument("Number of paths is out of valid range.");
+        }
+        
+        int total_length = 0;
+        
+        for (std::vector<std::vector<std::string>>::iterator path_itr = paths.begin(); path_itr != paths.end(); ++path_itr) {
+            if (path_itr->size() < 1 || path_itr->size() > 500) {
+                throw std::invalid_argument("Path size is out of valid range.");
+            }
+            
+            for (std::vector<std::string>::iterator folder_itr = path_itr->begin(); folder_itr != path_itr->end(); ++folder_itr) {
+                if (folder_itr->length() < 1 || folder_itr->length() > 10) {
+                    throw std::invalid_argument("Folder name length is out of valid range.");
+                }
+                
+                for (std::string::iterator char_itr = folder_itr->begin(); char_itr != folder_itr->end(); ++char_itr) {
+                    if (!std::islower(*char_itr)) {
+                        throw std::invalid_argument("Folder name must consist of lowercase English letters.");
+                    }
+                }
+                
+                total_length += folder_itr->length();
+            }
+        }
+        
+        if (total_length > 200000) {
+            throw std::invalid_argument("Total length of all folder names exceeds the maximum allowed.");
+        }
+
+        for (std::vector<std::vector<std::string>>::iterator path_itr = paths.begin(); path_itr != paths.end(); ++path_itr) {
+            root.Insert(*path_itr);
+        }
+
+        paths.clear();
+        std::vector<std::string> current_path;
+        Deduplicate(&root);
+        GetPaths(&root, paths, current_path);
+
+        return paths;
+    }
+};
+
+int main(){
+  
+
+
+   //TEST
+
+  std::vector<std::vector<std::string>>paths_1 =  {{"a"}, {"c"}, {"d"}, {"a", "b"}, {"c", "b"}, {"d", "a"}};
+  std::vector<std::vector<std::string>>expected_1 = {{"d","a"}, {"d"}};
+  Solution obj_1;
+  std::vector<std::vector<std::string>>result_1 = obj_1.DeleteDuplicateFolder(paths_1);
+  assert(result_1 == expected_1);
+  
+  //TEST_END
+
+  // TEST
+std::vector<std::vector<std::string>> paths_2 = {{"a"}, {"c"}, {"a", "b"}, {"c", "b"}, {"a", "b", "x"}, {"a", "b", "x", "y"}, {"w"}, {"w", "y"}};
+std::vector<std::vector<std::string>> expected_2 = {{"a","b"}, {"a"}, {"c","b"}, {"c"}};
+Solution obj_2;
+std::vector<std::vector<std::string>> result_2 = obj_2.DeleteDuplicateFolder(paths_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_3 = {{"a", "b"}, {"c", "d"}, {"c"}, {"a"}};
+std::vector<std::vector<std::string>> expected_3 = {{"a","b"}, {"a"}, {"c","d"}, {"c"}};
+Solution obj_3;
+std::vector<std::vector<std::string>> result_3 = obj_3.DeleteDuplicateFolder(paths_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+  
+// TEST
+std::vector<std::vector<std::string>> paths_4 = {{"c"}, {"a"}, {"a","b"}, {"c","d"}};
+std::vector<std::vector<std::string>> expected_4 = {{"a","b"},{"a"},{"c","d"},{"c"}};
+Solution obj_4;
+std::vector<std::vector<std::string>> result_4 = obj_4.DeleteDuplicateFolder(paths_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_5 = {{"a","b"}, {"a"}, {"c","b"}, {"c"}};
+std::vector<std::vector<std::string>> expected_5 = {};
+Solution obj_5;
+std::vector<std::vector<std::string>> result_5 = obj_5.DeleteDuplicateFolder(paths_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_6 = {{"c"}, {"a"}, {"a","b"}, {"c","d"}};
+std::vector<std::vector<std::string>> expected_6 = {{"a","b"},{"a"},{"c","d"},{"c"}};
+Solution obj_6;
+std::vector<std::vector<std::string>> result_6 = obj_6.DeleteDuplicateFolder(paths_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_7 = {{"a","b"}, {"c","d"}, {"c"}, {"b"}};
+std::vector<std::vector<std::string>> expected_7 = {{"a","b"},{"a"},{"b"},{"c","d"},{"c"}};
+Solution obj_7;
+std::vector<std::vector<std::string>> result_7 = obj_7.DeleteDuplicateFolder(paths_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_8 = {{"c"}, {"a"}, {"a","b"}, {"c","d","e","x"}};
+std::vector<std::vector<std::string>> expected_8 = {{"a","b"},{"a"},{"c","d","e","x"},{"c","d","e"},{"c","d"},{"c"}};
+Solution obj_8;
+std::vector<std::vector<std::string>> result_8 = obj_8.DeleteDuplicateFolder(paths_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+  
+// TEST
+std::vector<std::vector<std::string>> paths_9 = {{"a","b"}, {"c","d","e"}, {"c","b"}, {"a"}};
+std::vector<std::vector<std::string>> expected_9 = {{"a","b"}, {"a"},{"c","b"},{"c","d","e"},{"c","d"}, {"c"}};
+Solution obj_9;
+std::vector<std::vector<std::string>> result_9 = obj_9.DeleteDuplicateFolder(paths_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+
+    std::vector<std::vector<std::string>> paths_10 = {};
+    Solution obj_10;
+    try {
+      
+    obj_10.DeleteDuplicateFolder(paths_10);
+      assert(false);
+} 
+  catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+  // TEST
+std::vector<std::vector<std::string>> paths_11 = {{"a","1"}, {"c","d","e"}, {"c","b"}, {"a"}};
+Solution obj_11;
+try {
+    obj_11.DeleteDuplicateFolder(paths_11);
+    assert(false);
+  
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_12 = {{"abcdefghijk"}, {"c","d","e"}, {"c","b"}, {"a"}};
+Solution obj_12;
+try {
+    obj_12.DeleteDuplicateFolder(paths_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+  return 0;
+}
+
