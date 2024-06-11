@@ -1,0 +1,224 @@
+/*
+Once upon a time, there was a young lad named Jimmy who loved to play with numbers. One day, he stumbled upon an vector of integers called nums. But Jimmy wasn't content with just staring at the numbers; 
+he wanted to play with them!
+
+With a gleam in his eye, Jimmy devised a plan. He could perform a series of operations on the vector, each involving selecting a portion of it and replacing it with the sum of its elements.
+It was like magic! For instance, if he chose the subarray [3,5] from [1,3,5,6], he could transform the vector into [1,8,6].
+
+But Jimmy wasn't just playing around; he had a mission. He wanted to create the longest non-decreasing vector possible through his operations. Non-decreasing meant that each subsequent element in 
+the vector could be equal to or greater than the previous one.
+
+So, Jimmy set to work, carefully selecting subarrays and replacing them with their sums. He strategized and tinkered, determined to achieve his goal.
+
+Finally, after numerous operations, Jimmy stood back and admired his handiwork. The vector had transformed, and it was magnificent! But he wondered, what was the maximum  length of this non-decreasing marvel 
+he had created?
+
+With a sense of accomplishment, Jimmy sought the answer. And as he gazed upon his creation, he knew that he had unlocked the secret to maximizing the length of a non-decreasing vector through his clever operations
+Create a C++ function FindMaximumLength that will return an integer, i.e. the maximum length, same as Jimmy's
+
+Input Types:
+
+A vector<int> denoting the vector nums 
+
+Input Constraints:
+
+1. The length of nums is at least 1 and at most 10^5.
+2. Each element in nums is between 1 and 10^5 .
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <limits>
+#include <cassert>
+
+class Segtree {
+private:
+    std::vector<long long> segtree;
+    int len;
+
+public:
+    Segtree(int len) : len(len), segtree(len * 2, std::numeric_limits<long long>::max() / 2) {}
+
+    void set(int ind, long long val) {
+        ind += len;
+        segtree[ind] = val;
+        for (; ind > 1; ind /= 2) {
+            segtree[ind / 2] = std::min(segtree[ind], segtree[ind ^ 1]);
+        }
+    }
+
+    long long rmin(int left, int right) {
+        long long sum = std::numeric_limits<long long>::max() / 2;
+        for (left += len, right += len; left < right; left /= 2, right /= 2) {
+            if (left % 2 == 1) { sum = std::min(sum, segtree[left++]); }
+            if (right % 2 == 1) { sum = std::min(sum, segtree[--right]); }
+        }
+        return sum;
+    }
+};
+
+
+    int FindMaximumLength(std::vector<int>& nums) {
+   
+    if (nums.size() < 1 || nums.size() > 100000) {
+        throw std::invalid_argument("Length of nums must be between 1 and 10^5.");
+    }
+    
+   
+    for (int num : nums) {
+        if (num < 1 || num > 100000) {
+            throw std::invalid_argument("Each element in nums must be between 1 and 10^5.");
+        }
+    }
+
+        int nums_len = nums.size();
+        Segtree seg_tree(nums_len + 1);
+        std::vector<long long> prefix_sum(nums_len + 1);
+        std::vector<int> last(nums_len + 1);
+        std::vector<int> dp_arr(nums_len + 1);
+        prefix_sum[0] = 0;
+        for (int i = 0; i < nums_len; ++i) {
+            prefix_sum[i + 1] = prefix_sum[i] + nums[i];
+            seg_tree.set(i + 1, std::numeric_limits<long long>::max() / 2);
+        }
+        last[0] = 0;
+        dp_arr[0] = 0;
+        seg_tree.set(0, 0);
+        for (int i = 1; i <= nums_len; ++i) {
+            long long current_sum = prefix_sum[i];
+            int left = 0;
+            int right = i - 1;
+            while ((right - left) > 1) {
+                int mid = (right + left) >> 1;
+                if (seg_tree.rmin(mid, i) <= current_sum)
+                    left = mid;
+                else
+                    right = mid - 1;
+            }
+            int j = left;
+            if (seg_tree.rmin(right, i) <= current_sum)
+                j = right;
+            dp_arr[i] = 1 + dp_arr[j];
+            last[i] = current_sum - prefix_sum[j];
+            seg_tree.set(i, last[i] + current_sum);
+        }
+        return dp_arr[nums_len]; 
+    }
+
+int main() {
+   
+     //TEST
+    std::vector<int> nums_1 = {3,4,1};
+    int expected_1 = 2;
+    int result_1 = FindMaximumLength(nums_1);
+    assert(result_1 == expected_1);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_2 = {1,2,4,3};
+    int expected_2 = 3;
+    int result_2 = FindMaximumLength(nums_2);
+    assert(result_2 == expected_2);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_3 = {1,2,3};
+    int expected_3 = 3;
+    int result_3 = FindMaximumLength(nums_3);
+assert(result_3 == expected_3);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_4 = {1,66,7,9,63,2,6,45,8,6,99,1223,14};
+    int expected_4 = 5;
+  
+    int result_4 = FindMaximumLength(nums_4);
+ assert(result_4 == expected_4);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_5 = {45,1,2,8,2,99};
+    int expected_5 = 2;
+    int result_5 = FindMaximumLength(nums_5);
+  assert(result_5 == expected_5);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_6 = {2,8,6,7,2,1,6};
+    int expected_6 = 3;
+    int result_6 = FindMaximumLength(nums_6);
+   assert(result_6 == expected_6);
+  
+   //TEST_END
+
+   //TEST
+    std::vector<int> nums_7 = {99,88,66,22,11,10,78,8};
+    int expected_7 = 2;
+    int result_7 = FindMaximumLength(nums_7);
+assert(result_7 == expected_7);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_8 = {1};
+    int expected_8 = 1;
+    int result_8 = FindMaximumLength(nums_8);
+   assert(result_8 == expected_8);
+  
+   //TEST_END
+  
+  //TEST
+    std::vector<int> nums_9 = {};
+    
+    try {
+       FindMaximumLength(nums_9);
+       assert(false);
+    } catch(const std::invalid_argument& e) {
+      assert(true);
+    }
+    
+  
+  //TEST_END
+  
+  //TEST
+std::vector<int> nums_10 = {-1};
+
+try {
+    FindMaximumLength(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {1000000005};
+
+try {
+    FindMaximumLength(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_12 = {-1000000009, -1000000007, 1000000006};
+
+try {
+   FindMaximumLength(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  return 0;
+}
