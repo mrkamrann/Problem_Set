@@ -1,0 +1,332 @@
+/*
+
+
+Once upon a time, there was a diligent student named Jack who enrolled in a prestigious university. Jack had a long list of courses to complete, labeled from 1 to course_count. However, some courses 
+had prerequisites that Jack needed to complete first. These prerequisite relationships were given to him as pairs in a vector called relations, where each pair [prev_course, next_course] indicated that Jack had 
+to take prev_course before next_course.
+The challenge for Jack was that he could only take up to max_courses courses each semester, as long as he had completed all the necessary prerequisites for those courses in the previous semesters.
+Determined to graduate as soon as possible, Jack set out to find the minimum number of semesters needed to complete all his courses. Help Jack create a C++ function MinNumberOfSemesters that will return an integer denoting
+the minimum number of semesters needed.
+
+Input Type:
+
+An integer denoting course_count (the number of courses)
+A vector<vector<int>> denoting relations (prerequisite relationships)
+An integer denoting max_courses (the maximum number of courses Jack can take each semester)
+
+Input Constraints:
+
+1.The length of relations should be at least 0 and at most course_count⋅(course_count−1)/2 inclusive.
+2.Each value of relations[i][0] (denoting prev_course_i) should be in the range [1, course_count] inclusive.
+3.Each value of relations[i][1] (denoting next_course_i) should be in the range [1, course_count] inclusive.
+4.The values of len (denoting the number of courses) should be in the range [1, 15] inclusive.
+5.The values of max_courses (denoting the maximum number of courses Jack can take each semester) should be in the range [1, course_count] inclusive.
+6.Each pair [prev_course_i, next_course_i] in relations should be unique.
+7.The graph represented by relations is a directed acyclic graph (DAG).
+
+*/
+
+#include <vector>
+#include <cassert>
+#include <iostream>
+#include <stdexcept>
+#include <unordered_map>
+#include <climits>
+#include <set>
+#include <algorithm>
+
+struct Cache 
+{
+    std::unordered_map<int, int> data;
+} cache;
+void GenerateCombinations(std::vector<int>& values, int max_size, std::vector<int>& current, int index, std::vector<std::vector<int>>& result) 
+{
+    if (max_size == 0) 
+    {
+        result.push_back(current);
+        return;
+    }
+
+    if (index == values.size()) 
+    {
+        return;
+    }
+
+    current.push_back(values[index]);
+    GenerateCombinations(values, max_size - 1, current, index + 1, result);
+    current.pop_back();
+    GenerateCombinations(values, max_size, current, index + 1, result);
+}
+
+
+std::vector<std::vector<int>> Combinations(std::vector<int> values, int max_size) 
+{
+    if (values.size() <= max_size) 
+    {
+        return {values};
+    }
+
+    std::vector<int> current;
+    std::vector<std::vector<int>> result;
+    GenerateCombinations(values, max_size, current, 0, result);
+    return result;
+}
+
+
+
+int DepthFirstSearch(int course_count, std::vector<std::vector<int>>& graph, std::vector<int> in_degree, int mask, int max_courses) 
+{
+    if (mask == 0) return 0;
+    if (cache.data.count(mask)) return cache.data[mask];
+
+    std::vector<int> doable_courses;
+    for (int i = 0; i < course_count; i++) 
+    {
+        if ((mask & (1 << i)) && !in_degree[i]) 
+        {
+            doable_courses.push_back(i);
+        }
+    }
+
+    int result = INT_MAX;
+    for (const std::vector<int>& combination : Combinations(doable_courses, max_courses)) 
+    {
+        int new_mask = mask;
+        std::vector<int> new_in_degree = in_degree;
+
+        for (int course : combination) 
+        {
+            new_mask ^= (1 << course);
+            for (int neighbor : graph[course]) 
+            {
+                new_in_degree[neighbor]--;
+            }
+        }
+
+        result = std::min(result, 1 + DepthFirstSearch(course_count, graph, new_in_degree, new_mask, max_courses));
+    }
+
+    return cache.data[mask] = result;
+}
+
+int MinNumberOfSemesters(int course_count, std::vector<std::vector<int>>& relations, int max_courses) 
+{
+
+    if (course_count < 1 || course_count > 15) 
+    {
+        throw std::invalid_argument("Invalid number of courses.");
+    }
+
+
+    if (max_courses < 1 || max_courses > course_count) 
+    {
+        throw std::invalid_argument("Invalid maximum number of courses per semester.");
+    }
+
+
+    if (relations.size() > course_count * (course_count - 1) / 2) 
+    {
+        throw std::invalid_argument("Invalid number of relations.");
+    }
+
+   
+    std::set<std::pair<int, int>> unique_pairs;
+    for (const std::vector<int>& relation : relations) 
+    {
+        if (relation.size() != 2) 
+        {
+            throw std::invalid_argument("Each relation must be a pair.");
+        }
+
+        int prev_course = relation[0];
+        int next_course = relation[1];
+
+
+        if (prev_course < 1 || prev_course > course_count || next_course < 1 || next_course > course_count) 
+        {
+            throw std::invalid_argument("Course numbers must be in the range [1, course_count].");
+        }
+
+
+        if (prev_course == next_course) 
+        {
+            throw std::invalid_argument("A course cannot be a prerequisite to itself.");
+        }
+
+     
+        std::pair<int, int> course_pair = std::make_pair(prev_course, next_course);
+        if (unique_pairs.count(course_pair)) 
+        {
+            throw std::invalid_argument("Each pair in relations must be unique.");
+        }
+
+        unique_pairs.insert(course_pair);
+    }
+
+   
+    std::vector<std::vector<int>> graph(course_count);
+    std::vector<int> in_degree(course_count, 0);
+
+    for (const std::vector<int>& relation : relations) 
+    {
+        int prev_course = relation[0] - 1;
+        int next_course = relation[1] - 1;
+        graph[prev_course].push_back(next_course);
+        in_degree[next_course]++;
+    }
+
+    return DepthFirstSearch(course_count, graph, in_degree, (1 << course_count) - 1, max_courses);
+  
+}
+
+
+
+int main() 
+{
+   // TEST
+
+int course_count_1 = 4;
+std::vector<std::vector<int>> relations_1 = {{2, 1}, {3, 1}, {1, 4}};
+int max_courses_1 = 2;
+int expected_1 = 3;
+int result_1 = MinNumberOfSemesters(course_count_1, relations_1, max_courses_1);
+assert(result_1 == expected_1);
+
+// TEST_END
+  
+// TEST
+
+int course_count_2 = 5;
+std::vector<std::vector<int>> relations_2 = {{2, 1}, {3, 1}, {4, 1}, {1, 5}};
+int max_courses_2 = 2;
+int expected_2 = 4;
+int result_2 = MinNumberOfSemesters(course_count_2, relations_2, max_courses_2);
+assert(result_2 == expected_2);
+
+// TEST_END
+
+// TEST
+
+int course_count_3 = 3;
+std::vector<std::vector<int>> relations_3 = {{1, 3}};
+int max_courses_3 = 1;
+int expected_3 = 3;
+int result_3 = MinNumberOfSemesters(course_count_3, relations_3, max_courses_3);
+assert(result_3 == expected_3);
+
+// TEST_END
+
+// TEST
+
+int course_count_4 = 6;
+std::vector<std::vector<int>> relations_4 = {{1, 4}, {2, 4}, {3, 4}, {4, 5}, {5, 6}};
+int max_courses_4 = 2;
+int expected_4 = 5;
+int result_4 = MinNumberOfSemesters(course_count_4, relations_4, max_courses_4);
+assert(result_4 == expected_4);
+
+// TEST_END
+
+// TEST
+
+int course_count_5 = 7;
+std::vector<std::vector<int>> relations_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}};
+int max_courses_5 = 3;
+int expected_5 = 7;
+int result_5 = MinNumberOfSemesters(course_count_5, relations_5, max_courses_5);
+assert(result_5 == expected_5);
+
+// TEST_END
+
+// TEST
+
+int course_count_6 = 8;
+std::vector<std::vector<int>> relations_6 = {{1, 3}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}};
+int max_courses_6 = 2;
+int expected_6 = 7;
+int result_6 = MinNumberOfSemesters(course_count_6, relations_6, max_courses_6);
+assert(result_6 == expected_6);
+
+// TEST_END
+
+// TEST
+
+int course_count_7 = 9;
+std::vector<std::vector<int>> relations_7 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}};
+int max_courses_7 = 3;
+int expected_7 = 9;
+int result_7 = MinNumberOfSemesters(course_count_7, relations_7, max_courses_7);
+assert(result_7 == expected_7);
+
+// TEST_END
+
+// TEST
+
+int course_count_8 = 10;
+std::vector<std::vector<int>> relations_8 = {{1, 2}, {1, 3}, {2, 4}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+int max_courses_8 = 4;
+int expected_8 = 9;
+int result_8 = MinNumberOfSemesters(course_count_8, relations_8, max_courses_8);
+assert(result_8 == expected_8);
+
+// TEST_END
+  
+// TEST
+
+int course_count_9 = 17;
+std::vector<std::vector<int>> relations_9 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}};
+int max_courses_9 = 3;
+try {
+    MinNumberOfSemesters(course_count_9, relations_9, max_courses_9);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_10 = 10;
+std::vector<std::vector<int>> relations_10 = {{1, 2,4}, {1, 3}, {2, 4}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+int max_courses_10 = 4;
+try {
+    MinNumberOfSemesters(course_count_10, relations_10, max_courses_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_11 = 11;
+std::vector<std::vector<int>> relations_11 = {{12, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}, {10, 11}};
+int max_courses_11 = 4;
+try {
+    MinNumberOfSemesters(course_count_11, relations_11, max_courses_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_12 = 12;
+std::vector<std::vector<int>> relations_12 = {{1, 3}, {1, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}, {10, 11}, {11, 12}};
+int max_courses_12 = 3;
+try {
+    MinNumberOfSemesters(course_count_12, relations_12, max_courses_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+
+    return 0;
+}
