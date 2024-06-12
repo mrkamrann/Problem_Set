@@ -1,0 +1,277 @@
+/*
+
+
+Jimmy was given a task to work with an integer vector called nums. The challenge was to identify which subsets of nums could be considered "good". A subset is defined as good if its product can be represented 
+as a product of one or more distinct prime numbers.
+
+For example, consider when Jimmy worked with the vector nums = [1, 2, 3, 4]:
+
+Jimmy found that subsets like [2, 3], [1, 2, 3], and [1, 3] are good because their products are 6 = 2*3, 6 = 2*3, and 3 = 3, respectively.
+On the other hand, subsets like [1, 4] and [4] are not good because their products are 4 = 2*2 and 4 = 2*2, respectively, and 4 is not a product of distinct primes.
+
+Jimmy's objective was to return the number of different good subsets in nums, with the result being taken modulo 10^9+7. Help him create a C++ function NumberOfGoodSubsets that will solve his problem.
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+For clarity, a subset of nums can be any array that Jimmy could obtain by deleting some (possibly none or all) elements from nums. Two subsets are considered different if the indices of the elements that J
+immy chooses to delete are different.
+
+Input Type:
+
+A vector<<int> denoting the vector nums
+
+Input Constraints:
+
+1. The length of nums vector is between [1, 10^5] both inclusive.
+2. Each value in the nums vector lies in the range [1 , 30] both inclusive.
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+int Multiply(long long int factor_1, long long int factor_2, int mod) {
+    long long int product = (factor_1 * factor_2) % mod;
+    return static_cast<int>(product);
+}
+
+
+int Add(long long int add_end_1, long long int add_end_2, int mod) {
+    long long int addition = (add_end_1 + add_end_2) % mod;
+    return static_cast<int>(addition);
+}
+
+int BinaryExponentiation(long long int base, int exponent, int mod) {
+    long long int result = 1;
+    while (exponent) {
+        if (exponent & 1) {
+            result = Multiply(result, base, mod);
+        }
+        base = Multiply(base, base, mod);
+        exponent /= 2;
+    }
+    return static_cast<int>(result);
+}
+
+
+int GoodSubsets(int position, int mask, std::vector<int>& vector_nums, std::vector<std::vector<int>>& dp_arr, std::vector<int>& cache, int mod) {
+    if (position == vector_nums.size()) {
+        return (mask > 0);
+    }
+    
+    if (dp_arr[position][mask] != -1) {
+        return dp_arr[position][mask] % mod;
+    }
+    
+    if (vector_nums[position] & mask) {
+        return dp_arr[position][mask] = GoodSubsets(position + 1, mask, vector_nums, dp_arr, cache, mod) % mod;
+    }
+
+    return dp_arr[position][mask] = Add(
+        Multiply(cache[vector_nums[position]], GoodSubsets(position + 1, mask | vector_nums[position], vector_nums,dp_arr, cache, mod), mod),
+        GoodSubsets(position + 1, mask, vector_nums, dp_arr, cache, mod),
+        mod
+    );
+}
+
+
+int NumberOfGoodSubsets(std::vector<int>& nums) {
+    
+    if (nums.empty() || nums.size() > 1e5)
+            throw std::invalid_argument("Size of nums must be between 1 and 20000 (inclusive).");
+
+        for (int num : nums) {
+            if (num < 1 || num > 30)
+                throw std::invalid_argument("Each value in nums must be between 1 and 100000 (inclusive).");
+            
+        }
+  
+    int primes[10] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    std::vector<int> vector_nums;
+    std::vector<int> cache(1025, 0);
+    
+    int count_ones = 0;
+
+    for (int num : nums) {
+        int num_mask = 0;
+        int prime_index = 0;
+        bool is_valid = true;
+
+        for (int prime : primes) {
+            int count = 0;
+            while (num % prime == 0) {
+                num /= prime;
+                count++;
+                if (count > 1) {
+                    break;
+                }
+            }
+            
+            if (count > 1) {
+                is_valid = false;
+                break;
+            }
+            
+            if (count == 1) {
+                num_mask |= (1 << prime_index);
+            }
+
+            ++prime_index;
+        }
+        
+        if (!is_valid) {
+            continue;
+        }
+        
+        if (num_mask == 0) {
+            count_ones++;
+            continue;
+        }
+        
+        cache[num_mask]++;
+        if (cache[num_mask] > 1) {
+            continue;
+        }
+        
+        vector_nums.push_back(num_mask);
+    }
+    int modulus = 1e9+7;
+    std::vector<std::vector<int>> dp_arr(vector_nums.size(), std::vector<int>(1024, -1));
+    int result = GoodSubsets(0, 0, vector_nums, dp_arr, cache, modulus);
+    result = Multiply(BinaryExponentiation(2, count_ones, modulus), result, modulus);
+
+    return result;
+}
+
+int main(){
+  
+  //TEST
+
+std::vector<int> nums_1 = {4,6,15,2};
+int expected_1 = 4;
+int result_1 = NumberOfGoodSubsets(nums_1);
+assert(result_1 == expected_1);
+  
+//TEST_END
+  
+//TEST
+
+std::vector<int> nums_2 = {20,25,9,6};
+int expected_2 = 1;
+int result_2 = NumberOfGoodSubsets(nums_2);
+assert(result_2 == expected_2);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_3 = {2,3,6,7,4,12,21,29};
+int expected_3 = 23;
+int result_3 = NumberOfGoodSubsets(nums_3);
+assert(result_3 == expected_3);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_4 = {2,3,5,7};
+int expected_4 = 15;
+int result_4 = NumberOfGoodSubsets(nums_4);
+assert(result_4 == expected_4);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_5 = {13, 17, 19, 23};
+int expected_5 = 15;
+int result_5 = NumberOfGoodSubsets(nums_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+  
+//TEST
+  
+std::vector<int> nums_6 = {2, 4, 6, 8, 10};
+int expected_6 = 3;
+int result_6 = NumberOfGoodSubsets(nums_6);
+assert(result_6 == expected_6);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_7 = {3, 6, 9, 12};
+int expected_7 = 2;
+int result_7 = NumberOfGoodSubsets(nums_7);
+assert(result_7 == expected_7);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_8 = {11, 13, 17, 19};
+int expected_8 = 15;
+int result_8 = NumberOfGoodSubsets(nums_8);
+assert(result_8 == expected_8);
+  
+//TEST_END
+
+//TEST
+  
+std::vector<int> nums_9 = {5, 25, 12, 26};
+int expected_9 = 3;
+int result_9 = NumberOfGoodSubsets(nums_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_10 = {};
+
+try {
+    NumberOfGoodSubsets(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+//TEST
+  
+std::vector<int> nums_11 = {4, 4, 2, 99};
+
+try {
+    NumberOfGoodSubsets(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+//TEST
+  
+std::vector<int> nums_12 = {-999};
+
+try {
+    NumberOfGoodSubsets(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+  
+  
+  return 0;
+}
+
+
+
+
