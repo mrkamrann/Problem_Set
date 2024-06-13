@@ -27,6 +27,7 @@ Input Constraints:
 
 */
 
+
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
@@ -188,7 +189,7 @@ assert(result_7 == expected_7);
   //TEST_END
   
   //TEST
-std::vector<int> nums_10 = {-1};
+std::vector<int> nums_10(1e6,1);
 
 try {
     FindMaximumLength(nums_10);
