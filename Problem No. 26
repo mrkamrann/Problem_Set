@@ -217,7 +217,7 @@ assert(expected_9 == result_9);
 //TEST_END
 
 //TEST
-std::string input_string_10 = "123";
+std::string input_string_10(10000,'a');
 try {
     DeleteString(input_string_10);
     assert(false);
@@ -250,4 +250,3 @@ try {
   return 0;
    
 }
-
