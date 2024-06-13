@@ -38,6 +38,7 @@ All folder names consist of lowercase English letters.
 
 */
 
+
 #include <vector>
 #include <map>
 #include <unordered_set>
@@ -261,7 +262,141 @@ try {
 }
 // TEST_END
 
-
-  return 0;
+// TEST
+std::vector<std::vector<std::string>> paths_13 = {};
+Solution obj_13;
+try {
+    obj_13.DeleteDuplicateFolder(paths_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
 }
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_14 = {{"2"}, {"b"}, {"c"}, {"d"}, {"e"}, {"f"}, {"g"}, {"h"}, {"i"}, {"j"}, {"k"}, {"l"}, {"m"}, {"n"}, {"o"}, {"p"}, {"q"}, {"r"}, {"s"}, {"t"}, {"u"}};
+Solution obj_14;
+try {
+    obj_14.DeleteDuplicateFolder(paths_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_15 = {{"abcdefghijyzk"}};
+Solution obj_15;
+try {
+    obj_15.DeleteDuplicateFolder(paths_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_16 = {{"c", "d", "e"}, {"c", "b"}, {"a"}, {"abcdefghijk"}};
+Solution obj_16;
+try {
+    obj_16.DeleteDuplicateFolder(paths_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_17 = {{"abc", "def", "ghijklmnopqrstuvwxyz"}};
+Solution obj_17;
+try {
+    obj_17.DeleteDuplicateFolder(paths_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_18(50000,vector<std::string>(1,"a"));
+Solution obj_18;
+try {
+    obj_18.DeleteDuplicateFolder(paths_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_19 = {{"abcdefghijk"}, {"c","d","e"}, {"c","b"}, {"a"}};
+Solution obj_19;
+try {
+    obj_19.DeleteDuplicateFolder(paths_19);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_20 = {{"folder_with_very_long_name"}};
+Solution obj_20;
+try {
+    obj_20.DeleteDuplicateFolder(paths_20);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_21(500,vector<std::string>(1000,"a"));
+Solution obj_21;
+try {
+    obj_21.DeleteDuplicateFolder(paths_21);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_22 = {{"a"}, {"B"}};
+Solution obj_22;
+try {
+    obj_22.DeleteDuplicateFolder(paths_22);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_23 = {{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "U", "v", "w", "x", "y", "z"}};
+Solution obj_23;
+try {
+    obj_23.DeleteDuplicateFolder(paths_23);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<std::string>> paths_24 = {{"a", "b", "c"}, {}, {"a", "b", "c"}};
+Solution obj_24;
+try {
+    obj_24.DeleteDuplicateFolder(paths_24);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+
+    return 0;
+}
+
 
