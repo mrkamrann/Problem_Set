@@ -242,7 +242,7 @@ assert(expected_9 == result_9);
  
   
 //TEST
-std::string input_string_10 = "abc";
+std::string input_string_10(10000,'a');
 try {
     NumberOfCombinations(input_string_10);
     assert(false);
