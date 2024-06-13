@@ -271,6 +271,59 @@ try {
 }
 
 //TEST_END
+
+//TEST
+
+std::vector<int> heights_13(1e6,1);
+std::vector<std::vector<int>> queries_13 = {{0, 1}, {1, 2}, {2, 3}, {1, 1}};
+
+try {
+    BuildingQueries(heights_13, queries_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+std::vector<int> heights_14 = {1,2,3,6};
+std::vector<std::vector<int>> queries_14(1e6, std::vector<int>(2,1));
+
+try {
+    BuildingQueries(heights_14, queries_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> heights_15 = {1,2,3,6};
+std::vector<std::vector<int>> queries_15 = {{-5,2}};
+
+try {
+    BuildingQueries(heights_15, queries_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> heights_16 = {1,2,3,6};
+std::vector<std::vector<int>> queries_16 = {{11,2}};
+
+try {
+    BuildingQueries(heights_16, queries_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
  
   
   return 0;
