@@ -327,6 +327,174 @@ try {
 
 // TEST_END
 
+  // TEST
+
+int course_count_13 = 0;
+std::vector<std::vector<int>> relations_13 = {};
+int max_courses_13 = 1;
+try {
+    MinNumberOfSemesters(course_count_13, relations_13, max_courses_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_14 = 16;
+std::vector<std::vector<int>> relations_14 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}, {10, 11}, {11, 12}, {12, 13}, {13, 14}, {14, 15}, {15, 16}};
+int max_courses_14 = 3;
+try {
+    MinNumberOfSemesters(course_count_14, relations_14, max_courses_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_15 = 3;
+std::vector<std::vector<int>> relations_15 = {{1, 4}};
+int max_courses_15 = 2;
+try {
+    MinNumberOfSemesters(course_count_15, relations_15, max_courses_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_16 = 4;
+std::vector<std::vector<int>> relations_16 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+int max_courses_16 = 3;
+try {
+    MinNumberOfSemesters(course_count_16, relations_16, max_courses_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_17 = 5;
+std::vector<std::vector<int>> relations_17 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 5}};
+int max_courses_17 = 3;
+try {
+    MinNumberOfSemesters(course_count_17, relations_17, max_courses_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_18 = 4;
+std::vector<std::vector<int>> relations_18 = {{-1, 2}, {2, 3}, {3, 7}, {4, 1}};
+int max_courses_18 = 3;
+try {
+    MinNumberOfSemesters(course_count_18, relations_18, max_courses_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_19 = 4;
+std::vector<std::vector<int>> relations_19 = {{1, 2}, {2, 3}, {2, 3}, {3, 4}};
+int max_courses_19 = 3;
+try {
+    MinNumberOfSemesters(course_count_19, relations_19, max_courses_19);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_20 = 3;
+std::vector<std::vector<int>> relations_20 = {{1, 2}, {2, 3}};
+int max_courses_20 = 4;
+try {
+    MinNumberOfSemesters(course_count_20, relations_20, max_courses_20);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_21 = 3;
+std::vector<std::vector<int>> relations_21 = {{1, 2}, {2, 3}};
+int max_courses_21 = 0;
+try {
+    MinNumberOfSemesters(course_count_21, relations_21, max_courses_21);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_22 = 3;
+std::vector<std::vector<int>> relations_22 = {{0, 1}, {1, 2}};
+int max_courses_22 = 2;
+try {
+    MinNumberOfSemesters(course_count_22, relations_22, max_courses_22);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+     assert(true);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_23 = 4;
+std::vector<std::vector<int>> relations_23 = {{1, 2}, {2, 3}, {3, 4}};
+int max_courses_23 = 2;
+try {
+    MinNumberOfSemesters(course_count_23, relations_23, max_courses_23);
+    assert(true);
+} catch (const std::invalid_argument& e) {
+     assert(false);
+}
+
+// TEST_END
+
+// TEST
+
+int course_count_24 = 5;
+std::vector<std::vector<int>> relations_24 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+int max_courses_24 = 5;
+try {
+    MinNumberOfSemesters(course_count_24, relations_24, max_courses_24);
+    assert(true);
+} catch (const std::invalid_argument& e) {
+     assert(false);
+}
+
+// TEST_END
+
 
     return 0;
 }
