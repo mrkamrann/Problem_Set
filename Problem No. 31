@@ -191,7 +191,7 @@ try {
 //TEST_END
 
 //TEST
-std::vector<int> edges_10 = {1,2};
+std::vector<int> edges_10 = {0,1};
 try {
     CountVisitedNodes(edges_10);
     assert(false);
@@ -219,8 +219,29 @@ try {
     assert(true);
 }
 //TEST_END
+  
+//TEST
+std::vector<int> edges_13(1e6,1);
+try {
+    CountVisitedNodes(edges_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+  
+//TEST_END
 
-
+  
+  //TEST
+std::vector<int> edges_14 = {1};
+try {
+    CountVisitedNodes(edges_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+ 
   
   return 0;
 }
