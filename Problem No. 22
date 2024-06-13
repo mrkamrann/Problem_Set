@@ -285,6 +285,135 @@ int main() {
      assert(true);
    }
 //TEST_END
+//TEST
+std::vector<int> nums_13 = {100000, 99999};
+std::vector<int> and_values_13 = {100001};
+
+try{
+   MinimumValueSum(nums_13, and_values_13);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_14 = {10, -20, 30, 40, 50};
+std::vector<int> and_values_14 = {60};
+
+try{
+   MinimumValueSum(nums_14, and_values_14);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_15 = {1};
+std::vector<int> and_values_15 = {100005};
+
+try{
+   MinimumValueSum(nums_15, and_values_15);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_16 = {};
+std::vector<int> and_values_16 = {100000};
+
+try{
+   MinimumValueSum(nums_16, and_values_16);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_17 = {99999, 100000};
+std::vector<int> and_values_17 = {};
+
+try{
+   MinimumValueSum(nums_17, and_values_17);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_18(1e6,1);
+std::vector<int> and_values_18 = {101};
+
+try{
+   MinimumValueSum(nums_18, and_values_18);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_19 = {500};
+std::vector<int> and_values_19(45,6);
+
+try{
+   MinimumValueSum(nums_19, and_values_19);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_20 = {250, 500, 750};
+std::vector<int> and_values_20 = {1000,10000000};
+
+try{
+   MinimumValueSum(nums_20, and_values_20);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_21 = {12345, 67890};
+std::vector<int> and_values_21 = {100000};
+
+try{
+   MinimumValueSum(nums_21, and_values_21);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_22 = {33333, 66666};
+std::vector<int> and_values_22 = {99999,2,3,4};
+
+try{
+   MinimumValueSum(nums_22, and_values_22);
+   assert(false);
+}
+catch(const std::invalid_argument& e){
+ assert(true);
+}
+//TEST_END
 
   
   
@@ -292,4 +421,3 @@ int main() {
 
     return 0;
 }
-
