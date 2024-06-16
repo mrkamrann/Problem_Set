@@ -13,7 +13,8 @@ Each query can be of two types:
 
 Type 1: queries[i] = [1, left[i], right[i]] - Jimmy needs to count the number of peak elements in the subarray nums[left[i]..right[i]].
 Type 2: queries[i] = [2, index[i], value[i]] - Jimmy needs to update the element at position index[i] in nums to the new value value[i].
-He needs to return a vector answer containing the results of the queries of the first type in order.
+
+He needs to make a C++ Function ___ that will return a vector answer containing the results of the queries of the first type in order.
 
 Remember:
 
