@@ -14,11 +14,13 @@ Each query can be of two types:
 Type 1: queries[i] = [1, left[i], right[i]] - Jimmy needs to count the number of peak elements in the subarray nums[left[i]..right[i]].
 Type 2: queries[i] = [2, index[i], value[i]] - Jimmy needs to update the element at position index[i] in nums to the new value value[i].
 
-He needs to make a C++ Function ___ that will return a vector answer containing the results of the queries of the first type in order.
+He needs to make a C++ Function CountOfPeaks that will return a vector answer containing the results of the queries of the first type in order.
 
 Remember:
 
 The first and the last elements of a vector or a subvector cannot be peaks.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
 
 
 Input Type:
@@ -36,3 +38,98 @@ Input Constraints:
 6.For queries[i][0] == 2, queries[i][1] should be within the range from 0 to nums.length - 1, and queries[i][2] should be within the range from 1 to 10^5.
 
 */
+
+
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
+class PeakSegmentTree {
+private:
+    std::vector<int> segment_tree;
+    int array_size;
+    
+    int CalculateMid(int start, int end) {
+        return start + (end - start) / 2;
+    }
+    
+    int BuildSegmentTree(const std::vector<int>& arr, int start, int end, int index) {
+        if (start == end) {
+            segment_tree[index] = IsPeak(start, arr) ? 1 : 0;
+            return segment_tree[index];
+        }
+        int mid = CalculateMid(start, end);
+        segment_tree[index] = BuildSegmentTree(arr, start, mid, index * 2 + 1) +
+                             BuildSegmentTree(arr, mid + 1, end, index * 2 + 2);
+        return segment_tree[index];
+    }
+    
+    int QuerySum(int start, int end, int query_start, int query_end, int index) {
+        if (query_start <= start && query_end >= end) return segment_tree[index];
+        if (end < query_start || start > query_end) return 0;
+        int mid = CalculateMid(start, end);
+        return QuerySum(start, mid, query_start, query_end, 2 * index + 1) +
+               QuerySum(mid + 1, end, query_start, query_end, 2 * index + 2);
+    }
+    
+    void ModifyValue(int start, int end, int pos, int new_val, int index, std::vector<int>& arr) {
+        if (pos < start || pos > end) return;
+        if (start == end) {
+            segment_tree[index] = IsPeak(pos, arr) ? 1 : 0;
+            return;
+        }
+        int mid = CalculateMid(start, end);
+        ModifyValue(start, mid, pos, new_val, 2 * index + 1, arr);
+        ModifyValue(mid + 1, end, pos, new_val, 2 * index + 2, arr);
+        segment_tree[index] = segment_tree[2 * index + 1] + segment_tree[2 * index + 2];
+    }
+    
+public:
+    PeakSegmentTree(const std::vector<int>& arr, int size) {
+        this->array_size = size;
+        int height = static_cast<int>(std::ceil(std::log2(size)));
+        int max_size = 2 * static_cast<int>(std::pow(2, height)) - 1;
+        segment_tree.resize(max_size);
+        BuildSegmentTree(arr, 0, size - 1, 0);
+    }
+    
+    void UpdateValue(std::vector<int>& arr, int pos, int new_val) {
+        if (pos < 0 || pos >= array_size) return;
+        arr[pos] = new_val;
+        ModifyValue(0, array_size - 1, pos, new_val, 0, arr);
+        if (pos > 0) ModifyValue(0, array_size - 1, pos - 1, arr[pos - 1], 0, arr);
+        if (pos < array_size - 1) ModifyValue(0, array_size - 1, pos + 1, arr[pos + 1], 0, arr);
+    }
+    
+    int GetSum(int query_start, int query_end) {
+        if (query_start < 0 || query_end >= array_size || query_start > query_end) return 0;
+        return QuerySum(0, array_size - 1, query_start, query_end, 0);
+    }
+    
+    bool IsPeak(int index, const std::vector<int>& arr) {
+        if (index <= 0 || index >= arr.size() - 1) return false;
+        return arr[index] > arr[index - 1] && arr[index] > arr[index + 1];
+    }
+};
+
+std::vector<int> CountOfPeaks(std::vector<int>& nums, std::vector<std::vector<int>>& queries) {
+        int size_nums = nums.size();
+        PeakSegmentTree tree(nums, size_nums);
+        std::vector<int> results;
+        
+        for (std::vector<int>& query : queries) {
+            if (query[0] == 2) {
+                tree.UpdateValue(nums, query[1], query[2]);
+            } else if (query[0] == 1) {
+                results.push_back(tree.GetSum(query[1] + 1, query[2] - 1));
+            }
+        }
+        
+        return results;
+    }
+
+
+int main(){
+  return 0;
+}
