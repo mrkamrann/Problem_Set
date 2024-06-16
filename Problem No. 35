@@ -1,0 +1,25 @@
+/*
+Link: https://leetcode.com/problems/distribute-elements-into-two-arrays-ii/
+
+
+John is given a 1-indexed vector of integers nums of length len.
+
+He needs to distribute all elements of nums between two vectors vec1 and vec2 using len operations. Initially, he appends nums[1] to vec_1, nums[2] to vec_2, and for subsequent operations:
+
+If GreaterCount(vec_1, nums[i]) > GreaterCount(vec_2, nums[i]), he appends nums[i] to vec_1.
+If GreaterCount(vec_1, nums[i]) < GreaterCount(vec_2, nums[i]), he appends nums[i] to vec_2.
+If counts are equal, he appends nums[i] to the vector with fewer elements (vec_1 if tie persists). If there is still a tie, he appends nums[i] to vec_1.
+The vector result is formed by concatenating vec_1 and vec_2.
+
+Help John create a C++ function __ that will return the integer vector result.
+
+Input Types:
+
+vector<int>> denoting the vector nums
+
+Input Constraints:
+
+1.The length of nums should be at least 3 and at most 10^5.
+2.Each element in nums should be within the range from 1 to 10^9.
+
+*/
