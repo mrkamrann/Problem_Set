@@ -9,7 +9,10 @@ For a query of type 1, queries[i] = [1, left, right]. Flip the values from 0 to 
 For a query of type 2, queries[i] = [2, val, 0]. For every index 0 <= i < len(nums_1), update nums_2[i] = nums_2[i] + nums_1[i] * val.
 For a query of type 3, queries[i] = [3, 0, 0]. Calculate the sum of all elements in nums_2.
 
-Help John create a C++ function ___ that will return a vector containing all the answers to the type 3 queries.
+Help John create a C++ function HandleQuery that will return a vector containing all the answers to the type 3 queries.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
 
 Input Types:
 
@@ -32,3 +35,149 @@ Input Constraints:
 8.Each element in nums_2 should be within the range from 0 to 10^9.
 
 */
+
+#include <vector>
+#include <numeric>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+
+class SegmentTree {
+private:
+    std::vector<long long> segment_tree;
+    std::vector<bool> lazy_propagation;
+
+    void PropagateDown(long long index, long long low, long long high) {
+        if (lazy_propagation[index]) {
+            segment_tree[index] = (high - low + 1) - segment_tree[index];
+            if (low != high) {
+                lazy_propagation[2 * index + 1] = !lazy_propagation[2 * index + 1];
+                lazy_propagation[2 * index + 2] = !lazy_propagation[2 * index + 2];
+            }
+            lazy_propagation[index] = false;
+        }
+    }
+
+    void BuildTree(long long index, long long low, long long high, const std::vector<int>& input_array) {
+        if (low == high) {
+            segment_tree[index] = input_array[low];
+            return;
+        }
+        long long middle = low + (high - low) / 2;
+        BuildTree(2 * index + 1, low, middle, input_array);
+        BuildTree(2 * index + 2, middle + 1, high, input_array);
+        segment_tree[index] = segment_tree[2 * index + 1] + segment_tree[2 * index + 2];
+    }
+
+public:
+    SegmentTree(const std::vector<int>& input_array) {
+        long long array_size = input_array.size();
+        segment_tree.resize(4 * array_size + 1);
+        lazy_propagation.resize(4 * array_size + 1, false);
+        BuildTree(0, 0, array_size - 1, input_array);
+    }
+
+    void RangeUpdate(long long index, long long low, long long high, long long range_start, long long range_end) {
+        if (low > high) {
+            return;
+        }
+        PropagateDown(index, low, high);
+        if (low > range_end || high < range_start) {
+            return;
+        }
+        if (low >= range_start && high <= range_end) {
+            segment_tree[index] = (high - low + 1) - segment_tree[index];
+            if (low != high) {
+                lazy_propagation[2 * index + 1] = !lazy_propagation[2 * index + 1];
+                lazy_propagation[2 * index + 2] = !lazy_propagation[2 * index + 2];
+            }
+            return;
+        }
+        long long middle = (low + high) >> 1;
+        RangeUpdate(2 * index + 1, low, middle, range_start, range_end);
+        RangeUpdate(2 * index + 2, middle + 1, high, range_start, range_end);
+        segment_tree[index] = segment_tree[2 * index + 1] + segment_tree[2 * index + 2];
+    }
+
+    long long Query(long long index, long long low, long long high, long long query_start, long long query_end) {
+        if (low > query_end || high < query_start) {
+            return 0;
+        }
+        PropagateDown(index, low, high);
+        if (low >= query_start && high <= query_end) {
+            return segment_tree[index];
+        }
+        long long middle = (low + high) >> 1;
+        long long left_result = Query(2 * index + 1, low, middle, query_start, query_end);
+        long long right_result = Query(2 * index + 2, middle + 1, high, query_start, query_end);
+        return left_result + right_result;
+    }
+};
+
+    std::vector<long long> HandleQuery(std::vector<int>& nums_1, std::vector<int>& nums_2, std::vector<std::vector<int>>& queries) {
+   
+        if (nums_1.empty() || nums_2.empty() || queries.empty()) {
+            throw std::invalid_argument("Input vectors must not be empty");
+        }
+        
+        if (nums_1.size() > 100000 || nums_2.size() > 100000) {
+            throw std::invalid_argument("The length of nums_1 and nums_2 should be at most 10^5");
+        }
+        
+        if (nums_1.size() != nums_2.size()) {
+            throw std::invalid_argument("nums_1 and nums_2 should have the same length");
+        }
+        
+        if (queries.size() > 100000) {
+            throw std::invalid_argument("The length of queries should be at most 10^5");
+        }
+        
+        for (const std::vector<int>& query : queries) {
+            if (query.size() != 3) {
+                throw std::invalid_argument("Each query should consist of exactly 3 integers");
+            }
+            long long query_start = query[1];
+            long long query_end = query[2];
+            if (query_start < 0 || query_end >= nums_1.size() || query_start > query_end) {
+                throw std::invalid_argument("Query indices should be within the range from 0 to the length of nums_1 - 1, and start index should be less than or equal to end index");
+            }
+        }
+        
+        for (int num : nums_1) {
+            if (num < 0 || num > 1) {
+                throw std::invalid_argument("Each element in nums_1 should be within the range from 0 to 1");
+            }
+        }
+        
+        for (int num : nums_2) {
+            if (num < 0 || num > 1000000000) {
+                throw std::invalid_argument("Each element in nums_2 should be within the range from 0 to 10^9");
+            }
+        }
+        
+        SegmentTree segment_tree(nums_1);
+        long long total_sum = std::accumulate(nums_2.begin(), nums_2.end(), 0LL);
+        std::vector<long long> results;
+
+        for (const std::vector<int>& query : queries) {
+            long long query_type = query[0];
+            long long start_index = query[1];
+            long long end_index = query[2];
+
+            if (query_type == 1) {
+                segment_tree.RangeUpdate(0, 0, nums_1.size() - 1, start_index, end_index);
+            } else if (query_type == 2) {
+                long long segment_sum = segment_tree.Query(0, 0, nums_1.size() - 1, 0, nums_1.size() - 1);
+                total_sum += (1LL * start_index * segment_sum);
+            } else if (query_type == 3) {
+                results.push_back(total_sum);
+            }
+        }
+        return results;
+    }
+
+
+int main(){
+  return 0;
+}
+
