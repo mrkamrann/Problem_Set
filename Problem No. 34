@@ -1,0 +1,21 @@
+/*
+
+Jimmy has got a new homework today, the topic is subsequence. He is given a vector of integers nums and a non-negative integer counter. A sequence of integers seq is termed good if there are at most counter indices 
+i in the range [0, seq.length - 2] such that seq[i] != seq[i + 1].
+
+A subsequence of a vector or sequence is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements. In simpler terms, 
+for an subsequence nums, a subsequence is obtained by selecting elements from nums in such a way that the order of elements is preserved.
+
+Help Jimmy create a C++ function --- that will return an integer the maximum possible length of a good subsequence of nums.
+
+Input Type:
+
+vector<int> denoting the vector nums
+An integer denoting counter
+
+Input Constraints:
+
+1.The length of nums should be at least 1 and at most 5 * 10^3.
+2.Each element in nums should be within the range from 1 to 10^9.
+3.counter should be within the range from 0 to the minimum of 50 and the length of nums.
+
