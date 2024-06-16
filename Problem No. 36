@@ -1,0 +1,32 @@
+/*
+Today John has got two vectors, while he is playing with the 2 vectors, to check his IQ his father asked him to do some queries on both the vectors. 
+
+He is provided with two 0-indexed vectors nums_1 and nums_2, and a 2D vector queries containing queries by his father of three types:
+
+For a query of type 1, queries[i] = [1, left, right]. Flip the values from 0 to 1 and from 1 to 0 in nums_1 from index left to index right (inclusive). Both left and right are 0-indexed.
+For a query of type 2, queries[i] = [2, val, 0]. For every index 0 <= i < len(nums_1), update nums_2[i] = nums_2[i] + nums_1[i] * val.
+For a query of type 3, queries[i] = [3, 0, 0]. Calculate the sum of all elements in nums_2.
+
+Help John create a C++ function ___ that will return a vector containing all the answers to the type 3 queries.
+
+Input Types:
+
+vector<int> denoting the vector nums_1
+vector<int> denoting the vector nums_2
+vector<vector<int>> denoting the 2D vector queries
+
+
+
+Input Constraints:
+
+
+1.The length of nums_1 and nums_2 should be at least 1 and at most 10^5.
+2.nums_1 and nums_2 should have the same length.
+3.The length of queries should be at least 1 and at most 10^5.
+4.Each element in queries should consist of exactly 3 integers.
+5.For each query, left and right should be within the range from 0 to the length of nums_1 - 1, and left should be less than or equal to right.
+6.val should be within the range from 0 to 10^6.
+7.Each element in nums_1 should be within the range from 0 to 1.
+8.Each element in nums_2 should be within the range from 0 to 10^9.
+
+*/
