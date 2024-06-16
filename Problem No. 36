@@ -1,4 +1,6 @@
 /*
+Link : https://leetcode.com/problems/handling-sum-queries-after-update/description/
+
 Today John has got two vectors, while he is playing with the 2 vectors, to check his IQ his father asked him to do some queries on both the vectors. 
 
 He is provided with two 0-indexed vectors nums_1 and nums_2, and a 2D vector queries containing queries by his father of three types:
