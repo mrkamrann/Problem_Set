@@ -40,6 +40,7 @@ Input Constraints:
 */
 
 
+
 #include <vector>
 #include <cmath>
 #include <stdexcept>
@@ -114,7 +115,52 @@ public:
 };
 
 std::vector<int> CountOfPeaks(std::vector<int>& nums, std::vector<std::vector<int>>& queries) {
-        int size_nums = nums.size();
+         
+        if (nums.size() < 3 || nums.size() > 100000) {
+            throw std::invalid_argument("Length of nums should be between 3 and 100000.");
+        }
+        
+
+        for (int num : nums) {
+            if (num < 1 || num > 100000) {
+                throw std::invalid_argument("Elements in nums should be between 1 and 100000.");
+            }
+        }
+        
+     
+        if (queries.size() < 1 || queries.size() > 100000) {
+            throw std::invalid_argument("Length of queries should be between 1 and 100000.");
+        }
+        
+    
+        for (const std::vector<int>& query : queries) {
+            if (query.size() != 3) {
+                throw std::invalid_argument("Each query should consist of exactly 3 integers.");
+            }
+        }
+        
+     
+        for (const std::vector<int>& query : queries) {
+            if (query[0] == 1) {
+                int left = query[1];
+                int right = query[2];
+                if (left < 0 || left >= static_cast<int>(nums.size()) || right < 0 || right >= static_cast<int>(nums.size()) || left > right) {
+                    throw std::invalid_argument("Invalid range indices for query type 1.");
+                }
+            }
+        }
+        
+     
+        for (const std::vector<int>& query : queries) {
+            if (query[0] == 2) {
+                int index = query[1];
+                int value = query[2];
+                if (index < 0 || index >= static_cast<int>(nums.size()) || value < 1 || value > 100000) {
+                    throw std::invalid_argument("Invalid index or value for query type 2.");
+                }
+            }
+        }  
+  int size_nums = nums.size();
         PeakSegmentTree tree(nums, size_nums);
         std::vector<int> results;
         
@@ -129,7 +175,7 @@ std::vector<int> CountOfPeaks(std::vector<int>& nums, std::vector<std::vector<in
         return results;
     }
 
-
 int main(){
-  return 0;
+   return 0;
 }
+ 
