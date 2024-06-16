@@ -7,7 +7,9 @@ i in the range [0, seq.length - 2] such that seq[i] != seq[i + 1].
 A subsequence of a vector or sequence is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements. In simpler terms, 
 for an subsequence nums, a subsequence is obtained by selecting elements from nums in such a way that the order of elements is preserved.
 
-Help Jimmy create a C++ function --- that will return an integer the maximum possible length of a good subsequence of nums.
+Help Jimmy create a C++ function MaximumLength that will return an integer the maximum possible length of a good subsequence of nums.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test case
 
 Input Type:
 
@@ -20,3 +22,90 @@ Input Constraints:
 2.Each element in nums should be within the range from 1 to 10^9.
 3.counter should be within the range from 0 to the minimum of 50 and the length of nums.
 
+
+*/
+
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <cassert>
+
+    struct SegmentTree {
+        int size;
+        std::vector<int> tree;
+        SegmentTree(int len) : size(len), tree(2 * len, 0) {}
+        
+        void Build() {
+            for (int i = size - 1; i > 0; i--) {
+                tree[i] = std::max(tree[i << 1], tree[i << 1 | 1]);
+            }
+        }
+        
+        void Modify(int position, int value) {
+            for (tree[position += size] = value; position > 1; position >>= 1) {
+                tree[position >> 1] = std::max(tree[position], tree[position ^ 1]);
+            }
+        }
+        
+        int MaxQuery(int left, int right) {
+            int result = 0;
+            for (left += size, right += size; left < right; left >>= 1, right >>= 1) {
+                if (left & 1) {
+                    result = std::max(result, tree[left]);
+                    left++;
+                }
+                if (right & 1) {
+                    right--;
+                    result = std::max(result, tree[right]);  
+                } 
+            }
+            return result;
+        }
+    };
+
+    struct DpArray {
+        int dp_vec[5001][51] = {0};
+    };
+    
+    int MaximumLength(std::vector<int>& nums, int counter) {
+        int n = nums.size();
+        
+        if (n < 1 || n > 5000) {
+            throw std::invalid_argument("The length of nums should be at least 1 and at most 5 * 10^3.");
+        }
+
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] < 1 || nums[i] > 1000000000) {
+                throw std::invalid_argument("Each element in nums should be within the range from 1 to 10^9.");
+            }
+        }
+
+        if (counter < 0 || counter > std::min(50, n)) {
+            throw std::invalid_argument("Counter should be within the range from 0 to the minimum of 50 and the length of nums.");
+        }
+
+        int max_length = 1;
+        std::vector<SegmentTree> seg_tree(counter + 1, SegmentTree(n));
+        std::unordered_map<int, int> num_dp;
+        DpArray dp_arr;
+        
+        for (int j = 0; j <= counter; j++) {
+            num_dp.clear();  
+            for (int i = 0; i < n; i++) {
+                dp_arr.dp_vec[i][j] = std::max(dp_arr.dp_vec[i][j], 1 + num_dp[nums[i]]);
+                if (j > 0) {
+                    dp_arr.dp_vec[i][j] = std::max(dp_arr.dp_vec[i][j], 1 + seg_tree[j - 1].MaxQuery(0, i));
+                }
+                num_dp[nums[i]] = std::max(num_dp[nums[i]], dp_arr.dp_vec[i][j]);
+                seg_tree[j].Modify(i, dp_arr.dp_vec[i][j]);
+                max_length = std::max(max_length, dp_arr.dp_vec[i][j]);
+            }
+        }
+        return max_length;
+    }
+
+
+
+int main(){
+  return 0;
+}
