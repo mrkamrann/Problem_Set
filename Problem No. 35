@@ -4,14 +4,18 @@ Link: https://leetcode.com/problems/distribute-elements-into-two-arrays-ii/
 
 John is given a 1-indexed vector of integers nums of length len.
 
-He needs to distribute all elements of nums between two vectors vec1 and vec2 using len operations. Initially, he appends nums[1] to vec_1, nums[2] to vec_2, and for subsequent operations:
+He needs to distribute all elements of nums between two vectors vec_1 and vec_2 using len operations. Initially, he appends nums[1] to vec_1, nums[2] to vec_2, 
+and for subsequent operations:
 
 If GreaterCount(vec_1, nums[i]) > GreaterCount(vec_2, nums[i]), he appends nums[i] to vec_1.
 If GreaterCount(vec_1, nums[i]) < GreaterCount(vec_2, nums[i]), he appends nums[i] to vec_2.
 If counts are equal, he appends nums[i] to the vector with fewer elements (vec_1 if tie persists). If there is still a tie, he appends nums[i] to vec_1.
 The vector result is formed by concatenating vec_1 and vec_2.
 
-Help John create a C++ function __ that will return the integer vector result.
+Help John create a C++ function ResultArray that will return the integer vector result.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
 
 Input Types:
 
@@ -23,3 +27,132 @@ Input Constraints:
 2.Each element in nums should be within the range from 1 to 10^9.
 
 */
+
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <stdexcept>
+#include <map>
+#include <iostream>
+#include <cassert>
+
+class FenwickTree {
+private:
+    std::vector<int> fenwick_tree;
+
+    int LeastSignificantOne(int num) {
+        return num & (-num);
+    }
+
+    int GetPrefixSum(int index) {
+        int sum = 0;
+        while (index > 0) {
+            sum += fenwick_tree[index];
+            index -= LeastSignificantOne(index);
+        }
+        return sum;
+    }
+
+public:
+    FenwickTree(int size) {
+        fenwick_tree.assign(size + 1, 0);
+    }
+
+    void Update(int index, int value) {
+        while (index < fenwick_tree.size()) {
+            fenwick_tree[index] += value;
+            index += LeastSignificantOne(index);
+        }
+    }
+
+    int GetRangeSum(int low, int high) {
+        return GetPrefixSum(high) - (low > 1 ? GetPrefixSum(low - 1) : 0);
+    }
+};
+
+class CoordinateCompression {
+public:
+    static std::map<int, int> Compress(std::vector<int>& vec) {
+        std::map<int, int> id_map;
+        std::map<int, int> reverse_id_map;
+        for (int element : vec) {
+            id_map[element] = 0;
+        }
+        int counter = 1;
+        for (auto& element : id_map) {
+            id_map[element.first] = counter;
+            reverse_id_map[counter] = element.first;
+            counter++;
+        }
+        for (int i = 0; i < vec.size(); i++) {
+            vec[i] = id_map[vec[i]];
+        }
+        return reverse_id_map;
+    }
+
+    static void Decompress(std::vector<int>& vec, std::map<int, int>& id_map) {
+        for (int i = 0; i < vec.size(); i++) {
+            vec[i] = id_map[vec[i]];
+        }
+    }
+};
+
+    int GetGreaterCount(FenwickTree& fenwick_tree, int num, int limit) {
+        if (num == limit) return 0;
+        return fenwick_tree.GetRangeSum(num + 1, limit);
+    }
+
+    std::vector<int> ResultArray(std::vector<int>& nums) {
+        if (nums.size() < 3 || nums.size() > 1e5) {
+            throw std::invalid_argument("Array size must be between 1 and 5000.");
+        }
+        for (int num : nums) {
+            if (num < 1 || num > 1e9) {
+                throw std::invalid_argument("Array elements must be between 1 and 1,000,000,000.");
+            }
+        }
+        
+        std::map<int, int> ids = CoordinateCompression::Compress(nums);
+        int limit = *std::max_element(nums.begin(), nums.end());
+        FenwickTree fenwick_tree_1(limit), fenwick_tree_2(limit);
+        std::vector<int> vec_1, vec_2;
+        vec_1.push_back(nums[0]);
+        fenwick_tree_1.Update(nums[0], 1);
+        vec_2.push_back(nums[1]);
+        fenwick_tree_2.Update(nums[1], 1);
+
+        for (int i = 2; i < nums.size(); i++) {
+            int greater_1 = GetGreaterCount(fenwick_tree_1, nums[i], limit);
+            int greater_2 = GetGreaterCount(fenwick_tree_2, nums[i], limit);
+
+            if (greater_1 > greater_2) {
+                vec_1.push_back(nums[i]);
+                fenwick_tree_1.Update(nums[i], 1);
+            } else if (greater_1 < greater_2) {
+                vec_2.push_back(nums[i]);
+                fenwick_tree_2.Update(nums[i], 1);
+            } else if (greater_1 == greater_2) {
+                if (vec_1.size() < vec_2.size()) {
+                    vec_1.push_back(nums[i]);
+                    fenwick_tree_1.Update(nums[i], 1);
+                } else if (vec_1.size() > vec_2.size()) {
+                    vec_2.push_back(nums[i]);
+                    fenwick_tree_2.Update(nums[i], 1);
+                } else {
+                    vec_1.push_back(nums[i]);
+                    fenwick_tree_1.Update(nums[i], 1);
+                }
+            }
+        }
+
+        for (int element : vec_2) {
+            vec_1.push_back(element);
+        }
+        CoordinateCompression::Decompress(vec_1, ids);
+        return vec_1;
+    }
+
+
+int main(){
+  return 0;
+}
