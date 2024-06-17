@@ -1,0 +1,38 @@
+/*
+Link: https://leetcode.com/problems/find-beautiful-indices-in-the-given-array-ii/description/ 
+
+
+Jimmy faced a challenging task involving a 0-indexed string str, and two target substrings target_a and target_b, along with an integer diff. His goal was to identify 
+and sort all "beautiful" indices where conditions involving these substrings were met.
+
+An index i was considered beautiful if:
+
+str[i..(i + target_a.length - 1)] == target_a
+There existed an index j such that:
+str[j..(j + target_b.length - 1)] == target_b
+|j - i| <= diff
+
+To solve this problem, Jimmy needed to meticulously check each substring in str to verify these conditions. It required careful handling of string 
+indices and comparisons to ensure all beautiful indices were identified and returned in sorted order.
+
+Create a C++ Function BeautifulIndices that will return the vector that contains beautiful indices in sorted order from smallest to largest.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type
+
+A string denoting str
+A string denoting target_a
+A string denoting target_b
+An integer denoting diff
+
+
+
+Input Constraints:
+
+1.The length of str should be at least 1 and at most 5 * 10^5 inclusive.
+2.The lengths of target_a and target_b should each be at least 1 and at most 5 * 10^5 inclusive.
+3.str, target_a, and target_b contain only lowercase English letters.
+
+
+*/
