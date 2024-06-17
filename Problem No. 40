@@ -1,0 +1,35 @@
+/*
+
+Jimmy faced a complex problem involving cities labeled from 1 to len and roads connecting them based on their common divisors exceeding a given threshold. Given the 
+cities and their connections, Jimmy needed to determine connectivity between pairs of cities provided in a vector of queries.
+
+For each query queries[i] = [queries[i][0], queries[i][1]], Jimmy had to determine if there existed a path (direct or indirect) between city queries[i][0] and city 
+queries[i][1].
+
+To solve this, Jimmy had to carefully consider the relationships between the cities based on their common divisors exceeding the specified threshold. 
+It required an efficient approach to handle potentially large datasets and multiple queries, ensuring each query was answered correctly based on the connectivity
+rules defined by their shared divisors.
+
+Create a C++ Function AreConnected that will return a vector answer, where answer.length == queries.length and answer[i] is true if for the ith query, 
+there is a path between city queries[i][0] and city queries[i][1], or answer[i] is false if there is no path.
+
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type
+
+An integer denoting len
+An integer denoting threshold
+A vector<vector<int>> denoting queries
+
+
+
+Input Constraints:
+
+1.The number of cities len should be at least 2 and at most 10,000 inclusive.
+2.The threshold value should be in the range [0, len] inclusive.
+3.The number of queries queries.size() should be at least 1 and at most 100,000 inclusive.
+4.Each query queries[i] should consist of exactly two elements.
+5.Each element queries[i][0] and queries[i][1] in the vector of queries should be in the range [1, len] inclusive.
+6.queries[i][0] should not be equal to queries[i][1]
