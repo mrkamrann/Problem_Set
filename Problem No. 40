@@ -1,4 +1,5 @@
 /*
+Link : https://leetcode.com/problems/graph-connectivity-with-threshold/description/
 
 Jimmy faced a complex problem involving cities labeled from 1 to len and roads connecting them based on their common divisors exceeding a given threshold. Given the 
 cities and their connections, Jimmy needed to determine connectivity between pairs of cities provided in a vector of queries.
