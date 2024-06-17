@@ -1,0 +1,38 @@
+/*
+Link: https://leetcode.com/problems/bricks-falling-when-hit/description/ 
+
+Jimmy loves playing with his set of bricks. He built a structure using an m x n binary grid, where each 1 represents a brick and each 0 represents an empty space. 
+A brick is stable in Jimmy's structure if:
+
+It is directly connected to the top of the grid, or
+At least one other brick in its four adjacent cells is stable.
+One day, Jimmy decided to start removing some bricks from his structure. He has a list of hits, where each hit represents a brick Jimmy wants to remove from a 
+specific location hits[i] = (row[i], col[i]). When Jimmy removes a brick from that location (if it exists), the brick disappears. Because of this, some other bricks 
+might no longer be stable and will fall. Once a brick falls, it is immediately erased from the grid and won't land on other stable bricks.
+
+Help Jimmy to create a C++ Function ___ figure out what will happen after each of his brick removals. Return an array result, where each result[i] represents the number of bricks that will fall after Jimmy applies the ith removal.
+
+Note that if Jimmy tries to remove a brick from a location with no brick, no bricks will fall.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type
+
+vector<vector<int>> denoting grid
+vector<vector<int>> denoting hits
+
+
+
+Input Constraints:
+
+1.The number of rows row_count should be at least 1 and at most 200 inclusive.
+2.The number of columns col_count should be at least 1 and at most 200 inclusive.
+3.Each cell grid[i][j] is either 0 or 1.
+4.The length of hits should be at least 1 and at most 40,000 inclusive.
+5.Each hit hits[i] should have a length of 2.
+6.Each value hits[i][0] should be in the range [0, row_count - 1] inclusive.
+7.Each value hits[i][1] should be in the range [0, col_count - 1] inclusive.
+8.All (hits[i][0], hits[i][1]) pairs are unique.
+
+*/
+
