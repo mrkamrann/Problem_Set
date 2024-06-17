@@ -1,4 +1,6 @@
 /*
+Link : https://leetcode.com/problems/gcd-sort-of-an-array/description/
+
 Jimmy faced a challenging task with an integer vector nums. He needed to determine if he could sort nums in non-decreasing order using a special swapping operation. This operation allowed him to swap elements 
 nums[i] and nums[j] if gcd(nums[i], nums[j]) > 1, where gcd(nums[i], nums[j]) denotes the greatest common divisor of nums[i] and nums[j].
 
