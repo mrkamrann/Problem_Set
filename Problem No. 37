@@ -1,28 +1,141 @@
 /*
 
-Link : https://leetcode.com/problems/find-subarray-with-bitwise-or-closest-to-k/description/ 
+Link : https://leetcode.com/problems/making-a-large-island/description/
 
-Since Jimmy's Summer vacation is starting, he has got a problem to solve as holiday homework.
-Jimmy has been given a problem involving a vector nums and an integer diff. The task is to find a subarray of nums such that the absolute difference between diff and the bitwise OR of the subarray 
-elements is minimized. Mathematically, find a subarray (contiguous non-empty sequence of elements) nums[left..right] such that the absolute difference between diff and the bitwise OR of the elements in 
-the subarray (OR(nums[left]...nums[right])) is minimized. 
-Create a C++ function ___ that will return this minimum possible absolute difference.
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem while working on a grid-based puzzle.
 
+Jimmy was given a binary matrix called grid of size len x len, where each cell was either a 0 or a 1. His task was to transform this grid to maximize the size of
+an island. An island, he knew, was a group of 1s connected in any of the four cardinal directions: up, down, left, and right.
+
+To make this happen, Jimmy was allowed to change at most one 0 in the grid to a 1. His goal was to find out the largest possible island size he could achieve 
+with this single transformation.
+
+With a twinkle in his eye, Jimmy sat down at his computer, ready to dive into the code and discover the optimal solution to this intriguing puzzle.
+
+Help Jimmy create a C++ function LargestIsland that will return the size of the largest island in grid after applying this operation.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
 
 Input Type:
 
-vector<int> denoting the vector nums
+vector<vector<int>> denoting the 2D vector grid
 
 Input Constraints:
 
-1.The length of nums should be at least 1 and at most 10^5.
-2.Each element in nums should be within the range from 1 to 10^9.
-3. The value of diff should be within the range from 1 to 10^9.
+1.The length of grid (denoted as len) should be at least 1 and at most 500 inclusive.
+2.Each row grid[i] should have a length of len.
+3.Each cell grid[i][j] is either 0 or 1.
 
 */
 
 
+#include <vector>
+#include <set>
+#include <stdexcept>
+#include <cassert>
 
+class DisjointSet {
+public:
+    std::vector<int> parent, size;
+
+    DisjointSet(int total_elements) {
+        parent.resize(total_elements + 1);
+        size.resize(total_elements + 1);
+        for (int i = 0; i <= total_elements; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int FindUltimateParent(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = FindUltimateParent(parent[node]);
+    }
+
+    void UnionBySize(int element_u, int element_v) {
+        int ultimate_parent_u = FindUltimateParent(element_u);
+        int ultimate_parent_v = FindUltimateParent(element_v);
+        if (ultimate_parent_u == ultimate_parent_v) return;
+        if (size[ultimate_parent_u] < size[ultimate_parent_v]) {
+            parent[ultimate_parent_u] = ultimate_parent_v;
+            size[ultimate_parent_v] += size[ultimate_parent_u];
+        } else {
+            parent[ultimate_parent_v] = ultimate_parent_u;
+            size[ultimate_parent_u] += size[ultimate_parent_v];
+        }
+    }
+};
+
+    int LargestIsland(std::vector<std::vector<int>>& grid) {
+       
+        if (grid.size() < 1 || grid.size() > 500) {
+        throw std::invalid_argument("The length of the grid should be at least 1 and at most 500 inclusive.");
+    }
+
+    size_t len = grid.size();
+    for (size_t i = 0; i < len; ++i) {
+        if (grid[i].size() != len) {
+            throw std::invalid_argument("Each row in the grid should have a length equal to the length of the grid.");
+        }
+    }
+
+  
+    for (size_t i = 0; i < len; ++i) {
+        for (size_t j = 0; j < grid[i].size(); ++j) {
+            if (grid[i][j] != 0 && grid[i][j] != 1) {
+                throw std::invalid_argument("Each cell in the grid should be either 0 or 1.");
+            }
+        }
+    }
+      
+        int grid_size = grid.size();
+        DisjointSet disjoint_set(grid_size * grid_size);
+        std::vector<std::pair<int, int>> directions = {{0, 1}, {0, -1}, {1, 0}, { -1, 0}};
+        
+        for (int row = 0; row < grid_size; row++) {
+            for (int col = 0; col < grid_size; col++) {
+                if (grid[row][col] == 1) {
+                    for (std::pair<int, int> direction : directions) {
+                        int adjacent_row = direction.first + row;
+                        int adjacent_col = direction.second + col;
+                        if (adjacent_row >= 0 && adjacent_row < grid_size && adjacent_col >= 0 && adjacent_col < grid_size && grid[adjacent_row][adjacent_col] == 1) {
+                            disjoint_set.UnionBySize(grid_size * adjacent_row + adjacent_col, grid_size * row + col);
+                        }
+                    }
+                }
+            }
+        }
+
+        int largest_island = 0;
+        for (int row = 0; row < grid_size; row++) {
+            for (int col = 0; col < grid_size; col++) {
+                if (grid[row][col] == 0) {
+                    std::set<int> unique_parents;
+                    for (std::pair<int, int> direction : directions) {
+                        int adjacent_row = direction.first + row;
+                        int adjacent_col = direction.second + col;
+                        if (adjacent_row >= 0 && adjacent_row < grid_size && adjacent_col >= 0 && adjacent_col < grid_size && grid[adjacent_row][adjacent_col] == 1) {
+                            unique_parents.insert(disjoint_set.FindUltimateParent(grid_size * adjacent_row + adjacent_col));
+                        }
+                    }
+                    int current_island_size = 1;
+                    for (int parent : unique_parents) {
+                        current_island_size += disjoint_set.size[parent];
+                    }
+                    largest_island = std::max(largest_island, current_island_size);
+                }
+            }
+        }
+        for (int index = 0; index < grid_size * grid_size; index++) {
+            largest_island = std::max(largest_island, disjoint_set.size[disjoint_set.FindUltimateParent(index)]);
+        }
+        return largest_island;
+    }
+
+int main(){
+  return 0;
+}
 
 
 
