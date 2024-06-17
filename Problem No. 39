@@ -1,0 +1,23 @@
+/*
+Jimmy faced a challenging task with an integer vector nums. He needed to determine if he could sort nums in non-decreasing order using a special swapping operation. This operation allowed him to swap elements 
+nums[i] and nums[j] if gcd(nums[i], nums[j]) > 1, where gcd(nums[i], nums[j]) denotes the greatest common divisor of nums[i] and nums[j].
+
+Jimmy pondered over whether he could achieve the sorted order through these swaps. It was a puzzle that required careful consideration of the vector's elements and 
+their relationships through their greatest common divisors.
+
+Create a C++ Function GcdSort that will return true if it is possible to sort nums in non-decreasing order using the above swap method, or false otherwise. 
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type
+
+vector<int> denoting nums
+
+Input Constraints:
+
+1.The length of nums  should be at least 1 and at most 30000 inclusive.
+2.Each element nums[i] should be in the range [2, 10^5] inclusive.
+
+
+*/
