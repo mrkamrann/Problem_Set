@@ -37,6 +37,7 @@ Input Constraints:
 
 */
 
+
 #include <vector>
 #include <unordered_map>
 #include <set>
@@ -126,6 +127,247 @@ Input Constraints:
 
 
 int main(){
+  
+  //TEST
+
+  int len_1 = 6;
+  int threshold_1 = 2; 
+  std::vector<std::vector<int>> queries_1 = {{1,4},{2,5},{3,6}};
+  std::vector<bool> expected_1 = {0,0,1};
+  std::vector<bool> result_1 = AreConnected(len_1,threshold_1, queries_1);
+  assert(expected_1 == result_1);
+  
+  //TEST_END
+  
+  //TEST
+
+int len_2 = 10;
+int threshold_2 = 1;
+std::vector<std::vector<int>> queries_2 = {{1,3},{2,5},{6,10}};
+std::vector<bool> expected_2 = {0,1,1};
+std::vector<bool> result_2 = AreConnected(len_2, threshold_2, queries_2);
+assert(expected_2 == result_2);
+
+//TEST_END
+
+//TEST
+
+int len_3 = 5;
+int threshold_3 = 0;
+std::vector<std::vector<int>> queries_3 = {{1,2},{2,3},{4,5},{1,5}};
+std::vector<bool> expected_3 = {1,1,1,1};
+std::vector<bool> result_3 = AreConnected(len_3, threshold_3, queries_3);
+assert(expected_3 == result_3);
+
+//TEST_END
+
+//TEST
+
+int len_4 = 7;
+int threshold_4 = 2;
+std::vector<std::vector<int>> queries_4 = {{1,4},{3,6},{5,7},{1,7}};
+std::vector<bool> expected_4 = {0,1,0,0};
+std::vector<bool> result_4 = AreConnected(len_4, threshold_4, queries_4);
+assert(expected_4 == result_4);
+
+//TEST_END
+
+//TEST
+
+int len_5 = 12;
+int threshold_5 = 3;
+std::vector<std::vector<int>> queries_5 = {{4,8},{6,12},{3,9},{1,10}};
+std::vector<bool> expected_5 = {1,1,0,0};
+std::vector<bool> result_5 = AreConnected(len_5, threshold_5, queries_5);
+assert(expected_5 == result_5);
+
+//TEST_END
+
+//TEST
+
+int len_6 = 15;
+int threshold_6 = 4;
+std::vector<std::vector<int>> queries_6 = {{5,10},{8,12},{6,14},{1,15}};
+std::vector<bool> expected_6 = {1,0,0,0};
+std::vector<bool> result_6 = AreConnected(len_6, threshold_6, queries_6);
+assert(expected_6 == result_6);
+
+//TEST_END
+
+//TEST
+
+int len_7 = 20;
+int threshold_7 = 5;
+std::vector<std::vector<int>> queries_7 = {{6,12},{10,20},{9,18},{1,19}};
+std::vector<bool> expected_7 = {1,1,1,0};
+std::vector<bool> result_7 = AreConnected(len_7, threshold_7, queries_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+
+//TEST
+
+int len_8 = 100;
+int threshold_8 = 10;
+std::vector<std::vector<int>> queries_8 = {{11,22},{30,60},{50,100},{25,75}};
+std::vector<bool> expected_8 = {1,1,1,1};
+std::vector<bool> result_8 = AreConnected(len_8, threshold_8, queries_8);
+assert(expected_8 == result_8);
+
+//TEST_END
+  
+
+  
+//TEST
+
+int len_9 = 1; 
+int threshold_9 = 0;
+std::vector<std::vector<int>> queries_9 = {{1,1}};
+try{
+  AreConnected(len_9, threshold_9, queries_9);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_10 = 10001; 
+int threshold_10 = 5;
+std::vector<std::vector<int>> queries_10 = {{1,2},{2,3}};
+try{
+  AreConnected(len_10, threshold_10, queries_10);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_11 = 10;
+int threshold_11 = 11; 
+std::vector<std::vector<int>> queries_11 = {{1,2},{3,4}};
+try{
+  AreConnected(len_11, threshold_11, queries_11);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_12 = 10;
+int threshold_12 = -1; 
+std::vector<std::vector<int>> queries_12 = {{1,2},{3,4}};
+try{
+  AreConnected(len_12, threshold_12, queries_12);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_13 = 10;
+int threshold_13 = 2;
+std::vector<std::vector<int>> queries_13(100001, {1,2}); 
+try{
+  AreConnected(len_13, threshold_13, queries_13);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_14 = 10;
+int threshold_14 = 3;
+std::vector<std::vector<int>> queries_14 = {{1,2,3}}; 
+try{
+  AreConnected(len_14, threshold_14, queries_14);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_15 = 10;
+int threshold_15 = 3;
+std::vector<std::vector<int>> queries_15 = {{1}}; 
+try{
+  AreConnected(len_15, threshold_15, queries_15);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_16 = 10;
+int threshold_16 = 3;
+std::vector<std::vector<int>> queries_16 = {{1,11}};
+try{
+  AreConnected(len_16, threshold_16, queries_16);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_17 = 10;
+int threshold_17 = 3;
+std::vector<std::vector<int>> queries_17 = {{0,2}}; 
+try{
+  AreConnected(len_17, threshold_17, queries_17);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int len_18 = 10;
+int threshold_18 = 3;
+std::vector<std::vector<int>> queries_18 = {{3,3}}; 
+try{
+  AreConnected(len_18, threshold_18, queries_18);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
 return 0;
 }
 
