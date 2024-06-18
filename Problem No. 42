@@ -1,0 +1,335 @@
+/*
+Link : https://leetcode.com/problems/cat-and-mouse/description/ 
+
+A game on an undirected graph is played by two players, Jerry and Tom, who alternate turns.
+
+The graph is given as follows: graph[a] is a vector of all nodes b such that ab is an edge of the graph.
+
+Jerry starts at node 1 and goes first, Tom starts at node 2 and goes second, and there is a hole at node 0.
+
+During each player's turn, they must travel along one edge of the graph that meets where they are. For example, if Jerry is at node 1, he must travel to any node 
+in graph[1].
+
+Additionally, it is not allowed for Tom to travel to the Hole (node 0).
+
+Then, the game can end in three ways:
+
+If ever Tom occupies the same node as Jerry, Tom wins.
+If ever Jerry reaches the Hole, Jerry wins.
+If ever a position is repeated (i.e., the players are in the same position as a previous turn, and it is the same player's turn to move), the game is a draw.
+Given a graph, and assuming both players play optimally, return
+
+1 if Jerry wins the game,
+2 if Tom wins the game, or
+0 if the game is a draw.
+
+Create a C++ Function TomAndKJerry that will return an integer denoting the outcome of the game.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type:
+
+vector<vector<int>> denoting 2D vector graph
+
+Input Constraints:
+
+1.The length of graph should be at least 3 and at most 50 inclusive.
+2.Each graph[i] should have a length greater than or equal to 1 and less than graph's length.
+3.Each value graph[i][j] should be in the range [0, graph.length - 1] inclusive.
+4.graph[i][j] should not equal i.
+5.Each graph[i] should be unique.
+
+*/
+
+#include <vector>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+    int TomAndJerry(std::vector<std::vector<int>>& graph) {
+      
+        if (graph.size() < 3 || graph.size() > 50) {
+            throw std::invalid_argument("graph length must be between 3 and 50");
+        }
+        for (const auto& neighbors : graph) {
+            if (neighbors.size() < 1 || neighbors.size() >= graph.size()) {
+                throw std::invalid_argument("each graph[i].length must be between 1 and graph.length - 1");
+            }
+            for (int node : neighbors) {
+                if (node < 0 || node >= graph.size()) {
+                    throw std::invalid_argument("each graph[i][j] must be between 0 and graph.length - 1");
+                }
+            }
+        }
+        for (int i = 0; i < graph.size(); ++i) {
+            for (int node : graph[i]) {
+                if (node == i) {
+                    throw std::invalid_argument("graph[i][j] must not be equal to i");
+                }
+            }
+        }
+        for (int i = 0; i < graph.size(); ++i) {
+            for (int j = 0; j < graph[i].size(); ++j) {
+                for (int k = j + 1; k < graph[i].size(); ++k) {
+                    if (graph[i][j] == graph[i][k]) {
+                        throw std::invalid_argument("graph[i] must be unique");
+                    }
+                }
+            }
+        }
+
+        int num_nodes = graph.size();
+        std::vector<std::vector<int>> dp_arr[2];
+        std::vector<std::vector<int>> outdegree[2];
+        std::queue<std::vector<int>> que; 
+
+        dp_arr[0] = std::vector<std::vector<int>>(num_nodes, std::vector<int>(num_nodes));
+        dp_arr[1] = std::vector<std::vector<int>>(num_nodes, std::vector<int>(num_nodes));
+        outdegree[0] = std::vector<std::vector<int>>(num_nodes, std::vector<int>(num_nodes));
+        outdegree[1] = std::vector<std::vector<int>>(num_nodes, std::vector<int>(num_nodes));
+
+        for (int j = 0; j < num_nodes; ++j) {
+            dp_arr[0][0][j] = dp_arr[1][0][j] = 1;
+            que.push({0, 0, j});
+            que.push({1, 0, j});
+        }
+        for (int j = 1; j < num_nodes; ++j) {
+            dp_arr[0][j][j] = dp_arr[1][j][j] = 2;
+            que.push({0, j, j});
+            que.push({1, j, j});
+        }
+
+    
+        for (int i = 0; i < num_nodes; ++i) {
+            for (int j = 1; j < num_nodes; ++j) {
+                outdegree[0][i][j] = graph[i].size();
+                outdegree[1][i][j] = graph[j].size();
+            }
+        }
+        for (int node : graph[0]) {
+            for (int i = 0; i < num_nodes; ++i) {
+                outdegree[1][i][node]--;
+            }
+        }
+
+        
+        while (!que.empty()) {
+            int turn = que.front()[0];
+            int jerry = que.front()[1];
+            int tom = que.front()[2];
+            que.pop();
+
+            if (turn == 0 && jerry == 1 && tom == 2) {
+             
+                break;
+            }
+
+            if (turn == 0) { 
+                for (int node : graph[tom]) {
+                    if (node == 0) {
+                        continue;
+                    }
+
+                    if (dp_arr[1][jerry][node] > 0) {
+                        continue;
+                    }
+
+                    if (dp_arr[turn][jerry][tom] == 2) {
+                       
+                        dp_arr[1][jerry][node] = 2;
+                        que.push({1, jerry, node});
+                        continue;
+                    }
+
+                    outdegree[1][jerry][node]--;
+                    if (outdegree[1][jerry][node] == 0) {
+                        dp_arr[1][jerry][node] = 1;
+                        que.push({1, jerry, node});
+                    }
+                }
+            } else {
+                for (int node : graph[jerry]) {
+                    if (dp_arr[0][node][tom] > 0) {
+                        continue;
+                    }
+
+                    if (dp_arr[turn][jerry][tom] == 1) {
+                        
+                        dp_arr[0][node][tom] = 1;
+                        que.push({0, node, tom});
+                        continue;
+                    }
+
+                    outdegree[0][node][tom]--;
+                    if (outdegree[0][node][tom] == 0) {
+                        dp_arr[0][node][tom] = 2;
+                        que.push({0, node, tom});
+                    }
+                }
+            }
+        }
+
+        return dp_arr[0][1][2];
+    }
+
+
+
+int main(){
+  //TEST
+  std::vector<std::vector<int>> graph_1 = {{1,3},{0},{3},{0,2}};
+  int expected_1 = 1;
+  int result_1 = TomAndJerry(graph_1);
+  assert(expected_1 == result_1);
+   //TEST_END
+  
+   // TEST 
+    std::vector<std::vector<int>> graph_2 = {{2, 5}, {3}, {0, 4}, {1, 5}, {2}, {0, 3}};
+    int expected_2 = 1;
+    int result_2 = TomAndJerry(graph_2);
+    assert(expected_2 == result_2);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_3 = {{1, 4, 5}, {0, 2, 3}, {1, 6}, {1, 7}, {0}, {0, 7}, {2}, {3, 5}};
+    int expected_3 = 1;
+    int result_3 = TomAndJerry(graph_3);
+    assert(expected_3 == result_3);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_4 = {{1, 6}, {0, 2, 3}, {1, 5}, {1, 4}, {3, 6}, {2, 7}, {0, 4}, {5}};
+    int expected_4 = 1;
+    int result_4 = TomAndJerry(graph_4);
+    assert(expected_4 == result_4);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_5 = {{3, 5}, {4}, {3}, {0, 2, 4}, {1, 3}, {0}};
+    int expected_5 = 2;
+    int result_5 = TomAndJerry(graph_5);
+    assert(expected_5 == result_5);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_6 = {{1, 2, 3}, {0, 4}, {0, 5}, {0, 6}, {1}, {2}, {3}};
+    int expected_6 = 1;
+    int result_6 = TomAndJerry(graph_6);
+    assert(expected_6 == result_6);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_7 = {{1, 2, 3}, {0, 4, 5}, {0, 6}, {0}, {1}, {1}, {2}};
+    int expected_7 = 1;
+    int result_7 = TomAndJerry(graph_7);
+    assert(expected_7 == result_7);
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_8 = {{1, 2, 4}, {0, 3, 5}, {0, 6}, {1}, {0}, {1}, {2}};
+    int expected_8 = 1;
+    int result_8 = TomAndJerry(graph_8);
+    assert(expected_8 == result_8);
+  //TEST_END
+  
+     // TEST 9
+  std::vector<std::vector<int>> graph_9 = {{1}, {0}};
+    try {
+        
+        TomAndJerry(graph_9);
+       assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+  
+  
+    // TEST
+   std::vector<std::vector<int>> graph_10(51, {0});
+    try {
+       
+        TomAndJerry(graph_10);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  
+  //TEST_END
+
+    // TEST 
+   std::vector<std::vector<int>> graph_11 = {{1}, {}, {0}};
+    try {
+       
+        TomAndJerry(graph_11);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  
+  //TEST_END
+
+    // TEST
+  std::vector<std::vector<int>> graph_12 = {{1, 2, 3}, {-3, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    try {
+        
+        TomAndJerry(graph_12);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+  
+  
+    // TEST 
+  std::vector<std::vector<int>> graph_13 = {{1, -1}, {0}};
+    try {
+        
+        TomAndJerry(graph_13);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  
+  //TEST_END
+
+    // TEST 
+    std::vector<std::vector<int>> graph_14 = {{1, 3}, {0}, {3}};
+    try {
+      
+        TomAndJerry(graph_14);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  
+  //TEST_END
+  
+
+    // TEST 
+  
+  std::vector<std::vector<int>> graph_15 = {{0, 1}, {0}};
+    try {
+        
+        TomAndJerry(graph_15);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+  //TEST_END
+  
+    // TEST
+    std::vector<std::vector<int>> graph_16 = {{1, 1}, {0}};
+    try {
+      
+        TomAndJerry(graph_16);
+      assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  //TEST_END
+  
+  
+  
+  return 0;
+}
+
