@@ -34,3 +34,99 @@ Input Constraints:
 4.Each query queries[i] should consist of exactly two elements.
 5.Each element queries[i][0] and queries[i][1] in the vector of queries should be in the range [1, len] inclusive.
 6.queries[i][0] should not be equal to queries[i][1]
+
+*/
+
+#include <vector>
+#include <unordered_map>
+#include <set>
+#include <cmath>
+#include <stdexcept>
+
+class Solution {
+public:
+    int Find(long long value, std::vector<long long> &parent) {
+        if (value == parent[value]) {
+            return value;
+        }
+        return parent[value] = Find(parent[value], parent);
+    }
+
+    void Union(long long node_a, long long node_b, std::vector<long long> &size, std::vector<long long> &parent) {
+        node_a = Find(node_a, parent);
+        node_b = Find(node_b, parent);
+        if (node_a != node_b) {
+            if (size[node_a] < size[node_b]) std::swap(node_a, node_b);
+            parent[node_b] = node_a;
+            size[node_a] += size[node_b] + 0LL;
+        }
+    }
+
+    std::vector<bool> areConnected(int len, int threshold, std::vector<std::vector<int>>& queries) {
+        if (len < 2 || len > 10000) {
+            throw std::invalid_argument("The number of cities len should be at least 2 and at most 10,000 inclusive.");
+        }
+        if (threshold < 0 || threshold > len) {
+            throw std::invalid_argument("The threshold value should be in the range [0, len] inclusive.");
+        }
+        if (queries.size() < 1 || queries.size() > 100000) {
+            throw std::invalid_argument("The number of queries queries.size() should be at least 1 and at most 100,000 inclusive.");
+        }
+        for (std::vector<int>& query : queries) {
+            if (query.size() != 2) {
+                throw std::invalid_argument("Each query queries[i] should consist of exactly two elements.");
+            }
+            if (query[0] < 1 || query[0] > len || query[1] < 1 || query[1] > len) {
+                throw std::invalid_argument("Each element queries[i][0] and queries[i][1] in the vector of queries should be in the range [1, len] inclusive.");
+            }
+            if (query[0] == query[1]) {
+                throw std::invalid_argument("queries[i][0] should not be equal to queries[i][1].");
+            }
+        }
+
+        std::unordered_map<long long, std::set<long long>> divisor_map;
+        std::vector<bool> result;
+        std::vector<long long> parent(len + 1, 0), size(len + 1, 0);
+        
+        for (long long i = 1; i <= len; ++i) {
+            for (long long j = 1; j <= std::sqrt(i); ++j) {
+                if (i % j == 0) {
+                    if (j > threshold) divisor_map[i].insert(j);
+                    if ((i / j) > threshold) divisor_map[i].insert(i / j);
+                }
+            }
+        } 
+        
+        for (long long i = 1; i <= len; ++i) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+
+        for (long long i = 1; i <= len; ++i) {
+            long long previous = -1;
+            for (auto ite = divisor_map[i].begin(); ite != divisor_map[i].end(); ++ite) {
+                if (previous == -1) {
+                    previous = *ite;
+                    continue;
+                }
+                Union(*ite, previous, size, parent);
+                previous = *ite;
+            }
+        }
+
+        for (const auto& query : queries) {
+            if (Find(query[0], parent) == Find(query[1], parent)) {
+                result.push_back(1);
+            } else {
+                result.push_back(0);
+            }
+        }
+
+        return result;
+    }
+};
+
+int main(){
+return 0;
+}
+
