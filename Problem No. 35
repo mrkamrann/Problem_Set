@@ -154,5 +154,107 @@ public:
 
 
 int main(){
-  return 0;
+// TEST
+std::vector<int> nums_1 = {4,6,15,35};
+std::vector<int> expected_1 = {4,15,6,35};
+std::vector<int> result_1 = ResultArray(nums_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<int> nums_2 = {20,50,9,63};
+std::vector<int> expected_2 = {20,9,50,63};
+std::vector<int> result_2 = ResultArray(nums_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<int> nums_3 = {2,3,6,7,4,12,21,39};
+std::vector<int> expected_3 = {2,6,4,21,3,7,12,39};
+std::vector<int> result_3 = ResultArray(nums_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<int> nums_4 = {2,3,5,7};
+std::vector<int> expected_4 = {2,5,3,7};
+std::vector<int> result_4 = ResultArray(nums_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<int> nums_5 = {13, 17, 19, 23};
+std::vector<int> expected_5 = {13,19,17,23};
+std::vector<int> result_5 = ResultArray(nums_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<int> nums_6 = {2, 4, 6, 8, 10};
+std::vector<int> expected_6 = {2,6,10,4,8};
+std::vector<int> result_6 = ResultArray(nums_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<int> nums_7 = {3, 6, 9, 12};
+std::vector<int> expected_7 = {3,9,6,12};
+std::vector<int> result_7 = ResultArray(nums_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<int> nums_8 = {11, 13, 17, 19};
+std::vector<int> expected_8 = {11,17,13,19};
+std::vector<int> result_8 = ResultArray(nums_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> nums_9 = {5, 25, 125, 625};
+std::vector<int> expected_9 = {5,125,25,625};
+std::vector<int> result_9 = ResultArray(nums_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+std::vector<int> nums_10 = {};
+try {
+    ResultArray(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_11 = {1000000009};
+try {
+    ResultArray(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_12 = {-999};
+try {
+    ResultArray(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+std::vector<int> nums_13(1e6,1);
+try {
+    ResultArray(nums_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
 }
