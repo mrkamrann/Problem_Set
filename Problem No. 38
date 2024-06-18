@@ -47,7 +47,7 @@ public:
     std::vector<int> size;
     std::vector<std::vector<int>> directions{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
     
-    std::vector<int> hitBricks(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>>& hits) {
+    std::vector<int> HitBricks(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>>& hits) {
          int row_count = grid.size();
         if (row_count < 1 || row_count > 200) {
             throw std::invalid_argument("The number of rows (row_count) must be between 1 and 200 inclusive.");
@@ -176,5 +176,217 @@ private:
 };
 
 int main(){
+  
+  //TEST
+  
+   std::vector<std::vector<int>>grid_1 = {{1,0,0,0},{1,1,1,0}};
+   std::vector<std::vector<int>> hits_1 = {{1,0}};
+   std::vector<int> expected_1 = {2};
+   Solution obj_1;
+   std::vector<int> result_1 = obj_1.HitBricks(grid_1, hits_1);
+   assert(expected_1 == result_1);
+  
+  //TEST_END
+  
+  //TEST 
+
+std::vector<std::vector<int>>grid_2 = {{1,1,1},{1,0,1},{0,1,0}};
+std::vector<std::vector<int>> hits_2 = {{1,0}, {0,0}};
+std::vector<int> expected_2 = {0, 0};
+Solution obj_2;
+std::vector<int> result_2 = obj_2.HitBricks(grid_2, hits_2);
+assert(expected_2 == result_2);
+
+//TEST_END
+
+//TEST 
+
+std::vector<std::vector<int>>grid_3 = {{1,1,1,1},{1,0,1,0},{1,1,1,1}};
+std::vector<std::vector<int>> hits_3 = {{1,2}, {1,1}, {0,3}};
+std::vector<int> expected_3 = {0, 0, 0};
+Solution obj_3;
+std::vector<int> result_3 = obj_3.HitBricks(grid_3, hits_3);
+assert(expected_3 == result_3);
+
+//TEST_END
+
+//TEST 
+
+std::vector<std::vector<int>>grid_4 = {{1,0,1,1},{1,1,0,1},{0,1,1,0}};
+std::vector<std::vector<int>> hits_4 = {{2,1}, {0,2}, {1,3}};
+std::vector<int> expected_4 = {1, 0, 0};
+Solution obj_4;
+std::vector<int> result_4 = obj_4.HitBricks(grid_4, hits_4);
+assert(expected_4 == result_4);
+
+//TEST_END
+
+//TEST 
+
+std::vector<std::vector<int>>grid_5 = {{1,1,1},{0,1,0},{1,1,1},{0,0,1}};
+std::vector<std::vector<int>> hits_5 = {{2,2}, {2,1}, {0,0}};
+std::vector<int> expected_5 = {1, 1, 0};
+Solution obj_5;
+std::vector<int> result_5 = obj_5.HitBricks(grid_5, hits_5);
+assert(expected_5 == result_5);
+
+//TEST_END
+
+//TEST 
+
+std::vector<std::vector<int>>grid_6 = {{1,1},{1,1}};
+std::vector<std::vector<int>> hits_6 = {{1,1}, {1,0}};
+std::vector<int> expected_6 = {0, 0};
+Solution obj_6;
+std::vector<int> result_6 = obj_6.HitBricks(grid_6, hits_6);
+assert(expected_6 == result_6);
+
+//TEST_END
+
+//TEST 
+
+std::vector<std::vector<int>>grid_7 = {{1,0,0,1,0},{1,1,1,1,1},{0,1,0,0,1},{1,1,1,0,0},{1,0,1,1,1}};
+std::vector<std::vector<int>> hits_7 = {{1,4}, {3,1}, {0,3}, {2,1}};
+std::vector<int> expected_7 = {1, 6, 0, 0};
+Solution obj_7;
+std::vector<int> result_7 = obj_7.HitBricks(grid_7, hits_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_8 = {{1,0,1},{1,1,1},{1,0,0},{0,1,1}};
+std::vector<std::vector<int>> hits_8 = {{0,2}, {3,2}, {2,0}, {1,1}};
+std::vector<int> expected_8 = {0, 0, 0, 1};
+Solution obj;
+std::vector<int> result_8 = obj.HitBricks(grid_8, hits_8);
+assert(expected_8 == result_8);
+
+//TEST_END
+
+  
+//TEST
+
+std::vector<std::vector<int>>grid_9 = {{4}};
+std::vector<std::vector<int>> hits_9 = {{0,0}};
+try{
+Solution obj_9;
+obj_9.HitBricks(grid_9, hits_9);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_10 = {{1,1,1},{1,1,1},{1,1,1}};
+std::vector<std::vector<int>> hits_10 = {};
+try{
+Solution obj_10;
+obj_10.HitBricks(grid_10, hits_10);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_11 = {{1,0,1,1},{0,1,0,1},{1,1,1,0},{1,1,0,1}};
+std::vector<std::vector<int>> hits_11(1e5,std::vector<int>(2,0));
+try{
+Solution obj_11;
+obj_11.HitBricks(grid_11, hits_11);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_12(5000,std::vector<int>(3,0));
+std::vector<std::vector<int>> hits_12 = {{0,1}, {3,2}, {2,4}, {1,0}};
+try{
+Solution obj_12;
+obj_12.HitBricks(grid_12, hits_12);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_13(50,std::vector<int>(500,0));
+std::vector<std::vector<int>> hits_13 = {{1,1}, {2,0}, {0,0}, {1,0}};
+try{
+Solution obj_13;
+obj_13.HitBricks(grid_13, hits_13);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_14 = {{1,0,1,1,1},{1,1,1,0,1},{0,1,0,1,0},{1,1,1,1,1}};
+std::vector<std::vector<int>> hits_14 = {{0,2,4}, {2,3}, {1,0}, {3,4}};
+try{
+Solution obj_14;
+obj_14.HitBricks(grid_14, hits_14);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_15 = {{1,1,1,1,1},{1,0,1,1,1},{1,1,1,0,1},{1,1,0,1,1},{1,1,1,1,0}};
+std::vector<std::vector<int>> hits_15 = {{1,5}, {2,3}, {4,1}, {0,0}, {3,2}};
+try{
+Solution obj_15;
+obj_15.HitBricks(grid_15, hits_15);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>>grid_16 = {{1,0,1,0,1},{1,1,0,1,0},{0,1,1,0,1},{1,0,1,1,0},{0,1,0,1,1}};
+std::vector<std::vector<int>> hits_16 = {{10,2}, {1,3}, {4,1}, {0,0}};
+try{
+Solution obj_16;
+obj_16.HitBricks(grid_16, hits_16);
+assert(false);
+}
+catch(const std::invalid_argument& e){
+assert(true);
+}
+
+//TEST_END
+
+
+  
   return 0;
 }
