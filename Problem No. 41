@@ -31,8 +31,134 @@ An integer denoting diff
 Input Constraints:
 
 1.The length of str should be at least 1 and at most 5 * 10^5 inclusive.
-2.The lengths of target_a and target_b should each be at least 1 and at most 5 * 10^5 inclusive.
-3.str, target_a, and target_b contain only lowercase English letters.
+2.diff should be greater than equal to 1 and less than equal to length of str
+3.The lengths of target_a and target_b should each be at least 1 and at most 5 * 10^5 inclusive.
+4.str, target_a, and target_b contain only lowercase English letters.
 
 
 */
+
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+    std::vector<int> ComputeLpsArray(std::string pattern) {
+        int pattern_length = pattern.length();
+        std::vector<int> lps(pattern_length, 0);
+        int length = 0;
+        lps[0] = 0;
+        int index = 1;
+        
+        while (index < pattern_length) {
+            if (pattern[index] == pattern[length]) {
+                length++;
+                lps[index] = length;
+                index++;
+            } else {
+                if (length != 0) {
+                    length = lps[length - 1];
+                } else {
+                    lps[index] = 0;
+                    index++;
+                }
+            }
+        }
+        
+        return lps;
+    }
+    
+    std::vector<int> KmpSearch(std::string str, std::string pattern) {
+        int pattern_length = pattern.length();
+        int str_length = str.length();
+        
+        std::vector<int> lps = ComputeLpsArray(pattern);
+        std::vector<int> result(str_length, 0);
+        int str_index = 0, pattern_index = 0;
+        
+        while ((str_length - str_index) >= (pattern_length - pattern_index)) {
+            if (pattern[pattern_index] == str[str_index]) {
+                pattern_index++;
+                str_index++;
+            }
+
+            if (pattern_index == pattern_length) {
+                result[str_index - pattern_index] = 1;
+                pattern_index = lps[pattern_index - 1];
+            } else if (str_index < str_length && pattern[pattern_index] != str[str_index]) {
+                if (pattern_index != 0) {
+                    pattern_index = lps[pattern_index - 1];
+                } else {
+                    str_index = str_index + 1;
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    std::vector<int> BeautifulIndices(std::string str, std::string target_a, std::string target_b, int diff) {
+        if (str.length() < 1 || str.length() > 500000) {
+            throw std::invalid_argument("The length of str should be at least 1 and at most 5 * 10^5 inclusive.");
+        }
+
+         if (diff < 1 || diff > str.length()) {
+            throw std::invalid_argument("diff should be greater than equal to 1 and less than equal to length of str");
+        }
+
+        if (target_a.length() < 1 || target_a.length() > 500000) {
+            throw std::invalid_argument("The length of target_a should be at least 1 and at most 5 * 10^5 inclusive.");
+        }
+        if (target_b.length() < 1 || target_b.length() > 500000) {
+            throw std::invalid_argument("The length of target_b should be at least 1 and at most 5 * 10^5 inclusive.");
+        }
+        for (char c : str) {
+            if (c < 'a' || c > 'z') {
+                throw std::invalid_argument("str contains invalid characters. It should contain only lowercase English letters.");
+            }
+        }
+        for (char c : target_a) {
+            if (c < 'a' || c > 'z') {
+                throw std::invalid_argument("target_a contains invalid characters. It should contain only lowercase English letters.");
+            }
+        }
+        for (char c : target_b) {
+            if (c < 'a' || c > 'z') {
+                throw std::invalid_argument("target_b contains invalid characters. It should contain only lowercase English letters.");
+            }
+        }
+
+        std::vector<int> found_a = KmpSearch(str, target_a);
+        std::vector<int> found_b = KmpSearch(str, target_b);
+        
+        int str_length = str.length();
+        int target_a_length = target_a.length();
+        int target_b_length = target_b.length();
+        std::vector<int> forward(str_length), backward(str_length);
+        
+        int count = 0;
+        for (int index = 0; index < str_length; index++) {
+            count += found_b[index];
+            forward[index] = count;
+        }
+        
+        count = 0;
+        for (int index = str_length - 1; index >= 0; index--) {
+            count += found_b[index];
+            backward[index] = count;
+        }
+        
+        count = 0;
+        std::vector<int> result;
+        for (int index = 0; index < str_length; index++) {
+            int diff_forward = forward[index] - (index - diff - 1 >= 0 ? forward[index - diff - 1] : 0);
+            int diff_backward = backward[index] - (index + diff + 1 < str_length ? backward[index + diff + 1] : 0);
+            if (found_a[index] == 1 && (diff_forward + diff_backward > 0)) result.push_back(index);
+        }
+        
+        return result;
+    }
+
+int main(){
+  return 0;
+}
