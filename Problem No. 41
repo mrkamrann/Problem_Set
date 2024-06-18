@@ -160,5 +160,264 @@ Input Constraints:
     }
 
 int main(){
+  
+  //TEST
+  
+  std::string str_1 = "isawsquirrelnearmysquirrelhouseohmy";
+  std::string target_a_1 = "my";
+  std::string target_b_1 = "squirrel"; 
+  int diff_1 = 15;
+  std::vector<int>expected_1 = {16,33};
+  std::vector<int>result_1 =  BeautifulIndices(str_1,target_a_1,target_b_1,diff_1);
+  assert(expected_1 == result_1);
+  
+  //TEST_END
+  
+  //TEST
+
+std::string str_2 = "thequickbrownfoxjumpsoverthelazydog";
+std::string target_a_2 = "thequick";
+std::string target_b_2 = "fox"; 
+int diff_2 = 16;
+std::vector<int>expected_2 = {0};
+std::vector<int>result_2 = BeautifulIndices(str_2, target_a_2, target_b_2, diff_2);
+assert(expected_2 == result_2);
+
+//TEST_END
+
+//TEST
+
+std::string str_3 = "aabbccddeeffgghhiijj";
+std::string target_a_3 = "aabc";
+std::string target_b_3 = "jjkl"; 
+int diff_3 = 11;
+std::vector<int>expected_3 = {};
+std::vector<int>result_3 = BeautifulIndices(str_3, target_a_3, target_b_3, diff_3);
+assert(expected_3 == result_3);
+
+//TEST_END
+
+//TEST
+
+std::string str_4 = "abracadabra";
+std::string target_a_4 = "abrac";
+std::string target_b_4 = "abra"; 
+int diff_4 = 2;
+std::vector<int>expected_4 = {0};
+std::vector<int>result_4 = BeautifulIndices(str_4, target_a_4, target_b_4, diff_4);
+assert(expected_4 == result_4);
+
+//TEST_END
+
+//TEST
+
+std::string str_5 = "hellomynameisgptandilovechatting";
+std::string target_a_5 = "hello";
+std::string target_b_5 = "chat"; 
+int diff_5 = 26;
+std::vector<int>expected_5 = {0};
+std::vector<int>result_5 = BeautifulIndices(str_5, target_a_5, target_b_5, diff_5);
+assert(expected_5 == result_5);
+
+//TEST_END
+
+//TEST
+
+std::string str_6 = "abcdefgabcdefgabcdefg";
+std::string target_a_6 = "a";
+std::string target_b_6 = "e"; 
+int diff_6 = 12;
+std::vector<int>expected_6 = {0, 7,14};
+std::vector<int>result_6 = BeautifulIndices(str_6, target_a_6, target_b_6, diff_6);
+assert(expected_6 == result_6);
+
+//TEST_END
+
+//TEST
+
+std::string str_7 = "thisisaverylongstringthatcontainsmanysubstrings";
+std::string target_a_7 = "this";
+std::string target_b_7 = "averylongstringthat"; 
+int diff_7 = 14;
+std::vector<int>expected_7 = {0};
+std::vector<int>result_7 = BeautifulIndices(str_7, target_a_7, target_b_7, diff_7);
+assert(expected_7 == result_7);
+
+//TEST_END
+
+//TEST
+
+std::string str_8 = "xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyz";
+std::string target_a_8 = "xyz";
+std::string target_b_8 = "xyz"; 
+int diff_8 = 3;
+std::vector<int>expected_8 = {0,3,6,9,12,15,18,21,24,27,30};
+std::vector<int>result_8 = BeautifulIndices(str_8, target_a_8, target_b_8, diff_8);
+assert(expected_8 == result_8);
+
+//TEST_END
+  
+//TEST
+
+std::string str_9 = ""; 
+std::string target_a_9 = "a";
+std::string target_b_9 = "b"; 
+int diff_9 = 1;
+try{
+  BeautifulIndices(str_9, target_a_9, target_b_9, diff_9);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_10 = std::string(500001, 'a');
+std::string target_a_10 = "a";
+std::string target_b_10 = "b"; 
+int diff_10 = 1;
+try{
+  BeautifulIndices(str_10, target_a_10, target_b_10, diff_10);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_11 = "abcde";
+std::string target_a_11 = "a";
+std::string target_b_11 = "e"; 
+int diff_11 = 6; 
+try{
+  BeautifulIndices(str_11, target_a_11, target_b_11, diff_11);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_12 = "abcde";
+std::string target_a_12 = "a";
+std::string target_b_12 = "e"; 
+int diff_12 = 0;
+try{
+  BeautifulIndices(str_12, target_a_12, target_b_12, diff_12);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_13 = "abcde";
+std::string target_a_13 = "";
+std::string target_b_13 = "e"; 
+int diff_13 = 1;
+try{
+  BeautifulIndices(str_13, target_a_13, target_b_13, diff_13);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_14 = "abcde";
+std::string target_a_14 = "a";
+std::string target_b_14 = ""; 
+int diff_14 = 1;
+try{
+  BeautifulIndices(str_14, target_a_14, target_b_14, diff_14);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_15 = "abcde";
+std::string target_a_15 = std::string(500001, 'a'); 
+std::string target_b_15 = "e"; 
+int diff_15 = 1;
+try{
+  BeautifulIndices(str_15, target_a_15, target_b_15, diff_15);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_16 = "abcde";
+std::string target_a_16 = "a";
+std::string target_b_16 = std::string(500001, 'e');
+int diff_16 = 1;
+try{
+  BeautifulIndices(str_16, target_a_16, target_b_16, diff_16);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_17 = "abcde";
+std::string target_a_17 = "a";
+std::string target_b_17 = "e1"; 
+int diff_17 = 1;
+try{
+  BeautifulIndices(str_17, target_a_17, target_b_17, diff_17);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string str_18 = "abc1de"; 
+std::string target_a_18 = "a";
+std::string target_b_18 = "e"; 
+int diff_18 = 1;
+try{
+  BeautifulIndices(str_18, target_a_18, target_b_18, diff_18);
+  assert(false);
+}
+catch(const std::invalid_argument& e){
+  assert(true);
+}
+
+//TEST_END
+
+  
+  
   return 0;
 }
