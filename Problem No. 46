@@ -1,0 +1,32 @@
+/*
+Link : https://leetcode.com/problems/freedom-trail/description/
+
+John is given a string ring that represents the code engraved on the outer ring of a metal dial and another string key that represents the keyword that needs to be spelled, return the 
+minimum number of steps to spell all the characters in the keyword.
+
+Initially, the first character of the ring is aligned at the "12:00" direction. John should spell all the characters in key one by one by rotating ring clockwise or 
+anticlockwise to make each character of the string key aligned at the "12:00" direction and then by pressing the center button.
+
+At the stage of rotating the ring to spell the key character key[i]:
+
+John can rotate the ring clockwise or anticlockwise by one place, which counts as one step. The final purpose of the rotation is to align one of ring's characters 
+at the "12:00" direction, where this character must equal key[i].
+If the character key[i] has been aligned at the "12:00" direction, press the center button to spell, which also counts as one step. After the pressing, John could 
+begin to spell the next character in the key (next stage). Otherwise, you have finished all the spelling.
+
+Create a C++ function FindRotateSteps that will return an integer denoting the minimum number of steps to spell all the characters in the keyword.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type:
+
+A string denoting ring
+A string denoting key
+
+Input Constraints:
+
+1.The length of ring and key is at least 1 and atmost 100.
+2.ring and key consist of only lower case English letters.
+3.It is guaranteed that key could always be spelled by rotating ring.
+
+*/
