@@ -1,0 +1,32 @@
+/*
+
+Link : https://leetcode.com/problems/minimum-edge-reversals-so-every-node-is-reachable/
+
+John, a resident of a village with a simple directed graph, faces a challenge involving a graph with 𝑙𝑒𝑛 nodes labeled from 0 to 𝑙𝑒𝑛 - 1. The graph, structured such 
+that its edges are directed (forming a tree if bidirectional), requires John to determine the minimum number of edge reversals necessary for each  node 𝑖 (from 0 to 𝑙𝑒𝑛 - 1).
+
+He's provided with an integer 𝑙𝑒𝑛 and a 2D integer vector edges, where edges[𝑖] = [𝑢_𝑖, 𝑣_𝑖] denotes a directed edge from node 𝑢_𝑖 to node 𝑣_𝑖.
+Edge reversals invert the direction of an edge, transforming a directed edge from 𝑢_𝑖 to 𝑣_𝑖 into an edge from 𝑣_𝑖 to 𝑢_𝑖.
+John's task is to compute independently, for each node 𝑖, the minimum number of edge reversals needed so that every other node can be reached starting from node 𝑖 
+via directed edges.
+He must return an integer vector answer, where answer[𝑖] represents the minimum number of edge reversals required for node 𝑖 to ensure connectivity to all other 
+nodes in the graph.
+Create a C++ function MinEdgeReversals to assist John in devising an optimal strategy to solve this problem. 
+
+Input Type:
+
+An Integer denoting len
+vector<vector<int>> denoting edges
+
+Input Constraints:
+
+1.The number of nodes len should be at least 2 and at most 10^5 inclusive.
+2.The number of edges edges should be exactly len - 1.
+3.Each edge edges[i] should consist of exactly 2 elements.
+4.For each edge edges[i], 0 <= u_i = edges[i][0] < len.
+5.For each edge edges[i], 0 <= v_i = edges[i][1] < len.
+6.For each edge edges[i], u_i != v_i.
+
+*/
+
+
