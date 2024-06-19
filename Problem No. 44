@@ -1,0 +1,148 @@
+/*
+Link : https://leetcode.com/problems/maximum-points-after-collecting-coins-from-all-nodes/
+
+In a tranquil village, there exists an ancient tree that holds many secrets. This tree, rooted at node 0, has len nodes labeled from 0 to len - 1. The villagers have
+mapped the tree with a 2D integer vector called edges, where each entry edges[i] = [a_i, b_i] signifies an ancient path between nodes a_i and b_i.
+
+Our hero, John, is given a mission: he must collect all the coins hidden in the tree. John knows that each node i in the tree contains coins[i] coins. However, there's a twist to his task: he can only collect the coins at a node if he has already collected the coins from all its ancestor nodes.
+John has two ways to collect the coins from a node i:
+
+Collect all the coins directly: If he chooses this method, John will receive coins[i] - val points. If coins[i] - val is negative, John will lose |coins[i] - val| points.
+Collect coins at half-value: If John collects the coins this way, he will get floor(coins[i] / 2) points. Additionally, every node  j in the subtree rooted at node 
+i will have its coins reduced to floor(coins[j] / 2).
+
+John's goal is to gather the maximum points possible after collecting all the coins from the tree. Create a C++ function MaximumPoints that will return an Integer to determine the same.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type:
+
+vector<vector<int>> denoting edges
+vector<int> denoting coins
+An Intger denoting val
+
+Input Constraints:
+
+1.The length of coins(len) should be at least 2 and at most 10^5 inclusive.
+2.Each value of coins[i] should be in the range [0, 10^4] inclusive.
+3.The length of edges should be len - 1 where len is the length of coins.
+4.Each value of edges[i][0] and edges[i][1] should be in the range [0, len - 1] inclusive.
+5.The value of val should be in the range [0, 10^4] inclusive.
+
+*/
+
+#include <vector>
+#include <cmath>
+#include <climits>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+
+    int Helper(int node, std::vector<std::vector<int>>& adj, std::vector<int>& coins, int val, std::vector<std::vector<int>>& dp_arr, int count, int parent) {
+        if (count >= 14) {
+            return 0;
+        }
+        if (dp_arr[node][count] != INT_MIN) {
+            return dp_arr[node][count];
+        }
+
+        int take_all = coins[node] / std::pow(2, count + 1);
+        int take_half = (coins[node] / std::pow(2, count)) - val;
+
+        for (int i = 0; i < adj[node].size(); ++i) {
+            int child = adj[node][i];
+            if (child == parent) {
+                continue;
+            }
+            if (dp_arr[child][count + 1] != INT_MIN) {
+                take_all += dp_arr[child][count + 1];
+            } else {
+                take_all += Helper(child, adj, coins, val, dp_arr, count + 1, node);
+            }
+        }
+        for (int i = 0; i < adj[node].size(); ++i) {
+            int child = adj[node][i];
+            if (child == parent) {
+                continue;
+            }
+            if (dp_arr[child][count] != INT_MIN) {
+                take_half += dp_arr[child][count];
+            } else {
+                take_half += Helper(child, adj, coins, val, dp_arr, count, node);
+            }
+        }
+        return dp_arr[node][count] = std::max(take_all, take_half);
+    }
+
+    int MaximumPoints(std::vector<std::vector<int>>& edges, std::vector<int>& coins, int val) {
+        int len = coins.size();
+
+     
+        if (len < 2 || len > 100000) {
+            throw std::invalid_argument("The length of coins should be at least 2 and at most 100000 inclusive.");
+        }
+        
+      
+        for (int i = 0; i < len; ++i) {
+            if (coins[i] < 0 || coins[i] > 10000) {
+                throw std::invalid_argument("Each value of coins should be in the range [0, 10000] inclusive.");
+            }
+        }
+
+     
+        if (edges.size() != len - 1) {
+            throw std::invalid_argument("The length of edges should be len - 1 where len is the length of coins.");
+        }
+
+      
+        for (int i = 0; i < edges.size(); ++i) {
+            if (edges[i][0] < 0 || edges[i][0] >= len || edges[i][1] < 0 || edges[i][1] >= len) {
+                throw std::invalid_argument("Each value of edges[i][0] and edges[i][1] should be in the range [0, len - 1] inclusive.");
+            }
+        }
+
+    
+        if (val < 0 || val > 10000) {
+            throw std::invalid_argument("The value of val should be in the range [0, 10000] inclusive.");
+        }
+
+        std::vector<std::vector<int>> adjacency_list(len);
+        for (int i = 0; i < edges.size(); ++i) {
+            int node_a = edges[i][0];
+            int node_b = edges[i][1];
+            adjacency_list[node_a].push_back(node_b);
+            adjacency_list[node_b].push_back(node_a);
+        }
+        std::vector<std::vector<int>> dp_arr(len + 1, std::vector<int>(16, INT_MIN));
+        return Helper(0, adjacency_list, coins, val, dp_arr, 0, -1);
+    }
+
+
+int main() {
+  
+    // TEST
+    std::vector<std::vector<int>> edges_1 = {{0, 1}, {1, 2}, {1, 3}};
+    std::vector<int> coins_1 = {4, 5, 6, 7};
+    int val_1 = 3;
+    int expected_1 = 2;
+    int result_1 = MaximumPoints(edges_1, coins_1, val_1);
+    assert(expected_1 == result_1);
+    // TEST_END
+  
+    //TEST
+    
+    std::vector<std::vector<int>> edges_1 = {{0, 1}, {1, 2}, {1, 3}};
+    std::vector<int> coins_1 = {4, 5, 6, 7};
+    int val_1 = 3;
+    try{
+       MaximumPoints(edges_1, coins_1, val_1);
+       assert(false);
+    }
+    catch(const std::invalid_argument& e){
+        assert(true);
+    }
+
+    //TEST_END
+  
+    return 0;
+}
