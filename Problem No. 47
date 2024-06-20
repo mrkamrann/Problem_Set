@@ -1,0 +1,145 @@
+/*
+Link: https://leetcode.com/problems/number-of-pairs-satisfying-inequality/description/
+
+Jimmy loves solving puzzles, especially those involving numbers. One day, he stumbled upon a challenging problem involving two 0-indexed integer vectors,
+nums1 and nums2, each with a size of len. He also had an integer called diff.
+
+Jimmy's mission was to find how many pairs of indices (i, j) satisfy the following conditions:
+
+0 ≤ i < j ≤ len−1
+nums1[i] - nums1[j] <= nums2[i] - nums2[j] + diff
+Determined to solve the puzzle, Jimmy sat down with his favorite snack and a cup of hot chocolate, ready to dive into the world of numbers. 
+Can you help Jimmy determine the number of pairs that meet these criteria?
+
+Create a C++ function NumberOfPairs that will return an integer denoting the number of pairs.
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type:
+
+vector<int> denoting nums1 
+vector<int> denoting nums2 
+An integer denoting diff
+
+
+Input Constraints:
+
+1.The length(len) of nums1 and nums2 should be exactly equal and should be at least 2 and at most 10^5 inclusive.
+2.Each value of nums1[i] and nums2[i] should be in the range [-10^4, 10^4] inclusive.
+3.The value of diff should be in the range [-10^4, 10^4] inclusive.
+
+*/
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+class MinimumSpanningTree {
+private:
+    int len;
+    std::vector<std::vector<int>> tree;
+
+    std::vector<int> Merge(std::vector<int>& left_vector, std::vector<int>& right_vector) {
+        int left_size = left_vector.size(), right_size = right_vector.size();
+        int left_index = 0, right_index = 0, merge_index = 0;
+        std::vector<int> merged_vector(left_size + right_size);
+
+        while (left_index < left_size && right_index < right_size) {
+            if (left_vector[left_index] < right_vector[right_index]) 
+                merged_vector[merge_index++] = left_vector[left_index++];
+            else 
+                merged_vector[merge_index++] = right_vector[right_index++];
+        }
+
+        while (left_index < left_size) 
+            merged_vector[merge_index++] = left_vector[left_index++];
+        while (right_index < right_size) 
+            merged_vector[merge_index++] = right_vector[right_index++];
+
+        return merged_vector;
+    }
+
+    void Build(int left, int right, int index, std::vector<int>& values) {
+        if (left == right) {
+            tree[index] = {values[left]};
+            return;
+        }
+
+        int middle = (left + right) >> 1;
+        Build(left, middle, 2 * index + 1, values);
+        Build(middle + 1, right, 2 * index + 2, values);
+        tree[index] = Merge(tree[2 * index + 1], tree[2 * index + 2]);
+    }
+
+    int Query(int query_left, int query_right, int element, int left, int right, int index) {
+        if (right < query_left || left > query_right) 
+            return 0;
+        if (left >= query_left && query_right >= right) {
+            int lower_bound_index = std::lower_bound(tree[index].begin(), tree[index].end(), element) - tree[index].begin();
+            return tree[index].size() - lower_bound_index;
+        }
+
+        int middle = (left + right) >> 1;
+        int left_query = Query(query_left, query_right, element, left, middle, 2 * index + 1);
+        int right_query = Query(query_left, query_right, element, middle + 1, right, 2 * index + 2);
+
+        return left_query + right_query;
+    }
+
+public:
+    MinimumSpanningTree(int len, std::vector<int>& values) {
+        this->len = len;
+        tree.resize(4 * len);
+        Build(0, len - 1, 0, values);
+    }
+
+    int Query(int query_left, int query_right, int element) {
+        return Query(query_left, query_right, element, 0, len - 1, 0);
+    }
+};
+
+
+    long long NumberOfPairs(std::vector<int>& nums1, std::vector<int>& nums2, int diff) {
+      
+       if (nums1.size() != nums2.size()) 
+            throw std::invalid_argument("The lengths of nums1 and nums2 must be equal.");
+        if (nums1.size() < 2 || nums1.size() > 100000) 
+            throw std::invalid_argument("The length of nums1 and nums2 must be at least 2 and at most 100000.");
+        if (diff < -10000 || diff > 10000) 
+            throw std::invalid_argument("The value of diff must be in the range [-10000, 10000].");
+
+        for (int value : nums1) {
+            if (value < -10000 || value > 10000) 
+                throw std::invalid_argument("Each value of nums1 must be in the range [-10000, 10000].");
+        }
+
+        for (int value : nums2) {
+            if (value < -10000 || value > 10000) 
+                throw std::invalid_argument("Each value of nums2 must be in the range [-10000, 10000].");
+        }
+
+        int len = nums1.size();
+        std::vector<int> difference_array(len), extended_difference_array(len);
+        for (int index = 0; index < len; ++index) {
+            difference_array[index] = nums1[index] - nums2[index];
+            extended_difference_array[index] = diff + difference_array[index];
+        }
+
+        MinimumSpanningTree minimum_spanning_tree(len, extended_difference_array);
+        long long count = 0;
+        for (int index = 0; index < len; ++index) {
+            int result = minimum_spanning_tree.Query(index + 1, len - 1, difference_array[index]);
+            count += result;
+        }
+        return count;
+    }
+
+
+int main(){
+  //TEST
+//TEST_END
+  
+  return 0;
+}
+
+
