@@ -1,0 +1,108 @@
+/*
+Link : https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/
+
+Jimmy loves solving puzzles, especially those involving numbers. One day, he stumbled upon a challenging problem involving a vector of integers called nums, 
+which represents a permutation of integers from 1 to len. Jimmy's mission was to construct a binary search tree (BST) by inserting the elements of nums in order into an initially empty BST.
+
+Jimmy wondered how many different ways he could reorder nums so that the constructed BST is identical to the one formed from the original array nums.
+
+Determined to solve the puzzle, Jimmy sat down with his favorite snack and a cup of hot chocolate, ready to dive into the world of numbers. Can you help Jimmy 
+determine the number of ways to reorder nums such that the BST formed is identical to the original BST formed from nums?
+
+Create a C++ function NumberOfWays that will return an integer denoting the number of ways to reorder nums so that the constructed BST is identical to the original.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+vector<int> denoting nums
+
+Input Constraints:
+
+The length(len) of nums should be at least 1 and at most 1000 inclusive.
+Each value of nums[i] should be in the range [1, len] inclusive.
+All integers in nums are distinct.
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <iostream>
+
+class Solution {
+public:
+    const long long modulus = 1000000007;
+    std::vector<long long> factorials;
+
+    void CalculateFactorials() {
+        factorials[0] = 1;
+        factorials[1] = 1;
+        for (long long index = 2; index < 1001; ++index) {
+            factorials[index] = (factorials[index - 1] * index) % modulus;
+        }
+    }
+
+    long long ModInverse(long long number, long long power) {
+        if (power == 0) {
+            return 1LL;
+        }
+        long long result = ModInverse(number, power / 2);
+        if (power % 2 == 1) {
+            return (((result * result) % modulus) * number) % modulus;
+        } else {
+            return (result * result) % modulus;
+        }
+    }
+
+    long long CountWays(std::vector<int>& nums) {
+        if (nums.size() <= 2) {
+            return 1LL;
+        }
+        std::vector<int> smaller, larger;
+        for (int index = 1; index < nums.size(); ++index) {
+            if (nums[index] > nums[0]) {
+                larger.push_back(nums[index]);
+            } else {
+                smaller.push_back(nums[index]);
+            }
+        }
+        long long result = 1;
+        result = (result * factorials[nums.size() - 1]) % modulus;
+        result = (result * ModInverse(factorials[nums.size() - smaller.size() - 1], modulus - 2)) % modulus;
+        result = (result * ModInverse(factorials[smaller.size()], modulus - 2)) % modulus;
+        result = (result * CountWays(smaller)) % modulus;
+        result = (result * CountWays(larger)) % modulus;
+        return result;
+    }
+
+    int NumberOfWays(std::vector<int>& nums) {
+        if (nums.size() < 1 || nums.size() > 1000) {
+            throw std::invalid_argument("The length of nums must be at least 1 and at most 1000.");
+        }
+        for (int value : nums) {
+            if (value < 1 || value > nums.size()) {
+                throw std::invalid_argument("Each value of nums must be in the range [1, len].");
+            }
+        }
+        std::vector<bool> seen(nums.size() + 1, false); 
+
+        for (int num : nums) {
+            if (seen[num]) {
+                throw std::invalid_argument("All integers in nums must be distinct.");
+            }
+            seen[num] = true;
+        }
+
+        factorials = std::vector<long long>(1001);
+        CalculateFactorials();
+        long long result = CountWays(nums);
+        result--;
+        result = (result + modulus) % modulus;
+        return result;
+    }
+};
+
+
+
+int main() {
+   
+}
