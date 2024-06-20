@@ -46,7 +46,7 @@ Input Constraints:
         }
     };
 
-    int minimumTime(std::vector<std::vector<int>>& grid) {
+    int MinimumTime(std::vector<std::vector<int>>& grid) {
         int row_count = grid.size();
         int col_count = grid[0].size();
 
@@ -58,7 +58,7 @@ Input Constraints:
             throw std::invalid_argument("The total number of cells should be between 4 and 100000 inclusive.");
         }
 
-        for (vector<int> row : grid) {
+        for (std::vector<int> row : grid) {
             for (int cell : row) {
                 if (cell < 0 || cell > 100000) {
                     throw std::invalid_argument("Each value in the grid should be in the range [0, 100000] inclusive.");
@@ -143,5 +143,153 @@ Input Constraints:
     }
 
 int main(){
-  return 0;
+  
+  // TEST 
+std::vector<std::vector<int>> grid_1 = {{0, 1}, {1, 2}};
+int expected_1 = 2; 
+int result_1 = MinimumTime(grid_1);
+assert(expected_1 == result_1);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_2 = {{0, 1, 2}, {3, 4, 5}};
+int expected_2 = 5; 
+int result_2 = MinimumTime(grid_2);
+assert(expected_2 == result_2);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_3 = {{0, 1}, {1, 0}};
+int expected_3 = 2; 
+int result_3 = MinimumTime(grid_3);
+assert(expected_3 == result_3);
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> grid_4 = {{0, 1, 2}, {3, 4, 0}};
+int expected_4 = 3; 
+int result_4 = MinimumTime(grid_4);
+assert(expected_4 == result_4);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_5 = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
+int expected_5 = 8; 
+int result_5 = MinimumTime(grid_5);
+assert(expected_5 == result_5);
+// TEST_END
+  
+  
+// TEST 
+std::vector<std::vector<int>> grid_6 = {{0, 1, 2, 3}, {4, 5, 6, 7}};
+int expected_6 = 8;
+int result_6 = MinimumTime(grid_6);
+assert(expected_6 == result_6);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_7 = {{0, 1, 2}, {3, 4, 5}, {6, 7, 0}};
+int expected_7 = 6; 
+int result_7 = MinimumTime(grid_7);
+assert(expected_7 == result_7);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_8 = {{0, 1, 2}, {3, 0, 4}, {5, 6, 7}};
+int expected_8 = 8; 
+int result_8 = MinimumTime(grid_8);
+assert(expected_8 == result_8);
+// TEST_END
+  
+// TEST 
+std::vector<std::vector<int>> grid_9 = {{0, 1}};
+try {
+    MinimumTime(grid_9);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> grid_10 = std::vector<std::vector<int>>(1005, std::vector<int>(100, 0));
+try {
+    MinimumTime(grid_10);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> grid_11 = {{1, 1}, {2, 3}};
+try {
+    MinimumTime(grid_11);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_12 = std::vector<std::vector<int>>(1005, std::vector<int>(1000, 0));
+try {
+    MinimumTime(grid_12);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_13 = {{0, 1, -8}, {3, 0, 4}, {5, 6, 7}};
+try {
+    MinimumTime(grid_13);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_14 = {{0, 1, -9}, {3, 4, 5}, {6, 7, 8}};
+try {
+    MinimumTime(grid_14);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_15 = {{1, 0, 2}, {3, 4, 5}, {6, 7, 8}};
+try {
+    MinimumTime(grid_15);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_16 = std::vector<std::vector<int>>(500, std::vector<int>(200, 10000009));
+try {
+    MinimumTime(grid_16);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> grid_17 = {{0, 1}};
+try {
+    MinimumTime(grid_17);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
 }
