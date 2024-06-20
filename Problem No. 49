@@ -1,0 +1,118 @@
+/*
+
+Link : https://leetcode.com/problems/critical-connections-in-a-network/description/
+
+Jimmy loves solving puzzles, especially those involving networks of servers. One day, he encountered a challenging problem involving len no. of  servers numbered 
+from 0 to len - 1, interconnected by undirected server-to-server connections represented by an array connections. Each connection connections[i] = [nodea_i, nodeb_i] 
+denotes a direct link between servers nodea_i and nodeb_i.
+
+A critical connection in this network is a connection that, if removed, would increase the number of connected components in the network, making some servers unable 
+to reach some others.
+
+Your task is to help Jimmy write C++ class Solution that will contain a function CriticalConnections that will return a 2D vector denoting all critical connections in the 
+network.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type
+
+An integer denoting len
+A vector<vector<int>> denoting connections
+
+Input Constraints:
+
+The number of servers (len) should be at least 2 and at most 10^5 inclusive.
+The number of connections (connections.length) should be at least len - 1 and at most 10^5 inclusive.
+Each value of nodea_i and nodeb_i (servers in connections) should be in the range [0, len - 1] inclusive.
+The values of nodea_i and nodeb_i should not be equal (nodea_i != nodeb_i).
+There are no repeated connections in the network.
+
+*/
+
+#include <vector>
+#include <stdexcept>
+#include <iostream>
+#include <cassert>
+
+class Solution {
+public:
+    std::vector<int> parent, disc, low;
+    std::vector<bool> visited;
+    std::vector<std::vector<int>> ans;
+
+    void DepthFirstSearch(int index, int parent_idx, std::vector<std::vector<int>>& edges, int& time) {
+        disc[index] = low[index] = time;
+        time++;
+        visited[index] = true;
+
+        for (size_t i = 0; i < edges[index].size(); ++i) {
+            int adjacent = edges[index][i];
+            if (adjacent == parent_idx) {
+                continue;
+            }
+            if (visited[adjacent]) {
+                low[index] = std::min(low[index], disc[adjacent]);
+            } else {
+                DepthFirstSearch(adjacent, index, edges, time);
+                low[index] = std::min(low[index], low[adjacent]);
+                if (low[adjacent] > disc[index]) {
+                    ans.push_back({index, adjacent});
+                }
+            }
+        }
+    }
+
+    std::vector<std::vector<int>> CriticalConnections(int len, std::vector<std::vector<int>>& connections) {
+        
+        if (len < 2 || len > 100000) {
+            throw std::invalid_argument("The number of servers (len) should be between 2 and 100000 inclusive.");
+        }
+        
+        int min_connections = len - 1;
+        int max_connections = 100000;
+        if (connections.size() < min_connections || connections.size() > max_connections) {
+            throw std::invalid_argument("The number of connections (connections.length) should be between len - 1 and 100000 inclusive.");
+        }
+
+
+        std::vector<bool> seen(len, false);
+        for (size_t i = 0; i < connections.size(); ++i) {
+            if (connections[i].size() != 2) {
+                throw std::invalid_argument("Each connection must be represented by exactly two endpoints.");
+            }
+            int nodea = connections[i][0];
+            int nodeb = connections[i][1];
+            if (nodea < 0 || nodea >= len || nodeb < 0 || nodeb >= len || nodea == nodeb) {
+                throw std::invalid_argument("Endpoints of connections must be valid servers and should not be equal.");
+            }
+            if (seen[nodea] && seen[nodeb]) {
+                throw std::invalid_argument("Repeated connections are not allowed.");
+            }
+            seen[nodea] = true;
+            seen[nodeb] = true;
+        }
+
+        std::vector<std::vector<int>> edges(len);
+        for (size_t i = 0; i < connections.size(); ++i) {
+            edges[connections[i][0]].push_back(connections[i][1]);
+            edges[connections[i][1]].push_back(connections[i][0]);
+        }
+
+        disc.resize(len);
+        low.resize(len);
+        visited.resize(len, false);
+        int time = 0;
+        for (int i = 0; i < len; ++i) {
+            if (!visited[i]) {
+                DepthFirstSearch(i, -1, edges, time);
+            }
+        }
+        return ans;
+    }
+};
+
+int main(){
+  
+  
+  return 0;
+}
