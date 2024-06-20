@@ -27,6 +27,7 @@ All integers in nums are distinct.
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <cassert>
 
 class Solution {
 public:
@@ -104,5 +105,105 @@ public:
 
 
 int main() {
-   
+
+Solution obj;
+// TEST
+std::vector<int> nums_1 = {1,2,3};
+int expected_1 = 0;
+int result_1 = obj.NumberOfWays(nums_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<int> nums_2 = {1, 2, 4, 3};
+int expected_2 = 0;
+int result_2 = obj.NumberOfWays(nums_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<int> nums_3 = {1, 2, 3};
+int expected_3 = 0;
+int result_3 = obj.NumberOfWays(nums_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<int> nums_4 = {1,8,7,6,5,3,2,4};
+int expected_4 = 1;
+int result_4 = obj.NumberOfWays(nums_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<int> nums_5 = {1};
+int expected_5 = 0;
+Solution obj_1;
+int result_5 = obj.NumberOfWays(nums_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<int> nums_6 = {2, 8, 6, 7, 1,3,4,5};
+int expected_6 = 27;
+int result_6 = obj.NumberOfWays(nums_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<int> nums_7 = {2,1};
+int expected_7 = 0;
+int result_7 = obj.NumberOfWays(nums_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<int> nums_8 = {1,2,3};
+int expected_8 = 0;
+int result_8 = obj.NumberOfWays(nums_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> nums_9 = {};
+try {
+    obj.NumberOfWays(nums_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_10(1e6, 1);
+try {
+    obj.NumberOfWays(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_11 = {1000000005};
+try {
+    obj.NumberOfWays(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_12 = {1,1,2};
+try {
+    obj.NumberOfWays(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+  return 0;
+
 }
