@@ -29,6 +29,7 @@ Input Constraints:
 
 */
 
+
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -136,10 +137,181 @@ public:
 
 
 int main(){
-  //TEST
-//TEST_END
+
+// TEST
+std::vector<int> nums1_1 = {1, 2, 3};
+std::vector<int> nums2_1 = {2, 3, 4};
+int diff_1 = 1;
+int expected_1 = 3;
+int result_1 = NumberOfPairs(nums1_1, nums2_1, diff_1);
+assert(expected_1 == result_1);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_2 = {-10000, 0, 10000};
+std::vector<int> nums2_2 = {10000, 0, -10000};
+int diff_2 = 2000;
+int expected_2 = 3;
+int result_2 = NumberOfPairs(nums1_2, nums2_2, diff_2);
+assert(expected_2 == result_2);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_3 = {5, 1, 2, 3};
+std::vector<int> nums2_3 = {4, 4, 1, 5};
+int diff_3 = -1;
+int expected_3 = 2;
+int result_3 = NumberOfPairs(nums1_3, nums2_3, diff_3);
+assert(expected_3 == result_3);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_4 = {0, 0, 0, 0};
+std::vector<int> nums2_4 = {0, 0, 0, 0};
+int diff_4 = 0;
+int expected_4 = 6;
+int result_4 = NumberOfPairs(nums1_4, nums2_4, diff_4);
+assert(expected_4 == result_4);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_5 = {10, 20, 30, 40, 50};
+std::vector<int> nums2_5 = {9, 19, 29, 39, 49};
+int diff_5 = 1;
+int expected_5 = 10;
+int result_5 = NumberOfPairs(nums1_5, nums2_5, diff_5);
+assert(expected_5 == result_5);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_6 = {3, 1, 4, 1, 5};
+std::vector<int> nums2_6 = {1, 5, 9, 2, 6};
+int diff_6 = 3;
+int expected_6 = 8;
+int result_6 = NumberOfPairs(nums1_6, nums2_6, diff_6);
+assert(expected_6 == result_6);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_7 = {-100, -200, -300};
+std::vector<int> nums2_7 = {-300, -200, -100};
+int diff_7 = -200;
+int expected_7 = 0;
+int result_7 = NumberOfPairs(nums1_7, nums2_7, diff_7);
+assert(expected_7 == result_7);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_8 = {5, 5, 5, 5};
+std::vector<int> nums2_8 = {1, 1, 1, 1};
+int diff_8 = 4;
+int expected_8 = 6;
+int result_8 = NumberOfPairs(nums1_8, nums2_8, diff_8);
+assert(expected_8 == result_8);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_9 = {10000, -10000, 10000, -10000};
+std::vector<int> nums2_9 = {-10000, 10000, -10000, 10000};
+int diff_9 = 0;
+int expected_9 = 3;
+int result_9 = NumberOfPairs(nums1_9, nums2_9, diff_9);
+assert(expected_9 == result_9);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_10 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<int> nums2_10 = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+int diff_10 = 9;
+int expected_10 = 45;
+int result_10 = NumberOfPairs(nums1_10, nums2_10, diff_10);
+assert(expected_10 == result_10);
+// TEST_END
+
+// TEST
+std::vector<int> nums1_11 = {1};
+std::vector<int> nums2_11 = {2};
+int diff_11 = 1;
+try {
+    NumberOfPairs(nums1_11, nums2_11, diff_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_12(100001, 1); 
+std::vector<int> nums2_12(100001, 1);
+int diff_12 = 1;
+try {
+    NumberOfPairs(nums1_12, nums2_12, diff_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_13 = {1, 2, 3};
+std::vector<int> nums2_13 = {1, 2}; 
+int diff_13 = 1;
+try {
+    NumberOfPairs(nums1_13, nums2_13, diff_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_14 = {-10001, 2, 3};
+std::vector<int> nums2_14 = {1, 2, 3};
+int diff_14 = 1;
+try {
+    NumberOfPairs(nums1_14, nums2_14, diff_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_15 = {1, 2, 3};
+std::vector<int> nums2_15 = {1, 10001, 3}; 
+int diff_15 = 1;
+try {
+    NumberOfPairs(nums1_15, nums2_15, diff_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_16 = {1, 2, 3};
+std::vector<int> nums2_16 = {1, 2, 3};
+int diff_16 = 10001;
+try {
+    NumberOfPairs(nums1_16, nums2_16, diff_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums1_17 = {1, 2, 3};
+std::vector<int> nums2_17 = {1, 2, 3};
+int diff_17 = -10001;
+try {
+    NumberOfPairs(nums1_17, nums2_17, diff_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
   
   return 0;
 }
-
 
