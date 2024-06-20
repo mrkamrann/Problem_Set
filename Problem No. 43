@@ -29,8 +29,6 @@ Input Constraints:
 
 */
 
-
-
 #include <vector>
 #include <map>
 #include <stdexcept>
@@ -128,7 +126,228 @@ Input Constraints:
     }
 
 int main(){
-  return 0;
-}
+  
+//TEST
+int len_1 = 5;
+std::vector<std::vector<int>> edges_1 = {{1, 2}, {1, 3}, {3, 4}, {3, 5}};
+int time_1 = 2;
+int target_1 = 4;
+double expected_1 = 0.25;
+double result_1 = FrogPosition(len_1, edges_1, time_1, target_1);
+//TEST_END
+
+//TEST
+int len_2 = 4;
+std::vector<std::vector<int>> edges_2 = {{1, 2}, {1, 3}, {2, 4}};
+int time_2 = 3;
+int target_2 = 4;
+double expected_2 = 0.5;
+double result_2 = FrogPosition(len_2, edges_2, time_2, target_2);
+assert(expected_2 == result_2);
+//TEST_END
+
+//TEST
+int len_3 = 3;
+std::vector<std::vector<int>> edges_3 = {{1, 2}, {2, 3}};
+int time_3 = 1;
+int target_3 = 3;
+double expected_3 = 0.0;
+double result_3 = FrogPosition(len_3, edges_3, time_3, target_3);
+assert(expected_3 == result_3);
+//TEST_END
+
+//TEST
+int len_4 = 6;
+std::vector<std::vector<int>> edges_4 = {{1, 2}, {1, 3}, {1, 4}, {4, 5}, {4, 6}};
+int time_4 = 2;
+int target_4 = 5;
+double expected_4 = 0.1666666666666666667;
+double result_4 = FrogPosition(len_4, edges_4, time_4, target_4);
+assert(expected_4 == result_4);
+//TEST_END
+
+//TEST
+int len_5 = 7;
+std::vector<std::vector<int>> edges_5 = {{1, 2}, {1, 3}, {2, 4}, {2, 5}, {3, 6}, {3, 7}};
+int time_5 = 4;
+int target_5 = 7;
+double expected_5 = 0.25;
+double result_5 = FrogPosition(len_5, edges_5, time_5, target_5);
+assert(expected_5 == result_5);
+//TEST_END
+
+//TEST
+int len_6 = 10;
+std::vector<std::vector<int>> edges_6 = {{1, 2}, {1, 3}, {2, 4}, {2, 5}, {3, 6}, {3, 7}, {4, 8}, {5, 9}, {6, 10}};
+int time_6 = 5;
+int target_6 = 8;
+double expected_6 = 0.25;
+double result_6 = FrogPosition(len_6, edges_6, time_6, target_6);
+assert(expected_6 == result_6);
+//TEST_END
 
   
+//TEST
+int len_7 = 8;
+std::vector<std::vector<int>> edges_7 = {{1, 2}, {1, 7}, {2, 3}, {2, 5}, {3, 6}, {3, 7}, {6, 8}};
+int time_7 = 3;
+int target_7 = 8;
+double expected_7 = 0.0;
+double result_7 = FrogPosition(len_7, edges_7, time_7, target_7);
+assert(expected_7 == result_7);
+//TEST_END
+
+//TEST
+int len_8 = 9;
+std::vector<std::vector<int>> edges_8 = {{1, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}, {3, 7}, {3, 8}, {4, 9}};
+int time_8 = 4;
+int target_8 = 9;
+double expected_8 = 0.3333333333333333334;
+double result_8 = FrogPosition(len_8, edges_8, time_8, target_8);
+assert(expected_8 == result_8);
+//TEST_END
+  
+
+//TEST
+int len_9 = 0;
+std::vector<std::vector<int>> edges_9 = {{1, 2}};
+int time_9 = 1;
+int target_9 = 1;
+try {
+    FrogPosition(len_9, edges_9, time_9, target_9);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_10 = 101;
+std::vector<std::vector<int>> edges_10(100, {1, 2});
+int time_10 = 1;
+int target_10 = 1;
+try {
+    FrogPosition(len_10, edges_10, time_10, target_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_11 = 5;
+std::vector<std::vector<int>> edges_11 = {{1, 2}, {1, 3}};
+int time_11 = 1;
+int target_11 = 1;
+try {
+    FrogPosition(len_11, edges_11, time_11, target_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_12 = 5;
+std::vector<std::vector<int>> edges_12 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 3}};
+int time_12 = 1;
+int target_12 = 1;
+try {
+    FrogPosition(len_12, edges_12, time_12, target_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_13 = 5;
+std::vector<std::vector<int>> edges_13 = {{0, 2}, {1, 3}, {1, 4}, {1, 5}};
+int time_13 = 1;
+int target_13 = 1;
+try {
+    FrogPosition(len_13, edges_13, time_13, target_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_14 = 5;
+std::vector<std::vector<int>> edges_14 = {{1, 2}, {1, 3}, {1, 4}, {1, 6}};
+int time_14 = 1;
+int target_14 = 1;
+try {
+    FrogPosition(len_14, edges_14, time_14, target_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_15 = 5;
+std::vector<std::vector<int>> edges_15 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}};
+int time_15 = 0;
+int target_15 = 1;
+try {
+    FrogPosition(len_15, edges_15, time_15, target_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_16 = 5;
+std::vector<std::vector<int>> edges_16 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}};
+int time_16 = 51;
+int target_16 = 1;
+try {
+    FrogPosition(len_16, edges_16, time_16, target_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int len_17 = 5;
+std::vector<std::vector<int>> edges_17 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}};
+int time_17 = 1;
+int target_17 = 0;
+try {
+    FrogPosition(len_17, edges_17, time_17, target_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_18 = 5;
+std::vector<std::vector<int>> edges_18 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}};
+int time_18 = 1;
+int target_18 = 6;
+try {
+    FrogPosition(len_18, edges_18, time_18, target_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  
+
+  
+  return 0;
+}
