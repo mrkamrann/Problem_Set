@@ -1,0 +1,147 @@
+/*
+
+Link : https://leetcode.com/problems/minimum-time-to-visit-a-cell-in-a-grid/description/ 
+
+
+Jimmy is an adventurous explorer who loves to solve challenges involving grids and paths. One day, Jimmy stumbled upon a magical grid where each cell has a 
+specific time requirement before it can be visited. The grid is represented as a row_count x col_count matrix, where grid[row][col] denotes the minimum time 
+required to visit the cell (row, col). Jimmy can move in four directions: up, down, left, and right, with each move taking exactly 1 second.
+
+Starting from the top-left cell (0, 0) at the 0th second, Jimmy's goal is to find the minimum time required to reach the bottom-right cell (row_count-1, col_count-1).
+If reaching the bottom-right cell is not possible, Jimmy needs to return -1.
+
+Help Jimmy to create a C++ function MinimumTime that will return an integer denoting the minimum time required to reach his destination.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type
+
+A vector<vector<int>> denoting grid
+
+Input Constraints:
+
+1.The number of rows (row_count) should be at least 2 and at most 1000 inclusive.
+2.The number of columns (col_count) should be at least 2 and at most 1000 inclusive.
+3.The total number of cells (row_count * col_count) should be at least 4 and at most 10^5 inclusive.
+4.Each value in the grid (grid[i][j]) should be in the range [0, 10^5] inclusive.
+5.The starting cell (grid[0][0]) must be 0.
+
+*/
+
+#include <vector>
+#include <queue>
+#include <tuple>
+#include <iostream>
+#include <stdexcept>
+#include <climits>
+#include <cassert>
+
+ struct GridCell {
+        int time;
+        int row;
+        int col;
+        
+        bool operator>(const GridCell& other) const {
+            return time > other.time;
+        }
+    };
+
+    int minimumTime(std::vector<std::vector<int>>& grid) {
+        int row_count = grid.size();
+        int col_count = grid[0].size();
+
+        if (row_count < 2 || row_count > 1000 || col_count < 2 || col_count > 1000) {
+            throw std::invalid_argument("The number of rows and columns should be between 2 and 1000 inclusive.");
+        }
+
+        if (row_count * col_count < 4 || row_count * col_count > 100000) {
+            throw std::invalid_argument("The total number of cells should be between 4 and 100000 inclusive.");
+        }
+
+        for (vector<int> row : grid) {
+            for (int cell : row) {
+                if (cell < 0 || cell > 100000) {
+                    throw std::invalid_argument("Each value in the grid should be in the range [0, 100000] inclusive.");
+                }
+            }
+        }
+
+        if (grid[0][0] != 0) {
+            throw std::invalid_argument("The starting cell must be 0.");
+        }
+
+        if (grid[0][1] > 1 && grid[1][0] > 1) {
+            return -1;
+        }
+
+        std::vector<std::vector<int>> time_to_visit(row_count, std::vector<int>(col_count, INT_MAX));
+        std::vector<int> direction_row {0, -1, 0, 1};
+        std::vector<int> direction_col {-1, 0, 1, 0};
+
+        std::priority_queue<GridCell, std::vector<GridCell>, std::greater<GridCell>> min_heap;
+        min_heap.push({0, 0, 0});
+        time_to_visit[0][0] = 0;
+        int result = INT_MAX;
+
+        while (!min_heap.empty()) {
+            GridCell current = min_heap.top();
+            min_heap.pop();
+            int row = current.row;
+            int col = current.col;
+            int current_time = current.time;
+
+            if (row == row_count - 1 && col == col_count - 1) {
+                result = std::min(result, current_time);
+            }
+
+            current_time++;
+
+            for (int i = 0; i < 4; i++) {
+                int new_row = row + direction_row[i];
+                int new_col = col + direction_col[i];
+
+                if (new_row >= 0 && new_row < row_count && new_col >= 0 && new_col < col_count) {
+                    if (time_to_visit[new_row][new_col] == INT_MAX) {
+                        if (grid[new_row][new_col] <= current_time) {
+                            time_to_visit[new_row][new_col] = current_time;
+                            min_heap.push({current_time, new_row, new_col});
+                        } else {
+                            int difference = grid[new_row][new_col] - current_time;
+                            if (difference % 2 == 0) {
+                                time_to_visit[new_row][new_col] = grid[new_row][new_col];
+                                min_heap.push({grid[new_row][new_col], new_row, new_col});
+                            } else {
+                                time_to_visit[new_row][new_col] = grid[new_row][new_col] + 1;
+                                min_heap.push({grid[new_row][new_col] + 1, new_row, new_col});
+                            }
+                        }
+                    } else {
+                        if (time_to_visit[new_row][new_col] > current_time) {
+                            if (grid[new_row][new_col] <= current_time) {
+                                time_to_visit[new_row][new_col] = current_time;
+                                min_heap.push({current_time, new_row, new_col});
+                            } else {
+                                int difference = grid[new_row][new_col] - current_time;
+                                if (difference % 2 == 0) {
+                                    time_to_visit[new_row][new_col] = grid[new_row][new_col];
+                                    min_heap.push({grid[new_row][new_col], new_row, new_col});
+                                } else {
+                                    time_to_visit[new_row][new_col] = grid[new_row][new_col] + 1;
+                                    min_heap.push({grid[new_row][new_col] + 1, new_row, new_col});
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (result == INT_MAX) {
+            return -1;
+        }
+        return result;
+    }
+
+int main(){
+  return 0;
+}
