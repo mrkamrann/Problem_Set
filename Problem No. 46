@@ -14,7 +14,8 @@ at the "12:00" direction, where this character must equal key[i].
 If the character key[i] has been aligned at the "12:00" direction, press the center button to spell, which also counts as one step. After the pressing, John could 
 begin to spell the next character in the key (next stage). Otherwise, you have finished all the spelling.
 
-Create a C++ function FindRotateSteps that will return an integer denoting the minimum number of steps to spell all the characters in the keyword.
+Create a C++ class Solution that will contain a function FindRotateSteps that will return an integer denoting the minimum number of steps to spell all the 
+characters in the keyword.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases
 
@@ -30,3 +31,83 @@ Input Constraints:
 3.It is guaranteed that key could always be spelled by rotating ring.
 
 */
+
+#include <vector>
+#include <unordered_map>
+#include <string>
+#include <stdexcept>
+#include <algorithm>
+#include <climits>
+#include <iostream>
+#include <cassert>
+
+    int ring_size;
+    std::unordered_map<char, std::vector<int>> character_positions;
+
+    int Clockwise(int current_position, int new_position) {
+        if (new_position >= current_position) {
+            return new_position - current_position;
+        }
+        return ring_size - (current_position - new_position);
+    }
+
+    int AntiClockwise(int current_position, int new_position) {
+        if (current_position >= new_position) {
+            return current_position - new_position;
+        }
+        return ring_size - (new_position - current_position);
+    }
+
+    int CalculateSteps(std::string &key, int index, int position, std::vector<std::vector<int>>& memo) {
+        if (index == key.size()) {
+            return 0;
+        }
+        if (memo[index][position] != -1) {
+            return memo[index][position];
+        }
+        int steps = INT_MAX;
+        char key_char = key[index];
+
+        for (int i = 0; i < character_positions[key_char].size(); i++) {
+            int new_position = character_positions[key_char][i];
+            int next_steps = CalculateSteps(key, index + 1, new_position, memo);
+            steps = std::min(steps, 1 + Clockwise(position, new_position) + next_steps);
+            steps = std::min(steps, 1 + AntiClockwise(position, new_position) + next_steps);
+        }
+        return memo[index][position] = steps;
+    }
+
+public:
+    int findRotateSteps(std::string& ring, std::string& key) {
+        if (ring.size() < 1 || ring.size() > 100) {
+            throw std::invalid_argument("The length of ring should be at least 1 and at most 100 inclusive.");
+        }
+        if (key.size() < 1 || key.size() > 100) {
+            throw std::invalid_argument("The length of key should be at least 1 and at most 100 inclusive.");
+        }
+        for (char character : ring) {
+            if (character < 'a' || character > 'z') {
+                throw std::invalid_argument("Ring must consist of only lower case English letters.");
+            }
+        }
+        for (char character : key) {
+            if (character < 'a' || character > 'z') {
+                throw std::invalid_argument("Key must consist of only lower case English letters.");
+            }
+        }
+
+        ring_size = ring.size();
+        character_positions.clear();
+
+        for (int i = 0; i < ring_size; i++) {
+            character_positions[ring[i]].push_back(i);
+        }
+
+        std::vector<std::vector<int>> memo(key.size(), std::vector<int>(ring.size(), -1));
+        return CalculateSteps(key, 0, 0, memo);
+    }
+
+
+int main(){
+  return 0;
+}
