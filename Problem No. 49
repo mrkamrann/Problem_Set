@@ -75,7 +75,12 @@ public:
         }
 
 
-        std::vector<bool> seen(len, false);
+        int seen[len][len];
+        for(int i = 0;i<len;++i)
+        {
+          for(int j = 0;j<len;++j) seen[i][j] = 0;
+        }
+    
         for (size_t i = 0; i < connections.size(); ++i) {
             if (connections[i].size() != 2) {
                 throw std::invalid_argument("Each connection must be represented by exactly two endpoints.");
@@ -85,11 +90,10 @@ public:
             if (nodea < 0 || nodea >= len || nodeb < 0 || nodeb >= len || nodea == nodeb) {
                 throw std::invalid_argument("Endpoints of connections must be valid servers and should not be equal.");
             }
-            if (seen[nodea] && seen[nodeb]) {
+            if (seen[nodea][nodeb]) {
                 throw std::invalid_argument("Repeated connections are not allowed.");
             }
-            seen[nodea] = true;
-            seen[nodeb] = true;
+            seen[nodea][nodeb] = 1;
         }
 
         std::vector<std::vector<int>> edges(len);
@@ -113,6 +117,152 @@ public:
 
 int main(){
   
+Solution obj;
+  
+// TEST
+int len_1 = 4;
+std::vector<std::vector<int>> connections_1 = {{0, 1}, {1, 2}, {1, 3}};
+std::vector<std::vector<int>> expected_1 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_1 = obj.CriticalConnections(len_1, connections_1);
+assert(result_1 == expected_1);
+
+// TEST_END
+
+// TEST 
+int len_2 = 5;
+std::vector<std::vector<int>> connections_2 = {{1, 3}, {0, 2}, {2, 4}, {3, 4}};
+std::vector<std::vector<int>> expected_2 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_2 = obj.CriticalConnections(len_2, connections_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST 
+int len_3 = 3;
+std::vector<std::vector<int>> connections_3 = {{0, 1}, {0, 2}};
+std::vector<std::vector<int>> expected_3 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_3 = obj.CriticalConnections(len_3, connections_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 
+int len_4 = 5;
+std::vector<std::vector<int>> connections_4 = {{0, 1}, {0, 2}, {1, 3}, {1, 4}};
+std::vector<std::vector<int>> expected_4 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_4 = obj.CriticalConnections(len_4, connections_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 
+int len_5 = 2;
+std::vector<std::vector<int>> connections_5 = {{0, 1}};
+std::vector<std::vector<int>> expected_5 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_5 = obj.CriticalConnections(len_5, connections_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 
+int len_6 = 4;
+std::vector<std::vector<int>> connections_6 = {{0, 1}, {1, 2}, {2, 3}, {3, 0}};
+std::vector<std::vector<int>> expected_6 = {{1,2},{1,3},{0,1}};  
+std::vector<std::vector<int>> result_6 = obj.CriticalConnections(len_6, connections_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+int len_7 = 3;
+std::vector<std::vector<int>> connections_7 = {{0, 1}, {1, 2}, {2, 0}};
+std::vector<std::vector<int>> expected_7 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_7 = obj.CriticalConnections(len_7, connections_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+int len_8 = 3;
+std::vector<std::vector<int>> connections_8 = {{0, 1}, {0, 2}};
+std::vector<std::vector<int>> expected_8 = {{1,2},{1,3},{0,1}}; 
+std::vector<std::vector<int>> result_8 = obj.CriticalConnections(len_8, connections_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+
+  
+// TEST 
+int len_9 = 3;
+std::vector<std::vector<int>> connections_9 = {{0, 1}, {0, 1}};
+try {
+    obj.CriticalConnections(len_9, connections_9);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+int len_10 = 1;
+std::vector<std::vector<int>> connections_10 = {}; 
+try {
+    obj.CriticalConnections(len_10, connections_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST 
+int len_11 = 3;
+std::vector<std::vector<int>> connections_11 = {{0, 1}, {1, 2}, {2, 3}}; 
+try {
+    obj.CriticalConnections(len_11, connections_11);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST 
+int len_12 = 3;
+std::vector<std::vector<int>> connections_12 = {{0, 1}, {1, 1}, {1, 2}}; 
+try {
+    obj.CriticalConnections(len_12, connections_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST 
+int len_13 = 3;
+std::vector<std::vector<int>> connections_13 = {{0, 1}, {1, 2}, {2, 0}, {3, 4}}; 
+try {
+    obj.CriticalConnections(len_13, connections_13);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST 
+int len_14 = 2;
+std::vector<std::vector<int>> connections_14 = {{0, 6}}; 
+try {
+    obj.CriticalConnections(len_14, connections_14);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+int len_15 = 1;
+std::vector<std::vector<int>> connections_15 = {{0,1},{0,1}}; 
+try {
+    obj.CriticalConnections(len_15, connections_15);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
   
   return 0;
 }
