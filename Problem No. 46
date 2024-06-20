@@ -28,7 +28,7 @@ Input Constraints:
 
 1.The length of ring and key is at least 1 and atmost 100.
 2.ring and key consist of only lower case English letters.
-3.It is guaranteed that key could always be spelled by rotating ring.
+
 
 */
 
@@ -77,8 +77,7 @@ Input Constraints:
         return memo[index][position] = steps;
     }
 
-public:
-    int findRotateSteps(std::string& ring, std::string& key) {
+    int FindRotateSteps(std::string& ring, std::string& key) {
         if (ring.size() < 1 || ring.size() > 100) {
             throw std::invalid_argument("The length of ring should be at least 1 and at most 100 inclusive.");
         }
@@ -109,5 +108,151 @@ public:
 
 
 int main(){
-  return 0;
+  // TEST
+std::string ring_1 = "godding";
+std::string key_1 = "gd";
+int expected_1 = 4;
+int result_1 = FindRotateSteps(ring_1, key_1);
+assert(expected_1 == result_1);
+// TEST_END
+
+// TEST
+std::string ring_2 = "abcde";
+std::string key_2 = "ace";
+int expected_2 = 7;
+int result_2 = FindRotateSteps(ring_2, key_2);
+assert(expected_2 == result_2);
+// TEST_END
+
+// TEST
+std::string ring_3 = "pqrst";
+std::string key_3 = "tq";
+int expected_3 = 5;
+int result_3 = FindRotateSteps(ring_3, key_3);
+assert(expected_3 == result_3);
+// TEST_END
+
+// TEST
+std::string ring_4 = "abcdef";
+std::string key_4 = "fda";
+int expected_4 = 9;
+int result_4 = FindRotateSteps(ring_4, key_4);
+assert(expected_4 == result_4);
+// TEST_END
+
+// TEST
+std::string ring_5 = "azertyuiop";
+std::string key_5 = "top";
+int expected_5 = 12;
+int result_5 = FindRotateSteps(ring_5, key_5);
+assert(expected_5 == result_5);
+// TEST_END
+
+// TEST
+std::string ring_6 = "xyzabc";
+std::string key_6 = "zab";
+int expected_6 = 7;
+int result_6 = FindRotateSteps(ring_6, key_6);
+assert(expected_6 == result_6);
+// TEST_END
+
+// TEST
+std::string ring_7 = "aaaaa";
+std::string key_7 = "aaa";
+int expected_7 = 3;
+int result_7 = FindRotateSteps(ring_7, key_7);
+assert(expected_7 == result_7);
+// TEST_END
+
+// TEST
+std::string ring_8 = "zxcvbnm";
+std::string key_8 = "cvz";
+int expected_8 = 9;
+int result_8 = FindRotateSteps(ring_8, key_8);
+assert(expected_8 == result_8);
+// TEST_END
+
+// TEST
+std::string ring_9 = "qwerty";
+std::string key_9 = "rty";
+int expected_9 = 8;
+int result_9 = FindRotateSteps(ring_9, key_9);
+assert(expected_9 == result_9);
+// TEST_END
+
+// TEST
+std::string ring_10 = "lkjhgfdsa";
+std::string key_10 = "hga";
+int expected_10 = 11;
+int result_10 = FindRotateSteps(ring_10, key_10);
+assert(expected_10 == result_10);
+// TEST_END
+  
+// TEST
+std::string ring_11 = ""; 
+std::string key_11 = "a";
+try {
+    FindRotateSteps(ring_11, key_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string ring_12 = "a"; 
+std::string key_12 = "";
+try {
+    FindRotateSteps(ring_12, key_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string ring_13(101, 'a'); 
+std::string key_13 = "a";
+try {
+    FindRotateSteps(ring_13, key_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string ring_14 = "a"; 
+std::string key_14(101, 'a');
+try {
+    FindRotateSteps(ring_14, key_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string ring_15 = "abcdef"; 
+std::string key_15 = "aBc";
+try {
+    FindRotateSteps(ring_15, key_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string ring_16 = "abcdef"; 
+std::string key_16 = "Abc";
+try {
+    FindRotateSteps(ring_16, key_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+return 0;
 }
