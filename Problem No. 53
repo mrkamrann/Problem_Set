@@ -1,4 +1,32 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/description/
 
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving colorful balls.
+
+Jimmy was given 2*len balls of count distinct colors. He was provided with a vector called balls of size count where balls[i] is the number of balls of color i.
+
+All the balls would be shuffled uniformly at random, and then the first len balls would be distributed to the first box, and the remaining len balls to 
+the second box.
+
+Jimmy knew that the two boxes are considered different. For example, if there are two balls of colors color_a and color_b, and two boxes [] and (),
+then the distribution [color_a] (color_b) is considered different from the distribution [color_b] (color_a).
+
+His task was to find the probability that the two boxes have the same number of distinct balls. Answers within 10-5 of the actual value would be accepted as correct.
+
+
+Create a C++ Function GetProbability that will return a double denoting the probability that the two boxes have the same number of distinct balls.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type
+
+A vector<int> denoting balls
+
+Input Constraints:
+
+1.The length of the vector balls (denoted as len) should be between 1 and 8 inclusive.
+2.Each balls[i] should be between 1 and 6 inclusive.
+3.The sum of the elements in balls is even.
 */
