@@ -1,4 +1,30 @@
 /*
-Link: 
+
+Link: https://leetcode.com/problems/make-array-strictly-increasing/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered an intriguing problem involving two vectors of integers.
+
+Jimmy was given two integer vectors nums_1 and nums_2. His task was to return the minimum number of operations (possibly zero) needed to make nums_1 strictly 
+increasing.
+
+In one operation, Jimmy could choose two indices 0 <= i < nums_1.len and 0 <= j < nums_2.len and assign nums_1[i] = nums_2[j], and do the assignment nums_1[i] = nums_2[j].
+
+If there was no way to make nums_1 strictly increasing, he had to return -1.
+
+Create a C++ Function MakeArrayIncreasing that will return an integer denoting minimum number of operations (possibly zero) needed to make nums_1 strictly 
+increasing or return -1.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<int> denoting nums_1.
+A vector<int> denoting nums_2.
+
+Input Constraints:
+
+1.The length of nums_1 and nums_2 should be between 1 and 2000 inclusive.
+2.Each element in nums_1 and nums_2 should be between 0 and 10^9 inclusive.
 
 */
