@@ -1,4 +1,33 @@
 /*
-Link: 
+
+Link: https://leetcode.com/problems/allocate-mailboxes/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered an intriguing problem involving houses and mailboxes on a street.
+
+Jimmy was given a vector houses where houses[i] is the location of the ith house along a street, and an integer counter, representing the number of mailboxes to 
+be allocated on the street.
+
+His task was to find the minimum total distance between each house and its nearest mailbox.
+
+Jimmy knew that the test cases were designed so that the answer would fit in a 32-bit integer. He was ready to tackle this problem and find the optimal placement
+of the mailboxes.
+
+Create a C++ Function MinDistance that will return an integer denoting the minimum total distance between each house and its nearest mailbox.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<int> denoting houses.
+An integer denoting counter.
+
+
+Input Constraints:
+
+The value of counter should be between 1 and the length of houses inclusive.
+The length of houses should be between 1 and 100 inclusive.
+Each element in houses should be between 1 and 10^4 inclusive.
+All the integers in houses are unique.
 
 */
