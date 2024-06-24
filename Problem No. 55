@@ -1,4 +1,31 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/number-of-increasing-paths-in-a-grid/ 
 
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving navigating through a matrix.
+
+Jimmy was given a grid with rows x cols, each cell containing an integer. He could move from any cell to an adjacent cell in all four directions. His goal was to 
+find all strictly increasing paths in the grid,where a path is considered increasing if every subsequent cell in the path has a higher value than the previous one.
+where he could move from a cell to any adjacent cell in all 4 directions.
+
+His task was to return the number of strictly increasing paths in the grid such that he could start from any cell and end at any cell. Since the answer 
+could be very large, he needed to return it modulo 10^9 + 7.
+
+Two paths were considered different if they did not have exactly the same sequence of visited cells.
+
+Create a C++ Function CountPaths that will return an integer denoting the number of strictly increasing paths in the grid such that he could start 
+from any cell and end at any cell
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+Input Type:
+
+A vector<vector<int>> denoting grid
+
+Input Constraints:
+
+The number of rows (denoted as rows) is equal to grid.length.
+The number of columns (denoted as cols) is equal to grid[i].length.
+The values of rows and cols should be between 1 and 1000 inclusive.
+The product of rows and cols should be between 1 and 10^5 inclusive.
+Each grid[i][j] should be between 1 and 10^5 inclusive.
 */
