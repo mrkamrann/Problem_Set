@@ -1,0 +1,26 @@
+/*
+Link: https://leetcode.com/problems/maximum-students-taking-exam/description/ 
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered an intriguing problem involving the arrangement of students in a classroom.
+
+Jimmy was given a rows x cols matrix called seats that represented the distribution of seats in a classroom. If a seat was broken, it was denoted by the '#' character;
+otherwise, it was denoted by the '.' character.
+
+Students could see the answers of those sitting next to them on the left, right, upper left, and upper right. However, they could not see the answers of the student 
+sitting directly in front or behind them. Jimmy's task was to determine the maximum number of students that could take the exam together without any possibility of 
+cheating.
+
+Students had to be placed in seats in good condition.
+
+Input Type:
+
+A vector<vector<char>> denoting seats.
+
+Input Constraints:
+
+The matrix seats contains only characters '.' and '#'.
+The number of rows (rows) is equal to seats.length.
+The number of columns (cols) is equal to seats[i].length.
+The values of rows and cols should be between 1 and 8 inclusive.
+
+*/
