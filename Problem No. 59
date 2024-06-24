@@ -1,4 +1,30 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/maximum-profit-in-job-scheduling/description/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across an interesting problem involving job scheduling.
+
+Jimmy was given job_count jobs, where every job is scheduled to be done from start_time[i] to end_time[i], obtaining a profit of profit[i].
+
+He was provided with three vectors: start_time, end_time, and profit. His task was to return the maximum profit he could achieve such that no two jobs in the 
+subset have overlapping time ranges.
+
+If he chose a job that ends at time X, he would be able to start another job that starts at time X.
+
+Create a C++ Function JobScheduling that will return an integer denoting the maximum profit. 
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<int> denoting start_time.
+A vector<int> denoting end_time.
+A vector<int> denoting profit.
+
+Input Constraints:
+
+The length of start_time, end_time, and profit should all be equal, and between 1 and 5 * 10^4 inclusive.
+Each element in start_time should be less than each corresponding element in end_time, and both should be between 1 and 10^9 inclusive.
+Each element in profit should be between 1 and 10^4 inclusive.
 
 */
