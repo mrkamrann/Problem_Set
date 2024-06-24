@@ -1,4 +1,27 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered a captivating problem involving a matrix of integers.
+
+Jimmy was given a rows x cols integer matrix and his task was to find the length of the longest increasing path in this matrix.
+
+From each cell, Jimmy could move in four directions: left, right, up, or down. He was not allowed to move diagonally or move outside the boundary 
+(i.e., wrap-around was not allowed).
+
+Create a C++ Function LongestIncreasingPath that will return an integer denoting the length of the longest increasing path.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<vector<int>> denoting the matrix.
+
+Input Constraints:
+
+The number of rows is equal to matrix.length.
+The number of columns is equal to matrix[i].length.
+The values of rows and cols should be between 1 and 200 inclusive.
+Each element in the matrix should be between 0 and 2^31 - 1 inclusive.
 
 */
