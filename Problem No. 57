@@ -1,4 +1,33 @@
 /*
-Link: 
+
+Link: https://leetcode.com/problems/maximize-score-after-n-operations/description/ 
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving a vector of positive integers.
+
+Jimmy was given nums, a vector of positive integers of size 2 * len. He had to perform len operations on this vector.
+
+In the ith operation (1-indexed), Jimmy would:
+
+Choose two elements, num_1 and num_2.
+Receive a score of i * gcd(num_1, num_2).
+Remove num1 and num2 from nums.
+His goal was to return the maximum score he could receive after performing len operations.
+
+The function gcd(num_1, num_2) is the greatest common divisor of num_1 and num_2.
+
+Create a C++ Function MaxScore that will return an integer denoting the maximum score he could receive after performing len operations.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<int> denoting nums.
+
+Input Constraints:
+
+The length of nums is 2 * len.
+1 <= len <= 7.
+Each element in nums should be between 1 and 10^6 inclusive.
 
 */
