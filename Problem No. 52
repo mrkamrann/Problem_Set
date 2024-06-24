@@ -1,4 +1,32 @@
 /*
-Link: 
+
+Link: https://leetcode.com/problems/shortest-path-visiting-all-nodes/ 
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving a network of cities.
+
+Jimmy was given an undirected, connected graph of len nodes labeled from 0 to len - 1. He was provided with a vector called graph where graph[i] is a vector of all 
+the nodes connected with node i by an edge.
+
+Jimmy's task was to find the length of the shortest path that visits every node. He could start and stop at any node, revisit nodes multiple times, and reuse edges.
+
+With determination, Jimmy set out to solve this intriguing problem, delving deep into the world of graph theory to uncover the solution.
+
+Create a C++ Function ShortestPathLength that will return an  the length of the shortest path that visits every node.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+
+Input Type
+
+A vector<vector<int>> denoting graph
+
+Input Constraints:
+
+1.The length of the graph (denoted as len) should be between 1 and 12 inclusive.
+2.Each graph[i] can have a length from 0 to len-1.
+3.The vector graph[i] does not contain the city i itself.
+4.If graph[a] contains b, then graph[b] must contain a.
+5.The input graph is always connected.
 
 */
