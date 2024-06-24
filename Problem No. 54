@@ -1,4 +1,24 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/longest-chunked-palindrome-decomposition/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving string manipulation.
+
+Jimmy was given a string text. His task was to split this string into count substrings (subtext1, subtext2, ..., subtextcount) such that: subtexti is a non-empty string.
+The concatenation of all the substrings is equal to text (i.e., subtext1 + subtext2 + ... + subtextcount == text).
+subtexti == subtextcount - i + 1 for all valid values of i (i.e., 1 <= i <= count). Jimmy needed to find the largest possible value of count.
+
+Create a C++ Function LongestDecomposition that will return an integer denoting the largest possible value of count
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A string denoting text
+
+Input Constraints:
+
+The length of the string text should be between 1 and 1000 inclusive.
+The string text consists only of lowercase English characters.
 
 */
