@@ -25,3 +25,74 @@ The values of rows and cols should be between 1 and 200 inclusive.
 Each element in the matrix should be between 0 and 2^31 - 1 inclusive.
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+ bool IsValid(int row, int col, int rows, int cols) {
+        return row >= 0 && col >= 0 && row < rows && col < cols;
+    }
+
+    int FindLength(int row, int col, std::vector<std::vector<int>>& grid, std::vector<std::vector<int>>& dp_arr) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int directions[4][2] = {{1, 0}, {0, 1}, {0, -1}, {-1, 0}};
+        
+        if (dp_arr[row][col] != -1) return dp_arr[row][col];
+        
+        int val = grid[row][col];
+        grid[row][col] = -1;
+        int max_path_length = 1;
+        
+        for (int i = 0; i < 4; i++) {
+            int new_row = row + directions[i][0];
+            int new_col = col + directions[i][1];
+            
+            int path_length = 1;
+            if (IsValid(new_row, new_col, rows, cols) && grid[new_row][new_col] != -1 && grid[new_row][new_col] > val) {
+                path_length = 1 + FindLength(new_row, new_col, grid, dp_arr);
+                max_path_length = std::max(max_path_length, path_length);
+            }
+        }
+        
+        grid[row][col] = val;
+        return dp_arr[row][col] = max_path_length;
+    }
+    
+   
+
+    int LongestIncreasingPath(std::vector<std::vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        
+        if (rows < 1 || rows > 200 || cols < 1 || cols > 200) {
+            throw std::invalid_argument("Invalid input: Number of rows and columns should be between 1 and 200 inclusive.");
+        }
+
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (grid[i][j] < 0 || grid[i][j] > 2147483647) {
+                    throw std::invalid_argument("Invalid input: Each element in the matrix should be between 0 and 2^31 - 1 inclusive.");
+                }
+            }
+        }
+        
+        std::vector<std::vector<int>> dp_arr(rows + 1, std::vector<int>(cols + 1, -1));
+        int max_length = 0;
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int length = FindLength(i, j, grid, dp_arr);
+                max_length = std::max(length, max_length);
+            }
+        }
+        
+        return max_length;
+    }
+
+
+int main(){
+  return 0;
+}
+
