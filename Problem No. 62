@@ -1,0 +1,37 @@
+/*
+
+Link: https://leetcode.com/problems/largest-color-value-in-a-directed-graph/description/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he came across a fascinating problem involving a directed graph with colored nodes.
+
+Jimmy was given a directed graph of node_count colored nodes and edge_count edges. The nodes were numbered from 0 to node_count - 1.
+
+He was given a string colors where colors[i] was a lowercase English letter representing the color of the ith node in this graph (0-indexed). He was also given a vector<vector<int>> edges where 
+edges[j] = [a_j, b_j] indicated that there was a directed edge from node a_j to node b_j.
+
+A valid path in the graph was a sequence of nodes x_1 -> x_2 -> x_3 -> ... -> x_k such that there was a directed edge from xi to x_i+1 for every 1 <= i < k. The color value of the path was the number of nodes 
+that were colored the most frequently occurring color along that path.
+
+Jimmy's task was to return the largest color value of any valid path in the given graph, or -1 if the graph contained a cycle.
+
+Create a C++ Function LargestPathValue that will return an integer denoting the largest color value of any valid path in the given graph. 
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+
+
+Input Type:
+
+A string denoting colors.
+A vector<vector<int>> denoting edges.
+
+Input Constraints:
+
+The length of colors is equal to node_count.
+The length of edges is equal to edge_count.
+The value of node_count should be between 1 and 10^5 inclusive.
+The value of edge_count should be between 0 and 10^5 inclusive.
+The string colors consists of lowercase English letters.
+Each element a_j and b_j in edges should be between 0 and node_count - 1 inclusive.
+*/
