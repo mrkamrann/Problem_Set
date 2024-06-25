@@ -22,3 +22,68 @@ The length of the string text should be between 1 and 1000 inclusive.
 The string text consists only of lowercase English characters.
 
 */
+
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+    bool Check(std::string& text, int left, int right, int end, std::vector<long>& val, std::vector<long>& calc) {
+        long factor = 26;
+        long mod = 1e9 + 7;
+
+        if (((val[right] - (left == 0 ? 0 : val[left - 1]) + mod) * calc[end - (right - left)]) % mod == 
+            ((val[end] - val[end - (right - left) - 1] + mod) * calc[left]) % mod) {
+            return true;
+        }
+        return false;
+    }
+
+    int Find(std::vector<std::vector<int>>& dp_arr, int idx, int end, std::vector<long>& val, std::string& text, std::vector<long>& calc) {
+        if (idx == end)
+            return 1;
+        if (idx >= text.length() / 2)
+            return 0;
+        if (dp_arr[idx][end] != -1)
+            return dp_arr[idx][end];
+        for (int i = idx; i < text.size() / 2; i++) {
+            if (Check(text, idx, i, end, val, calc))
+                dp_arr[idx][end] = std::max(dp_arr[idx][end], Find(dp_arr, i + 1, end - (i - idx) - 1, val, text, calc) + 2);
+        }
+        return dp_arr[idx][end] == -1 ? 1 : dp_arr[idx][end];
+    }
+
+    int LongestDecomposition(std::string text) {
+        int len = text.length();
+        if (len < 1 || len > 1000) {
+            throw std::invalid_argument("The length of the string text should be between 1 and 1000 inclusive.");
+        }
+        for (char ch : text) {
+            if (ch < 'a' || ch > 'z') {
+                throw std::invalid_argument("The string text consists only of lowercase English characters.");
+            }
+        }
+
+        long factor = 26;
+        long mod = 1e9 + 7;
+        std::vector<long> calc(text.size() + 1), val(text.size() + 1);
+        for (int i = 0; i < calc.size(); i++) {
+            if (i == 0)
+                calc[i] = 1;
+            else
+                calc[i] = (calc[i - 1] * factor) % mod;
+        }
+        long val_of_b = 0;
+        for (int i = 0; i < text.length(); i++) {
+            val_of_b = (val_of_b + ((text[i] - 'a' + 1) * calc[i]) % mod) % mod;
+            val[i] = val_of_b;
+        }
+        std::vector<std::vector<int>> dp_arr(text.size(), std::vector<int>(text.size(), -1));
+        return Find(dp_arr, 0, text.size() - 1, val, text, calc);
+    }
+
+  int main(){
+    return 0;
+  }
+
