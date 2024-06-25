@@ -39,6 +39,7 @@ Input Constraints:
 #include <algorithm>
 #include <stdexcept>
 #include <cassert>
+#include <set> 
 
 
     void DfsCount(int index, int parent, int& count, int mask, std::vector<std::vector<int>>& adjacency_list) {
@@ -106,7 +107,7 @@ Input Constraints:
         }
        std::set<std::pair<int, int>> unique_edges;
 
-        for(vector<int>& edge : edges) {
+        for(std::vector<int>& edge : edges) {
 
             if(edge.size() != 2) {
                 throw std::invalid_argument("Each edge must connect exactly two nodes");
@@ -291,5 +292,3 @@ try {
 
   return 0;
 }
-
-
