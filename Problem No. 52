@@ -36,6 +36,7 @@ Input Constraints:
 #include <stdexcept>
 #include <climits>
 #include <cassert>
+#include <functional>
 
     std::vector<std::vector<int>> GetDistanceMatrix(std::vector<std::vector<int>>& graph) {
         int len = graph.size();
@@ -161,9 +162,188 @@ Input Constraints:
 
   int main(){
     
+//TEST
+
+std::vector<std::vector<int>> graph_1 = {{1, 2}, {0, 2}, {0, 1}};
+int expected_1 = 2;
+int result_1 = ShortestPathLength(graph_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_2 = {{1, 3}, {0, 2}, {1, 3}, {0, 2}};
+int expected_2 = 3;
+int result_2 = ShortestPathLength(graph_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_3 = {{1}, {0, 2}, {1, 3}, {2}};
+int expected_3 = 3;
+int result_3 = ShortestPathLength(graph_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_4 = {{1, 2, 3}, {0}, {0}, {0}};
+int expected_4 = 4;
+int result_4 = ShortestPathLength(graph_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_5 = {{1, 2}, {0, 3}, {0, 3}, {1, 2}};
+int expected_5 = 3;
+int result_5 = ShortestPathLength(graph_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_6 = {{1}, {0}};
+int expected_6 = 1;
+int result_6 = ShortestPathLength(graph_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_7 = {{1, 2, 3}, {0, 4}, {0}, {0}, {1}};
+int expected_7 = 5;
+int result_7 = ShortestPathLength(graph_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_8 = {{1, 2}, {0, 3}, {0, 4}, {1}, {2}};
+int expected_8 = 4;
+int result_8 = ShortestPathLength(graph_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_9 = {{1, 2}, {0, 3}, {0, 4}, {1, 5}, {2}, {3}};
+int expected_9 = 5;
+int result_9 = ShortestPathLength(graph_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+    
+//TEST
+std::vector<std::vector<int>> graph_10 = {};
+try {
+    ShortestPathLength(graph_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_11 = {{1, 2}, {0, 2}, {0, 4}, {1, 3}};
+try {
+    ShortestPathLength(graph_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<int>> graph_12 = {{1, 2}, {0, 2}, {0, 1}, {3}};
+try {
+    ShortestPathLength(graph_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<int>> graph_13 = {{1, 2}, {0, 2}, {0, 1}, {}};
+try {
+    ShortestPathLength(graph_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<int>> graph_14 = {{1, 0}, {0, 2}, {1, 0}};
+try {
+    ShortestPathLength(graph_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_15 = {{1, 2}, {3}, {0, 3}, {2}};
+try {
+    ShortestPathLength(graph_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> graph_16(1000, std::vector<int>(2,1));
+try {
+    ShortestPathLength(graph_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+    
+//TEST
+
+std::vector<std::vector<int>> graph_17 = {{1, 2}, {0, 2}, {0, 1}, {4}, {3}};
+try {
+    ShortestPathLength(graph_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
     
     return 0;
   }
-
 
 
