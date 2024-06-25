@@ -31,3 +31,65 @@ The length of nums is 2 * len.
 Each element in nums should be between 1 and 10^6 inclusive.
 
 */
+
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+
+
+    bool IsBitSet(int& number, int bit_index) {
+        return (number & (1 << bit_index)) != 0;
+    }
+
+    void SetBit(int& number, int bit_index) {
+        number = number | (1 << bit_index);
+    }
+
+    int Solve(std::vector<int>& nums, std::map<int, int>& memo, int visited, int operation) {
+        if (memo.count(visited)) {
+            return memo[visited];
+        }
+        
+        int max_score = 0;
+        for (int i = 0; i < nums.size() - 1; i++) {
+            if (IsBitSet(visited, i)) continue;
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (IsBitSet(visited, j)) continue;
+                
+                int new_visited = visited;
+                SetBit(new_visited, i);
+                SetBit(new_visited, j);
+                
+                int current_score = operation * std::__gcd(nums[i], nums[j]);
+                int next_max_score = Solve(nums, memo, new_visited, operation + 1);
+                int total_score = current_score + next_max_score;
+                max_score = std::max(max_score, total_score);
+            }
+        }
+        return memo[visited] = max_score;
+    }
+
+    int MaxScore(std::vector<int>& nums) {
+        if (nums.size() < 2 || nums.size() > 14) {
+            throw std::invalid_argument("The length of nums must be 2 * len, where 1 <= len <= 7.");
+        }
+        for (int value : nums) {
+            if (value < 1 || value > 1000000) {
+                throw std::invalid_argument("Each element in nums should be between 1 and 10^6 inclusive.");
+            }
+        }
+
+        int visited = 0;
+        std::map<int, int> memo;
+        int answer = Solve(nums, memo, visited, 1);
+        return answer;
+    }
+
+
+
+int main(){
+  return 0;
+}
+
+
