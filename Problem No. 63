@@ -25,6 +25,81 @@ Input Constraints:
 
 The length of nums should be between 1 and 12 inclusive.
 Each element in nums should be between 0 and 10^9 inclusive.
-Jimmy needed to write a program to compute the number of squareful permutations of the given vector nums. It was a challenging problem, but Jimmy was ready to dive in and solve it!
 
 */
+
+#include <vector>
+#include <cmath>
+#include <cstring>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+public:
+  
+    int dp_arr[(1 << 12) + 7][14];
+    int num_count;
+    std::vector<int> arr;
+
+    int Solve(int mask, int last) {
+        if (mask == (1 << num_count) - 1) {
+            return 1;
+        }
+        if (dp_arr[mask][last] != -1) {
+            return dp_arr[mask][last];
+        }
+        int answer = 0;
+        if (last == num_count) {
+            for (int i = 0; i < num_count; i++) {
+                answer += Solve(mask | (1 << i), i);
+            }
+        } else {
+            for (int i = 0; i < num_count; i++) {
+                if (!(mask & (1 << i))) {
+                    int value = arr[i] + arr[last];
+                    int square_root = std::sqrt(value);
+                    if (square_root * square_root == value) {
+                        answer += Solve(mask | (1 << i), i);
+                    }
+                }
+            }
+        }
+        return dp_arr[mask][last] = answer;
+    }
+
+    int NumSquarefulPerms(std::vector<int>& nums) {
+        if (nums.size() < 1 || nums.size() > 12) {
+            throw std::invalid_argument("Invalid input: Length of nums should be between 1 and 12 inclusive.");
+        }
+        for (int num : nums) {
+            if (num < 0 || num > 1000000000) {
+                throw std::invalid_argument("Invalid input: Each element in nums should be between 0 and 10^9 inclusive.");
+            }
+        }
+
+        std::memset(dp_arr, -1, sizeof(dp_arr));
+        arr = nums;
+        num_count = static_cast<int>(arr.size());
+        std::map<int, int> count_map;
+        for (int i = 0; i < num_count; i++) {
+            count_map[arr[i]]++;
+        }
+        std::vector<long long> factorial(14, 0);
+        factorial[0] = 1;
+        for (int i = 1; i < 14; i++) {
+            factorial[i] = factorial[i - 1] * i;
+        }
+        long long answer = Solve(0, num_count);
+        for (auto& entry : count_map) {
+            answer /= factorial[entry.second];
+        }
+        return answer;
+    }
+};
+
+
+int main(){
+  return 0;
+}
+
