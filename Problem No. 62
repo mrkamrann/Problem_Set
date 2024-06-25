@@ -35,3 +35,97 @@ The value of edge_count should be between 0 and 10^5 inclusive.
 The string colors consists of lowercase English letters.
 Each element a_j and b_j in edges should be between 0 and node_count - 1 inclusive.
 */
+
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+
+    bool DetectCycle(int start, std::vector<std::vector<int>>& adjacency_list, std::vector<int>& visited, std::vector<int>& path_visited, std::vector<int>& topological_order) {
+        if (!visited[start]) {
+            visited[start] = 1;
+            path_visited[start] = 1;
+
+            for (int neighbor : adjacency_list[start]) {
+                if (DetectCycle(neighbor, adjacency_list, visited, path_visited, topological_order)) {
+                    return true;
+                }
+            }
+            topological_order.push_back(start);
+            path_visited[start] = 0;
+        } else if (path_visited[start]) {
+            return true;
+        }
+        return false;
+    }
+
+
+    int LargestPathValue(std::string colors, std::vector<std::vector<int>>& edges) {
+        int node_count = colors.size();
+        if (node_count < 1 || node_count > 100000) {
+            throw std::invalid_argument("Invalid input: node_count should be between 1 and 10^5 inclusive.");
+        }
+
+        int edge_count = edges.size();
+        if (edge_count < 0 || edge_count > 100000) {
+            throw std::invalid_argument("Invalid input: edge_count should be between 0 and 10^5 inclusive.");
+        }
+
+        std::vector<std::vector<int>> adjacency_list(node_count);
+        for (const std::vector<int>& edge : edges) {
+            int from_node = edge[0];
+            int to_node = edge[1];
+
+            if (from_node < 0 || from_node >= node_count || to_node < 0 || to_node >= node_count) {
+                throw std::invalid_argument("Invalid input: each element in edges should be between 0 and node_count - 1 inclusive.");
+            }
+
+            adjacency_list[from_node].push_back(to_node);
+        }
+
+        for(char character : colors)
+        {
+          if(character < 'a' && character > 'z')
+          {
+            throw std::invalid_argument("The string colors consists of lowercase English letters.");
+          }
+        }
+
+        std::vector<int> visited(node_count, 0);
+        std::vector<int> path_visited(node_count, 0);
+        std::vector<int> topological_order;
+
+        for (int i = 0; i < node_count; ++i) {
+            if (!visited[i]) {
+                if (DetectCycle(i, adjacency_list, visited, path_visited, topological_order)) {
+                    return -1;
+                }
+            }
+        }
+
+        std::vector<std::vector<int>> dp_arr(node_count, std::vector<int>(26, 0));
+        int max_color_value = -1;
+
+        for (int i = topological_order.size() - 1; i >= 0; --i) {
+            int node = topological_order[i];
+            dp_arr[node][colors[node] - 'a'] += 1;
+            max_color_value = std::max(max_color_value, dp_arr[node][colors[node] - 'a']);
+
+            for (int neighbor : adjacency_list[node]) {
+                for (int color = 0; color < 26; ++color) {
+                    dp_arr[neighbor][color] = std::max(dp_arr[neighbor][color], dp_arr[node][color]);
+                }
+            }
+        }
+
+        return max_color_value;
+    }
+
+
+
+int main(){
+  return 0;
+}
+
