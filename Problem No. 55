@@ -29,3 +29,90 @@ The values of rows and cols should be between 1 and 1000 inclusive.
 The product of rows and cols should be between 1 and 10^5 inclusive.
 Each grid[i][j] should be between 1 and 10^5 inclusive.
 */
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+    bool Possible(int val_x, int val_y, int rows, int cols, std::vector<std::vector<int>>& matrix) {
+        int count = 0;
+        std::vector<int> vec_dx = {-1, 0, 1, 0};
+        std::vector<int> vec_dy = {0, -1, 0, 1};
+        int mod = 1000000007;
+
+        for (int k = 0; k < 4; k++) {
+            int new_x = val_x + vec_dx[k];
+            int new_y = val_y + vec_dy[k];
+            if (new_x >= 0 && new_x < rows && new_y >= 0 && new_y < cols) {
+                count++;
+            }
+        }
+        return count != 0;
+    }
+
+    long long Solve(int val_x, int val_y, std::vector<std::vector<int>>& matrix, int rows, int cols, std::vector<std::vector<bool>>& visited, std::vector<std::vector<long long>>& dp_arr) {
+        if (val_x >= rows || val_x < 0 || val_y >= cols || val_y < 0 || !Possible(val_x, val_y, rows, cols, matrix)) {
+            return 1;
+        }
+        if (dp_arr[val_x][val_y] != -1) {
+            return dp_arr[val_x][val_y];
+        }
+
+        long long result = 1;
+        visited[val_x][val_y] = true;
+        int mod = 1000000007;
+        std::vector<int> vec_dx = {-1, 0, 1, 0};
+        std::vector<int> vec_dy = {0, -1, 0, 1};
+
+        for (int k = 0; k < 4; k++) {
+            int new_x = val_x + vec_dx[k];
+            int new_y = val_y + vec_dy[k];
+            if (new_x >= 0 && new_x < rows && new_y >= 0 && new_y < cols && matrix[new_x][new_y] > matrix[val_x][val_y] && !visited[new_x][new_y]) {
+                result = (result % mod + Solve(new_x, new_y, matrix, rows, cols, visited, dp_arr) % mod) % mod;
+            }
+        }
+
+        visited[val_x][val_y] = false;
+        dp_arr[val_x][val_y] = result % mod;
+        return dp_arr[val_x][val_y];
+    }
+
+    int CountPaths(std::vector<std::vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        if (rows < 1 || rows > 1000 || cols < 1 || cols > 1000) {
+            throw std::invalid_argument("The values of rows and cols should be between 1 and 1000 inclusive.");
+        }
+        if (rows * cols > 100000) {
+            throw std::invalid_argument("The product of rows and cols should be between 1 and 100000 inclusive.");
+        }
+        for (vector<int>& row : grid) {
+            for (int val : row) {
+                if (val < 1 || val > 100000) {
+                    throw std::invalid_argument("Each grid[i][j] should be between 1 and 100000 inclusive.");
+                }
+            }
+        }
+
+        int mod = 1000000007;
+        std::vector<std::vector<long long>> dp_arr(rows, std::vector<long long>(cols, -1));
+        std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+        int result = 0;
+
+        for (int val_x = 0; val_x < rows; val_x++) {
+            for (int val_y = 0; val_y < cols; val_y++) {
+                result = (result % mod + Solve(val_x, val_y, grid, rows, cols, visited, dp_arr) % mod) % mod;
+            }
+        }
+
+        return result % mod;
+    }
+
+
+int main(){
+  return 0;
+}
+
+
