@@ -30,3 +30,140 @@ Input Constraints:
 5.The input graph is always connected.
 
 */
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <climits>
+#include <cassert>
+
+    std::vector<std::vector<int>> GetDistanceMatrix(std::vector<std::vector<int>>& graph) {
+        int len = graph.size();
+        std::vector<std::vector<int>> distance_matrix(len, std::vector<int>(len, -1));
+        
+        for (int i = 0; i < len; i++) {
+            distance_matrix[i][i] = 0;
+            for (int neighbor : graph[i]) {
+                distance_matrix[i][neighbor] = 1;
+            }
+        }
+        
+        for (int k = 0; k < len; k++) {
+            for (int i = 0; i < len; i++) {
+                for (int j = 0; j < len; j++) {
+                    if (distance_matrix[i][j] == -1) {
+                        if (distance_matrix[i][k] != -1 && distance_matrix[k][j] != -1) {
+                            distance_matrix[i][j] = distance_matrix[i][k] + distance_matrix[k][j];
+                        }
+                    } else if (distance_matrix[i][k] != -1 && distance_matrix[k][j] != -1) {
+                        distance_matrix[i][j] = std::min(distance_matrix[i][j], distance_matrix[i][k] + distance_matrix[k][j]);
+                    }
+                }
+            }
+        }
+        
+        return distance_matrix;
+    }
+    
+    int GetShortestPath(std::vector<std::vector<int>>& pair_distances, int selection, std::vector<std::vector<int>>& dp_arr, int source) {
+        if (dp_arr[selection][source] != -1) {
+            return dp_arr[selection][source];
+        }
+        
+        int selection_mask = selection;
+        std::vector<int> vertices;
+        int index = 0;
+        while (selection_mask != 0) {
+            if ((selection_mask & 1) == 1 && index != source) {
+                vertices.push_back(index);
+            }
+            selection_mask >>= 1;
+            index++;
+        }
+        
+        if (vertices.size() == 1) {
+            return dp_arr[selection][source] = pair_distances[source][vertices[0]];
+        }
+        
+        int minimum_length = INT_MAX;
+        for (int vertex : vertices) {
+            minimum_length = std::min(minimum_length, pair_distances[source][vertex] + GetShortestPath(pair_distances, selection ^ (1 << source), dp_arr, vertex));
+        }
+        
+        return dp_arr[selection][source] = minimum_length;
+    }
+
+    int ShortestPathLength(std::vector<std::vector<int>>& graph) {
+      
+        int len = graph.size();
+      
+      if (len < 1 || len > 12) {
+            throw std::invalid_argument("The length of the graph should be between 1 and 12 inclusive");
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (graph[i].size() > static_cast<size_t>(len - 1)) {
+                throw std::invalid_argument("Each graph[i] can have a length from 0 to len-1");
+            }
+            if (std::find(graph[i].begin(), graph[i].end(), i) != graph[i].end()) {
+                throw std::invalid_argument("The vector graph[i] contains the city i itself");
+            }
+        }
+
+        for (int i = 0; i < len; i++) {
+            for (int neighbor : graph[i]) {
+                if (neighbor < 0 || neighbor >= len) {
+                    throw std::invalid_argument("Each node_u and node_v should be in the range [0, len-1]");
+                }
+                if (std::find(graph[neighbor].begin(), graph[neighbor].end(), i) == graph[neighbor].end()) {
+                    throw std::invalid_argument("If graph[a] contains b, then graph[b] must contain a");
+                }
+            }
+        }
+
+      
+       std::vector<bool> visited(len, false);
+    
+    std::function<void(int)> DfsCheck = [&](int node) {
+        visited[node] = true;
+        for (int neighbor : graph[node]) {
+            if (!visited[neighbor]) {
+                DfsCheck (neighbor);
+            }
+        }
+    };
+    
+    DfsCheck(0); 
+    
+    for (bool is_visited : visited) {
+        if (!is_visited) {
+            throw std::invalid_argument("The input graph is not connected");
+        }
+    }
+    
+        if (len <= 2) {
+            return len - 1;
+        }
+        
+        std::vector<std::vector<int>> distance_matrix = GetDistanceMatrix(graph);
+        int total_masks = 1 << len;
+        
+        std::vector<std::vector<int>> dp_arr(total_masks, std::vector<int>(len, -1));
+        
+        int minimum_length = INT_MAX;
+        
+        for (int i = 0; i < len; i++) {
+            minimum_length = std::min(minimum_length, GetShortestPath(distance_matrix, total_masks - 1, dp_arr, i));
+        }
+        
+        return minimum_length;
+    }
+
+  int main(){
+    
+    
+    return 0;
+  }
+
+
+
