@@ -102,6 +102,166 @@ Input Constraints:
 
 
 int main(){
+  
+//TEST
+std::vector<int> balls_1 = {1, 2, 3};
+double expected_1 = 0.3; 
+double result_1 = GetProbability(balls_1);
+assert(std::abs(result_1 - expected_1) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_2 = {2, 2, 2};
+double expected_2 = 1.0;
+double result_2 = GetProbability(balls_2);
+assert(std::abs(result_2 - expected_2) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_3 = {1, 1, 1, 1};
+double expected_3 = 1.0;
+double result_3 = GetProbability(balls_3);
+assert(std::abs(result_3 - expected_3) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_4 = {3, 1, 2};
+double expected_4 = 0.3;
+double result_4 = GetProbability(balls_4);
+assert(std::abs(result_4 - expected_4) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+
+std::vector<int> balls_5 = {1, 2, 3, 4};
+double expected_5 = 0.309524;
+double result_5 = GetProbability(balls_5);
+assert(std::abs(result_5 - expected_5) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_6 = {2, 2, 2, 2};
+double expected_6 = 1.0;
+double result_6 = GetProbability(balls_6);
+assert(std::abs(result_6 - expected_6) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+
+std::vector<int> balls_7 = {1, 1, 2, 2};
+double expected_7 = 0.6;
+double result_7 = GetProbability(balls_7);
+assert(std::abs(result_7 - expected_7) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_8 = {1, 2, 2, 3};
+double expected_8 = 0.371429;
+double result_8 = GetProbability(balls_8);
+assert(std::abs(result_8 - expected_8) < 1e-6);
+
+//TEST_END
+
+//TEST
+
+
+std::vector<int> balls_9 = {1, 1, 1, 1};
+double expected_9 = 1.0;
+double result_9 = GetProbability(balls_9);
+assert(std::abs(result_9 - expected_9) < 1e-6);
+
+//TEST_END
+
+//TEST
+  
+std::vector<int> balls_10 = {};
+try {
+    GetProbability(balls_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+
+std::vector<int> balls_11 = {1, 2, 3, 4, 5, 6, 6, 6, 6};
+try {
+    GetProbability(balls_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_12 = {1, 2, 3, -4};
+try {
+    GetProbability(balls_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_13 = {1, 2, 3, 7};
+try {
+    GetProbability(balls_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_14 = {1, 2, 3, -4};
+try {
+    GetProbability(balls_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> balls_15 = {2,1};
+try {
+    GetProbability(balls_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
   return 0;
 }
+
+
 
