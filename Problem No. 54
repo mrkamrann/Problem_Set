@@ -59,8 +59,8 @@ The string text consists only of lowercase English characters.
         if (len < 1 || len > 1000) {
             throw std::invalid_argument("The length of the string text should be between 1 and 1000 inclusive.");
         }
-        for (char ch : text) {
-            if (ch < 'a' || ch > 'z') {
+        for (char character : text) {
+            if (character < 'a' || character > 'z') {
                 throw std::invalid_argument("The string text consists only of lowercase English characters.");
             }
         }
