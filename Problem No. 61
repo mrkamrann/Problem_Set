@@ -24,3 +24,134 @@ The number of columns (cols) is equal to seats[i].length.
 The values of rows and cols should be between 1 and 8 inclusive.
 
 */
+
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+class Solution {
+public:
+    int rows;
+    int cols;
+    int dp_arr[10][1025];
+
+    int FindMaxStudents(int row_index, int prev, int flag, std::vector<std::vector<char>>& seats_matrix) {
+        if (row_index >= rows) {
+            return 0;
+        }
+
+        if (dp_arr[row_index][prev] != -1) {
+            return dp_arr[row_index][prev];
+        }
+
+        int result = 0;
+
+        if (flag == 1) {
+            for (int j = 0; j < (1 << cols); ++j) {
+                int current_mask = 0;
+                bool valid = false;
+
+                for (int k = 0; k < cols; ++k) {
+                    if (j & (1 << k)) {
+                        if (seats_matrix[row_index][k] == '.') {
+                            if (k > 0 && current_mask & (1 << (k - 1))) {
+                                valid = true;
+                                break;
+                            } else {
+                                current_mask |= (1 << k);
+                            }
+                        } else {
+                            valid = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!valid) {
+                    int temp_count = __builtin_popcount(current_mask);
+                    result = std::max(result, temp_count + FindMaxStudents(row_index + 1, current_mask, 0, seats_matrix));
+                }
+            }
+        } else {
+            for (int j = 0; j < (1 << cols); ++j) {
+                int current_mask = 0;
+                bool valid = false;
+
+                for (int k = 0; k < cols; ++k) {
+                    if (j & (1 << k)) {
+                        if (seats_matrix[row_index][k] == '.') {
+                            if (k > 0 && (current_mask & (1 << (k - 1)))) {
+                                valid = true;
+                                break;
+                            } else {
+                                current_mask |= (1 << k);
+                            }
+                        } else {
+                            valid = true;
+                            break;
+                        }
+                    }
+                }
+
+                for (int k = 0; k < cols; ++k) {
+                    if (current_mask & (1 << k)) {
+                        if (k == 0) {
+                            if (prev & (1 << (k + 1))) {
+                                valid = true;
+                                break;
+                            }
+                        } else if (k == cols - 1) {
+                            if (prev & (1 << (k - 1))) {
+                                valid = true;
+                                break;
+                            }
+                        } else {
+                            if ((prev & (1 << (k + 1))) || (prev & (1 << (k - 1)))) {
+                                valid = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!valid) {
+                    int temp_count = __builtin_popcount(current_mask);
+                    result = std::max(result, temp_count + FindMaxStudents(row_index + 1, current_mask, 0, seats_matrix));
+                }
+            }
+        }
+
+        return dp_arr[row_index][prev] = result;
+    }
+
+    int maxStudents(std::vector<std::vector<char>>& seats_matrix) {
+        std::memset(dp_arr, -1, sizeof(dp_arr));
+
+        rows = seats_matrix.size();
+        cols = seats_matrix[0].size();
+
+        if (rows < 1 || rows > 8 || cols < 1 || cols > 8) {
+            throw std::invalid_argument("Invalid input: Number of rows and columns should be between 1 and 8 inclusive.");
+        }
+
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (seats_matrix[i][j] != '.' && seats_matrix[i][j] != '#') {
+                    throw std::invalid_argument("Invalid input: Matrix seats contains only characters '.' and '#'.");
+                }
+            }
+        }
+
+        return FindMaxStudents(0, 0, 1, seats_matrix);
+    }
+
+};
+
+
+int main(){
+  return 0;
+}
+
+
