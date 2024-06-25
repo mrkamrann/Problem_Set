@@ -31,3 +31,90 @@ Each element in houses should be between 1 and 10^4 inclusive.
 All the integers in houses are unique.
 
 */
+
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <climits>
+#include <cmath>
+#include <set>
+
+
+    int GetCost(std::vector<int>& houses, int start, int end) {
+        int length = end - start + 1;
+        int median = 0;
+        if (length % 2 == 0) {
+            int index = start + (end - start) / 2;
+            median = (houses[index] + houses[index + 1]) / 2;
+        } else {
+            int index = start + (end - start) / 2;
+            median = houses[index];
+        }
+        int costing = 0;
+        for (int i = start; i <= end; ++i) {
+            costing += std::abs(houses[i] - median);
+        }
+        return costing;
+    }
+
+    int Memoize(std::vector<int>& houses, int start, int counter, std::vector<std::vector<int>>& dp_arr) {
+        if (counter == 0 || start >= houses.size()) {
+            return 0;
+        }
+
+        if (dp_arr[start][counter] != -1) {
+            return dp_arr[start][counter];
+        }
+
+        int answer = INT_MAX, temp = 0;
+
+        for (int cnt = start; cnt < houses.size(); cnt++) {
+            if (counter != 1 || cnt == houses.size() - 1) {
+                temp = GetCost(houses, start, cnt);
+                answer = std::min(answer, temp + Memoize(houses, cnt + 1, counter - 1, dp_arr));
+            }
+        }
+        return dp_arr[start][counter] = answer;
+    }
+
+    int MinDistance(std::vector<int>& houses, int counter) {
+        if (houses.size() < 1 || houses.size() > 100) {
+            throw std::invalid_argument("The length of houses should be between 1 and 100 inclusive.");
+        }
+        if (counter < 1 || counter > houses.size()) {
+            throw std::invalid_argument("The value of counter should be between 1 and the length of houses inclusive.");
+        }
+        std::set<int>vis;
+        for (int house : houses) {
+            if (house < 1 || house > 10000) {
+                throw std::invalid_argument("Each element in houses should be between 1 and 10^4 inclusive.");
+            }
+            if(vis.count(house))
+            {
+              throw std::invalid_argument("Each element in houses should be unique");
+            }
+            vis.insert(house);
+        }
+
+        std::sort(houses.begin(), houses.end());
+
+        if (counter == houses.size()) {
+            return 0;
+        }
+
+        int len = houses.size();
+
+        std::vector<std::vector<int>> dp_arr(len + 1, std::vector<int>(counter + 1, -1));
+
+        return Memoize(houses, 0, counter, dp_arr);
+    }
+
+
+
+
+int main(){
+  return 0;
+}
+
