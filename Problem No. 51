@@ -35,5 +35,120 @@ Input Constraints:
 
 */
 
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+    void DfsCount(int index, int parent, int& count, int mask, std::vector<std::vector<int>>& adjacency_list) {
+        count++;
+        for(int i = 0; i < adjacency_list[index].size(); i++) {
+            int neighbor = adjacency_list[index][i];
+            if(parent != neighbor && ((mask >> neighbor) & 1)) {
+                DfsCount(neighbor, index, count, mask, adjacency_list);
+            }
+        }
+    }
+
+    bool IsMaskValid(int mask, int& index, int num_nodes, std::vector<std::vector<int>>& adjacency_list) {
+        index = 0;
+        while(!(1 & (mask >> index))) {
+            index++;
+        }
+        
+        int expected_count = 0;
+        for(int i = 0; i < num_nodes; i++) {
+            expected_count += ((mask >> i) & 1);
+        }
+        
+        int actual_count = 0;
+        DfsCount(index, -1, actual_count, mask, adjacency_list);
+        
+        if(actual_count == expected_count && expected_count > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    int Dfs(int index, int parent, int& diameter, int mask, std::vector<std::vector<int>>& adjacency_list) {
+        std::vector<int> distances;
+        for(int i = 0; i < adjacency_list[index].size(); i++) {
+            int neighbor = adjacency_list[index][i];
+            if(parent != neighbor && ((mask >> neighbor) & 1)) {
+                int height = Dfs(neighbor, index, diameter, mask, adjacency_list);
+                distances.push_back(1 + height);
+            }
+        }
+        
+        int answer = 0;
+        if(!distances.empty()) {
+            if(distances.size() == 1) {
+                diameter = std::max(diameter, distances[0]);
+                answer = distances[0];
+            } else {
+                std::sort(distances.begin(), distances.end());
+                int size = distances.size();
+                int height = distances[size - 1] + distances[size - 2];
+                diameter = std::max(height, diameter);
+                answer = distances[size - 1];
+            }
+        }
+        return answer;
+    }
+
+    std::vector<int> CountSubgraphsForEachDiameter(int num_nodes, std::vector<std::vector<int>>& edges) {
+        if(num_nodes < 2 || num_nodes > 15) {
+            throw std::invalid_argument("Invalid number of nodes");
+        }
+        if(edges.size() != num_nodes - 1) {
+            throw std::invalid_argument("Invalid number of edges");
+        }
+       std::set<std::pair<int, int>> unique_edges;
+
+        for(vector<int>& edge : edges) {
+
+            if(edge.size() != 2) {
+                throw std::invalid_argument("Each edge must connect exactly two nodes");
+            }
+            if(edge[0] < 1 || edge[0] > num_nodes || edge[1] < 1 || edge[1] > num_nodes) {
+                throw std::invalid_argument("Edge node indices must be in the range [1, num_nodes]");
+            }
+            int node_u = std::min(edge[0], edge[1]);
+            int node_v = std::max(edge[0], edge[1]);
+            if(!unique_edges.insert({node_u, node_v}).second) {
+                throw std::invalid_argument("Duplicate edges are not allowed");
+            }
+        }
+
+        std::vector<std::vector<int>> adjacency_list(num_nodes, std::vector<int>());
+        for(int i = 0; i < num_nodes - 1; i++) {
+            int node_u = edges[i][0] - 1;
+            int node_v = edges[i][1] - 1;
+            adjacency_list[node_u].push_back(node_v);
+            adjacency_list[node_v].push_back(node_u);
+        }
+
+        std::vector<int> result(num_nodes - 1, 0);
+        
+        for(int mask = 1; mask < (1 << num_nodes); mask++) {
+            int index = 0;
+            if(IsMaskValid(mask, index, num_nodes, adjacency_list)) {
+                int diameter = 0;
+                Dfs(index, -1, diameter, mask, adjacency_list);
+                if(diameter > 0) {
+                    result[diameter - 1]++;
+                }
+            }
+        }
+        return result;
+    }
+
+
+int main(){
+  
+  return 0;
+}
+
 
 
