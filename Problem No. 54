@@ -84,6 +84,125 @@ The string text consists only of lowercase English characters.
     }
 
   int main(){
+    
+//TEST
+    
+std::string text_1 = "abcdef";
+int expected_1 = 1; 
+int result_1 = LongestDecomposition(text_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::string text_2 = "aaaa";
+int expected_2 = 4;
+int result_2 = LongestDecomposition(text_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::string text_3 = "antaprezatepzapreanta";
+int expected_3 = 11;
+int result_3 = LongestDecomposition(text_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::string text_4 = "abcdedcba";
+int expected_4 = 9;
+int result_4 = LongestDecomposition(text_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::string text_5 = "abcxyz";
+int expected_5 = 1;
+int result_5 = LongestDecomposition(text_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::string text_6 = "xyzzyx";
+int expected_6 = 6;
+int result_6 = LongestDecomposition(text_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::string text_7 = "racecar";
+int expected_7 = 7;
+int result_7 = LongestDecomposition(text_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::string text_8 = "abcdefedcba";
+int expected_8 = 11;
+int result_8 = LongestDecomposition(text_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::string text_9 = "cheaetcode";
+int expected_9 = 1;
+int result_9 = LongestDecomposition(text_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+    
+//TEST
+std::string text_10 = "";
+try {
+    LongestDecomposition(text_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::string text_11(1001, 'a');
+try {
+    LongestDecomposition(text_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+    
+//TEST
+
+std::string text_12(1001, '1');
+try {
+    LongestDecomposition(text_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
+
     return 0;
   }
 
