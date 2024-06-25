@@ -1,0 +1,30 @@
+/*
+Link : https://leetcode.com/problems/number-of-squareful-arrays/description/
+
+Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered an intriguing problem involving permutations of numbers, and he decided to take on the challenge.
+
+Jimmy was given an integer vector nums. His task was to determine how many different permutations of nums are "squareful." A vector is considered squareful if the sum of every pair of adjacent elements 
+in the permutation is a perfect square.
+
+For instance, if nums = [1, 17, 8], a valid squareful permutation would be [1, 8, 17] because 1 + 8 = 9 (which is a perfect square) and 8 + 17 = 25 (which is also a perfect square).
+
+However, not every permutation meets this criterion, and Jimmy's goal was to find out exactly how many permutations do.
+
+Two permutations perm1 and perm2 are considered different if there is at least one index i such that perm1[i] != perm2[i].
+
+Create a C++ Function NumSquarefulPerms that will return an integer denoting he number of permutations of nums that are squareful.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+A vector<int> denoting nums.
+
+Input Constraints:
+
+The length of nums should be between 1 and 12 inclusive.
+Each element in nums should be between 0 and 10^9 inclusive.
+Jimmy needed to write a program to compute the number of squareful permutations of the given vector nums. It was a challenging problem, but Jimmy was ready to dive in and solve it!
+
+*/
