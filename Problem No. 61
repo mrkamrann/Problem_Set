@@ -126,11 +126,12 @@ public:
         return dp_arr[row_index][prev] = result;
     }
 
-    int maxStudents(std::vector<std::vector<char>>& seats_matrix) {
+    int MaxStudents(std::vector<std::vector<char>>& seats) {
+
         std::memset(dp_arr, -1, sizeof(dp_arr));
 
-        rows = seats_matrix.size();
-        cols = seats_matrix[0].size();
+        rows = seats.size();
+        cols = seats[0].size();
 
         if (rows < 1 || rows > 8 || cols < 1 || cols > 8) {
             throw std::invalid_argument("Invalid input: Number of rows and columns should be between 1 and 8 inclusive.");
@@ -138,13 +139,13 @@ public:
 
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
-                if (seats_matrix[i][j] != '.' && seats_matrix[i][j] != '#') {
+                if (seats[i][j] != '.' && seats[i][j] != '#') {
                     throw std::invalid_argument("Invalid input: Matrix seats contains only characters '.' and '#'.");
                 }
             }
         }
 
-        return FindMaxStudents(0, 0, 1, seats_matrix);
+        return FindMaxStudents(0, 0, 1, seats);
     }
 
 };
