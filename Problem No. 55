@@ -29,7 +29,6 @@ The values of rows and cols should be between 1 and 1000 inclusive.
 The product of rows and cols should be between 1 and 10^5 inclusive.
 Each grid[i][j] should be between 1 and 10^5 inclusive.
 */
-
 #include <vector>
 #include <stdexcept>
 #include <cassert>
@@ -65,13 +64,16 @@ Each grid[i][j] should be between 1 and 10^5 inclusive.
         std::vector<int> vec_dx = {-1, 0, 1, 0};
         std::vector<int> vec_dy = {0, -1, 0, 1};
 
-        for (int k = 0; k < 4; k++) {
-            int new_x = val_x + vec_dx[k];
-            int new_y = val_y + vec_dy[k];
-            if (new_x >= 0 && new_x < rows && new_y >= 0 && new_y < cols && matrix[new_x][new_y] > matrix[val_x][val_y] && !visited[new_x][new_y]) {
+           for (int k = 0; k < 4; k++) {
+        int new_x = val_x + vec_dx[k];
+        int new_y = val_y + vec_dy[k];
+        if (new_x >= 0 && new_x < rows && new_y >= 0 && new_y < cols) {
+            if (matrix[new_x][new_y] > matrix[val_x][val_y] && !visited[new_x][new_y]) {
                 result = (result % mod + Solve(new_x, new_y, matrix, rows, cols, visited, dp_arr) % mod) % mod;
             }
         }
+    }
+
 
         visited[val_x][val_y] = false;
         dp_arr[val_x][val_y] = result % mod;
@@ -80,15 +82,21 @@ Each grid[i][j] should be between 1 and 10^5 inclusive.
 
     int CountPaths(std::vector<std::vector<int>>& grid) {
         int rows = grid.size();
-        int cols = grid[0].size();
+        
 
-        if (rows < 1 || rows > 1000 || cols < 1 || cols > 1000) {
+        if (rows < 1 || rows > 1000) {
+            throw std::invalid_argument("The values of rows and cols should be between 1 and 1000 inclusive.");
+        }
+      
+        int cols = grid[0].size();
+      
+       if (cols < 1 || cols > 1000) {
             throw std::invalid_argument("The values of rows and cols should be between 1 and 1000 inclusive.");
         }
         if (rows * cols > 100000) {
             throw std::invalid_argument("The product of rows and cols should be between 1 and 100000 inclusive.");
         }
-        for (vector<int>& row : grid) {
+        for (std::vector<int>& row : grid) {
             for (int val : row) {
                 if (val < 1 || val > 100000) {
                     throw std::invalid_argument("Each grid[i][j] should be between 1 and 100000 inclusive.");
@@ -112,6 +120,158 @@ Each grid[i][j] should be between 1 and 10^5 inclusive.
 
 
 int main(){
+  
+//TEST
+std::vector<std::vector<int>> grid_1 = {{1, 2}, {3, 4}, {5, 6}};
+int expected_1 = 22; 
+int result_1 = CountPaths(grid_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_2 = {{1}};
+int expected_2 = 1;
+int result_2 = CountPaths(grid_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_3 = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
+int expected_3 = 9;
+int result_3 = CountPaths(grid_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_4 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+int expected_4 = 53;
+int result_4 = CountPaths(grid_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_5 = {{1, 1, 1}, {1, 2, 1}, {1, 1, 1}};
+int expected_5 = 13;
+int result_5 = CountPaths(grid_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_6 = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+int expected_6 = 40;
+int result_6 = CountPaths(grid_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_7 = {{1, 1, 1}, {1, 2, 1}, {1, 1, 2}};
+int expected_7 = 15;
+int result_7 = CountPaths(grid_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_8 = {{1, 1, 1}, {1, 1, 1}};
+int expected_8 = 6;
+int result_8 = CountPaths(grid_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_9 = {{1, 1}, {1, 1}, {1, 1}};
+int expected_9 = 6;
+int result_9 = CountPaths(grid_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+std::vector<std::vector<int>> grid_10 = {};
+try {
+    CountPaths(grid_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_11 = {{1, -1}, {3, 4, 5}, {6, 7}};
+try {
+    CountPaths(grid_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_12 = {{1, 2, 1000005}, {4, 5}, {6, 7, 8}};
+try {
+    CountPaths(grid_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_13 = {{1, 2}, {-3, 4}};
+try {
+    CountPaths(grid_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_14 = {{100009, 2}, {3, 4}};
+try {
+    CountPaths(grid_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_15(500, std::vector<int>(205, 1)); 
+try {
+    CountPaths(grid_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+
   return 0;
 }
 
