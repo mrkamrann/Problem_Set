@@ -146,9 +146,150 @@ Input Constraints:
 
 
 int main(){
+
+//TEST
+int num_nodes_1 = 3;
+std::vector<std::vector<int>> edges_1 = {{1, 2}, {2, 3}};
+std::vector<int> expected_1 = {2,1}; 
+std::vector<int> result_1 = CountSubgraphsForEachDiameter(num_nodes_1, edges_1);
+assert(result_1 == expected_1);
+//TEST_END 
+
+
+//TEST
+int num_nodes_2 = 4;
+std::vector<std::vector<int>> edges_2 = {{1, 2}, {2, 3}, {3, 4}};
+std::vector<int> expected_2 = {3,2,1};
+std::vector<int> result_2 = CountSubgraphsForEachDiameter(num_nodes_2, edges_2);
+assert(result_2 == expected_2);
+//TEST_END 
+
+//TEST
+int num_nodes_3 = 5;
+std::vector<std::vector<int>> edges_3 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+std::vector<int>expected_3 = {4,3,2,1};
+std::vector<int>result_3 = CountSubgraphsForEachDiameter(num_nodes_3, edges_3);
+assert(result_3 == expected_3);
+//TEST_END 
+
+//TEST
+int num_nodes_4 = 6;
+std::vector<std::vector<int>> edges_4 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6}};
+std::vector<int>expected_4 = {5,26,0,0,0};
+std::vector<int>result_4 = CountSubgraphsForEachDiameter(num_nodes_4, edges_4);
+assert(result_4 == expected_4);
+//TEST_END 
+
+//TEST
+int num_nodes_5 = 6;
+std::vector<std::vector<int>> edges_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}};
+std::vector<int>expected_5 = {5,4,3,2,1};
+std::vector<int>result_5 = CountSubgraphsForEachDiameter(num_nodes_5, edges_5);
+assert(result_5 == expected_5);
+//TEST_END 
+
+//TEST
+int num_nodes_6 = 7;
+std::vector<std::vector<int>> edges_6 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}};
+std::vector<int>expected_6 = {6,5,4,3,2,1};
+std::vector<int>result_6 = CountSubgraphsForEachDiameter(num_nodes_6, edges_6);
+assert(result_6 == expected_6);
+//TEST_END 
+
+//TEST
+int num_nodes_7 = 8;
+std::vector<std::vector<int>> edges_7 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}};
+std::vector<int>expected_7 = {7,6,5,4,3,2,1};
+std::vector<int>result_7 = CountSubgraphsForEachDiameter(num_nodes_7, edges_7);
+assert(result_7 == expected_7);
+//TEST_END 
+
+//TEST
+int num_nodes_8 = 9;
+std::vector<std::vector<int>> edges_8 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}};
+std::vector<int>expected_8 = {8,7,6,5,4,3,2,1};
+std::vector<int>result_8 = CountSubgraphsForEachDiameter(num_nodes_8, edges_8);
+assert(result_8 == expected_8);
+//TEST_END 
+
+//TEST
+int num_nodes_9 = 10;
+std::vector<std::vector<int>> edges_9 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+std::vector<int>expected_9 = {9,8,7,6,5,4,3,2,1};
+std::vector<int>result_9 = CountSubgraphsForEachDiameter(num_nodes_9, edges_9);
+assert(result_9 == expected_9);
+//TEST_END 
+
   
+//TEST
+int num_nodes_10 = 3;
+std::vector<std::vector<int>> edges_10 = {{1, 2, 3}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_10, edges_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+
+//TEST
+int num_nodes_11 = 3;
+std::vector<std::vector<int>> edges_11 = {{0, 2}, {2, 3}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_11, edges_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+
+//TEST
+int num_nodes_12 = 3;
+std::vector<std::vector<int>> edges_12 = {{1, 4}, {2, 3}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_12, edges_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+
+//TEST
+int num_nodes_13 = 3;
+std::vector<std::vector<int>> edges_13 = {{1, 2}, {1, 2}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_13, edges_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+
+//TEST
+int num_nodes_14 = 4;
+std::vector<std::vector<int>> edges_14 = {{1, 2}, {2, 3}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_14, edges_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+
+//TEST
+int num_nodes_15 = 4;
+std::vector<std::vector<int>> edges_15 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+try {
+    CountSubgraphsForEachDiameter(num_nodes_15, edges_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END 
+  
+
+
   return 0;
 }
-
 
 
