@@ -29,4 +29,79 @@ Input Constraints:
 1.The length of the vector balls (denoted as len) should be between 1 and 8 inclusive.
 2.Each balls[i] should be between 1 and 6 inclusive.
 3.The sum of the elements in balls is even.
+
 */
+
+#include <vector>
+#include <numeric>
+#include <stdexcept>
+#include <cassert>
+
+
+    int BallsCount(const std::vector<int>& balls){
+        return std::accumulate(balls.begin(), balls.end(), 0);
+    }
+
+    int ColorCount(const std::vector<int>& balls)  {
+        return std::accumulate(balls.begin(), balls.end(), 0, [&](int sum, int color) {
+            return sum + (color > 0);
+        });
+    }
+
+    double ShufflesCount(const std::vector<int>& balls) {
+        double ans = 1, last = 0;
+        for (int color : balls) {
+            for (int i = 1; i <= color; i++) {
+                last++;
+                ans *= last;
+                ans /= i;
+            }
+        }
+        return ans;
+    }
+
+    double Probability(int color_idx, std::vector<int>& vec_a, std::vector<int>& vec_b, const std::vector<int>& balls) {
+        if (color_idx == balls.size()) {
+            if (BallsCount(vec_a) == BallsCount(vec_b) && ColorCount(vec_a) == ColorCount(vec_b)) {
+                return ShufflesCount(vec_a) * ShufflesCount(vec_b) / ShufflesCount(balls);
+            }
+            return 0;
+        }
+        double ans = 0;
+        for (int i = 0; i <= balls[color_idx]; i++) {
+            vec_a[color_idx] = i;
+            vec_b[color_idx] = balls[color_idx] - i;
+            ans += Probability(color_idx + 1, vec_a, vec_b, balls);
+            vec_a[color_idx] = 0;
+            vec_b[color_idx] = 0;
+        }
+        return ans;
+    }
+
+     double GetProbability(std::vector<int>& balls) {
+        int len = balls.size();
+        if (len < 1 || len > 8) {
+            throw std::invalid_argument("The length of the vector balls should be between 1 and 8 inclusive");
+        }
+        
+        for (int ball_count : balls) {
+            if (ball_count < 1 || ball_count > 6) {
+                throw std::invalid_argument("Each balls[i] should be between 1 and 6 inclusive");
+            }
+        }
+        
+        if (std::accumulate(balls.begin(), balls.end(), 0) % 2 != 0) {
+            throw std::invalid_argument("The sum of the elements in balls must be even");
+        }
+
+        std::vector<int> vec_a(balls.size(), 0);
+        std::vector<int> vec_b(balls.size(), 0);
+        return Probability(0, vec_a, vec_b, balls);
+    }
+
+
+
+int main(){
+  return 0;
+}
+
