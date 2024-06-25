@@ -28,3 +28,105 @@ Input Constraints:
 2.Each element in nums_1 and nums_2 should be between 0 and 10^9 inclusive.
 
 */
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+    std::vector<int> Preprocess(std::vector<int>& nums) {
+        std::sort(nums.begin(), nums.end());
+        int previous = -1;
+        std::vector<int> vec;
+        for (int i = 0; i < nums.size(); i++) {
+            if (previous != nums[i]) {
+                vec.push_back(nums[i]);
+                previous = nums[i];
+            }
+        }
+        return vec;
+    }
+
+    int BinarySearch(int key, std::vector<int>& nums) {
+        int left = 0, right = nums.size() - 1;
+        int middle, answer = -1;
+        while (left <= right) {
+            middle = left + (right - left) / 2;
+            if (nums[middle] > key) {
+                answer = middle;
+                right = middle - 1;
+            } else {
+                left = middle + 1;
+            }
+        }
+        return answer;
+    }
+
+    int Solve(int index, std::vector<int>& nums, int previous_index, std::vector<int>& num, std::vector<std::vector<int>>& dp_arr) {
+        if (index == nums.size()) return 0;
+        if (dp_arr[index][previous_index] != -1) return dp_arr[index][previous_index];
+        
+        int previous;
+        if (previous_index == 0) {
+            previous = nums[index - 1];
+        } else {
+            previous = num[previous_index - 1];
+        }
+        
+        int idx = BinarySearch(previous, num);
+        if (previous >= nums[index] && idx == -1) {
+            return dp_arr[index][previous_index] = 1e9;
+        }
+        
+        int change = 1e9, not_change = 1e9;
+        if (idx != -1)
+            change = 1 + Solve(index + 1, nums, idx + 1, num, dp_arr);
+        if (previous < nums[index])
+            not_change = Solve(index + 1, nums, 0, num, dp_arr);
+
+        return dp_arr[index][previous_index] = std::min(change, not_change);
+    }
+
+    int MakeArrayIncreasing(std::vector<int>& nums_1, std::vector<int>& nums_2) {
+        int len = nums_1.size();
+        if (len < 1 || len > 2000) {
+            throw std::invalid_argument("The length of nums_1 should be between 1 and 2000 inclusive.");
+        }
+        for (int val : nums_1) {
+            if (val < 0 || val > 1000000000) {
+                throw std::invalid_argument("Each element in nums_1 should be between 0 and 10^9 inclusive.");
+            }
+        }
+
+        int len_2 = nums_2.size();
+        if (len_2 < 1 || len_2 > 2000) {
+            throw std::invalid_argument("The length of nums_2 should be between 1 and 2000 inclusive.");
+        }
+        for (int val : nums_2) {
+            if (val < 0 || val > 1000000000) {
+                throw std::invalid_argument("Each element in nums_2 should be between 0 and 10^9 inclusive.");
+            }
+        }
+
+        std::vector<int> nums(len + 1);
+        for (int i = 0; i < len; i++) {
+            nums[i + 1] = nums_1[i];
+        }
+        nums[0] = -1;
+
+        std::vector<int> num = Preprocess(nums_2);
+        int num_size = num.size();
+        std::vector<std::vector<int>> dp_arr(len + 1, std::vector<int>(num_size + 1, -1));
+
+        int answer = Solve(1, nums, 0, num, dp_arr);
+        if (answer >= 1e9) return -1;
+        return answer;
+    }
+
+
+
+int main(){
+  return 0;
+}
+
+
