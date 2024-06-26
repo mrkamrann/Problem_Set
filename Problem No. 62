@@ -85,9 +85,9 @@ Each element a_j and b_j in edges should be between 0 and node_count - 1 inclusi
             adjacency_list[from_node].push_back(to_node);
         }
 
-        for(char character : colors)
+        for(int i = 0;i<colors.size();++i)
         {
-          if(character < 'a' && character > 'z')
+          if(colors[i] < 'a' && colors[i] > 'z')
           {
             throw std::invalid_argument("The string colors consists of lowercase English letters.");
           }
@@ -126,6 +126,159 @@ Each element a_j and b_j in edges should be between 0 and node_count - 1 inclusi
 
 
 int main(){
+  
+//TEST
+std::string colors_1 = "abaca";
+std::vector<std::vector<int>> edges_1 = {{0, 1}, {0, 2}, {2, 3}, {3, 4}};
+int expected_1 = 3;
+int result_1 = LargestPathValue(colors_1, edges_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+std::string colors_2 = "a";
+std::vector<std::vector<int>> edges_2 = {};
+int expected_2 = 1;
+int result_2 = LargestPathValue(colors_2, edges_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+std::string colors_3 = "aaa";
+std::vector<std::vector<int>> edges_3 = {{0, 1}, {1, 2}};
+int expected_3 = 3;
+int result_3 = LargestPathValue(colors_3, edges_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+std::string colors_4 = "abc";
+std::vector<std::vector<int>> edges_4 = {{0, 1}, {1, 2}};
+int expected_4 = 1;
+int result_4 = LargestPathValue(colors_4, edges_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+std::string colors_5 = "abacaba";
+std::vector<std::vector<int>> edges_5 = {{0, 1}, {1, 2}, {1, 3}, {2, 4}, {3, 5}, {4, 6}};
+int expected_5 = 4;
+int result_5 = LargestPathValue(colors_5, edges_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::string colors_6 = "abcabc";
+std::vector<std::vector<int>> edges_6 = {{0, 1}, {1, 2}, {3, 4}, {4, 5}, {0, 3}, {2, 4}};
+int expected_6 = 2;
+int result_6 = LargestPathValue(colors_6, edges_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::string colors_7 = "aabb";
+std::vector<std::vector<int>> edges_7 = {{0, 1}, {1, 2}, {2, 3}, {0, 3}};
+int expected_7 = 2;
+int result_7 = LargestPathValue(colors_7, edges_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+std::string colors_8 = "abab";
+std::vector<std::vector<int>> edges_8 = {{0, 1}, {1, 2}, {2, 3}};
+int expected_8 = 2;
+int result_8 = LargestPathValue(colors_8, edges_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+std::string colors_9 = "abcd";
+std::vector<std::vector<int>> edges_9 = {{0, 1}, {1, 2}, {2, 3}};
+int expected_9 = 1;
+int result_9 = LargestPathValue(colors_9, edges_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+std::string colors_10 = "";
+std::vector<std::vector<int>> edges_10 = {{0, 1}};
+try {
+    LargestPathValue(colors_10, edges_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string colors_11 = "a";
+std::vector<std::vector<int>> edges_11 = {{-1, 0}};
+try {
+    LargestPathValue(colors_11, edges_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string colors_12 = "abc";
+std::vector<std::vector<int>> edges_12 = {{0, 1}, {1, 3}};
+try {
+    LargestPathValue(colors_12, edges_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string colors_13(1e6,'a');
+std::vector<std::vector<int>> edges_13 = {{0, 1}, {1, 1}};
+try {
+    LargestPathValue(colors_13, edges_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string colors_14 = "a";
+std::vector<std::vector<int>> edges_14 = {{0, 2}};
+try {
+    LargestPathValue(colors_14, edges_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string colors_15 = "A";
+std::vector<std::vector<int>> edges_15 = {{0, 1}, {0,2}};
+try {
+    LargestPathValue(colors_15, edges_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+ 
   return 0;
 }
-
