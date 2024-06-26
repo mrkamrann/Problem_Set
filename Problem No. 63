@@ -12,7 +12,7 @@ However, not every permutation meets this criterion, and Jimmy's goal was to fin
 
 Two permutations perm1 and perm2 are considered different if there is at least one index i such that perm1[i] != perm2[i].
 
-Create a C++ Function NumSquarefulPerms that will return an integer denoting he number of permutations of nums that are squareful.
+Create a C++ class Solution that will contain a function NumSquarefulPerms that will return an integer denoting he number of permutations of nums that are squareful.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases
 
@@ -27,6 +27,7 @@ The length of nums should be between 1 and 12 inclusive.
 Each element in nums should be between 0 and 10^9 inclusive.
 
 */
+
 
 #include <vector>
 #include <cmath>
@@ -100,6 +101,125 @@ public:
 
 
 int main(){
+  
+Solution obj;
+  
+//TEST
+
+std::vector<int> nums_1 = {1, 17, 8};
+int expected_1 = 2;
+int result_1 = obj.NumSquarefulPerms(nums_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_2 = {2, 2, 2};
+int expected_2 = 1;
+int result_2 = obj.NumSquarefulPerms(nums_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_3 = {4, 5, 6, 10};
+int expected_3 = 0; 
+int result_3 = obj.NumSquarefulPerms(nums_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_4 = {2,2,2};
+int expected_4 = 1;
+int result_4 = obj.NumSquarefulPerms(nums_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_5 = {3,6,10,6,19};
+int expected_5 = 6; 
+int result_5 = obj.NumSquarefulPerms(nums_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_6 = {0, 0, 25, 16, 0, 4,12};
+int expected_6 = 12;
+int result_6 = obj.NumSquarefulPerms(nums_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_7 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+int expected_7 = 0; 
+int result_7 = obj.NumSquarefulPerms(nums_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_8 = {2, 7, 14, 15};
+int expected_8 = 0; 
+int result_8 = obj.NumSquarefulPerms(nums_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_9 = {0, 1, 4, 9, 16, 25};
+int expected_9 = 0; 
+int result_9 = obj.NumSquarefulPerms(nums_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+
+std::vector<int> nums_10 = {};
+try {
+    obj.NumSquarefulPerms(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::vector<int> nums_11 = {1, -1};
+try {
+    obj.NumSquarefulPerms(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_12 = {1, 1000000001};
+try {
+    obj.NumSquarefulPerms(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> nums_13 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+try {
+    obj.NumSquarefulPerms(nums_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
   return 0;
 }
-
