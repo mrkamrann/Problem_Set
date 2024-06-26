@@ -33,6 +33,7 @@ All the integers in houses are unique.
 */
 
 
+
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
@@ -115,6 +116,173 @@ All the integers in houses are unique.
 
 
 int main(){
-  return 0;
+  
+//TEST
+  
+std::vector<int> houses_1 = {1, 2, 3, 4, 5};
+int counter_1 = 2;
+int expected_1 = 3; 
+int result_1 = MinDistance(houses_1, counter_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_2 = {1, 3, 6, 10};
+int counter_2 = 3;
+int expected_2 = 2;
+int result_2 = MinDistance(houses_2, counter_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_3 = {1, 5, 9, 13};
+int counter_3 = 4;
+int expected_3 = 0;
+int result_3 = MinDistance(houses_3, counter_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_4 = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+int counter_4 = 5;
+int expected_4 = 50;
+int result_4 = MinDistance(houses_4, counter_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_5 = {5};
+int counter_5 = 1;
+int expected_5 = 0;
+int result_5 = MinDistance(houses_5, counter_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_6 = {1, 10000};
+int counter_6 = 1;
+int expected_6 = 9999;
+int result_6 = MinDistance(houses_6, counter_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_7 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int counter_7 = 5;
+int expected_7 = 5;
+int result_7 = MinDistance(houses_7, counter_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_8 = {1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+int counter_8 = 2;
+int expected_8 = 149;
+int result_8 = MinDistance(houses_8, counter_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_9 = {1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+int counter_9 = 3;
+int expected_9 = 999;
+int result_9 = MinDistance(houses_9, counter_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+std::vector<int> houses_10 = {1, 2, 3, 4, 5};
+int counter_10 = 0;
+try {
+    MinDistance(houses_10, counter_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
 }
 
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_11 = {1, 2, 3};
+int counter_11 = 4;
+try {
+    MinDistance(houses_11, counter_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_12 = {};
+int counter_12 = 1;
+try {
+    MinDistance(houses_12, counter_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_13 = {1, -5, 3};
+int counter_13 = 2;
+try {
+    MinDistance(houses_13, counter_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_14 = {1, 10001, 3};
+int counter_14 = 2;
+try {
+    MinDistance(houses_14, counter_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> houses_15(10000,2);
+int counter_15 = 2;
+try {
+    MinDistance(houses_15, counter_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+  return 0;
+}
