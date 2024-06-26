@@ -3,7 +3,7 @@ Link: https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
 
 Jimmy was a young programmer, always eager to solve new challenges. One day, he encountered a captivating problem involving a matrix of integers.
 
-Jimmy was given a rows x cols integer matrix and his task was to find the length of the longest increasing path in this matrix.
+Jimmy was given a rows x cols integer matrix called grid and his task was to find the length of the longest increasing path in this matrix.
 
 From each cell, Jimmy could move in four directions: left, right, up, or down. He was not allowed to move diagonally or move outside the boundary 
 (i.e., wrap-around was not allowed).
@@ -15,17 +15,16 @@ Use appropriate Error Handling using the stdexcept library for the invalid test 
 
 Input Type:
 
-A vector<vector<int>> denoting the matrix.
+A vector<vector<int>> denoting the grid.
 
 Input Constraints:
 
-The number of rows is equal to matrix.length.
-The number of columns is equal to matrix[i].length.
+The number of rows is equal to grid.length.
+The number of columns is equal to grid[0].length.
 The values of rows and cols should be between 1 and 200 inclusive.
-Each element in the matrix should be between 0 and 2^31 - 1 inclusive.
+Each element in the grid should be between 0 and 1e9 inclusive.
 
 */
-
 #include <vector>
 #include <stdexcept>
 #include <cassert>
@@ -71,13 +70,19 @@ Each element in the matrix should be between 0 and 2^31 - 1 inclusive.
         }
 
         for (int i = 0; i < rows; ++i) {
+          
+         if(grid[i].size()!=cols)
+         {
+           throw std::invalid_argument("Invalid input: each grid[i] should be of size cols");
+         }
             for (int j = 0; j < cols; ++j) {
-                if (grid[i][j] < 0 || grid[i][j] > 2147483647) {
-                    throw std::invalid_argument("Invalid input: Each element in the matrix should be between 0 and 2^31 - 1 inclusive.");
+                if (grid[i][j] < 0 || grid[i][j] > 1e9) {
+                    throw std::invalid_argument("Invalid input: Each element in the matrix should be between 0 and 1e9 inclusive.");
                 }
             }
         }
-        
+      
+    
         std::vector<std::vector<int>> dp_arr(rows + 1, std::vector<int>(cols + 1, -1));
         int max_length = 0;
         
@@ -93,6 +98,197 @@ Each element in the matrix should be between 0 and 2^31 - 1 inclusive.
 
 
 int main(){
+  
+//TEST
+std::vector<std::vector<int>> grid_1 = {
+    {9, 9, 4},
+    {6, 6, 8},
+    {2, 1, 1}
+};
+int expected_1 = 4;
+int result_1 = LongestIncreasingPath(grid_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_2 = {
+    {3, 4, 5},
+    {3, 2, 6},
+    {2, 2, 1}
+};
+int expected_2 = 4;
+int result_2 = LongestIncreasingPath(grid_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_3 = {
+    {1, 2}
+};
+int expected_3 = 2;
+int result_3 = LongestIncreasingPath(grid_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_4 = {
+    {1},
+    {2}
+};
+int expected_4 = 2;
+int result_4 = LongestIncreasingPath(grid_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_5 = {
+    {3, 3, 3},
+    {2, 1, 4},
+    {2, 2, 2}
+};
+int expected_5 = 3;
+int result_5 = LongestIncreasingPath(grid_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_6 = {
+    {3}
+};
+int expected_6 = 1;
+int result_6 = LongestIncreasingPath(grid_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_7 = {
+    {5, 4, 3, 2, 1},
+    {6, 7, 8, 9, 10}
+};
+int expected_7 = 10;
+int result_7 = LongestIncreasingPath(grid_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_8 = {
+    {10, 20, 30},
+    {15, 25, 35},
+    {5,  15, 25}
+};
+int expected_8 = 4;
+int result_8 = LongestIncreasingPath(grid_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_9 = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+int expected_9 = 6;
+int result_9 = LongestIncreasingPath(grid_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> grid_10 = {
+    {1, -1},
+    {2, 3}
+};
+try {
+    LongestIncreasingPath(grid_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_11 = {{}};
+try {
+    LongestIncreasingPath(grid_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_12 = {
+    {1, 2, 3},
+    {4, 5}
+};
+try {
+    LongestIncreasingPath(grid_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_13(201, std::vector<int>(1, 1));
+try {
+    LongestIncreasingPath(grid_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_14(1, std::vector<int>(201, 1));
+try {
+    LongestIncreasingPath(grid_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<int>> grid_15 = {
+    {1, 2, 3},
+    {4, 2147480000}
+};
+try {
+    LongestIncreasingPath(grid_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
   return 0;
 }
 
