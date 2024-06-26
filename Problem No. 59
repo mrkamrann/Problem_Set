@@ -110,7 +110,201 @@ for (int i = 0; i < profit.size(); ++i) {
 
 
 int main(){
-  return 0;
+  
+//TEST
+std::vector<int> start_time_1 = {1, 2, 3, 4, 6};
+std::vector<int> end_time_1 = {3, 5, 10, 6, 9};
+std::vector<int> profit_1 = {20, 20, 100, 70, 60};
+int expected_1 = 150;
+int result_1 = JobScheduling(start_time_1, end_time_1, profit_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_2 = {1, 2, 3, 3};
+std::vector<int> end_time_2 = {3, 4, 5, 6};
+std::vector<int> profit_2 = {50, 10, 40, 70};
+int expected_2 = 120;
+int result_2 = JobScheduling(start_time_2, end_time_2, profit_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_3 = {1, 2, 3, 4, 6};
+std::vector<int> end_time_3 = {3, 5, 6, 6, 9};
+std::vector<int> profit_3 = {20, 20, 100, 70, 60};
+int expected_3 = 180;
+int result_3 = JobScheduling(start_time_3, end_time_3, profit_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_4 = {1, 3, 5, 6, 7};
+std::vector<int> end_time_4 = {2, 5, 6, 7, 8};
+std::vector<int> profit_4 = {50, 20, 20, 100, 200};
+int expected_4 = 390;
+int result_4 = JobScheduling(start_time_4, end_time_4, profit_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_5 = {1};
+std::vector<int> end_time_5 = {2};
+std::vector<int> profit_5 = {50};
+int expected_5 = 50;
+int result_5 = JobScheduling(start_time_5, end_time_5, profit_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_6 = {1, 3, 5, 7, 9};
+std::vector<int> end_time_6 = {2, 4, 6, 8, 10};
+std::vector<int> profit_6 = {5, 10, 20, 30, 40};
+int expected_6 = 105;
+int result_6 = JobScheduling(start_time_6, end_time_6, profit_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_7 = {1, 2, 3};
+std::vector<int> end_time_7 = {4, 5, 6};
+std::vector<int> profit_7 = {10, 20, 30};
+int expected_7 = 30;
+int result_7 = JobScheduling(start_time_7, end_time_7, profit_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_8 = {1, 3, 6};
+std::vector<int> end_time_8 = {2, 5, 7};
+std::vector<int> profit_8 = {50, 100, 200};
+int expected_8 = 350;
+int result_8 = JobScheduling(start_time_8, end_time_8, profit_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_9 = {1, 5, 6, 9};
+std::vector<int> end_time_9 = {4, 6, 7, 10};
+std::vector<int> profit_9 = {10, 40, 50, 60};
+int expected_9 = 160;
+int result_9 = JobScheduling(start_time_9, end_time_9, profit_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+std::vector<int> start_time_10 = {1, 2, 3};
+std::vector<int> end_time_10 = {4, 5};
+std::vector<int> profit_10 = {10, 20, 30};
+try {
+    JobScheduling(start_time_10, end_time_10, profit_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
 }
 
+//TEST_END
 
+//TEST
+
+std::vector<int> start_time_11 = {4, 3, 5};
+std::vector<int> end_time_11 = {2, 6, 6};
+std::vector<int> profit_11 = {10, 20, 30};
+try {
+    JobScheduling(start_time_11, end_time_11, profit_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_12 = {-1, 2, 3};
+std::vector<int> end_time_12 = {4, 5, 6};
+std::vector<int> profit_12 = {10, 20, 30};
+try {
+    JobScheduling(start_time_12, end_time_12, profit_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_13 = {1, 2, 3};
+std::vector<int> end_time_13 = {4, 1000000001, 6};
+std::vector<int> profit_13 = {10, 20, 30};
+try {
+    JobScheduling(start_time_13, end_time_13, profit_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_14 = {1, 2, 3};
+std::vector<int> end_time_14 = {4, 5, 6};
+std::vector<int> profit_14 = {10, -20, 30};
+try {
+    JobScheduling(start_time_14, end_time_14, profit_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> start_time_15 = {};
+std::vector<int> end_time_15 = {};
+std::vector<int> profit_15 = {};
+try {
+    JobScheduling(start_time_15, end_time_15, profit_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+//TEST
+
+std::vector<int> start_time_16(1e6,1);
+std::vector<int> end_time_16(1e6,1);
+std::vector<int> profit_16(1e6,1);
+try {
+    JobScheduling(start_time_16, end_time_16, profit_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+  return 0;
+}
