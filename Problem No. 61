@@ -20,7 +20,7 @@ Input Constraints:
 
 The matrix seats contains only characters '.' and '#'.
 The number of rows (rows) is equal to seats.length.
-The number of columns (cols) is equal to seats[i].length.
+The number of columns (cols) is equal to seats[0].length.
 The values of rows and cols should be between 1 and 8 inclusive.
 
 */
@@ -138,6 +138,9 @@ public:
         }
 
         for (int i = 0; i < rows; ++i) {
+          if (seats[i].size()!=cols) {
+            throw std::invalid_argument("Invalid input: each seats[i] should be of size cols");
+        }
             for (int j = 0; j < cols; ++j) {
                 if (seats[i][j] != '.' && seats[i][j] != '#') {
                     throw std::invalid_argument("Invalid input: Matrix seats contains only characters '.' and '#'.");
@@ -152,7 +155,174 @@ public:
 
 
 int main(){
+ 
+Solution obj;
+//TEST
+
+std::vector<std::vector<char>> seats_1 = {
+    {'#', '.', '#', '#', '.', '#'},
+    {'.', '#', '#', '#', '#', '.'},
+    {'#', '.', '#', '#', '.', '#'}
+};
+int expected_1 = 4;
+int result_1 = obj.MaxStudents(seats_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_2 = {
+    {'.', '#'},
+    {'#', '#'}
+};
+int expected_2 = 1;
+int result_2 = obj.MaxStudents(seats_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_3 = {
+    {'.'}
+};
+int expected_3 = 1;
+int result_3 = obj.MaxStudents(seats_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_4 = {
+    {'.', '#', '.'},
+    {'#', '#', '#'},
+    {'.', '#', '.'}
+};
+int expected_4 = 4;
+int result_4 = obj.MaxStudents(seats_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_5 = {
+    {'.', '.', '#'},
+    {'#', '#', '.'},
+    {'.', '#', '#'}
+};
+int expected_5 = 3;
+int result_5 = obj.MaxStudents(seats_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_6 = {
+    {'#', '#', '#', '#'},
+    {'.', '.', '.', '.'},
+    {'#', '#', '#', '#'}
+};
+int expected_6 = 2;
+int result_6 = obj.MaxStudents(seats_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_7 = {
+    {'.', '.', '.', '.'},
+    {'.', '#', '#', '.'},
+    {'.', '.', '.', '.'}
+};
+int expected_7 = 6;
+int result_7 = obj.MaxStudents(seats_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_8 = {
+    {'.', '.', '.'},
+    {'.', '.', '.'},
+    {'.', '.', '.'}
+};
+int expected_8 = 6;
+int result_8 = obj.MaxStudents(seats_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_9 = {
+    {'#', '#', '#', '#', '#', '#'},
+    {'#', '#', '#', '#', '#', '#'},
+    {'#', '#', '#', '#', '#', '#'}
+};
+int expected_9 = 0;
+int result_9 = obj.MaxStudents(seats_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_10 = {{}};
+try {
+    obj.MaxStudents(seats_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_11 = {
+    {'#', '.', '#'},
+    {'#', 'a', '#'},
+    {'#', '.', '#'}
+};
+try {
+   obj.MaxStudents(seats_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<char>> seats_12 = {
+    {'.', '.', '.'},
+    {'#', '#', '#'},
+   {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'},
+  {'.', '.', '.'}
+};
+try {
+    obj.MaxStudents(seats_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+
+std::vector<std::vector<char>> seats_13 = {
+    {'#', '.', '#','#', '.', '#','#', '.', '#'},
+    {'#', '#', '#'},
+    {'#', '.', '#'}
+};
+try {
+   obj.MaxStudents(seats_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
   return 0;
 }
-
-
