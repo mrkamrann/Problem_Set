@@ -221,5 +221,19 @@ try {
     assert(true);
 }
 //TEST_END
+  
+  
+//TEST
+
+std::vector<int> nums_14 = {-1, -1000000001,-9,-99,-5,-9,-6,-784,-55,-30,-7556,4556,-8,-77,-6};
+try {
+    obj.NumSquarefulPerms(nums_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  
   return 0;
 }
