@@ -288,6 +288,22 @@ try {
 }
 
 //TEST_END
+  
+  
+//TEST
+
+std::vector<std::vector<int>> grid_16 = {
+    {-1, -99, -9},
+    {-51465, -2147480000}
+};
+try {
+    LongestIncreasingPath(grid_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
   return 0;
 }
