@@ -270,6 +270,29 @@ try {
 }
 
 //TEST_END
+  
+   
+//TEST 
+std::vector<std::vector<int>> grid_16(10, std::vector<int>(10, -1));
+try {
+    CountPaths(grid_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+  //TEST_END
+  
+//TEST
+
+std::vector<std::vector<int>> grid_17 = {{-1, -99}, {-3, -4, -5}, {-6, -7}};
+try {
+    CountPaths(grid_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
 
   return 0;
