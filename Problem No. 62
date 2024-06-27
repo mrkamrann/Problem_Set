@@ -268,12 +268,26 @@ try {
 }
 //TEST_END
 
+  
+  
 //TEST
 
 std::string colors_15 = "A";
 std::vector<std::vector<int>> edges_15 = {{0, 1}, {0,2}};
 try {
     LargestPathValue(colors_15, edges_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+
+std::string colors_16 = "a";
+std::vector<std::vector<int>> edges_16 = {{-999, -92}, {-5,-2}};
+try {
+    LargestPathValue(colors_16, edges_16);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
