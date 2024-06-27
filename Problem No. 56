@@ -291,7 +291,30 @@ try {
 }
 
 //TEST_END
-
+  
+  
+ //TEST 
+std::vector<int> nums_1_16 = {-1, -99, -100};
+std::vector<int> nums_2_16 = {1, 2, -3};
+try {
+    MakeArrayIncreasing(nums_1_16, nums_2_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+ //TEST_END 
+  
+  //TEST
+std::vector<int> nums_1_17 = {-1, -5452, -3};
+std::vector<int> nums_2_17 = {0, -544848, -3};
+try {
+    MakeArrayIncreasing(nums_1_17, nums_2_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
 
   return 0;
 }
