@@ -22,7 +22,7 @@ Julie must decide how to assign each person to the grid cells to maximize the to
 
 Given the integers row_count, col_count, introverts_count, and extroverts_count, return the maximum possible grid happiness.
 
-Create a C++ Function GetMaxGridHappiness that will return an integer denoting the maximum possible grid happiness.
+Create a C++ class Solution that will contain a function GetMaxGridHappiness that will return an integer denoting the maximum possible grid happiness.
 
 Use appropriate Error Handling using the stdexcept library for invalid test cases.
 
@@ -39,3 +39,149 @@ The integers row_count and col_count should be in the range [1, 5] inclusive.
 The integers introverts_count and extroverts_count should be in the range [0, min(row_count * col_count, 6)] inclusive.
 
 */
+
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+public:
+    int dp_table[5][1 << 12][7][7];
+
+    int GetMask(int mask, int pos) {
+        return (mask >> (2 * pos)) & 3;
+    }
+
+    int SetMask(int mask, int type, int pos) {
+        return mask | type << (2 * pos);
+    }
+
+    int Find(int row, int col, int previous_mask, int current_mask, int remaining_introverts, int remaining_extroverts, int row_count, int col_count) {
+        if (row >= row_count) return 0;
+        if (col == col_count) return Find(row + 1, 0, current_mask, 0, remaining_introverts, remaining_extroverts, row_count, col_count);
+
+        int& result = dp_table[row][previous_mask][remaining_introverts][remaining_extroverts];
+        if (col == 0 && result != -1) return result;
+
+        int answer = 0;
+        if (row == 0) {
+            if (col == 0) {
+                int take_introvert = 0;
+                int take_extrovert = 0;
+                int no_take = Find(row, col + 1, previous_mask, current_mask, remaining_introverts, remaining_extroverts, row_count, col_count);
+                if (remaining_introverts > 0) 
+                    take_introvert = 120 + Find(row, col + 1, previous_mask, SetMask(current_mask, 1, col), remaining_introverts - 1, remaining_extroverts, row_count, col_count);
+                if (remaining_extroverts > 0) 
+                    take_extrovert = 40 + Find(row, col + 1, previous_mask, SetMask(current_mask, 2, col), remaining_introverts, remaining_extroverts - 1, row_count, col_count);
+                answer = std::max({answer, no_take, take_introvert, take_extrovert});
+            } else {
+                int no_take = Find(row, col + 1, previous_mask, current_mask, remaining_introverts, remaining_extroverts, row_count, col_count);
+                int take_introvert = 0;
+                int take_extrovert = 0;
+                if (remaining_introverts > 0) {
+                    int diff = 120;
+                    if (GetMask(current_mask, col - 1) == 1) {
+                        diff += -30 * 2; 
+                    } else if (GetMask(current_mask, col - 1) == 2) {
+                        diff += -10;
+                    }
+                    take_introvert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 1, col), remaining_introverts - 1, remaining_extroverts, row_count, col_count);
+                }
+                if (remaining_extroverts > 0) {
+                    int diff = 40;
+                    if (GetMask(current_mask, col - 1) == 2) {
+                        diff += 20 * 2; 
+                    } else if (GetMask(current_mask, col - 1) == 1) {
+                        diff += -10;
+                    }
+                    take_extrovert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 2, col), remaining_introverts, remaining_extroverts - 1, row_count, col_count);
+                }
+                answer = std::max({answer, no_take, take_introvert, take_extrovert});
+            }
+        } else {
+            if (col == 0) {
+                int take_introvert = 0;
+                int take_extrovert = 0;
+                int no_take = Find(row, col + 1, previous_mask, current_mask, remaining_introverts, remaining_extroverts, row_count, col_count);
+                if (remaining_introverts > 0) {
+                    int diff = 120;
+                    if (GetMask(previous_mask, col) == 1) {
+                        diff += -30 * 2; 
+                    } else if (GetMask(previous_mask, col) == 2) {
+                        diff += -10;
+                    }
+                    take_introvert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 1, col), remaining_introverts - 1, remaining_extroverts, row_count, col_count);
+                }
+                if (remaining_extroverts > 0) {
+                    int diff = 40;
+                    if (GetMask(previous_mask, col) == 2) {
+                        diff += 20 * 2; 
+                    } else if (GetMask(previous_mask, col) == 1) {
+                        diff += -10; 
+                    }
+                    take_extrovert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 2, col), remaining_introverts, remaining_extroverts - 1, row_count, col_count);
+                }
+                answer = std::max({answer, no_take, take_introvert, take_extrovert});
+            } else {
+                int take_introvert = 0;
+                int take_extrovert = 0;
+                int no_take = Find(row, col + 1, previous_mask, current_mask, remaining_introverts, remaining_extroverts, row_count, col_count);
+                if (remaining_introverts > 0) {
+                    int diff = 120;
+                    if (GetMask(current_mask, col - 1) == 1) {
+                        diff += -30 * 2; 
+                    } else if (GetMask(current_mask, col - 1) == 2) {
+                        diff += -10;
+                    }
+                    if (GetMask(previous_mask, col) == 1) {
+                        diff += -30 * 2; 
+                    } else if (GetMask(previous_mask, col) == 2) {
+                        diff += -10;
+                    }
+                    take_introvert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 1, col), remaining_introverts - 1, remaining_extroverts, row_count, col_count);
+                }
+                if (remaining_extroverts > 0) {
+                    int diff = 40;
+                    if (GetMask(current_mask, col - 1) == 2) {
+                        diff += 20 * 2; 
+                    } else if (GetMask(current_mask, col - 1) == 1) {
+                        diff += -10;
+                    }
+                    if (GetMask(previous_mask, col) == 2) {
+                        diff += 20 * 2; 
+                    } else if (GetMask(previous_mask, col) == 1) {
+                        diff += -10;
+                    }
+                    take_extrovert = diff + Find(row, col + 1, previous_mask, SetMask(current_mask, 2, col), remaining_introverts, remaining_extroverts - 1, row_count, col_count);
+                }
+                answer = std::max({answer, no_take, take_introvert, take_extrovert});
+            }
+        }
+        if (col == 0) return result = answer;
+        return answer;
+    }
+
+    int GetMaxGridHappiness(int row_count, int col_count, int introverts_count, int extroverts_count) {
+        if (row_count < 1 || row_count > 5 || col_count < 1 || col_count > 5) {
+            throw std::invalid_argument("Row and column counts must be in the range [1, 5]");
+        }
+        int max_people = row_count * col_count;
+        if (introverts_count < 0 || introverts_count > std::min(max_people, 6) || extroverts_count < 0 || extroverts_count > std::min(max_people, 6)) {
+            throw std::invalid_argument("Introverts and extroverts counts must be in the range [0, min(row_count * col_count, 6)]");
+        }
+
+        memset(dp_table, -1, sizeof(dp_table));
+        return Find(0, 0, 0, 0, introverts_count, extroverts_count, row_count, col_count);
+    }
+};
+
+int main() {
+    //TEST
+  
+    Solution solution;
+
+    //TEST_END
+    return 0;
+}
