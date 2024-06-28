@@ -146,9 +146,9 @@ assert(result_2 == expected_2);
 //TEST_END
   
 // TEST
-std::vector<int> parent_3 = {-1, 0, 2};
+std::vector<int> parent_3 = {-1, 0, 1};
 std::string str_3 = "abc";
-long long expected_3 = 1; 
+long long expected_3 = 2; 
 long long result_3 = solution.CountPalindromePaths(parent_3, str_3);
 assert(result_3 == expected_3);
 //TEST_END
