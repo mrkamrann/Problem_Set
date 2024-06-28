@@ -1,5 +1,32 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/maximize-value-of-function-in-a-ball-passing-game/description/
 
+Julie is given an integer array receiver of length len and an integer counter. len players are playing a ball-passing game.
+
+Julie chooses the starting player, start_index. The game proceeds as follows: player start_index passes the ball to player receiver[start_index], 
+who then passes it to receiver[receiver[start_index]], and so on, for counter passes in total. The game's score is the sum of the indices of the players who 
+touched the ball, including repetitions, i.e. start_index + receiver[start_index] + receiver[receiver[start_index]] + ... + receiver(counter)[start_index].
+Return the maximum possible score.
+
+Create a C++ Function GetMaxFunctionValue that will return an long long denoting the maximum possible score.
+
+Notes:
+
+receiver may contain duplicates.
+receiver[start_index] may be equal to start_index.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting receiver
+An integer denoting start_index
+An integer denoting counter
+
+Input Constraints:
+
+The length of receiver should be at least 1 and at most 10^5 inclusive.
+Each value of receiver[i] should be in the range [0, len - 1] inclusive.
+The values for counter should be in the range [1, 10^10] inclusive.
 
 */
