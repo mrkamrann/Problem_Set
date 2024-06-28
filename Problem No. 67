@@ -1,5 +1,28 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/find-the-shortest-superstring/description/
+
+Julie is a meticulous and methodical individual with a passion for problem-solving and organization. She approaches challenges with a keen eye for detail, 
+ensuring every aspect is carefully considered. Known for her creativity and resourcefulness, Julie excels in finding elegant solutions to complex problems, 
+whether it's in coding puzzles or real-life scenarios
+
+One day she is given a collection of strings represented by the vector words. She wants to find the smallest length of the string that contains each string in words
+as a substring. 
+
+You may assume that no string in words is a substring of another string in words.
+
+Create a C++ Function ShortestSuperstring that will return an integer denoting the smallest string length containing each string in words as a substring.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
 
 
+Input Type:
+
+A vector<string> denoting words.
+
+Input Constraints:
+
+The length of words should be in the range [1, 12] inclusive.
+Each string words[i] should have a length in the range [1, 20] inclusive.
+Each string words[i] should consist of lowercase English letters.
+All strings in words are unique.
 */
