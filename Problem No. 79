@@ -1,4 +1,46 @@
 /*
-Link:
+Link: https://leetcode.com/problems/minimum-cost-walk-in-weighted-graph/
 
+Julie is given an undirected weighted graph with len vertices labeled from 0 to len - 1.
+
+You are given the integer len and a vector edges, where edges[i] = [u_i, v_i, w_i] indicates that there is an edge between vertices u_i and v_i with a weight of w_i.
+
+A walk on a graph is a sequence of vertices and edges. The walk starts and ends with a vertex, and each edge connects the vertex that comes before it and 
+the vertex that comes after it. It's important to note that a walk may visit the same edge or vertex more than once.
+
+The cost of a walk starting at node u and ending at node v is defined as the bitwise AND of the weights of the edges traversed during the walk. In other words, 
+if the sequence of edge weights encountered during the walk is w0, w1, w2, ..., wk, then the cost is calculated as w0 & w1 & w2 & ... & wk, where & denotes the
+bitwise AND operator.
+
+You are also given a 2D vector query, where query[i] = [s_i, t_i]. For each query, you need to find the minimum cost of the walk starting at vertex s_i and 
+ending at vertex t_i. If there exists no such walk, the answer is -1.
+
+Return the vector answer, where answer[i] denotes the minimum cost of a walk for query i.
+
+Create a C++ Function MinimumCost that will return a vector<int> denoting the vector answer.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+An integer denoting len
+A vector<vector<int>> denoting edges
+A vector<vector<int>> denoting query
+
+Input Constraints:
+
+The length of len should be at least 2 and at most 10^5 inclusive.
+The length of edges should be at least 0 and at most 10^5 inclusive.
+Each edge should be a vector of size 3.
+Each value of u_i should be in the range [0, len - 1] inclusive.
+Each value of v_i should be in the range [0, len - 1] inclusive.
+u_i should not be equal to v_i
+Each value of w_i should be in the range [0, 10^5] inclusive.
+The length of query should be at least 1 and at most 10^5 inclusive.
+Each query should be a vector of size 2.
+Each value of s_i and t_i should be in the range [0, len - 1] inclusive.
+s_i should not be equal to t_i
+​
+ 
 */
+
+
