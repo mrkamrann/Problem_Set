@@ -26,3 +26,130 @@ Each string words[i] should have a length in the range [1, 20] inclusive.
 Each string words[i] should consist of lowercase English letters.
 All strings in words are unique.
 */
+
+
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <limits>
+#include <cassert>
+#include <iostream>
+#include <set>
+
+class Solution {
+private:
+    int visited_all;
+    int number_of_words;
+    std::vector<std::vector<int>> distance_matrix;
+    std::vector<std::vector<int>> path_matrix;
+    std::vector<std::vector<int>> dp_table;
+    int infinity = std::numeric_limits<int>::max();
+
+    int CalculateDistance(const std::string& word_a, const std::string& word_b) {
+        for (int i = 0; i < word_a.length(); i++) {
+            if (word_b.rfind(word_a.substr(i), 0) == 0) {
+                return word_b.length() - (word_a.length() - i);
+            }
+        }
+        return word_b.length();
+    }
+
+    int Tsp(int bit_mask, int position) {
+        if (bit_mask == visited_all) {
+            return 0;
+        }
+        if (dp_table[bit_mask][position] != -1) {
+            return dp_table[bit_mask][position];
+        }
+
+        int minimum_cost = infinity;
+        int best_next_city;
+
+        for (int city = 0; city < number_of_words; city++) {
+            if ((bit_mask & (1 << city)) == 0) {
+                int result = distance_matrix[position][city] + Tsp(bit_mask | (1 << city), city);
+                if (result < minimum_cost) {
+                    minimum_cost = result;
+                    best_next_city = city;
+                }
+            }
+        }
+        path_matrix[bit_mask][position] = best_next_city;
+        return dp_table[bit_mask][position] = minimum_cost;
+    }
+
+    std::string ConstructPath(const std::vector<std::string>& words, int starting_word) {
+        int current_word = starting_word;
+        std::string result = words[starting_word];
+        int bit_mask = (1 << starting_word);
+        int next_word = path_matrix[bit_mask][starting_word];
+        
+        while (next_word != -1) {
+            result += words[next_word].substr(words[next_word].length() - distance_matrix[current_word][next_word]);
+            bit_mask |= (1 << next_word);
+            current_word = next_word;
+            next_word = path_matrix[bit_mask][current_word];
+        }
+        return result;
+    }
+
+public:
+    std::string ShortestSuperstring(std::vector<std::string>& words) {
+        if (words.size() < 1 || words.size() > 12) {
+            throw std::invalid_argument("Invalid number of words");
+        }
+
+        std::set<std::string>unique_string;
+
+        for (const std::string& word : words) {
+            if (word.length() < 1 || word.length() > 20) {
+                throw std::invalid_argument("Invalid word length");
+            }
+            if(unique_string.count(word))
+            {
+               throw std::invalid_argument("All the strings of words should be unique.");
+            }
+            unique_string.insert(word);
+
+            for (char character : word) {
+                if (character  < 'a' || character  > 'z') {
+                    throw std::invalid_argument("Words must consist of lowercase English letters");
+                }
+            }
+        }
+        number_of_words = words.size();
+        visited_all = (1 << number_of_words) - 1;
+
+        distance_matrix.assign(number_of_words, std::vector<int>(number_of_words, 0));
+        
+        for (int i = 0; i < number_of_words; i++) {
+            for (int j = 0; j < number_of_words; j++) {
+                distance_matrix[i][j] = CalculateDistance(words[i], words[j]);
+            }
+        }
+
+        int shortest_length = infinity;
+        std::string shortest_superstring;
+
+        for (int k = 0; k < number_of_words; k++) {
+            path_matrix.assign((1 << number_of_words), std::vector<int>(number_of_words, -1));
+            dp_table.assign((1 << number_of_words), std::vector<int>(number_of_words, -1));
+
+            Tsp((1 << k), k);
+
+            std::string current_superstring = ConstructPath(words, k);
+            if (current_superstring.length() < shortest_length) {
+                shortest_superstring = current_superstring;
+                shortest_length = current_superstring.length();
+            }
+        }
+        return shortest_superstring;
+    }
+};
+int main() {
+    // TEST
+    Solution solution;
+   
+    // TEST_END
+    return 0;
+}
