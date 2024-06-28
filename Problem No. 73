@@ -1,5 +1,29 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/rank-transform-of-a-matrix/description/
 
+Julie is given a row_count x col_count matrix. Julie needs to return a new matrix answer where answer[row][col] is the rank of matrix[row][col].
 
+The rank is an integer that represents how large an element is compared to other elements. It is calculated using the following rules:
+
+The rank is an integer starting from 1.
+
+If two elements p and q are in the same row or column, then:
+If p < q then rank(p) < rank(q)
+If p == q then rank(p) == rank(q)
+If p > q then rank(p) > rank(q)
+
+The rank should be as small as possible.
+
+Create a C++ Function MatrixRankTransform that will return a vector<vector<int>> denoting  a new matrix answer where answer[row][col] is the rank of matrix[row][col].
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<vector<int>> denoting matrix
+
+Input Constraints:
+
+The dimensions of matrix should be row_count x col_count where 1 <= row_count, col_count <= 500 inclusive.
+Each value of matrix[row][col] should be in the range [-10^9, 10^9] inclusive.
 */
