@@ -1,5 +1,41 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
 
+Julie has an undirected tree with len nodes labeled from 0 to len - 1. You are given the integer len and a 2D integer vector edges of length len - 1, 
+where edges[i] = [u_i, v_i, w_i] indicates that there is an edge between nodes u_i and v_i with weight w_i in the tree.
+
+You are also given a 2D integer vector queries of length m, where queries[i] = [a_i, b_i]. For each query, find the minimum number of operations required to 
+make the weight of every edge on the path from a_i to b_i equal. In one operation, you can choose any edge of the tree and change its weight to any value.
+
+Note that:
+
+Queries are independent of each other, meaning that the tree returns to its initial state on each new query.
+The path from a_i to b_i is a sequence of distinct nodes starting with node a_i and ending with node b_i such that every two adjacent nodes in the sequence 
+share an edge in the tree.
+
+Return a vector answer of length m where answer[i] is the answer to the ith query.
+
+Create a C++ Function MinOperationsQueries that will return avector<int> denoting the vector answer.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting len
+A vector<vector<int>> denoting edges
+A vector<vector<int>> denoting queries
+
+Input Constraints:
+
+The length of len should be at least 1 and at most 10^4 inclusive.
+The length of edges should be len - 1.
+Each edge should be a vector of size 3.
+Each value of u_i should be in the range [0, len - 1] inclusive.
+Each value of v_i should be in the range [0, len - 1] inclusive.
+Each value of w_i should be in the range [1, 26] inclusive.
+The input is generated such that edges represents a valid tree.
+The length of queries should be at least 1 and at most 2 * 10^4 inclusive.
+Each query should be a vector of size 2.
+Each value of a_i and b_i should be in the range [0, len - 1] inclusive.
 
 */
