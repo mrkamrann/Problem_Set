@@ -50,15 +50,21 @@ The initial row of balls on the board will not have any groups of three or more 
 #include <iostream>
 #include <functional>
 
-class Solution {
-public:
+
     int FindMinStep(std::string board, std::string hand) {
         if (board.length() < 1 || board.length() > 16 || hand.length() < 1 || hand.length() > 5) {
             throw std::invalid_argument("Board length must be in the range [1, 16] and hand length in the range [1, 5]");
         }
 
 
-        for (char character : hand) {
+        for (const char &character : hand) {
+            if (character != 'R' && character != 'Y' && character != 'B' && character != 'G' && character != 'W') {
+                throw std::invalid_argument("Board and hand must consist of characters 'R', 'Y', 'B', 'G', and 'W'");
+            }
+        }
+      
+      
+        for (const char &character : board) {
             if (character != 'R' && character != 'Y' && character != 'B' && character != 'G' && character != 'W') {
                 throw std::invalid_argument("Board and hand must consist of characters 'R', 'Y', 'B', 'G', and 'W'");
             }
@@ -128,12 +134,147 @@ public:
         int result = FinalSteps(board + '#' + hand_state);
         return result == 2000000000 ? -1 : result;
     }
-};
+
 
 int main(){
-  Solution solution;
-  //TEST
+  // TEST 1
+std::string board_1 = "WRYYWR";
+std::string hand_1 = "RY";
+int expected_1 = -1; 
+int result_1 = FindMinStep(board_1, hand_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST 2
+std::string board_2 = "WWRRBBWW";
+std::string hand_2 = "WRBRW";
+int expected_2 = 2; 
+int result_2 = FindMinStep(board_2, hand_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST 3
+std::string board_3 = "WWRRBBRW";
+std::string hand_3 = "B";
+int expected_3 = 1; 
+int result_3 = FindMinStep(board_3, hand_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 4
+std::string board_4 = "RGYBRGYB";
+std::string hand_4 = "RRR";
+int expected_4 = -1; 
+int result_4 = FindMinStep(board_4, hand_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 5
+std::string board_5 = "RRB";
+std::string hand_5 = "RBB";
+int expected_5 = 3; 
+int result_5 = FindMinStep(board_5, hand_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 6
+std::string board_6 = "RGBRGBRGB";
+std::string hand_6 = "RYG";
+int expected_6 = -1; 
+int result_6 = FindMinStep(board_6, hand_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 7
+std::string board_7 = "YBRGYBRG";
+std::string hand_7 = "GYB";
+int expected_7 = -1; 
+int result_7 = FindMinStep(board_7, hand_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 8
+std::string board_8 = "WWGWWGG";
+std::string hand_8 = "WW";
+int expected_8 = 2; 
+int result_8 = FindMinStep(board_8, hand_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST 9
+std::string board_9 = "RRYRRYRRY";
+std::string hand_9 = "RRR";
+int expected_9 = 3; 
+int result_9 = FindMinStep(board_9, hand_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+std::string board_10 = "RRGGYYBBRRGGYYBBRR";
+std::string hand_10 = "RBY";
+try {
+    FindMinStep(board_10, hand_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string board_11 = "RGB";
+std::string hand_11 = "RGBYYY";
+try {
+    FindMinStep(board_11, hand_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string board_12 = "RGBX";
+std::string hand_12 = "RGB";
+try {
+    FindMinStep(board_12, hand_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string board_13 = "RGB";
+std::string hand_13 = "RGBX";
+try {
+    FindMinStep(board_13, hand_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string board_14 = "RRRGB";
+std::string hand_14 = "RGB";
+try {
+    FindMinStep(board_14, hand_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::string board_17 = "RGB";
+std::string hand_17 = "";
+try {
+    FindMinStep(board_17, hand_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
   
-  
-  //TEST_END
+  return 0;
 }
