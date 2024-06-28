@@ -1,5 +1,44 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/cat-and-mouse-ii/description/
 
+Julie has created a game involving a cat named Tom and a mouse named Jerry. They play on a grid represented by a matrix of size rows x cols, where each 
+element indicates a wall, floor, player (Tom or Jerry), or food. The grid is defined by the following characters:
 
+Tom is represented by the character 'C'.
+Jerry is represented by the character 'M'.
+Floors, which can be walked on, are represented by the character '.'.
+Walls, which cannot be walked on, are represented by the character '#'.
+Food, which can be walked on, is represented by the character 'F'.
+The grid contains exactly one 'C' for Tom, one 'M' for Jerry, and one 'F' for Food. The game is played as follows:
+
+Tom and Jerry take turns to move, with Jerry moving first.
+Each turn, Tom and Jerry can jump in one of four directions: left, right, up, or down.
+They cannot jump over walls or move outside the grid.
+Tom can jump up to cat_jump steps, and Jerry can jump up to mouse_jump steps. They can also choose to jump fewer steps or stay in the same position.
+Jerry is allowed to jump over Tom.
+
+If Tom and Jerry occupy the same position, Tom wins.
+If Tom reaches the food first, Tom wins.
+If Jerry reaches the food first, Jerry wins.
+If Jerry cannot reach the food within 1000 turns, Tom wins.
+Given the rows x cols matrix grid and the integers cat_jump and mouse_jump, determine if Jerry can win the game assuming both Tom and Jerry play optimally. Return true if Jerry can win, otherwise return false.
+
+Create a C++ Function CanMouseWin that will return a boolean indicating whether Jerry can win the game if both Tom and Jerry play optimally.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<vector<char>> denoting grid.
+An integer cat_jump.
+An integer mouse_jump.
+
+Input Constraints:
+
+The number of rows should be equal to grid.length.
+The number of cols should be equal to grid[i].length.
+The number of rows and cols should be in the range [1, 8] inclusive.
+Each element grid[i][j] should be one of the characters 'C', 'M', 'F', '.', or '#'.
+There should be exactly one 'C' for Tom, one 'M' for Jerry, and one 'F' for Food in the grid.
+The integers cat_jump and mouse_jump should be in the range [1, 8] inclusive.
 */
