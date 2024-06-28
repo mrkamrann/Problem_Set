@@ -1,5 +1,36 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/
 
+Julie and Jimmy have an undirected graph of len nodes and three types of edges:
+
+Type 1: Can be traversed by Julie only.
+Type 2: Can be traversed by Jimmy only.
+Type 3: Can be traversed by both Julie and Jimmy.
+
+Given a 2D vector edges where edges[i] = [type_i, u_i, v_i] represents a bidirectional edge of type type_i between nodes u_i and v_i, find the maximum number 
+of edges you can remove so that after removing the edges, the graph can still be fully traversed by both Julie and Jimmy. The graph is fully traversed by 
+Julie and Jimmy if starting from any node, they can reach all other nodes.
+
+Return the maximum number of edges you can remove, or return -1 if Julie and Jimmy cannot fully traverse the graph.
+
+Create a C++ Function MaxNumEdgesToRemove that will return an integer denoting the maximum number of edges you can remove, or return -1.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type:
+
+An integer denoting len
+A vector<vector<int>> denoting edges
+
+Input Constraints:
+
+The length of len should be at least 1 and at most 10^5 inclusive.
+The length of edges should be at least 1 and at most min(10^5, 3 * len * (len - 1) / 2) inclusive.
+Each edge should be a vector of size 3.
+Each value of type_i should be in the range [1, 3] inclusive.
+Each value of u_i should be in the range [1, len] inclusive.
+Each value of v_i should be in the range [1, len] inclusive.
+All tuples (type_i, u_i, v_i) should be distinct.
 
 */
