@@ -43,21 +43,23 @@ class Solution {
 private:
     std::vector<int> adjacency_list[100005];
     int traversal_timer;
-
-    void DepthFirstSearch(int node, int parent, std::vector<int>& flat_tree) {
+    std::unordered_map<int,int>flat_tree;
+  
+   void DepthFirstSearch(int node, int parent) {
+  
         flat_tree[traversal_timer] = node;
         traversal_timer++;
         for (int child : adjacency_list[node]) {
             if (child != parent) {
-                DepthFirstSearch(child, node, flat_tree);
+                DepthFirstSearch(child, node);
             }
-        }
+        } 
         flat_tree[traversal_timer] = node;
         traversal_timer++;
     }
 
 public:
-    long long countPalindromePaths(const std::vector<int>& parent, const std::string& str) {
+    long long CountPalindromePaths(const std::vector<int>& parent, const std::string& str) {
         if (parent.size() < 1 || parent.size() > 100000) {
             throw std::invalid_argument("Invalid length of parent vector");
         }
@@ -77,14 +79,20 @@ public:
         }
 
         int nodes_count = str.size();
+         for (int i = 0; i < nodes_count; i++)
+         {
+            adjacency_list[i].clear();
+         }
+      
+        flat_tree.clear();
+      
         for (int i = 1; i < parent.size(); i++) {
             adjacency_list[i].push_back(parent[i]);
             adjacency_list[parent[i]].push_back(i);
         }
 
-        std::vector<int> flat_tree(2 * nodes_count, 0);
         traversal_timer = 0;
-        DepthFirstSearch(0, -1, flat_tree);
+        DepthFirstSearch(0, -1);
 
         std::unordered_map<int, long long> prefix_mask_count;
         std::vector<int> visited(nodes_count, 0);
@@ -118,9 +126,176 @@ public:
 };
 
 int main() {
-    // TEST
-    Solution solution;
+ 
+Solution solution;
 
-    // TEST_END
+// TEST
+std::vector<int> parent_1 = {-1};
+std::string str_1 = "a";
+long long expected_1 = 0; 
+long long result_1 = solution.CountPalindromePaths(parent_1, str_1);
+assert(result_1 == expected_1);
+//TEST_END
+  
+// TEST
+std::vector<int> parent_2 = {-1, 0};
+std::string str_2 = "ab";
+long long expected_2 = 1; 
+long long result_2 = solution.CountPalindromePaths(parent_2, str_2);
+assert(result_2 == expected_2);
+//TEST_END
+  
+// TEST
+std::vector<int> parent_3 = {-1, 0, 2};
+std::string str_3 = "abc";
+long long expected_3 = 1; 
+long long result_3 = solution.CountPalindromePaths(parent_3, str_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+// TEST
+std::vector<int> parent_4 = {-1, 0, 0, 1, 1, 2, 2};
+std::string str_4 = "abacaba";
+long long expected_4 = 11;
+long long result_4 = solution.CountPalindromePaths(parent_4, str_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+
+
+// TEST
+std::vector<int> parent_5 = {-1, 0, 1, 1, 2, 2, 3, 3};
+std::string str_5 = "abcdcbaa";
+long long expected_5 = 12; 
+long long result_5 = solution.CountPalindromePaths(parent_5, str_5);
+assert(result_5 == expected_5);
+//TEST_END
+ 
+  
+// TEST
+std::vector<int> parent_6 = {-1, 0, 0, 0, 0, 0, 0};
+std::string str_6 = "abacada";
+long long expected_6 = 9; 
+long long result_6 = solution.CountPalindromePaths(parent_6, str_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+
+// TEST
+std::vector<int> parent_7 = {-1, 0, 1, 2, 3, 4, 5};
+std::string str_7 = "racecar";
+long long expected_7 = 8; 
+long long result_7 = solution.CountPalindromePaths(parent_7, str_7);
+assert(result_7 == expected_7);
+//TEST_END
+  
+
+// TEST
+std::vector<int> parent_8 = {-1, 0, 1, 2, 0, 4, 5, 6};
+std::string str_8 = "abcdefgh";
+long long expected_8 = 7; 
+long long result_8 = solution.CountPalindromePaths(parent_8, str_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+// TEST
+std::vector<int> parent_9 = {-1, 0, 0, 1, 1, 2, 2, 3};
+std::string str_9 = "abcdcbad";
+long long expected_9 = 14;
+long long result_9 = solution.CountPalindromePaths(parent_9, str_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+// TEST 
+std::vector<int> parent_10 = {-1, -2};
+std::string str_10 = "ab";
+try {
+    solution.CountPalindromePaths(parent_10, str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  
+// TEST
+std::vector<int> parent_11 = {-1, 100000};
+std::string str_11 = "ab";
+try {
+    solution.CountPalindromePaths(parent_11, str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST
+  
+std::vector<int> parent_12 = {};
+std::string str_12 = "";
+try {
+    solution.CountPalindromePaths(parent_12, str_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST
+std::vector<int> parent_13(100001, 0);
+parent_13[0] = -1;
+std::string str_13(100001, 'a');
+try {
+    solution.CountPalindromePaths(parent_13, str_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST
+std::vector<int> parent_14 = {-1, 0, -999, -1};
+std::string str_14 = "abc6";
+try {
+    solution.CountPalindromePaths(parent_14, str_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST
+std::vector<int> parent_15 = {-1, 0, -1};
+std::string str_15 = "abc";
+try {
+    solution.CountPalindromePaths(parent_15, str_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST
+std::vector<int> parent_16 = {-1, 0, 1};
+std::string str_16 = "aBc";
+try {
+    solution.CountPalindromePaths(parent_16, str_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST
+std::vector<int> parent_17 = {-1, 0, 1};
+std::string str_17 = "ab";
+try {
+    solution.CountPalindromePaths(parent_17, str_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+ 
     return 0;
 }
