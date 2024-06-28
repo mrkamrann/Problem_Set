@@ -10,7 +10,7 @@ as a substring.
 
 You may assume that no string in words is a substring of another string in words.
 
-Create a C++ Function ShortestSuperstring that will return an integer denoting the smallest string length containing each string in words as a substring.
+Create a C++ class Solution that will contain a function ShortestSuperstring that will return an integer denoting the smallest string length containing each string in words as a substring.
 
 Use appropriate Error Handling using the stdexcept library for invalid test cases.
 
@@ -94,7 +94,7 @@ private:
     }
 
 public:
-    std::string ShortestSuperstring(std::vector<std::string>& words) {
+    int ShortestSuperstring(std::vector<std::string>& words) {
         if (words.size() < 1 || words.size() > 12) {
             throw std::invalid_argument("Invalid number of words");
         }
@@ -143,13 +143,183 @@ public:
                 shortest_length = current_superstring.length();
             }
         }
-        return shortest_superstring;
+        return (int)shortest_superstring.size();
     }
 };
 int main() {
-    // TEST
-    Solution solution;
+  
+  
+  Solution solution;
+  
+   // TEST
+    std::vector<std::string> words_1 = {"cat", "dog"};
+    int expected_1 = 6; 
+    int result_1 = solution.ShortestSuperstring(words_1);
+    assert(result_1 == expected_1);
+
+   // TEST_END
+
+// TEST 
+ 
+    std::vector<std::string> words_2 = {"apple", "pie"};
+    int expected_2 = 8;
+    int result_2 = solution.ShortestSuperstring(words_2);
+    assert(result_2 == expected_2);
+
+// TEST_END
+
+// TEST 
+    std::vector<std::string> words_3 = {"abc", "bca"};
+    int expected_3 = 4;
+    int result_3 = solution.ShortestSuperstring(words_3);
+    assert(result_3 == expected_3);
+
+// TEST_END
+
+// TEST 
+    std::vector<std::string> words_4 = {"flower", "flow", "flight"};
+    int expected_4 = 12;
+    int result_4 = solution.ShortestSuperstring(words_4);
+    assert(result_4 == expected_4);
+
+// TEST_END
+
+// TEST
+    std::vector<std::string> words_5 = {"alex", "loves", "leetcode"};
+    int expected_5 = 17;
+    int result_5 = solution.ShortestSuperstring(words_5);
+    assert(result_5 == expected_5);
+
+// TEST_END
+
+// TEST
+    std::vector<std::string> words_6 = {"this", "is", "a", "test"};
+    int expected_6 = 8;
+    int result_6 = solution.ShortestSuperstring(words_6);
+    assert(result_6 == expected_6);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> words_7 = {"leetcode", "codeforces"};
+    int expected_7 = 14;
+    int result_7 = solution.ShortestSuperstring(words_7);
+    assert(result_7 == expected_7);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> words_8 = {"quick", "brown", "fox"};
+    int expected_8 = 13;
+    int result_8 = solution.ShortestSuperstring(words_8);
+    assert(result_8 == expected_8);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> words_9 = {"hello", "world"};
+    int expected_9 = 10;
+    int result_9 = solution.ShortestSuperstring(words_9);
+     assert(result_9 == expected_9);
+
+// TEST_END
+
+// TEST 
+    std::vector<std::string> words_10 = {"1"};
+    try {
+        solution.ShortestSuperstring(words_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST 
    
-    // TEST_END
+    std::vector<std::string> words_11 = {"thisisaverylongwordexceedingtwentycharacters"};
+    try {
+        solution.ShortestSuperstring(words_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_12 = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"};
+    try {
+        solution.ShortestSuperstring(words_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_13 = {};
+    try {
+        solution.ShortestSuperstring(words_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_14 = {""};
+    try {
+        solution.ShortestSuperstring(words_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_15(1000,"abc");
+    try {
+        solution.ShortestSuperstring(words_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_16 = {"hello1"};
+    try {
+        solution.ShortestSuperstring(words_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> words_17 = {"duplicate", "duplicate"};
+    try {
+        solution.ShortestSuperstring(words_17);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
     return 0;
 }
