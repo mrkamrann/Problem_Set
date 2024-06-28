@@ -17,7 +17,8 @@ Julie, being lazy, does not respond to each of Jimmy's guesses individually. Ins
 Given the 2D integer vectors edges, guesses, and the integer counter, return the number of possible nodes that can be the root of Julie's tree. If there is no 
 such node, return 0.
 
-Create a C++ Function RootCount that will return an integer denoting the number of possible nodes that can be the root of Julie's tree.
+Create a C++ class Solution that will contain a function RootCount that will return an integer denoting the number of possible nodes that can be the root of 
+Julie's tree.
 
 Use appropriate Error Handling using the stdexcept library for invalid test cases.
 
@@ -35,12 +36,121 @@ The length of guesses should be in the range [1, 10^5] inclusive.
 Each value node_a_i, node_b_i, node_u_j, node_v_j should be in the range [0, len - 1] inclusive.
 Each pair node_a_i and node_b_i must be distinct, meaning node_a_i != node_b_i.
 Each pair node_u_j and node_v_j must be distinct, meaning node_u_j != node_v_j.
-The edges vector represents a valid tree structure.
 Each guesses[j] should correspond to an edge in the tree.
 The guesses vector is unique, meaning all guesses are distinct.
 The integer counter should be in the range [0, guesses.length] inclusive.
 
 */
 
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+private:
+    std::map<std::vector<int>, int> guesses_count;
+
+    void DepthFirstSearch(int node, int parent, std::vector<std::vector<int>>& adjacency_list, std::vector<int>& valid_guesses) {
+        for (int adjacent_node : adjacency_list[node]) {
+            if (adjacent_node != parent) {
+                DepthFirstSearch(adjacent_node, node, adjacency_list, valid_guesses);
+                valid_guesses[node] += valid_guesses[adjacent_node];
+                std::vector<int> edge = {node, adjacent_node};
+                if (guesses_count.find(edge) != guesses_count.end()) {
+                    valid_guesses[node]++;
+                }
+            }
+        }
+    }
+
+    void ReRootTree(int node, int parent, std::vector<std::vector<int>>& adjacency_list, std::vector<int>& valid_guesses, int counter, int& count) {
+        if (valid_guesses[node] >= counter) {
+            count++;
+        }
+        for (int adjacent_node : adjacency_list[node]) {
+            if (adjacent_node != parent) {
+                valid_guesses[node] -= valid_guesses[adjacent_node];
+                std::vector<int> edge = {node, adjacent_node};
+                if (guesses_count.find(edge) != guesses_count.end()) {
+                    valid_guesses[node]--;
+                }
+                valid_guesses[adjacent_node] += valid_guesses[node];
+                std::vector<int> reverse_edge = {adjacent_node, node};
+                if (guesses_count.find(reverse_edge) != guesses_count.end()) {
+                    valid_guesses[adjacent_node]++;
+                }
+                ReRootTree(adjacent_node, node, adjacency_list, valid_guesses, counter, count);
+                valid_guesses[adjacent_node] -= valid_guesses[node];
+                if (guesses_count.find(reverse_edge) != guesses_count.end()) {
+                    valid_guesses[adjacent_node]--;
+                }
+                valid_guesses[node] += valid_guesses[adjacent_node];
+                if (guesses_count.find(edge) != guesses_count.end()) {
+                    valid_guesses[node]++;
+                }
+            }
+        }
+    }
+
+public:
+    int RootCount(std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& guesses, int counter) {
+
+        if (edges.size() + 1 < 2 || edges.size() + 1 > 100000) {
+            throw std::invalid_argument("Invalid number of nodes");
+        }
+        if (guesses.size() < 1 || guesses.size() > 100000) {
+            throw std::invalid_argument("Invalid number of guesses");
+        }
+        if (counter < 0 || counter > static_cast<int>(guesses.size())) {
+            throw std::invalid_argument("Invalid value for counter");
+        }
+
+        int num_nodes = edges.size() + 1;
+        std::vector<std::vector<int>> adjacency_list(num_nodes);
+        std::map<std::pair<int, int>, bool> edge_check;
+        
+        for (size_t i = 0; i < edges.size(); ++i) {
+            if (edges[i][0] == edges[i][1] || edges[i][0] < 0 || edges[i][1] < 0 || edges[i][0] >= num_nodes || edges[i][1] >= num_nodes) {
+                throw std::invalid_argument("Invalid edge specification");
+            }
+            adjacency_list[edges[i][0]].push_back(edges[i][1]);
+            adjacency_list[edges[i][1]].push_back(edges[i][0]);
+            edge_check[std::make_pair(edges[i][0], edges[i][1])] = true;
+            edge_check[std::make_pair(edges[i][1], edges[i][0])] = true;
+        }
+
+        for (size_t i = 0; i < guesses.size(); ++i) {
+            if (guesses[i][0] == guesses[i][1] || guesses[i][0] < 0 || guesses[i][1] < 0 || guesses[i][0] >= num_nodes || guesses[i][1] >= num_nodes) {
+                throw std::invalid_argument("Invalid guess specification");
+            }
+            if (!edge_check[std::make_pair(guesses[i][0], guesses[i][1])]) {
+                throw std::invalid_argument("Each guess should correspond to an edge in the tree");
+            }
+            std::vector<int> guess = {guesses[i][0], guesses[i][1]};
+            if (guesses_count.find(guess) != guesses_count.end()) {
+                throw std::invalid_argument("The guesses vector must be unique");
+            }
+            guesses_count[guess]++;
+        }
+
+        std::vector<int> valid_guesses(num_nodes, 0);
+        DepthFirstSearch(0, -1, adjacency_list, valid_guesses);
+
+        int count = 0;
+        ReRootTree(0, -1, adjacency_list, valid_guesses, counter, count);
+        return count;
+    }
+};
+
+int main() {
+  
+    // TEST
+    Solution solution;
+
+    // TEST_END
+    return 0;
+}
 
 
