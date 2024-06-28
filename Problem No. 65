@@ -13,7 +13,7 @@ Return the number of pairs of nodes (u, v) such that u < v and the characters as
 
 A string is a palindrome when it reads the same backwards as forwards.
 
-Create a C++ function CountPalindromePaths that will return an integer denoting the number of such pairs.
+Create a C++ class Solution that will constain a function CountPalindromePaths that will return an integer denoting the number of such pairs.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -32,3 +32,95 @@ str[i] should be a lowercase English letter ('a' to 'z') for all valid indices i
 
 */
 
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+private:
+    std::vector<int> adjacency_list[100005];
+    int traversal_timer;
+
+    void DepthFirstSearch(int node, int parent, std::vector<int>& flat_tree) {
+        flat_tree[traversal_timer] = node;
+        traversal_timer++;
+        for (int child : adjacency_list[node]) {
+            if (child != parent) {
+                DepthFirstSearch(child, node, flat_tree);
+            }
+        }
+        flat_tree[traversal_timer] = node;
+        traversal_timer++;
+    }
+
+public:
+    long long countPalindromePaths(const std::vector<int>& parent, const std::string& str) {
+        if (parent.size() < 1 || parent.size() > 100000) {
+            throw std::invalid_argument("Invalid length of parent vector");
+        }
+        if (parent[0] != -1) {
+            throw std::invalid_argument("parent[0] must be -1");
+        }
+        if (str.size() != parent.size()) {
+            throw std::invalid_argument("String length must match parent vector length");
+        }
+        for (int i = 1; i < parent.size(); i++) {
+            if (parent[i] < 0 || parent[i] >= static_cast<int>(parent.size())) {
+                throw std::invalid_argument("Invalid room index in parent vector");
+            }
+            if (str[i] < 'a' || str[i] > 'z') {
+                throw std::invalid_argument("Invalid character in string");
+            }
+        }
+
+        int nodes_count = str.size();
+        for (int i = 1; i < parent.size(); i++) {
+            adjacency_list[i].push_back(parent[i]);
+            adjacency_list[parent[i]].push_back(i);
+        }
+
+        std::vector<int> flat_tree(2 * nodes_count, 0);
+        traversal_timer = 0;
+        DepthFirstSearch(0, -1, flat_tree);
+
+        std::unordered_map<int, long long> prefix_mask_count;
+        std::vector<int> visited(nodes_count, 0);
+        std::vector<int> node_mask(nodes_count, 0);
+        int current_mask = 0;
+        prefix_mask_count[current_mask]++;
+        node_mask[0] = current_mask;
+
+        for (int i = 1; i < 2 * nodes_count - 1; i++) {
+            int char_index = str[flat_tree[i]] - 'a';
+            current_mask = current_mask ^ (1 << char_index);
+            if (visited[flat_tree[i]] == 0) {
+                visited[flat_tree[i]] = 1;
+                prefix_mask_count[current_mask]++;
+                node_mask[flat_tree[i]] = current_mask;
+            }
+        }
+
+        long long palindrome_path_count = 0;
+        for (int i = 0; i < nodes_count; i++) {
+            int start_mask = node_mask[i];
+            palindrome_path_count += prefix_mask_count[start_mask] - 1;
+            for (int j = 0; j < 26; j++) {
+                int toggled_mask = start_mask ^ (1 << j);
+                palindrome_path_count += prefix_mask_count[toggled_mask];
+            }
+        }
+
+        return palindrome_path_count / 2;
+    }
+};
+
+int main() {
+    // TEST
+    Solution solution;
+
+    // TEST_END
+    return 0;
+}
