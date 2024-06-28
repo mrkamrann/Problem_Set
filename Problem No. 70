@@ -1,5 +1,43 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/zuma-game/description/
+
+Julie is playing a variation of the game Zuma. In this game, there is a single row of colored balls on a board. Each ball can be colored red ('R'), yellow ('Y'), blue ('B'), green ('G'), or white ('W'). Julie also has several colored balls in her hand.
+
+The objective of the game is to clear all the balls from the board. Julie can achieve this by performing the following steps on each turn:
+
+Insert a Ball:
+
+Julie can pick any ball from her hand and insert it in between two balls in the row or on either end of the row.
+
+Remove Consecutive Balls:
+
+If the insertion of the ball creates a group of three or more consecutive balls of the same color, that group is removed from the board.
+This removal process continues recursively if new groups of three or more consecutive balls are formed as a result.
+
+Winning Condition:
+
+Julie wins the game if she clears all the balls from the board.
+The process is repeated until Julie either clears the board or runs out of balls in her hand.
+
+Given a string board representing the row of balls on the board, and a string hand representing the balls in Julie's hand, the task is to determine 
+the minimum number of balls Julie needs to insert to clear all the balls from the board. If it is not possible to clear the board using the balls in her hand, 
+return -1.
+
+Create a C++ Function FindMinStep that will return the minimum number of balls needed to clear the board or -1 if it's not possible.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string board representing the row of balls on the board.
+A string hand representing the balls in Julie's hand.
+
+Input Constraints:
+
+The length of the board should be in the range [1, 16] inclusive.
+The length of the hand should be in the range [1, 5] inclusive.
+Both board and hand consist of the characters 'R', 'Y', 'B', 'G', and 'W'.
+The initial row of balls on the board will not have any groups of three or more consecutive balls of the same color.
 
 
 */
