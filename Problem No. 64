@@ -1,4 +1,30 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/count-ways-to-build-rooms-in-an-ant-colony/
+
+Julie is the chief engineer of an ant colony, tasked with expanding their underground home. One day, the queen ant handed Julie an expansion plan, detailing how the new rooms should be connected. 
+Each new room was marked with a number and a requirement to be built only after a specific existing room was completed. Julie knew that once all rooms were built, every room would be reachable from room 0, the heart of the colony.
+
+Julie sat down with her team, examining the prev_room array that outlined the construction order. Room 0 was already built, so the first entry was -1. From there, each room had a designated predecessor, 
+forming a complex web of dependencies. Julie needed to figure out the number of possible ways to build these rooms while following the given rules.
+
+The task was daunting, as there were potentially hundreds of thousands of rooms to consider. However, Julie was determined to find an efficient solution, knowing that the future of the colony depended on it.
+
+Problem
+
+Help Julie create a C++ function  WaysToBuildRooms that will return and integer denoting the number of different orders in which all the rooms can be built, given the constraints of the expansion plan. 
+The result should be returned modulo (10^9 + 7).
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type
+A vector<int> prev_room denoting the expansion plan.
+
+Input Constraints
+
+The length of prev_room should be at least 2 and at most 100,000 inclusive.
+prev_room[0] should be -1.
+Each value of prev_room[i] for 1 ≤ i < len should be in the range [0, len - 1] inclusive.
+Every room is reachable from room 0 once all the rooms are built.
 
 */
