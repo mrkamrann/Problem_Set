@@ -42,8 +42,8 @@ The number of rows and cols should be in the range [1, 8] inclusive.
 Each element grid[i][j] should be one of the characters 'C', 'M', 'F', '.', or '#'.
 There should be exactly one 'C' for Tom, one 'M' for Jerry, and one 'F' for Food in the grid.
 The integers cat_jump and mouse_jump should be in the range [1, 8] inclusive.
-*/
 
+*/
 
 #include <vector>
 #include <cstring>
@@ -51,13 +51,16 @@ The integers cat_jump and mouse_jump should be in the range [1, 8] inclusive.
 #include <cassert>
 #include <iostream>
 
+
 class Solution {
 public:
+  
     int dp_table[9][9][9][9][140];
     int vec_dx[4] = {0, 1, 0, -1};
     int vec_dy[4] = {1, 0, -1, 0};
 
     bool Solve(std::vector<std::string>& grid, int cat_jump, int mouse_jump, int cat_row, int cat_col, int mouse_row, int mouse_col, int moves) {
+      
         int rows = grid.size();
         int cols = grid[0].size();
         if (moves >= 128) return false;
@@ -81,7 +84,7 @@ public:
             return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] = false;
         } else {
             for (int i = 0; i < 4; ++i) {
-                for (int j = 0; j <= cat_jump; ++j) {
+                for (int j = 0; j <= cat_jump; ++j){
                     int x = cat_row + vec_dx[i] * j, y = cat_col + vec_dy[i] * j;
                     if (x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] != '#') {
                         if (!Solve(grid, cat_jump, mouse_jump, x, y, mouse_row, mouse_col, moves + 1)) 
@@ -94,6 +97,7 @@ public:
     }
 
     bool CanMouseWin(std::vector<std::string>& grid, int cat_jump, int mouse_jump) {
+      
         if (cat_jump < 1 || cat_jump > 8 || mouse_jump < 1 || mouse_jump > 8 || grid.size() < 1 || grid.size() > 8 || grid[0].size() < 1 || grid[0].size() > 8) {
             throw std::invalid_argument("Invalid input");
         }
@@ -117,6 +121,7 @@ public:
                 } else if (grid[i][j] == 'F') {
                     found_food++;
                 } else if (grid[i][j] != '.' && grid[i][j] != '#') {
+                  
                     throw std::invalid_argument("Invalid grid character");
                 }
             }
@@ -132,10 +137,341 @@ public:
 
 int main() {
   
-   Solution solution;
+  Solution solution;
   
-    //TEST
+// TEST
+  
+    std::vector<std::string> grid_1 = {
+        "####",
+        "#C.#",
+        "#..#",
+        "#.M#",
+        "#.F#",
+        "####"
+    };
+    int cat_jump_1 = 1;
+    int mouse_jump_1 = 1;
+    bool expected_1 = true; 
+    bool result_1 = solution.CanMouseWin(grid_1, cat_jump_1, mouse_jump_1);
+    assert(result_1 == expected_1);
 
-    //TEST_END
+// TEST_END
+  
+
+// TEST
+
+    std::vector<std::string> grid_2 = {
+        "########",
+        "#C.....#",
+        "#......#",
+        "#......#",
+        "#......#",
+        "#......#",
+        "#.M...F#",
+        "########"
+    };
+    int cat_jump_2 = 3;
+    int mouse_jump_2 = 3;
+    bool expected_2 = true; 
+    bool result_2 = solution.CanMouseWin(grid_2, cat_jump_2, mouse_jump_2);
+    assert(result_2 == expected_2);
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> grid_3 = {
+        "########",
+        "#C.....#",
+        "#......#",
+        "#..#...#",
+        "#..#...#",
+        "#..#...#",
+        "#.M#..F#",
+        "########"
+    };
+    int cat_jump_3 = 2;
+    int mouse_jump_3 = 4;
+    bool expected_3 = true;
+    bool result_3 = solution.CanMouseWin(grid_3, cat_jump_3, mouse_jump_3);
+    assert(result_3 == expected_3);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_4 = {
+        "######",
+        "#C...#",
+        "#.####",
+        "#.####",
+        "#.####",
+        "#.MF.#",
+        "######"
+    };
+    int cat_jump_4 = 2;
+    int mouse_jump_4 = 2;
+    bool expected_4 = true; 
+    bool result_4 = solution.CanMouseWin(grid_4, cat_jump_4, mouse_jump_4);
+    assert(result_4 == expected_4);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_5 = {
+        "#####",
+        "#C..#",
+        "#.#.#",
+        "#.#.#",
+        "#.M.#",
+        "#..F#",
+        "#####"
+    };
+    int cat_jump_5 = 1;
+    int mouse_jump_5 = 2;
+    bool expected_5 = true; 
+    bool result_5 = solution.CanMouseWin(grid_5, cat_jump_5, mouse_jump_5);
+    assert(result_5 == expected_5);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_6 = {
+        "#####",
+        "#C###",
+        "#####",
+        "#.#.#",
+        "#.M.#",
+        "#####",
+        "#F###"
+    };
+    int cat_jump_6 = 8;
+    int mouse_jump_6 = 3;
+    bool expected_6 = false;
+    bool result_6 = solution.CanMouseWin(grid_6, cat_jump_6, mouse_jump_6);
+    assert(result_6 == expected_6);
+
+// TEST_END
+
+// TEST 7
+
+    std::vector<std::string> grid_7 = {
+        "####",
+        "#C.#",
+        "#..#",
+        "#.M#",
+        "#.F#",
+        "####"
+    };
+    int cat_jump_7 = 2;
+    int mouse_jump_7 = 3;
+    bool expected_7 = true; 
+    bool result_7 = solution.CanMouseWin(grid_7, cat_jump_7, mouse_jump_7);
+    assert(result_7 == expected_7);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_8 = {
+        "########",
+        "#C.....#",
+        "#......#",
+        "#..#...#",
+        "#..#...#",
+        "#..#...#",
+        "#.M#..F#",
+        "########"
+    };
+    int cat_jump_8 = 1;
+    int mouse_jump_8 = 1;
+    bool expected_8 = false; 
+    bool result_8 = solution.CanMouseWin(grid_8, cat_jump_8, mouse_jump_8);
+    assert(result_8 == expected_8);
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_9 = {
+        "#####",
+        "#C..#",
+        "#.#.#",
+        "#.#.#",
+        "#.M.#",
+        "#..F#",
+        "#####"
+    };
+    int cat_jump_9 = 2;
+    int mouse_jump_9 = 3;
+    bool expected_9 = true; 
+    bool result_9 = solution.CanMouseWin(grid_9, cat_jump_9, mouse_jump_9);
+    assert(result_9 == expected_9);
+
+// TEST_END
+  
+  
+// TEST 
+    std::vector<std::string> grid_10 = {};
+    int cat_jump_10 = 1;
+    int mouse_jump_10 = 1;
+    try {
+        solution.CanMouseWin(grid_10, cat_jump_10, mouse_jump_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST 
+    std::vector<std::string> grid_11 = {
+        "########",
+        "########",
+        "########",
+        "########",
+        "########",
+        "########",
+        "########",
+        "########",
+        "########"
+    };
+    int cat_jump_11 = 1;
+    int mouse_jump_11 = 1;
+    try {
+        solution.CanMouseWin(grid_11, cat_jump_11, mouse_jump_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST 
+
+    std::vector<std::string> grid_12 = {""};
+    int cat_jump_12 = 1;
+    int mouse_jump_12 = 1;
+    try {
+        solution.CanMouseWin(grid_12, cat_jump_12, mouse_jump_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> grid_13 = {
+        "#########"
+    };
+    int cat_jump_13 = 1;
+    int mouse_jump_13 = 1;
+    try {
+        solution.CanMouseWin(grid_13, cat_jump_13, mouse_jump_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+
+    std::vector<std::string> grid_14 = {
+        "#######$",
+        "#C.....#",
+        "#......#",
+        "#..#...#",
+        "#..#...#",
+        "#..#...#",
+        "#.M#..F#",
+        "########"
+    };
+    int cat_jump_14 = 1;
+    int mouse_jump_14 = 1;
+    try {
+        solution.CanMouseWin(grid_14, cat_jump_14, mouse_jump_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST
+  
+    std::vector<std::string> grid_15 = {
+        "########",
+        "#......#",
+        "#......#",
+        "#..#...#",
+        "#..#...#",
+        "#..#...#",
+        "#.M...F#",
+        "########"
+    };
+    int cat_jump_15 = 1;
+    int mouse_jump_15 = 1;
+    try {
+        solution.CanMouseWin(grid_15, cat_jump_15, mouse_jump_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+  
+// TEST
+  
+    std::vector<std::string> grid_16 = {
+        "########",
+        "#......#",
+        "#......#",
+        "#..#.C.#",
+        "#..#...#",
+        "#..#...#",
+        "#.M...F#",
+        "########"
+    };
+    int cat_jump_16 = -99;
+    int mouse_jump_16 = 1;
+    try {
+        solution.CanMouseWin(grid_16, cat_jump_16, mouse_jump_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+  
+  
+// TEST
+  
+    std::vector<std::string> grid_17 = {
+        "########",
+        "#......#",
+        "#......#",
+        "#..#.C.#",
+        "#..#...#",
+        "#..#...#",
+        "#.M...F#",
+        "########"
+    };
+    int cat_jump_17 = 1;
+    int mouse_jump_17 = -51;
+    try {
+        solution.CanMouseWin(grid_17, cat_jump_17, mouse_jump_17);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+
     return 0;
 }
