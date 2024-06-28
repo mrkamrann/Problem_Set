@@ -1,5 +1,33 @@
 /*
-Link: 
+Link: https://leetcode.com/problems/count-paths-that-can-form-a-palindrome-in-a-tree/description/
+
+
+Julie, you are given a tree (i.e., a connected, undirected graph with no cycles) rooted at node 0 consisting of len nodes numbered from 0 to len - 1. 
+
+The tree is represented by a 0-indexed vector parent of size len, where parent[i] is the parent of node i. Since node 0 is the root, parent[0] == -1.
+
+You are also given a str str of length len, where str[i] is the character assigned to the edge between i and parent[i]. str[0] can be ignored.
+
+Return the number of pairs of nodes (u, v) such that u < v and the characters assigned to edges on the path from u to v can be rearranged to form a palindrome.
+
+A string is a palindrome when it reads the same backwards as forwards.
+
+Create a C++ function CountPalindromePaths that will return an integer denoting the number of such pairs.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector<int> parent denoting the parent nodes of the tree.
+A string str denoting the characters assigned to the edges.
+
+Input Constraints
+
+The length of parent should be at least 1 and at most 10^5 inclusive.
+parent[0] should be -1.
+Each value of parent[i] for 1 ≤ i < len should be in the range [0, len - 1] inclusive.
+The length of str should be equal to len.
+str[i] should be a lowercase English letter ('a' to 'z') for all valid indices i.
 
 */
 
