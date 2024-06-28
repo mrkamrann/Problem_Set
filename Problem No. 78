@@ -1,4 +1,47 @@
 /*
-Link:
+Link: https://leetcode.com/problems/number-of-ways-to-reconstruct-a-tree/description/
+
+Julie is given a vector pairs, where pairs[i] = [x_i, y_i], and:
+
+There are no duplicates.
+x_i < y_i
+​
+ 
+Let ways be the number of rooted trees that satisfy the following conditions:
+
+The tree consists of nodes whose values appeared in pairs.
+A pair [x_i, y_i] exists in pairs if and only if x_i is an ancestor of y_i or y_i is an ancestor of x_i.
+Note: The tree does not have to be a binary tree.
+
+Two ways are considered to be different if there is at least one node that has different parents in both ways.
+
+Return:
+
+0 if ways == 0
+1 if ways == 1
+2 if ways > 1
+
+A rooted tree is a tree that has a single root node, and all edges are oriented to be outgoing from the root.
+
+An ancestor of a node is any node on the path from the root to that node (excluding the node itself). The root has no ancestors.
+
+Create a C++ Function CheckWays that will return an integer denoting the number of rooted trees that satisfy the conditions
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type:
+
+A vector<vector<int>> denoting pairs
+
+
+Input Constraints:
+
+The length of pairs should be at least 1 and at most 10^5 inclusive.
+Each pair should be a vector of size 2.
+Each value of x_i should be in the range [1, 500] inclusive.
+Each value of y_i should be in the range [1, 500] inclusive.
+x_i < y_i
+​The elements in pairs are unique.
 
 */
