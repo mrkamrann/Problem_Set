@@ -1,5 +1,41 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/maximize-grid-happiness/
 
+Julie is tasked with arranging people on a grid. The grid is an row_count x col_count matrix where each cell can hold either an introvert or an extrovert. 
+Julie is given a specific number of introverts and extroverts, represented by introverts_count and extroverts_count, respectively. She needs to determine the
+optimal way to place these people on the grid to maximize their overall happiness.
+
+Each type of person has different happiness rules:
+
+Introverts:
+
+Start with 120 happiness.
+Lose 30 happiness for each neighbor (whether introvert or extrovert).
+
+Extroverts:
+
+Start with 40 happiness.
+Gain 20 happiness for each neighbor (whether introvert or extrovert).
+Neighbors are defined as people living in directly adjacent cells (north, east, south, or west).
+
+Julie must decide how to assign each person to the grid cells to maximize the total grid happiness. Note that not all given people need to be placed in the grid.
+
+Given the integers row_count, col_count, introverts_count, and extroverts_count, return the maximum possible grid happiness.
+
+Create a C++ Function GetMaxGridHappiness that will return an integer denoting the maximum possible grid happiness.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer row_count representing the number of rows in the grid.
+An integer col_count representing the number of columns in the grid.
+An integer introverts_count representing the number of introverts.
+An integer extroverts_count representing the number of extroverts.
+
+Input Constraints:
+
+The integers row_count and col_count should be in the range [1, 5] inclusive.
+The integers introverts_count and extroverts_count should be in the range [0, min(row_count * col_count, 6)] inclusive.
 
 */
