@@ -1,12 +1,13 @@
 /*
 Link: https://leetcode.com/problems/count-paths-that-can-form-a-palindrome-in-a-tree/description/
 
+Julie was a young programmer, always eager to solve new challenges. One day, she encountered an intriguing problem involving a rooted tree.
 
-Julie, you are given a tree (i.e., a connected, undirected graph with no cycles) rooted at node 0 consisting of len nodes numbered from 0 to len - 1. 
+Julie is given a tree (i.e., a connected, undirected graph with no cycles) rooted at node 0 consisting of len nodes numbered from 0 to len - 1. 
 
 The tree is represented by a 0-indexed vector parent of size len, where parent[i] is the parent of node i. Since node 0 is the root, parent[0] == -1.
 
-You are also given a str str of length len, where str[i] is the character assigned to the edge between i and parent[i]. str[0] can be ignored.
+She is also given a string str of length len, where str[i] is the character assigned to the edge between i and parent[i]. str[0] can be ignored.
 
 Return the number of pairs of nodes (u, v) such that u < v and the characters assigned to edges on the path from u to v can be rearranged to form a palindrome.
 
