@@ -1,6 +1,33 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/checking-existence-of-edge-length-limited-paths/
 
+Julie is given an undirected graph of node_count nodes defined by edge_list, where edge_list[i] = [u_i, v_i, dis_i] denotes an edge between nodes u_i and v_i 
+with distance dis_i. Note that there may be multiple edges between two nodes.
 
+Julie is also given an array queries, where queries[j] = [p_j, q_j, limit_j]. Julie's task is to determine for each queries[j] whether there is a path between 
+p_j and q_j such that each edge on the path has a distance strictly less than limit_j.
+
+Return a boolean vector answer, where answer.length == queries.length and the j-th value of answer is true if there is a path for queries[j] is true, and false otherwise.
+
+Create a C++ Function DistanceLimitedPathsExist that will return a vector<bool> denoting the vector answer.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting node_count
+A vector<vector<int>> denoting edge_list
+A vector<vector<int>> denoting queries
+
+Input Constraints:
+
+The values for node_count should be in the range [2, 10^5] inclusive.
+The length of edge_list should be at least 1 and at most 10^5 inclusive.
+The length of queries should be at least 1 and at most 10^5 inclusive.
+Each value of edge_list[i][0] and edge_list[i][1] should be in the range [0, node_count - 1] inclusive.
+Each value of queries[j][0] and queries[j][1] should be in the range [0, node_count - 1] inclusive.
+Each value of edge_list[i][2] and queries[j][2] should be in the range [1, 10^9] inclusive.
+The values u_i and v_i should be different.
+The values p_j and q_j should be different.
 */
 
