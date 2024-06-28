@@ -9,15 +9,15 @@ forming a complex web of dependencies. Julie needed to figure out the number of 
 
 The task was daunting, as there were potentially hundreds of thousands of rooms to consider. However, Julie was determined to find an efficient solution, knowing that the future of the colony depended on it.
 
-Problem
 
-Help Julie create a C++ function  WaysToBuildRooms that will return and integer denoting the number of different orders in which all the rooms can be built, given the constraints of the expansion plan. 
-The result should be returned modulo (10^9 + 7).
+Help Julie create a C++ class Solution that will contain a function WaysToBuildRooms that will return and integer denoting the number of different orders in
+which all the rooms can be built, given the constraints of the expansion plan. The result should be returned modulo (10^9 + 7).
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases
 
 
 Input Type
+
 A vector<int> prev_room denoting the expansion plan.
 
 Input Constraints
@@ -28,3 +28,107 @@ Each value of prev_room[i] for 1 ≤ i < len should be in the range [0, len - 1]
 Every room is reachable from room 0 once all the rooms are built.
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+public:
+    
+    std::vector<long long> factorials;
+    const int modulus = 1000000007;
+    const int max_size = 100001;
+
+    Solution() {
+        factorials.resize(max_size, 1);
+    }
+
+    
+    void FillFactorials() {
+        for (int index = 1; index < max_size; index++) {
+            factorials[index] = (factorials[index - 1] * index) % modulus;
+        }
+    }
+
+
+    int BinaryExponentiation(int base, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        long long result = BinaryExponentiation(base, exponent / 2);
+        result = (result * result) % modulus;
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulus;
+        }
+        return static_cast<int>(result);
+    }
+
+   
+    int CalculateCombinations(int total, int selected) {
+        long long solution = factorials[total];
+        int inverse_selected = BinaryExponentiation(factorials[selected], modulus - 2);
+        solution = (solution * inverse_selected) % modulus;
+        int inverse_total_minus_selected = BinaryExponentiation(factorials[total - selected], modulus - 2);
+        solution = (solution * inverse_total_minus_selected) % modulus;
+        return static_cast<int>(solution);
+    }
+
+
+    void DepthFirstSearch(const std::vector<std::vector<int>>& graph, int node, int parent, std::vector<int>& subtree_sizes) {
+        subtree_sizes[node] = 1;
+        for (int neighbor : graph[node]) {
+            if (neighbor == parent) {
+                continue;
+            }
+            DepthFirstSearch(graph, neighbor, node, subtree_sizes);
+            subtree_sizes[node] += subtree_sizes[neighbor];
+        }
+    }
+
+
+    int WaysToBuildRoomsUtil(const std::vector<std::vector<int>>& graph, int node, int parent, std::vector<int>& subtree_sizes) {
+        long long ways = 1;
+        int remaining_nodes = subtree_sizes[node] - 1;
+        for (int neighbor : graph[node]) {
+            ways = (ways * WaysToBuildRoomsUtil(graph, neighbor, node, subtree_sizes)) % modulus;
+            ways = (ways * CalculateCombinations(remaining_nodes, subtree_sizes[neighbor])) % modulus;
+            remaining_nodes -= subtree_sizes[neighbor];
+        }
+        return static_cast<int>(ways);
+    }
+
+  
+    int WaysToBuildRooms(std::vector<int>& previous_room) {
+        if (previous_room.size() < 2 || previous_room.size() > 100000 || previous_room[0] != -1) {
+            throw std::invalid_argument("Invalid input constraints");
+        }
+        for (int i = 1; i < previous_room.size(); ++i) {
+            if (previous_room[i] < 0 || previous_room[i] >= static_cast<int>(previous_room.size())) {
+                throw std::invalid_argument("Invalid room index");
+            }
+        }
+
+        FillFactorials();
+
+        int number_of_rooms = previous_room.size();
+        std::vector<std::vector<int>> graph(number_of_rooms);
+
+        for (int i = 1; i < number_of_rooms; i++) {
+            graph[previous_room[i]].push_back(i);
+        }
+
+        std::vector<int> subtree_sizes(number_of_rooms, 0);
+        DepthFirstSearch(graph, 0, -1, subtree_sizes);
+
+        return WaysToBuildRoomsUtil(graph, 0, -1, subtree_sizes);
+    }
+};
+
+int main() {
+    // TEST
+    Solution solution;
+    
+    // TEST_END
+    return 0;
+}
