@@ -1,6 +1,44 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/count-number-of-possible-root-nodes/ 
 
+Julie has an undirected tree with len nodes labeled from 0 to len - 1. The tree is represented as a 2D integer vector edges of length len - 1, 
+where edges[i] = [node_a_i, node_b_i] indicates that there is an edge between nodes node_a_i and node_b_i in the tree.
+
+Julie wants her friend, Jimmy, to find the root of the tree. Bob is allowed to make several guesses about the structure of Julie's tree. In one guess, he does the 
+following:
+
+Chooses two distinct integers node_u and node_v such that there is an edge [node_u, node_v] in the tree.
+He tells Julie that node_u is the parent of node_v in the tree.
+Jimmy's guesses are represented by a 2D integer vector guesses, where guesses[j] = [node_u_j, node_v_j] indicates that Bob guessed node_u_j to be the parent of 
+node_v_j.
+
+Julie, being lazy, does not respond to each of Jimmy's guesses individually. Instead, she informs him that at least counter of his guesses are correct.
+
+Given the 2D integer vectors edges, guesses, and the integer counter, return the number of possible nodes that can be the root of Julie's tree. If there is no 
+such node, return 0.
+
+Create a C++ Function RootCount that will return an integer denoting the number of possible nodes that can be the root of Julie's tree.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<vector<int>> denoting edges.
+A vector<vector<int>> denoting guesses.
+An integer counter.
+
+Input Constraints:
+
+The length of edges should be len - 1.
+The number of nodes len should be in the range [2, 10^5] inclusive.
+The length of guesses should be in the range [1, 10^5] inclusive.
+Each value node_a_i, node_b_i, node_u_j, node_v_j should be in the range [0, len - 1] inclusive.
+Each pair node_a_i and node_b_i must be distinct, meaning node_a_i != node_b_i.
+Each pair node_u_j and node_v_j must be distinct, meaning node_u_j != node_v_j.
+The edges vector represents a valid tree structure.
+Each guesses[j] should correspond to an edge in the tree.
+The guesses vector is unique, meaning all guesses are distinct.
+The integer counter should be in the range [0, guesses.length] inclusive.
 
 */
 
