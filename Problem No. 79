@@ -22,6 +22,7 @@ Create a C++ Function MinimumCost that will return a vector<int> denoting the ve
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
 Input Type:
+
 An integer denoting len
 A vector<vector<int>> denoting edges
 A vector<vector<int>> denoting query
