@@ -178,10 +178,220 @@ public:
 };
 
 int main() {
-    //TEST
+ 
   
-    Solution solution;
+  Solution solution;
+  //TEST
+    int row_count_1 = 1;
+    int col_count_1 = 1;
+    int introverts_count_1 = 1;
+    int extroverts_count_1 = 0;
+    int expected_1 = 120;
+    int result_1 = solution.GetMaxGridHappiness(row_count_1, col_count_1, introverts_count_1, extroverts_count_1);
+    assert(result_1 == expected_1);
 
-    //TEST_END
+// TEST_END
+
+ //TEST
+    int row_count_2 = 1;
+    int col_count_2 = 1;
+    int introverts_count_2 = 0;
+    int extroverts_count_2 = 1;
+    int expected_2 = 40;
+    int result_2 = solution.GetMaxGridHappiness(row_count_2, col_count_2, introverts_count_2, extroverts_count_2);
+    assert(result_2 == expected_2);
+
+// TEST_END
+
+ //TEST
+    int row_count_3 = 2;
+    int col_count_3 = 3;
+    int introverts_count_3 = 2;
+    int extroverts_count_3 = 1;
+    int expected_3 = 280; 
+    int result_3 = solution.GetMaxGridHappiness(row_count_3, col_count_3, introverts_count_3, extroverts_count_3);
+    assert(result_3 == expected_3);
+
+// TEST_END
+
+ //TEST
+    int row_count_4 = 3;
+    int col_count_4 = 3;
+    int introverts_count_4 = 2;
+    int extroverts_count_4 = 2;
+    int expected_4 = 360; 
+    int result_4 = solution.GetMaxGridHappiness(row_count_4, col_count_4, introverts_count_4, extroverts_count_4);
+   assert(result_4 == expected_4);
+
+// TEST_END
+
+ //TEST
+    int row_count_5 = 2;
+    int col_count_5 = 2;
+    int introverts_count_5 = 1;
+    int extroverts_count_5 = 1;
+    int expected_5 = 160; 
+    int result_5 = solution.GetMaxGridHappiness(row_count_5, col_count_5, introverts_count_5, extroverts_count_5);
+    assert(result_5 == expected_5);
+
+// TEST_END
+
+ //TEST
+    int row_count_6 = 4;
+    int col_count_6 = 4;
+    int introverts_count_6 = 3;
+    int extroverts_count_6 = 2;
+    int expected_6 = 480; 
+    int result_6 = solution.GetMaxGridHappiness(row_count_6, col_count_6, introverts_count_6, extroverts_count_6);
+    assert(result_6 == expected_6);
+
+// TEST_END
+
+ //TEST
+    int row_count_7 = 5;
+    int col_count_7 = 5;
+    int introverts_count_7 = 6;
+    int extroverts_count_7 = 0;
+    int expected_7 = 720; 
+    int result_7 = solution.GetMaxGridHappiness(row_count_7, col_count_7, introverts_count_7, extroverts_count_7);
+  assert(result_7 == expected_7);
+
+// TEST_END
+
+ //TEST
+    int row_count_8 = 3;
+    int col_count_8 = 4;
+    int introverts_count_8 = 3;
+    int extroverts_count_8 = 3;
+    int expected_8 = 560; 
+    int result_8 = solution.GetMaxGridHappiness(row_count_8, col_count_8, introverts_count_8, extroverts_count_8);
+   assert(result_8 == expected_8);
+
+// TEST_END
+
+ //TEST
+    int row_count_9 = 2;
+    int col_count_9 = 3;
+    int introverts_count_9 = 2;
+    int extroverts_count_9 = 2;
+    int expected_9 = 350;
+    int result_9 = solution.GetMaxGridHappiness(row_count_9, col_count_9, introverts_count_9, extroverts_count_9);
+    assert(result_9 == expected_9);
+
+// TEST_END
+
+   //TEST
+    int row_count_10 = -5;
+    int col_count_10 = 3;
+    int introverts_count_10 = 2;
+    int extroverts_count_10 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_10, col_count_10, introverts_count_10, extroverts_count_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+ //TEST
+    int row_count_11 = 6;
+    int col_count_11 = 3;
+    int introverts_count_11 = 2;
+    int extroverts_count_11 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_11, col_count_11, introverts_count_11, extroverts_count_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+ //TEST
+    int row_count_12 = 3;
+    int col_count_12 = -9;
+    int introverts_count_12 = 2;
+    int extroverts_count_12 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_12, col_count_12, introverts_count_12, extroverts_count_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+ //TEST
+    int row_count_13 = 3;
+    int col_count_13 = 6;
+    int introverts_count_13 = 2;
+    int extroverts_count_13 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_13, col_count_13, introverts_count_13, extroverts_count_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+// TEST_END
+
+ //TEST
+    int row_count_14 = 3;
+    int col_count_14 = 3;
+    int introverts_count_14 = -1;
+    int extroverts_count_14 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_14, col_count_14, introverts_count_14, extroverts_count_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+ //TEST
+    int row_count_15 = 2;
+    int col_count_15 = 2;
+    int introverts_count_15 = 5;
+    int extroverts_count_15 = 1;
+    try {
+        solution.GetMaxGridHappiness(row_count_15, col_count_15, introverts_count_15, extroverts_count_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+// TEST 
+{
+    Solution solution;
+    int row_count_16 = 3;
+    int col_count_16 = 3;
+    int introverts_count_16 = 2;
+    int extroverts_count_16 = -1;
+    try {
+        solution.GetMaxGridHappiness(row_count_16, col_count_16, introverts_count_16, extroverts_count_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+
+// TEST_END
+
+ //TEST
+    int row_count_17 = 2;
+    int col_count_17 = 2;
+    int introverts_count_17 = -1;
+    int extroverts_count_17 = 5;
+    try {
+        solution.GetMaxGridHappiness(row_count_17, col_count_17, introverts_count_17, extroverts_count_17);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+      
     return 0;
+}
+  
 }
