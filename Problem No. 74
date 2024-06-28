@@ -1,5 +1,34 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/last-day-where-you-can-still-cross/
 
+Julie is given a 1-based binary matrix where 0 represents land and 1 represents water. Julie is given integers row and col representing the number of rows and 
+columns in the matrix, respectively.
 
+Initially, on day 0, the entire matrix is land. However, each day a new cell becomes flooded with water. Julie is given a 1-based 2D vector cells, where cells[i] = [ri, ci] 
+represents that on the ith day, the cell on the rith row and cith column (1-based coordinates) will be covered with water (i.e., changed to 1).
+
+Julie wants to find the last day that it is possible to walk from the top to the bottom by only walking on land cells. Julie can start from any cell in the top 
+row and end at any cell in the bottom row. Julie can only travel in the four cardinal directions (left, right, up, and down).
+
+Return the last day where it is possible to walk from the top to the bottom by only walking on land cells.
+
+Create a C++ Function LatestDayToCross that will return an integer denoting the last day where it is possible to walk from the top to the bottom by only walking 
+on land cells.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting row
+An integer denoting col
+A vector<vector<int>> denoting cells
+
+Input Constraints:
+
+The values for row and col should be in the range [2, 2 * 10^4] inclusive.
+The product of row and col should be in the range [4, 2 * 10^4] inclusive.
+The length of cells should be exactly row * col.
+Each value of cells[i][0] should be in the range [1, row] inclusive.
+Each value of cells[i][1] should be in the range [1, col] inclusive.
+All the values of cells should be unique.
 */
