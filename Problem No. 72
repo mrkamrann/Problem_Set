@@ -1,5 +1,23 @@
 /*
-Link : 
+Link : https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/description/
 
+Julie, a skilled mathematician and problem solver, was faced with an intriguing challenge one rainy afternoon. She received a vector nums containing exactly 2 * len 
+integers.Julie's task was to split this vector into two smaller vectors of length len eachJulie needs to partition nums into two vectors of length len to minimize 
+the absolute  difference of the sums of the vectors. To partition nums, Julie should put each element of nums into one of the two vectors.
+
+Create a C++ Function MinimumDifference that will return an integer denoting the minimum possible absolute difference.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting nums
+
+
+Input Constraints:
+
+The length of nums should be exactly 2 * len.
+The values for len should be in the range [1, 15] inclusive.
+Each value of nums[i] should be in the range [-10^7, 10^7] inclusive.
 
 */
