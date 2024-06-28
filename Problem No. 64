@@ -1,13 +1,18 @@
 /*
 Link: https://leetcode.com/problems/count-ways-to-build-rooms-in-an-ant-colony/
 
-Julie is the chief engineer of an ant colony, tasked with expanding their underground home. One day, the queen ant handed Julie an expansion plan, detailing how the new rooms should be connected. 
-Each new room was marked with a number and a requirement to be built only after a specific existing room was completed. Julie knew that once all rooms were built, every room would be reachable from room 0, the heart of the colony.
+Julie is the chief engineer of an ant colony, tasked with expanding their underground home. One day, the queen ant handed Julie an expansion plan, detailing
+how the new rooms should be connected. 
 
-Julie sat down with her team, examining the prev_room array that outlined the construction order. Room 0 was already built, so the first entry was -1. From there, each room had a designated predecessor, 
-forming a complex web of dependencies. Julie needed to figure out the number of possible ways to build these rooms while following the given rules.
+Each new room was marked with a number and a requirement to be built only after a specific existing room was completed. Julie knew that once all rooms were built, 
+every room would be reachable from room 0, the heart of the colony.
 
-The task was daunting, as there were potentially hundreds of thousands of rooms to consider. However, Julie was determined to find an efficient solution, knowing that the future of the colony depended on it.
+Julie sat down with her team, examining the previous_room array that outlined the construction order. Room 0 was already built, so the first entry was -1.
+From there, each room had a designated predecessor, forming a complex web of dependencies. Julie needed to figure out the number of possible ways to build 
+these rooms while following the given rules.
+
+The task was daunting, as there were potentially hundreds of thousands of rooms to consider. However, Julie was determined to find an efficient solution,
+knowing that the future of the colony depended on it.
 
 
 Help Julie create a C++ class Solution that will contain a function WaysToBuildRooms that will return and integer denoting the number of different orders in
@@ -18,16 +23,17 @@ Use appropriate Error Handling using the stdexcept library for the invalid test 
 
 Input Type
 
-A vector<int> prev_room denoting the expansion plan.
+A vector<int> previous_room denoting the expansion plan.
 
 Input Constraints
 
-The length of prev_room should be at least 2 and at most 100,000 inclusive.
-prev_room[0] should be -1.
-Each value of prev_room[i] for 1 ≤ i < len should be in the range [0, len - 1] inclusive.
+The length of previous_room should be at least 2 and at most 100,000 inclusive.
+previous_room[0] should be -1.
+Each value of previous_room[i] for 1 ≤ i < len should be in the range [0, len - 1] inclusive.
 Every room is reachable from room 0 once all the rooms are built.
 
 */
+
 
 #include <vector>
 #include <stdexcept>
@@ -126,9 +132,155 @@ public:
 };
 
 int main() {
-    // TEST
-    Solution solution;
-    
-    // TEST_END
+
+Solution solution;
+
+// TEST 
+
+std::vector<int> previous_room_1 = {-1, 0};
+int expected_1 = 1;
+int result_1 = solution.WaysToBuildRooms(previous_room_1);
+assert(result_1 == expected_1);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_2 = {-1, 0, 1};
+int expected_2 = 1; 
+int result_2 = solution.WaysToBuildRooms(previous_room_2);
+assert(result_2 == expected_2);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_3 = {-1, 0, 0, 1, 1, 2};
+int expected_3 = 20; 
+int result_3 = solution.WaysToBuildRooms(previous_room_3);
+assert(result_3 == expected_3);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_4 = {-1, 0, 1, 2, 3, 4, 5, 6};
+int expected_4 = 1; 
+int result_4 = solution.WaysToBuildRooms(previous_room_4);
+assert(result_4 == expected_4);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_5 = {-1, 0, 1, 1, 2, 2, 3, 3};
+int expected_5 = 80; 
+int result_5 = solution.WaysToBuildRooms(previous_room_5);
+assert(result_5 == expected_5);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_6 = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int expected_6 = 362880; 
+int result_6 = solution.WaysToBuildRooms(previous_room_6);
+assert(result_6 == expected_6);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_7 = {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8};
+int expected_7 = 1;
+int result_7 = solution.WaysToBuildRooms(previous_room_7);
+assert(result_7 == expected_7);
+  //TEST_END
+
+// TEST 
+std::vector<int> previous_room_8 = {-1, 0, 1, 2, 0, 4, 5, 6, 3, 8};
+int expected_8 = 126;
+int result_8 = solution.WaysToBuildRooms(previous_room_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+// TEST 
+std::vector<int> previous_room_9 = {-1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4};
+int expected_9 = 19200; 
+int result_9 = solution.WaysToBuildRooms(previous_room_9);
+assert(result_9 == expected_9);
+
+// TEST_END
+  
+// TEST 
+
+std::vector<int> previous_room_10 = {-1, -2};
+try {
+    solution.WaysToBuildRooms(previous_room_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> previous_room_11 = {-1, 100000};
+try {
+    solution.WaysToBuildRooms(previous_room_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST 
+std::vector<int> previous_room_12 = {-1};
+try {
+    solution.WaysToBuildRooms(previous_room_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> previous_room_13(100001, 0);
+previous_room_13[0] = -1;
+try {
+    solution.WaysToBuildRooms(previous_room_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> previous_room_14 = {-1, 0, -5, 2};
+try {
+    solution.WaysToBuildRooms(previous_room_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST
+std::vector<int> previous_room_15 = {-1, 0, -1};
+try {
+    solution.WaysToBuildRooms(previous_room_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+ 
+// TEST
+std::vector<int> previous_room_16 = {};
+try {
+    solution.WaysToBuildRooms(previous_room_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST
+std::vector<int> previous_room_17 = {-1,-7,-8,-99,-9996};
+try {
+    solution.WaysToBuildRooms(previous_room_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
     return 0;
 }
