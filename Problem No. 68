@@ -23,13 +23,14 @@ If Jerry reaches the food first, Jerry wins.
 If Jerry cannot reach the food within 1000 turns, Tom wins.
 Given the rows x cols matrix grid and the integers cat_jump and mouse_jump, determine if Jerry can win the game assuming both Tom and Jerry play optimally. Return true if Jerry can win, otherwise return false.
 
-Create a C++ Function CanMouseWin that will return a boolean indicating whether Jerry can win the game if both Tom and Jerry play optimally.
+Create a C++ class Soluttion that will contain a function CanMouseWin that will return a boolean indicating whether Jerry can win the game if both Tom and 
+Jerry play optimally.
 
 Use appropriate Error Handling using the stdexcept library for invalid test cases.
 
 Input Type:
 
-A vector<vector<char>> denoting grid.
+A vector<string> denoting grid.
 An integer cat_jump.
 An integer mouse_jump.
 
@@ -42,3 +43,99 @@ Each element grid[i][j] should be one of the characters 'C', 'M', 'F', '.', or '
 There should be exactly one 'C' for Tom, one 'M' for Jerry, and one 'F' for Food in the grid.
 The integers cat_jump and mouse_jump should be in the range [1, 8] inclusive.
 */
+
+
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+public:
+    int dp_table[9][9][9][9][140];
+    int vec_dx[4] = {0, 1, 0, -1};
+    int vec_dy[4] = {1, 0, -1, 0};
+
+    bool Solve(std::vector<std::string>& grid, int cat_jump, int mouse_jump, int cat_row, int cat_col, int mouse_row, int mouse_col, int moves) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        if (moves >= 128) return false;
+        if (mouse_row == cat_row && mouse_col == cat_col) return false;
+        if (grid[cat_row][cat_col] == 'F') return false;
+        if (grid[mouse_row][mouse_col] == 'F') return true;
+
+        if (dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] != -1) 
+            return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves];
+
+        if (moves % 2 == 0) {
+            for (int i = 0; i < 4; ++i) {
+                for (int j = 0; j <= mouse_jump; ++j) {
+                    int x = mouse_row + j * vec_dx[i], y = mouse_col + j * vec_dy[i];
+                    if (x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] != '#') {
+                        if (Solve(grid, cat_jump, mouse_jump, cat_row, cat_col, x, y, moves + 1)) 
+                            return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] = true;
+                    } else break;
+                }
+            }
+            return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] = false;
+        } else {
+            for (int i = 0; i < 4; ++i) {
+                for (int j = 0; j <= cat_jump; ++j) {
+                    int x = cat_row + vec_dx[i] * j, y = cat_col + vec_dy[i] * j;
+                    if (x >= 0 && x < rows && y >= 0 && y < cols && grid[x][y] != '#') {
+                        if (!Solve(grid, cat_jump, mouse_jump, x, y, mouse_row, mouse_col, moves + 1)) 
+                            return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] = false; 
+                    } else break;
+                }
+            }
+            return dp_table[cat_row][cat_col][mouse_row][mouse_col][moves] = true;
+        }
+    }
+
+    bool CanMouseWin(std::vector<std::string>& grid, int cat_jump, int mouse_jump) {
+        if (cat_jump < 1 || cat_jump > 8 || mouse_jump < 1 || mouse_jump > 8 || grid.size() < 1 || grid.size() > 8 || grid[0].size() < 1 || grid[0].size() > 8) {
+            throw std::invalid_argument("Invalid input");
+        }
+
+        memset(dp_table, -1, sizeof(dp_table));
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int cat_row, cat_col, mouse_row, mouse_col;
+        int found_cat = 0, found_mouse = 0, found_food = 0;
+
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (grid[i][j] == 'C') {
+                    cat_row = i;
+                    cat_col = j;
+                    found_cat++;
+                } else if (grid[i][j] == 'M') {
+                    mouse_row = i;
+                    mouse_col = j;
+                    found_mouse++;
+                } else if (grid[i][j] == 'F') {
+                    found_food++;
+                } else if (grid[i][j] != '.' && grid[i][j] != '#') {
+                    throw std::invalid_argument("Invalid grid character");
+                }
+            }
+        }
+
+        if (found_cat != 1 || found_mouse != 1 || found_food != 1) {
+            throw std::invalid_argument("Missing required characters in grid");
+        }
+
+        return Solve(grid, cat_jump, mouse_jump, cat_row, cat_col, mouse_row, mouse_col, 0);
+    }
+};
+
+int main() {
+  
+   Solution solution;
+  
+    //TEST
+
+    //TEST_END
+    return 0;
+}
