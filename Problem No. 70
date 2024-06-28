@@ -41,3 +41,99 @@ The initial row of balls on the board will not have any groups of three or more 
 
 
 */
+
+#include <unordered_map>
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+#include <functional>
+
+class Solution {
+public:
+    int FindMinStep(std::string board, std::string hand) {
+        if (board.length() < 1 || board.length() > 16 || hand.length() < 1 || hand.length() > 5) {
+            throw std::invalid_argument("Board length must be in the range [1, 16] and hand length in the range [1, 5]");
+        }
+
+
+        for (char character : hand) {
+            if (character != 'R' && character != 'Y' && character != 'B' && character != 'G' && character != 'W') {
+                throw std::invalid_argument("Board and hand must consist of characters 'R', 'Y', 'B', 'G', and 'W'");
+            }
+        }
+
+        for (int i = 0; i < board.size(); ++i) {
+            int count = 1;
+            while (i + 1 < board.size() && board[i + 1] == board[i]) {
+                ++count;
+                ++i;
+            }
+            if (count >= 3) {
+                throw std::invalid_argument("Initial row of balls on the board will not have any groups of three or more consecutive balls of the same color.");
+            }
+        }
+
+        std::unordered_map<std::string, int> dp_map;
+        char colors[] = {'R', 'G', 'B', 'Y', 'W'};
+        std::function<int(std::string)> FinalSteps;
+
+        FinalSteps = [&](std::string state) -> int {
+            if (dp_map.count(state)) return dp_map[state];
+            if (state[0] == '#') return 0;
+
+            int split_pos = state.find('#');
+            std::string current_board = state.substr(0, split_pos);
+            std::string current_hand = state.substr(split_pos + 1);
+            int board_length = current_board.size();
+            int minimum_steps = 2000000000;
+
+            for (int i = 0; i < board_length; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (current_hand[j] == '0') continue;
+                    if (i < board_length - 1 && current_board[i + 1] != current_board[i] && current_hand[j] == '1') continue;
+
+                    std::string new_board = current_board;
+                    new_board.insert(new_board.begin() + i, colors[j]);
+                    std::string new_hand = current_hand;
+                    new_hand[j] -= 1;
+
+                    bool continue_loop = true;
+                    while (continue_loop) {
+                        int new_board_length = new_board.size();
+                        continue_loop = false;
+                        for (int k = 0; k < new_board_length; k++) {
+                            int ptr = k;
+                            for (; ptr < new_board_length && new_board[ptr] == new_board[k]; ptr++) {}
+                            if (ptr - k >= 3) {
+                                new_board.erase(new_board.begin() + k, new_board.begin() + ptr);
+                                continue_loop = true;
+                                break;
+                            }
+                            k = ptr - 1;
+                        }
+                    }
+                    minimum_steps = std::min(minimum_steps, std::min(FinalSteps(new_board + '#' + new_hand) + 1, 2000000000));
+                }
+            }
+            return dp_map[state] = minimum_steps;
+        };
+
+        std::unordered_map<char, int> hand_count;
+        for (char character : hand) hand_count[character]++;
+        std::string hand_state(5, '0');
+        for (int i = 0; i < 5; i++) hand_state[i] = char('0' + hand_count[colors[i]]);
+
+        int result = FinalSteps(board + '#' + hand_state);
+        return result == 2000000000 ? -1 : result;
+    }
+};
+
+int main(){
+  Solution solution;
+  //TEST
+  
+  
+  //TEST_END
+}
