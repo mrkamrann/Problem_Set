@@ -33,6 +33,7 @@ The value of target_index must be between 1 and 2 * 10^9 inclusive.
 #include <climits>
 #include <cassert>
 #include <limits>
+#include <unordered_set>
 
     long long ComputeLcm(long long val_a, long long val_b) {
         return (val_a * val_b) / std::gcd(val_a, val_b);
@@ -88,7 +89,7 @@ The value of target_index must be between 1 and 2 * 10^9 inclusive.
         return sum;
     }
     
-    long long FindKthSmallest(std::vector<int>& coin_denominations, int target_index) {
+    long long CoinDenominationsAtTarget(std::vector<int>& coin_denominations, int target_index) {
        
         if (coin_denominations.size() < 1 || coin_denominations.size() > 15) {
             throw std::invalid_argument("coin_denominations length must be between 1 and 15 inclusive.");
@@ -101,6 +102,12 @@ The value of target_index must be between 1 and 2 * 10^9 inclusive.
         if (target_index < 1 || target_index > 2'000'000'000) {
             throw std::invalid_argument("target_index must be between 1 and 2 * 10^9 inclusive.");
         }
+      
+        std::unordered_set<int> unique_coins(coin_denominations.begin(), coin_denominations.end());
+      
+    if (unique_coins.size() != coin_denominations.size()) {
+        throw std::invalid_argument("All values in coin_denominations must be distinct.");
+    }
 
         long long minimum_denomination = std::numeric_limits<long long>::max();
 
@@ -142,6 +149,185 @@ The value of target_index must be between 1 and 2 * 10^9 inclusive.
     }
 
 int main(){
+  
+  //TEST
+std::vector<int> coin_denominations_1 = {1};
+int target_index_1 = 1;
+long long expected_1 = 1;
+long long result_1 = CoinDenominationsAtTarget(coin_denominations_1, target_index_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_2 = {1, 2};
+int target_index_2 = 3;
+long long expected_2 = 3;
+long long result_2 = CoinDenominationsAtTarget(coin_denominations_2, target_index_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_3 = {2, 3};
+int target_index_3 = 4;
+long long expected_3 = 6;
+long long result_3 = CoinDenominationsAtTarget(coin_denominations_3, target_index_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_4 = {5, 7, 11};
+int target_index_4 = 10;
+long long expected_4 = 25;
+long long result_4 = CoinDenominationsAtTarget(coin_denominations_4, target_index_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_5 = {1, 3, 4};
+int target_index_5 = 5;
+long long expected_5 = 5;
+long long result_5 = CoinDenominationsAtTarget(coin_denominations_5, target_index_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_6 = {2, 5, 7, 11};
+int target_index_6 = 15;
+long long expected_6 = 21;
+long long result_6 = CoinDenominationsAtTarget(coin_denominations_6, target_index_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_7 = {3, 6, 9};
+int target_index_7 = 7;
+long long expected_7 = 21;
+long long result_7 = CoinDenominationsAtTarget(coin_denominations_7, target_index_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_8 = {1, 2, 3, 5};
+int target_index_8 = 10;
+long long expected_8 = 10;
+long long result_8 = CoinDenominationsAtTarget(coin_denominations_8, target_index_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_9 = {4, 5, 6};
+int target_index_9 = 8;
+long long expected_9 = 16;
+long long result_9 = CoinDenominationsAtTarget(coin_denominations_9, target_index_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_10 = {}; 
+int target_index_10 = 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_10, target_index_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_11 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}; 
+int target_index_11 = 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_11, target_index_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_12 = {1, 2, 3, 26};
+int target_index_12 = 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_12, target_index_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_13 = {1, 2, 2};
+int target_index_13 = 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_13, target_index_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_14 = {1, 2, 3};
+int target_index_14 = -99999;
+try {
+    CoinDenominationsAtTarget(coin_denominations_14, target_index_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_15 = {1, 2, 3};
+int target_index_15 = 2 * 1000000000 + 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_15, target_index_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_16 = {1, -2, 3};
+int target_index_16 = 1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_16, target_index_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> coin_denominations_17 = {1, 2, 3};
+int target_index_17 = -1;
+try {
+    CoinDenominationsAtTarget(coin_denominations_17, target_index_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+  
   return 0;
 }
 
