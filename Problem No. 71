@@ -91,8 +91,177 @@ The values for counter should be in the range [1, 10^10] inclusive.
     }
 
 int main() {
-    //TEST
     
-    //TEST_END
+//TEST
+std::vector<int> receiver_1 = {0, 1, 2};
+long long counter_1 = 5;
+long long expected_1 = 12;
+long long result_1 = GetMaxFunctionValue(receiver_1, counter_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_2 = {3, 0, 2, 1};
+long long counter_2 = 100;
+long long expected_2 = 202;
+long long result_2 = GetMaxFunctionValue(receiver_2, counter_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_3 = {4, 3, 2, 1, 0};
+long long counter_3 = 2000;
+long long expected_3 = 4004;
+long long result_3 = GetMaxFunctionValue(receiver_3, counter_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_4 = {1, 2, 0};
+long long counter_4 = 3000000;
+long long expected_4 = 3000002;
+long long result_4 = GetMaxFunctionValue(receiver_4, counter_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_5 = {2, 0, 1};
+long long counter_5 = 9999999999LL;
+long long expected_5 = 10000000001;
+long long result_5 = GetMaxFunctionValue(receiver_5, counter_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_6 = {0};
+long long counter_6 = 10000000000LL;
+long long expected_6 = 0;
+long long result_6 = GetMaxFunctionValue(receiver_6, counter_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_7 = {0, 2, 1, 3};
+long long counter_7 = 5;
+long long expected_7 =  18;
+long long result_7 = GetMaxFunctionValue(receiver_7, counter_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_8 = {1, 2, 3, 0};
+long long counter_8 = 123456789;
+long long expected_8 =  185185187;
+long long result_8 = GetMaxFunctionValue(receiver_8, counter_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> receiver_9 = {5, 4, 3, 2, 1, 0};
+long long counter_9 = 9876543210LL;
+long long expected_9 = 24691358030;
+long long result_9 = GetMaxFunctionValue(receiver_9, counter_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+  
+//TEST
+std::vector<int> receiver_10 = {};
+long long counter_10 = 1;
+try {
+    GetMaxFunctionValue(receiver_10, counter_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_11 = {0};
+long long counter_11 = 0;
+try {
+    GetMaxFunctionValue(receiver_11, counter_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_12 = {1, 2, 3};
+long long counter_12 = 10000000001LL;
+try {
+    GetMaxFunctionValue(receiver_12, counter_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_13 = {0, -1, 2};
+long long counter_13 = 5;
+try {
+    GetMaxFunctionValue(receiver_13, counter_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_14 = {0, 3, 1};
+long long counter_14 = -5;
+try {
+    GetMaxFunctionValue(receiver_14, counter_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_15 = {5, 4, 3, 2, 1, 6};
+long long counter_15 = 500;
+try {
+    GetMaxFunctionValue(receiver_15, counter_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_16 = {0, 1, 2};
+long long counter_16 = 10000000000LL + 1;
+try {
+    GetMaxFunctionValue(receiver_16, counter_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_17 = {2, 1, 0};
+long long counter_17 = 10000000000LL + 2;
+try {
+    GetMaxFunctionValue(receiver_17, counter_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> receiver_18 = {0, 1, 2, 3, 4};
+long long counter_18 = 0;
+try {
+    GetMaxFunctionValue(receiver_18, counter_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
