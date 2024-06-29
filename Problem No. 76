@@ -1,36 +1,133 @@
 /*
-Link : https://leetcode.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/
+Link : https://leetcode.com/problems/split-array-with-same-average/description/ 
 
-Julie and Jimmy have an undirected graph of len nodes and three types of edges:
+Julie has an integer vector named nums.
 
-Type 1: Can be traversed by Julie only.
-Type 2: Can be traversed by Jimmy only.
-Type 3: Can be traversed by both Julie and Jimmy.
+Julie wants to split nums into two non-empty vectors vector_a and vector_b such that the average of vector_a is equal to the average of vector_b.
 
-Given a 2D vector edges where edges[i] = [type_i, u_i, v_i] represents a bidirectional edge of type type_i between nodes u_i and v_i, find the maximum number 
-of edges you can remove so that after removing the edges, the graph can still be fully traversed by both Julie and Jimmy. The graph is fully traversed by 
-Julie and Jimmy if starting from any node, they can reach all other nodes.
+Return true if it is possible for Julie to split the vector in this way and false otherwise.
 
-Return the maximum number of edges you can remove, or return -1 if Julie and Jimmy cannot fully traverse the graph.
+Note that for a vector vec, average(vec) is calculated as the sum of all the elements of vec divided by the number of elements in vec.
 
-Create a C++ Function MaxNumEdgesToRemove that will return an integer denoting the maximum number of edges you can remove, or return -1.
+Create a C++ class Solution that will contain a function splitVectorSameAverage that will return an integer denoting the minimum number of trips required.
 
-Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+Use appropriate error handling using the stdexcept library for the invalid test cases.
 
 
 Input Type:
 
-An integer denoting len
-A vector<vector<int>> denoting edges
+A vector<int> denoting nums.
 
-Input Constraints:
+Constraints:
 
-The length of len should be at least 1 and at most 10^5 inclusive.
-The length of edges should be at least 1 and at most min(10^5, 3 * len * (len - 1) / 2) inclusive.
-Each edge should be a vector of size 3.
-Each value of type_i should be in the range [1, 3] inclusive.
-Each value of u_i should be in the range [1, len] inclusive.
-Each value of v_i should be in the range [1, len] inclusive.
-All tuples (type_i, u_i, v_i) should be distinct.
+The length of nums must be at least 1 and at most 30 inclusive.
+Each value in nums must be between 0 and 10,000 inclusive.
 
 */
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+    int total_sum, num_elements;
+    int power_of_two[24];
+    
+public:
+    std::vector<std::vector<int>> MakeSubset(std::vector<int>& nums, int left_index, int right_index) {
+        int max_combinations = 1 << (right_index - left_index);
+        std::vector<std::vector<int>> subsets;
+
+        for (int i = 0; i < max_combinations; i++) {
+            int subset_sum = 0;
+            int num_subset_elements = 0;
+
+            for (int j = left_index; j < right_index; j++) {
+                if (i & power_of_two[j - left_index]) {
+                    subset_sum += nums[j];
+                    num_subset_elements++;
+                }
+            }
+
+            int value = subset_sum * num_elements - (num_subset_elements * total_sum);
+            subsets.push_back({value, num_subset_elements});
+        }
+
+        return subsets;
+    }
+
+    int SearchSubset(const std::vector<std::vector<int>>& subsets, int target_value) {
+        int index = subsets.size();
+        int left = 0, right = subsets.size() - 1;
+
+        while (left <= right) {
+            int middle = left + (right - left) / 2;
+            if (subsets[middle][0] >= target_value) {
+                right = middle - 1;
+            } else {
+                left = middle + 1;
+            }
+        }
+
+        while (left >= 0 && left < subsets.size() && subsets[left][0] == target_value) {
+            index = left;
+            left--;
+        }
+
+        return index;
+    }
+
+    bool SplitVectorSameAverage(std::vector<int>& nums) {
+      
+        if (nums.size() < 1 || nums.size() > 30) {
+            throw std::invalid_argument("nums length must be between 1 and 30 inclusive.");
+        }
+
+        for (int num : nums) {
+            if (num < 0 || num > 10'000) {
+                throw std::invalid_argument("Each value in nums must be between 0 and 10,000 inclusive.");
+            }
+        }
+
+        num_elements = nums.size();
+        if (num_elements < 2) {
+            return false;
+        }
+
+        power_of_two[0] = 1;
+        for (int i = 1; i < 24; i++) {
+            power_of_two[i] = power_of_two[i - 1] << 1;
+        }
+
+        total_sum = 0;
+        for (int num : nums) {
+            total_sum += num;
+        }
+
+        int mid_index = num_elements / 2;
+        std::vector<std::vector<int>> left_subsets = MakeSubset(nums, 0, mid_index);
+        std::vector<std::vector<int>> right_subsets = MakeSubset(nums, mid_index, num_elements);
+
+        std::sort(right_subsets.begin(), right_subsets.end());
+
+        for (const std::vector<int>& left_subset : left_subsets) {
+            int index = SearchSubset(right_subsets, -left_subset[0]);
+
+            while (index < right_subsets.size() && right_subsets[index][0] == -left_subset[0]) {
+                if (left_subset[1] + right_subsets[index][1] < num_elements && left_subset[1] + right_subsets[index][1] > 0) {
+                    return true;
+                }
+                index++;
+            }
+        }
+
+        return false;
+    }
+};
+
+int main(){
+  return 0;
+}
+
+
