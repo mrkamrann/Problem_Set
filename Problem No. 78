@@ -42,6 +42,118 @@ Each pair should be a vector of size 2.
 Each value of x_i should be in the range [1, 500] inclusive.
 Each value of y_i should be in the range [1, 500] inclusive.
 x_i < y_i
-​The elements in pairs are unique.
+The elements in pairs are unique.
 
 */
+
+#include <vector>
+#include <unordered_set>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+private:
+  
+    int node_count;
+    int required_frequency;
+    bool flag;
+    std::vector<std::vector<int>> adjacency_list;
+    std::vector<int> frequencies;
+
+    void GetEdges(const std::vector<std::vector<int>>& pairs) {
+        std::unordered_set<int> unique_nodes;
+        for (const std::vector<int>& pair : pairs) {
+            if (frequencies.size() < pair[1] + 1) {
+                frequencies.resize(pair[1] + 1);
+            }
+            unique_nodes.insert(pair[0]);
+            unique_nodes.insert(pair[1]);
+            frequencies[pair[0]]++;
+            frequencies[pair[1]]++;
+        }
+        required_frequency = unique_nodes.size() - 1;
+        node_count = frequencies.size();
+        flag = false;
+        adjacency_list = std::vector<std::vector<int>>(node_count);
+        for (const std::vector<int>& pair : pairs) {
+            if (frequencies[pair[0]] >= frequencies[pair[1]]) {
+                if (frequencies[pair[0]] == frequencies[pair[1]]) {
+                    flag = true;
+                }
+                adjacency_list[pair[0]].push_back(pair[1]);
+            } else {
+                adjacency_list[pair[1]].push_back(pair[0]);
+            }
+        }
+    }
+
+public:
+    int CheckWays(std::vector<std::vector<int>>& pairs) {
+      
+        if (pairs.size() < 1 || pairs.size() > 100000) {
+            throw std::invalid_argument("The length of pairs must be in the range [1, 100000]");
+        }
+      
+        for (const std::vector<int>& pair : pairs) {
+            if (pair.size() != 2 || pair[0] < 1 || pair[0] > 500 || pair[1] < 1 || pair[1] > 500 || pair[0] >= pair[1]) {
+                throw std::invalid_argument("Each pair must be a vector of size 2 with valid x_i and y_i in the range [1, 500] and x_i < y_i");
+            }
+        }
+
+        GetEdges(pairs);
+
+        std::vector<int> secondary_frequencies(node_count);
+        for (const std::vector<int>& children : adjacency_list) {
+            for (int child : children) {
+                secondary_frequencies[child]++;
+            }
+        }
+
+        std::queue<int> node_queue;
+        for (int i = 0; i < node_count; ++i) {
+            if (secondary_frequencies[i] == 0 && frequencies[i] == required_frequency) {
+                node_queue.push(i);
+            }
+        }
+
+        while (!node_queue.empty()) {
+            int queue_size = node_queue.size();
+            int frequency_count = 0;
+            required_frequency = 0;
+            while (queue_size--) {
+                int parent = node_queue.front();
+                required_frequency += frequencies[parent];
+                node_queue.pop();
+                for (int child : adjacency_list[parent]) {
+                    secondary_frequencies[child]--;
+                    frequencies[child]--;
+                    if (secondary_frequencies[child] == 0) {
+                        frequency_count += frequencies[child] + 1;
+                        node_queue.push(child);
+                    }
+                }
+            }
+            if (frequency_count != required_frequency) {
+                return 0;
+            }
+        }
+
+        for (int remaining_frequency : secondary_frequencies) {
+            if (remaining_frequency != 0) {
+                return 0;
+            }
+        }
+        return flag ? 2 : 1;
+    }
+};
+
+int main() {
+  
+    Solution solution;
+    //TEST
+  
+    //TEST_END
+  
+    return 0;
+}
