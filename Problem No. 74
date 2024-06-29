@@ -1,158 +1,157 @@
 /*
-Link : https://leetcode.com/problems/last-day-where-you-can-still-cross/
+Link : https://leetcode.com/problems/strong-password-checker/description/
 
-Julie is given a 1-based binary matrix where 0 represents land and 1 represents water. Julie is given integers row and col representing the number of rows and 
-columns in the matrix, respectively.
+Julie wants to create a strong secret key that meets the following conditions:
 
-Initially, on day 0, the entire matrix is land. However, each day a new cell becomes flooded with water. Julie is given a 1-based 2D vector cells, where cells[i] = [ri, ci] 
-represents that on the ith day, the cell on the rith row and cith column (1-based coordinates) will be covered with water (i.e., changed to 1).
+It has at least 6 characters and at most 20 characters.
+It contains at least one lowercase letter, at least one uppercase letter, and at least one digit.
+It does not contain three repeating characters in a row (i.e., "abbbcd" is weak, but "abbccdd" is strong).
+Given a string secret_key, return the minimum number of steps required to make the secret key strong. If the secret key is already strong, return 0.
 
-Julie wants to find the last day that it is possible to walk from the top to the bottom by only walking on land cells. Julie can start from any cell in the top 
-row and end at any cell in the bottom row. Julie can only travel in the four cardinal directions (left, right, up, and down).
+In one step, Julie can:
 
-Return the last day where it is possible to walk from the top to the bottom by only walking on land cells.
+Insert one character into the secret key,
+Delete one character from the secret key, or
+Replace one character of the secret key with another character.
 
-Create a C++ class Solution that will contain a function LatestDayToCross that will return an integer denoting the last day where it is possible to walk from the top to the bottom by only walking on land cells.
+Create a C++ Function StrongSecretKeyChecker that will return an integer denoting the minimum number of steps required.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
-Input Type:
+Input Type
 
-An integer denoting row
-An integer denoting col
-A vector<vector<int>> denoting cells
+std::string denoting secret_key.
 
-Input Constraints:
+Input Constraints
 
-The values for row and col should be in the range [2, 2 * 10^4] inclusive.
-The product of row and col should be in the range [4, 2 * 10^4] inclusive.
-The length of cells should be exactly row * col.
-Each value of cells[i][0] should be in the range [1, row] inclusive.
-Each value of cells[i][1] should be in the range [1, col] inclusive.
-All the values of cells should be unique.
+The length of secret_key should be at least 1 and at most 50 inclusive.
+secret_key consists of letters, digits, dot '.' or exclamation mark '!'.
+
 */
 
 
 #include <vector>
+#include <string>
+#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 #include <iostream>
 
-class DisjointSet {
-private:
-    std::vector<int> size, parent;
-
-public:
-    DisjointSet(int count) {
-        size.resize(count, 1);
-        parent.resize(count);
-        for(int index = 0; index < count; index++) {
-            parent[index] = index;
-        }
+    int GetCharacterValue(char character) {
+        if ('a' <= character && character <= 'z') return character - 'a' + 1;
+        if ('A' <= character && character <= 'Z') return character - 'A' + 27;
+        if ('0' <= character && character <= '9') return character - '0' + 53;
+        if (character == '!') return 63;
+        return 64;
     }
 
-    int FindParent(int node) {
-        if(parent[node] == node) return node;
-        return parent[node] = FindParent(parent[node]);
-    }
-
-    void Merge(int node_1, int node_2) {
-        int parent_1 = FindParent(node_1);
-        int parent_2 = FindParent(node_2);
-
-        if(parent_1 == parent_2) return;
-
-        if(size[parent_1] < size[parent_2]) {
-            parent[parent_1] = parent_2;
-            size[parent_2] += size[parent_1];
-        } else {
-            parent[parent_2] = parent_1;
-            size[parent_1] += size[parent_2];
+    int StrongSecretKeyChecker(std::string secret_key) {
+      
+        if (secret_key.size() < 1 || secret_key.size() > 50) {
+            throw std::invalid_argument("The length of secret_key should be at least 1 and at most 50 inclusive.");
         }
-    }
-
-    bool IsConnected(int node_1, int node_2) {
-        return FindParent(node_1) == FindParent(node_2);
-    }
-};
-
-class Solution {
-public:
-    int LatestDayToCross(int row, int col, std::vector<std::vector<int>>& cells) {
-        if(row < 2 || row > 20000 || col < 2 || col > 20000 || row * col < 4 || row * col > 20000) {
-            throw std::invalid_argument("Input constraints violated");
-        }
-
-        if(cells.size() != row * col) {
-            throw std::invalid_argument("The length of cells should be exactly row * col.");
-        }
-
-        for(std::size_t index = 0; index < cells.size(); ++index) {
-            if(cells[index][0] < 1 || cells[index][0] > row || cells[index][1] < 1 || cells[index][1] > col) {
-                throw std::invalid_argument("Each value of cells[i][0] should be in the range [1, row] inclusive and cells[i][1] should be in the range [1, col] inclusive.");
+        for (char character : secret_key) {
+            if (!std::isalnum(character) && character != '.' && character != '!') {
+                throw std::invalid_argument("secret_key consists of letters, digits, dot '.' or exclamation mark '!'.");
             }
         }
 
-        std::vector<std::vector<int>> grid(row, std::vector<int>(col, 0));
-        for(std::size_t index = 0; index < cells.size(); ++index) {
-            if(grid[cells[index][0] - 1][cells[index][1] - 1] != 0) {
-                throw std::invalid_argument("All the values of cells should be unique.");
-            }
-            grid[cells[index][0] - 1][cells[index][1] - 1] = 1;
-        } 
+        int key_length = secret_key.size();
+        std::vector<std::vector<std::vector<std::vector<int>>>> dp_table(key_length + 1, 
+                std::vector<std::vector<std::vector<int>>>(65, 
+                std::vector<std::vector<int>>(16, 
+                std::vector<int>(21, 1000))));
 
-        int directions[5] = {-1, 0, 1, 0, -1};
-        int total_cells = row * col;
-        int row_start = total_cells, row_end = total_cells + 1;
-        DisjointSet disjoint_set(total_cells + 2);
+        dp_table[0][0][0][0] = 0;
 
-        for(int row_idx = 0; row_idx < row; row_idx++) {
-            for(int col_idx = 0; col_idx < col; col_idx++) {
-                for(int dir = 0; dir < 4; dir++) {
-                    int new_row = row_idx + directions[dir];
-                    int new_col = col_idx + directions[dir + 1];
+        for (int i = 0; i < key_length; ++i) {
+            for (int s = 0; s < 21; ++s) {
+                for (int prev_char_value = (s != 0); prev_char_value < 65; ++prev_char_value) {
+                    for (int flags = (s == 20 ? 14 : 0); flags < 16; ++flags) {
+                        if (dp_table[i][prev_char_value][flags][s] == 1000) continue;
 
-                    if(new_row >= 0 && new_row < row && new_col >= 0 && new_col < col && grid[new_row][new_col] == 0) {
-                        int node_value = row_idx * col + col_idx;
-                        int next_value = new_row * col + new_col;
-                        disjoint_set.Merge(node_value, next_value);
+                        int consecutive_flag = flags & 1;
+                        int has_uppercase = flags & 2;
+                        int has_lowercase = flags & 4;
+                        int has_digit = flags & 8;
+
+                        int new_value = dp_table[i][prev_char_value][flags][s] + 1;
+
+                        dp_table[i + 1][prev_char_value][flags][s] = std::min(dp_table[i + 1][prev_char_value][flags][s], new_value);
+                        if (s == 20) continue;
+
+                        for (int new_char_value = 1; new_char_value < 65; ++new_char_value) {
+                            if (new_char_value == prev_char_value && consecutive_flag) continue;
+                            if (new_char_value == 4) { new_char_value = 26; continue; }
+                            if (new_char_value == 30) { new_char_value = 52; continue; }
+                            if (new_char_value == 56) { new_char_value = 62; continue; }
+                            if (1 <= new_char_value && new_char_value <= 26) {
+                                dp_table[i][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1] = 
+                                    std::min(dp_table[i][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1], new_value);
+                            } else if (27 <= new_char_value && new_char_value <= 52) {
+                                dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1] = 
+                                    std::min(dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1], new_value);
+                            } else if (53 <= new_char_value && new_char_value <= 62) {
+                                dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1] = 
+                                    std::min(dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1], new_value);
+                            } else {
+                                dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1] = 
+                                    std::min(dp_table[i][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1], new_value);
+                            }
+                        }
+
+                        for (int new_char_value = 1; new_char_value < 65; ++new_char_value) {
+                            if (new_char_value == prev_char_value && consecutive_flag) continue;
+                            if (new_char_value == 4) { new_char_value = 26; continue; }
+                            if (new_char_value == 30) { new_char_value = 52; continue; }
+                            if (new_char_value == 56) { new_char_value = 62; continue; }
+                            int new_value_replaced = new_value - (new_char_value == GetCharacterValue(secret_key[i]));
+                            if (1 <= new_char_value && new_char_value <= 26) {
+                                dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1] = 
+                                    std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1], new_value_replaced);
+                            } else if (27 <= new_char_value && new_char_value <= 52) {
+                                dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1] = 
+                                    std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1], new_value_replaced);
+                            } else if (53 <= new_char_value && new_char_value <= 62) {
+                                dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1] = 
+                                    std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1], new_value_replaced);
+                            } else {
+                                dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1] = 
+                                    std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1], new_value_replaced);
+                            }
+                        }
+
+                        int new_char_value = GetCharacterValue(secret_key[i]);
+                        if (new_char_value == prev_char_value && consecutive_flag) continue;
+                        int new_value_kept = new_value - 1;
+                        if (1 <= new_char_value && new_char_value <= 26) {
+                            dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1] = 
+                                std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + 2 + has_lowercase + has_digit][s + 1], new_value_kept);
+                        } else if (27 <= new_char_value && new_char_value <= 52) {
+                            dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1] = 
+                                std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + 4 + has_digit][s + 1], new_value_kept);
+                        } else if (53 <= new_char_value && new_char_value <= 62) {
+                            dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1] = 
+                                std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + 8][s + 1], new_value_kept);
+                        } else {
+                            dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1] = 
+                                std::min(dp_table[i + 1][new_char_value][(new_char_value == prev_char_value) + has_uppercase + has_lowercase + has_digit][s + 1], new_value_kept);
+                        }
                     }
                 }
             }
         }
 
-        for(int index = total_cells - 1; index >= 0; --index) {
-            int row_idx = cells[index][0] - 1;
-            int col_idx = cells[index][1] - 1;
-            int node_value = row_idx * col + col_idx;
-            grid[row_idx][col_idx] = 0;
-
-            for(int dir = 0; dir < 4; dir++) {
-                int new_row = row_idx + directions[dir];
-                int new_col = col_idx + directions[dir + 1];
-
-                if(new_row >= 0 && new_row < row && new_col >= 0 && new_col < col && grid[new_row][new_col] == 0) {
-                    int next_value = new_row * col + new_col;
-                    disjoint_set.Merge(node_value, next_value);
-                }
+         int min_steps = 1000;
+        for (int i = 0; i < 65; ++i) {
+            for (int length = 6; length <= 20; ++length) {
+                min_steps = std::min(min_steps, dp_table[key_length][i][15][length]);
+                min_steps = std::min(min_steps, dp_table[key_length][i][14][length]);
             }
-
-            if(row_idx == 0) disjoint_set.Merge(row_start, node_value);
-            if(row_idx == row - 1) disjoint_set.Merge(row_end, node_value);
-
-            if(disjoint_set.IsConnected(row_start, row_end)) return index;
         }
-
-        return 0;
+        return min_steps;
     }
-};
 
-int main() {
-  
-     Solution solution;
-  
-    //TEST
-    //TEST_END
-  
-    return 0;
+int main(){
+  return 0;
 }
