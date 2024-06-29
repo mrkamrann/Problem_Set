@@ -20,7 +20,6 @@ Use appropriate Error Handling using the stdexcept library for the invalid test 
 Input Type:
 
 A vector<int> denoting receiver
-An integer denoting start_index
 An integer denoting counter
 
 Input Constraints:
@@ -30,3 +29,70 @@ Each value of receiver[i] should be in the range [0, len - 1] inclusive.
 The values for counter should be in the range [1, 10^10] inclusive.
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+
+    long long GetMaxFunctionValue(std::vector<int>& receiver, long long counter) {
+      
+        long long len = receiver.size();
+        
+        if (len < 1 || len > 100000) {
+            throw std::invalid_argument("The length of receiver should be at least 1 and at most 100000 inclusive.");
+        }
+
+        for (long long i = 0; i < len; i++) {
+            if (receiver[i] < 0 || receiver[i] >= len) {
+                throw std::invalid_argument("Each value of receiver[i] should be in the range [0, len - 1] inclusive.");
+            }
+        }
+
+        if (counter < 1 || counter > 10000000000LL) {
+            throw std::invalid_argument("The values for counter should be in the range [1, 10000000000] inclusive.");
+        }
+
+        long long max_function_value = 0;
+        std::vector<std::vector<long long>> parent(len, std::vector<long long>(40, 0));
+        std::vector<std::vector<long long>> sum(len, std::vector<long long>(40, 0));
+
+        for (long long i = 0; i < len; i++) {
+            parent[i][0] = receiver[i];
+            sum[i][0] = receiver[i];
+        }
+
+        for (long long i = 1; i < 40; i++) {
+            for (long long j = 0; j < len; j++) {
+                parent[j][i] = parent[parent[j][i - 1]][i - 1];
+                sum[j][i] = sum[j][i - 1] + sum[parent[j][i - 1]][i - 1];
+            }
+        }
+
+        for (long long i = 0; i < len; i++) {
+            long long current_function_value = i;
+            long long current_position = i;
+            long long shift = 1;
+
+            for (long long j = 0; j < 40; j++) {
+                if (j != 0) shift <<= 1;
+
+                if (counter & shift) {
+                    current_function_value += sum[current_position][j];
+                    current_position = parent[current_position][j];
+                }
+            }
+
+            max_function_value = std::max(max_function_value, current_function_value);
+        }
+
+        return max_function_value;
+    }
+
+int main() {
+    //TEST
+    
+    //TEST_END
+    return 0;
+}
