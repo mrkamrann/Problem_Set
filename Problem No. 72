@@ -2,7 +2,7 @@
 Link : https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/description/
 
 Julie, a skilled mathematician and problem solver, was faced with an intriguing challenge one rainy afternoon. She received a vector nums containing exactly 2 * len 
-integers.Julie's task was to split this vector into two smaller vectors of length len eachJulie needs to partition nums into two vectors of length len to minimize 
+integers.Julie's task was to split this vector into two smaller vectors of length len each Julie needs to partition nums into two vectors of length len to minimize 
 the absolute  difference of the sums of the vectors. To partition nums, Julie should put each element of nums into one of the two vectors.
 
 Create a C++ Function MinimumDifference that will return an integer denoting the minimum possible absolute difference.
@@ -13,7 +13,6 @@ Input Type:
 
 A vector<int> denoting nums
 
-
 Input Constraints:
 
 The length of nums should be exactly 2 * len.
@@ -21,3 +20,81 @@ The values for len should be in the range [1, 15] inclusive.
 Each value of nums[i] should be in the range [-10^7, 10^7] inclusive.
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+#include <numeric>
+
+
+    int MinimumDifference(std::vector<int>& nums) {
+
+        int len = nums.size();
+
+        if (len % 2 != 0 || len < 2 || len > 30) {
+            throw std::invalid_argument("The length of nums should be exactly 2 * len, where len is in the range [1, 15] inclusive.");
+        }
+
+        int half_len = len / 2;
+
+        for (int i = 0; i < len; i++) {
+            if (nums[i] < -10000000 || nums[i] > 10000000) {
+                throw std::invalid_argument("Each value of nums[i] should be in the range [-10000000, 10000000] inclusive.");
+            }
+        }
+
+        std::vector<std::vector<int>> left_sum(half_len + 1), right_sum(half_len + 1);
+        int count_limit_mask = (1 << half_len) - 1;
+
+        for (int i = 0; i <= count_limit_mask; i++) {
+            int left_size = 0;
+            int left_sum_value = 0;
+            int right_sum_value = 0;
+
+            for (int j = 0; j < half_len; j++) {
+                if (i & (1 << j)) {
+                    left_size++;
+                    left_sum_value += nums[j];
+                    right_sum_value += nums[j + half_len];
+                }
+            }
+
+            left_sum[left_size].push_back(left_sum_value);
+            right_sum[left_size].push_back(right_sum_value);
+        }
+
+        int total_sum = std::accumulate(nums.begin(), nums.end(), 0);
+        int min_difference = std::min(abs(total_sum - 2 * left_sum[half_len][0]), abs(total_sum - 2 * right_sum[half_len][0]));
+
+        for (int right_size = 0; right_size <= half_len; right_size++) {
+            std::sort(right_sum[right_size].begin(), right_sum[right_size].end());
+        }
+
+        for (int left_size = 1; left_size < half_len; left_size++) {
+            for (int left_sum_value : left_sum[left_size]) {
+                int desired_right_sum = (total_sum - 2 * left_sum_value) / 2;
+                int right_size = half_len - left_size;
+                std::vector<int>& right_sums = right_sum[right_size];
+
+                std::vector<int>::iterator itr = std::lower_bound(right_sums.begin(), right_sums.end(), desired_right_sum);
+                if (itr != right_sums.end()) {
+                    min_difference = std::min(min_difference, abs(total_sum - 2 * left_sum_value - 2 * (*itr)));
+                }
+                if (itr != right_sums.begin()) {
+                    itr--;
+                    min_difference = std::min(min_difference, abs(total_sum - 2 * left_sum_value - 2 * (*itr)));
+                }
+            }
+        }
+
+        return min_difference;
+}
+
+
+int main() {
+    //TEST
+ 
+    //TEST_END
+    return 0;
+}
