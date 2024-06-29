@@ -14,7 +14,7 @@ If p > q then rank(p) > rank(q)
 
 The rank should be as small as possible.
 
-Create a C++ Function MatrixRankTransform that will return a vector<vector<int>> denoting  a new matrix answer where answer[row][col] is the rank of matrix[row][col].
+Create a C++ class Solution that will contain a Function MatrixRankTransform that will return a vector<vector<int>> denoting  a new matrix answer where answer[row][col] is the rank of matrix[row][col].
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -26,4 +26,122 @@ Input Constraints:
 
 The dimensions of matrix should be row_count x col_count where 1 <= row_count, col_count <= 500 inclusive.
 Each value of matrix[row][col] should be in the range [-10^9, 10^9] inclusive.
+
 */
+
+#include <vector>
+#include <queue>
+#include <unordered_map>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+private:
+    std::vector<int> parent;
+
+    int DsFind(int x) {
+        if (parent[x] != x) parent[x] = DsFind(parent[x]);
+        return parent[x];
+    }
+    
+    void DsUnion(int x, int y) {
+        int x_parent = DsFind(x);
+        int y_parent = DsFind(y);
+        parent[x_parent] = y_parent;
+    }
+
+public:
+    std::vector<std::vector<int>> MatrixRankTransform(std::vector<std::vector<int>>& matrix) {
+        int row_count = matrix.size();
+        int col_count = matrix[0].size();
+
+        if (row_count < 1 || row_count > 500 || col_count < 1 || col_count > 500) {
+            throw std::invalid_argument("The dimensions of matrix should be row_count x col_count where 1 <= row_count, col_count <= 500 inclusive.");
+        }
+
+        for (int i = 0; i < row_count; i++) {
+            for (int j = 0; j < col_count; j++) {
+                if (matrix[i][j] < -1000000000 || matrix[i][j] > 1000000000) {
+                    throw std::invalid_argument("Each value of matrix[row][col] should be in the range [-1000000000, 1000000000] inclusive.");
+                }
+            }
+        }
+
+        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> priority_queue;
+        parent.resize(row_count * col_count, 0);
+
+        for (int i = 0; i < parent.size(); i++) {
+            parent[i] = i;
+        }
+
+        for (int r = 0; r < row_count; r++) {
+            std::unordered_map<int, int> col_map;
+            for (int c = 0; c < col_count; c++) {
+                int value = matrix[r][c];
+                int ref = r * col_count + c;
+                if (col_map.count(value)) {
+                    DsUnion(ref, col_map[value]);
+                } else {
+                    col_map[value] = ref;
+                }
+                priority_queue.emplace(value, ref);
+            }
+        }
+
+        for (int c = 0; c < col_count; c++) {
+            std::unordered_map<int, int> row_map;
+            for (int r = 0; r < row_count; r++) {
+                int value = matrix[r][c];
+                int ref = r * col_count + c;
+                if (row_map.count(value)) {
+                    DsUnion(ref, row_map[value]);
+                } else {
+                    row_map[value] = ref;
+                }
+            }
+        }
+
+        std::unordered_map<int, std::vector<int>> group_map;
+        for (int i = 0; i < parent.size(); i++) {
+            group_map[DsFind(i)].push_back(i);
+        }
+
+        std::vector<std::vector<int>> result(row_count, std::vector<int>(col_count, -1));
+        std::vector<int> row_max(row_count, 0);
+        std::vector<int> col_max(col_count, 0);
+
+        while (!priority_queue.empty()) {
+            int curr_ref = priority_queue.top().second;
+            priority_queue.pop();
+            int curr_r = curr_ref / col_count;
+            int curr_c = curr_ref % col_count;
+
+            if (result[curr_r][curr_c] >= 0) continue;
+
+            int max_r = 0, max_c = 0;
+            for (int each_ref : group_map[DsFind(curr_ref)]) {
+                max_r = std::max(max_r, row_max[each_ref / col_count]);
+                max_c = std::max(max_c, col_max[each_ref % col_count]);
+            }
+
+            int rank = std::max(max_r, max_c) + 1;
+            for (int each_ref : group_map[DsFind(curr_ref)]) {
+                int each_r = each_ref / col_count;
+                int each_c = each_ref % col_count;
+                result[each_r][each_c] = rank;
+                row_max[each_r] = rank;
+                col_max[each_c] = rank;
+            }
+        }
+        return result;
+    }
+};
+
+int main() {
+  
+    Solution solution;
+    //TEST
+   
+    //TEST_END
+    return 0;
+}
