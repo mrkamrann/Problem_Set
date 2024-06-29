@@ -93,8 +93,165 @@ Each value of nums[i] should be in the range [-10^7, 10^7] inclusive.
 
 
 int main() {
-    //TEST
- 
-    //TEST_END
+  
+//TEST
+std::vector<int> nums_1 = {1, 2, 3, 4};
+int expected_1 = 0;
+int result_1 = MinimumDifference(nums_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> nums_2 = {-36,36};
+int expected_2 = 72;
+int result_2 = MinimumDifference(nums_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> nums_3 = {0, 0, 0, 0};
+int expected_3 = 0;
+int result_3 = MinimumDifference(nums_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> nums_4 = {3,9,7,3};
+int expected_4 = 2;
+int result_4 = MinimumDifference(nums_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> nums_5 = {-5, 5, -5, 5, -5, 5};
+int expected_5 = 10;
+int result_5 = MinimumDifference(nums_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> nums_6 = {100, 100, 50, -50, 25, 25, 10, -10};
+int expected_6 = 0;
+int result_6 = MinimumDifference(nums_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> nums_7 = {9999999, -9999999, 5000000, -5000000, 0, 999, 1, -10000};
+int expected_7 = 9000;
+int result_7 = MinimumDifference(nums_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> nums_8 = {5, 4, 3, 2, 1, 0, -1, -2, -3, 777, -5, -6, -7, -8, -9, -1000};
+int expected_8 = 167;
+int result_8 = MinimumDifference(nums_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> nums_9 = {10000000, -10000000, 9999999, -9999999, 8888888, -8888888, 7777777, -7777777};
+int expected_9 = 0;
+int result_9 = MinimumDifference(nums_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> nums_10 = {1};
+try {
+   
+    MinimumDifference(nums_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {1, 2, 3};
+try {
+    
+    MinimumDifference(nums_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_12 = {-10000000,-999999999};
+try {
+   
+    MinimumDifference(nums_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_13 = {10000001, -10000001, 10000002, -10000002};
+try {
+    MinimumDifference(nums_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_14 = {1, 2, 3, 4, 5};
+try {
+   
+    MinimumDifference(nums_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_15 = {};
+try {
+  
+    MinimumDifference(nums_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_16 = {1, 2, 3};
+try {
+   
+    MinimumDifference(nums_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_17 = {-10000000, 1000000000, -9999999, 9999999};
+try {
+   
+    MinimumDifference(nums_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_18(1e4,1);
+try {
+    MinimumDifference(nums_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
