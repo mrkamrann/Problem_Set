@@ -1,7 +1,7 @@
 /*
 Link : https://leetcode.com/problems/maximize-value-of-function-in-a-ball-passing-game/description/
 
-Julie is given an integer array receiver of length len and an integer counter. len players are playing a ball-passing game.
+Julie is given an integer vector receiver of length len and an integer counter. len players are playing a ball-passing game.
 
 Julie chooses the starting player, start_index. The game proceeds as follows: player start_index passes the ball to player receiver[start_index], 
 who then passes it to receiver[receiver[start_index]], and so on, for counter passes in total. The game's score is the sum of the indices of the players who 
