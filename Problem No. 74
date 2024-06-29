@@ -12,8 +12,7 @@ row and end at any cell in the bottom row. Julie can only travel in the four car
 
 Return the last day where it is possible to walk from the top to the bottom by only walking on land cells.
 
-Create a C++ Function LatestDayToCross that will return an integer denoting the last day where it is possible to walk from the top to the bottom by only walking 
-on land cells.
+Create a C++ class Solution that will contain a function LatestDayToCross that will return an integer denoting the last day where it is possible to walk from the top to the bottom by only walking on land cells.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -32,3 +31,128 @@ Each value of cells[i][0] should be in the range [1, row] inclusive.
 Each value of cells[i][1] should be in the range [1, col] inclusive.
 All the values of cells should be unique.
 */
+
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class DisjointSet {
+private:
+    std::vector<int> size, parent;
+
+public:
+    DisjointSet(int count) {
+        size.resize(count, 1);
+        parent.resize(count);
+        for(int index = 0; index < count; index++) {
+            parent[index] = index;
+        }
+    }
+
+    int FindParent(int node) {
+        if(parent[node] == node) return node;
+        return parent[node] = FindParent(parent[node]);
+    }
+
+    void Merge(int node_1, int node_2) {
+        int parent_1 = FindParent(node_1);
+        int parent_2 = FindParent(node_2);
+
+        if(parent_1 == parent_2) return;
+
+        if(size[parent_1] < size[parent_2]) {
+            parent[parent_1] = parent_2;
+            size[parent_2] += size[parent_1];
+        } else {
+            parent[parent_2] = parent_1;
+            size[parent_1] += size[parent_2];
+        }
+    }
+
+    bool IsConnected(int node_1, int node_2) {
+        return FindParent(node_1) == FindParent(node_2);
+    }
+};
+
+class Solution {
+public:
+    int LatestDayToCross(int row, int col, std::vector<std::vector<int>>& cells) {
+        if(row < 2 || row > 20000 || col < 2 || col > 20000 || row * col < 4 || row * col > 20000) {
+            throw std::invalid_argument("Input constraints violated");
+        }
+
+        if(cells.size() != row * col) {
+            throw std::invalid_argument("The length of cells should be exactly row * col.");
+        }
+
+        for(std::size_t index = 0; index < cells.size(); ++index) {
+            if(cells[index][0] < 1 || cells[index][0] > row || cells[index][1] < 1 || cells[index][1] > col) {
+                throw std::invalid_argument("Each value of cells[i][0] should be in the range [1, row] inclusive and cells[i][1] should be in the range [1, col] inclusive.");
+            }
+        }
+
+        std::vector<std::vector<int>> grid(row, std::vector<int>(col, 0));
+        for(std::size_t index = 0; index < cells.size(); ++index) {
+            if(grid[cells[index][0] - 1][cells[index][1] - 1] != 0) {
+                throw std::invalid_argument("All the values of cells should be unique.");
+            }
+            grid[cells[index][0] - 1][cells[index][1] - 1] = 1;
+        } 
+
+        int directions[5] = {-1, 0, 1, 0, -1};
+        int total_cells = row * col;
+        int row_start = total_cells, row_end = total_cells + 1;
+        DisjointSet disjoint_set(total_cells + 2);
+
+        for(int row_idx = 0; row_idx < row; row_idx++) {
+            for(int col_idx = 0; col_idx < col; col_idx++) {
+                for(int dir = 0; dir < 4; dir++) {
+                    int new_row = row_idx + directions[dir];
+                    int new_col = col_idx + directions[dir + 1];
+
+                    if(new_row >= 0 && new_row < row && new_col >= 0 && new_col < col && grid[new_row][new_col] == 0) {
+                        int node_value = row_idx * col + col_idx;
+                        int next_value = new_row * col + new_col;
+                        disjoint_set.Merge(node_value, next_value);
+                    }
+                }
+            }
+        }
+
+        for(int index = total_cells - 1; index >= 0; --index) {
+            int row_idx = cells[index][0] - 1;
+            int col_idx = cells[index][1] - 1;
+            int node_value = row_idx * col + col_idx;
+            grid[row_idx][col_idx] = 0;
+
+            for(int dir = 0; dir < 4; dir++) {
+                int new_row = row_idx + directions[dir];
+                int new_col = col_idx + directions[dir + 1];
+
+                if(new_row >= 0 && new_row < row && new_col >= 0 && new_col < col && grid[new_row][new_col] == 0) {
+                    int next_value = new_row * col + new_col;
+                    disjoint_set.Merge(node_value, next_value);
+                }
+            }
+
+            if(row_idx == 0) disjoint_set.Merge(row_start, node_value);
+            if(row_idx == row - 1) disjoint_set.Merge(row_end, node_value);
+
+            if(disjoint_set.IsConnected(row_start, row_end)) return index;
+        }
+
+        return 0;
+    }
+};
+
+int main() {
+  
+     Solution solution;
+  
+    //TEST
+    //TEST_END
+  
+    return 0;
+}
