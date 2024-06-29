@@ -17,7 +17,7 @@ ending at vertex t_i. If there exists no such walk, the answer is -1.
 
 Return the vector answer, where answer[i] denotes the minimum cost of a walk for query i.
 
-Create a C++ Function MinimumCost that will return a vector<int> denoting the vector answer.
+Create a C++ class Solution that will contain a function MinimumCost that will return a vector<int> denoting the vector answer.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -40,8 +40,109 @@ The length of query should be at least 1 and at most 10^5 inclusive.
 Each query should be a vector of size 2.
 Each value of s_i and t_i should be in the range [0, len - 1] inclusive.
 s_i should not be equal to t_i
-​
+
  
 */
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+private:
+    std::vector<int> parent;
+    std::vector<int> rank;
+    std::vector<int> weight;
+
+    int Find(int node) {
+        if (parent[node] != node) {
+            parent[node] = Find(parent[node]);
+        }
+        return parent[node];
+    }
+
+    void Merge(int source, int destination, int edge_weight) {
+        int parent_source = Find(source);
+        int parent_destination = Find(destination);
+        if (parent_source == parent_destination) {
+            if (weight[parent_source] == -1) {
+                weight[parent_source] = edge_weight;
+            } else {
+                weight[parent_source] &= edge_weight;
+            }
+            return;
+        }
+        if (rank[parent_source] > rank[parent_destination]) {
+            parent[parent_destination] = parent_source;
+            if (weight[parent_source] == -1) {
+                weight[parent_source] = edge_weight;
+            } else {
+                weight[parent_source] &= edge_weight & weight[parent_destination];
+            }
+            rank[parent_source]++;
+        } else {
+            parent[parent_source] = parent_destination;
+            if (weight[parent_destination] == -1) {
+                weight[parent_destination] = edge_weight;
+            } else {
+                weight[parent_destination] &= edge_weight & weight[parent_source];
+            }
+            rank[parent_destination]++;
+        }
+    }
+
+public:
+    std::vector<int> MinimumCost(int len, std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& queries) {
+        if (len < 2 || len > 100000 || edges.size() > 100000 || queries.size() < 1 || queries.size() > 100000) {
+            throw std::invalid_argument("Input constraints are violated.");
+        }
+
+        for (const std::vector<int>& edge : edges) {
+            if (edge.size() != 3 || edge[0] < 0 || edge[0] >= len || edge[1] < 0 || edge[1] >= len || edge[0] == edge[1] || edge[2] < 0 || edge[2] > 100000) {
+                throw std::invalid_argument("Each edge must be a vector of size 3 with valid u_i, v_i, and w_i.");
+            }
+        }
+
+        for (const std::vector<int>& query : queries) {
+            if (query.size() != 2 || query[0] < 0 || query[0] >= len || query[1] < 0 || query[1] >= len || query[0] == query[1]) {
+                throw std::invalid_argument("Each query must be a vector of size 2 with valid s_i and t_i.");
+            }
+        }
+
+        parent.resize(len);
+        rank.resize(len, 0);
+        weight.resize(len, -1);
+
+        for (int i = 0; i < len; ++i) {
+            parent[i] = i;
+        }
+
+        for (const std::vector<int>& edge : edges) {
+            Merge(edge[0], edge[1], edge[2]);
+        }
+
+        std::vector<int> results;
+        for (const std::vector<int>& query : queries) {
+            int source = query[0];
+            int destination = query[1];
+            int parent_source = Find(source);
+            int parent_destination = Find(destination);
+            if (parent_source != parent_destination) {
+                results.push_back(-1);
+            } else {
+                results.push_back(weight[parent_source]);
+            }
+        }
+        return results;
+    }
+};
+
+int main() {
+  
+  Solution solution;
+    //TEST
+ 
+    //TEST_END
+    return 0;
+}
 
 
