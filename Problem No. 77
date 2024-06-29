@@ -15,7 +15,7 @@ share an edge in the tree.
 
 Return a vector answer of length m where answer[i] is the answer to the ith query.
 
-Create a C++ Function MinOperationsQueries that will return avector<int> denoting the vector answer.
+Create a C++ class Solution that will contain a function MinOperationsQueries that will return avector<int> denoting the vector answer.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -39,3 +39,123 @@ Each query should be a vector of size 2.
 Each value of a_i and b_i should be in the range [0, len - 1] inclusive.
 
 */
+
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+private:
+    std::vector<std::vector<int>> values;
+    std::vector<std::vector<int>> dp_table;
+    std::vector<std::vector<std::pair<int, int>>> tree;
+    std::vector<int> height;
+
+    void BinaryLifting(int node, int parent, std::vector<int>& freq, int level) {
+        values[node] = freq;
+        dp_table[node][0] = parent;
+        height[node] = level;
+        for (int i = 1; i < 15; ++i) {
+            if (dp_table[node][i - 1] != -1) {
+                dp_table[node][i] = dp_table[dp_table[node][i - 1]][i - 1];
+            }
+        }
+        for (std::pair<int, int>& neighbor : tree[node]) {
+            if (neighbor.first != parent) {
+                ++freq[neighbor.second];
+                BinaryLifting(neighbor.first, node, freq, level + 1);
+                --freq[neighbor.second];
+            }
+        }
+    }
+
+    int Lift(int node, int jump) {
+        for (int i = 14; i >= 0; --i) {
+            if (node == -1) return node;
+            if (jump & (1 << i)) {
+                node = dp_table[node][i];
+            }
+        }
+        return node;
+    }
+
+    int Ancestor(int node_a, int node_b) {
+        if (height[node_a] < height[node_b]) std::swap(node_a, node_b);
+        node_a = Lift(node_a, height[node_a] - height[node_b]);
+        if (node_a == node_b) return node_a;
+        for (int i = 14; i >= 0; --i) {
+            if (dp_table[node_a][i] != dp_table[node_b][i]) {
+                node_a = dp_table[node_a][i];
+                node_b = dp_table[node_b][i];
+            }
+        }
+        return Lift(node_a, 1);
+    }
+
+public:
+    std::vector<int> MinOperationsQueries(int node_count, std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& queries) {
+        if (node_count < 1 || node_count > 10000) {
+            throw std::invalid_argument("node_count must be in the range [1, 10000]");
+        }
+        if (edges.size() != node_count - 1) {
+            throw std::invalid_argument("The length of edges must be equal to node_count - 1");
+        }
+        if (queries.size() < 1 || queries.size() > 20000) {
+            throw std::invalid_argument("The length of queries must be in the range [1, 20000]");
+        }
+
+        for (const std::vector<int>& edge : edges) {
+            if (edge.size() != 3 || edge[0] < 0 || edge[0] >= node_count || edge[1] < 0 || edge[1] >= node_count || edge[2] < 1 || edge[2] > 26) {
+                throw std::invalid_argument("Each edge must be a vector of size 3 with valid node indices and weights in the range [1, 26]");
+            }
+        }
+
+        for (const std::vector<int>& query : queries) {
+            if (query.size() != 2 || query[0] < 0 || query[0] >= node_count || query[1] < 0 || query[1] >= node_count) {
+                throw std::invalid_argument("Each query must be a vector of size 2 with valid node indices");
+            }
+        }
+
+        values = std::vector<std::vector<int>>(node_count);
+        dp_table = std::vector<std::vector<int>>(node_count, std::vector<int>(15, -1));
+        tree = std::vector<std::vector<std::pair<int, int>>>(node_count);
+        height = std::vector<int>(node_count);
+
+        for (const std::vector<int>& edge : edges) {
+            tree[edge[0]].emplace_back(edge[1], edge[2] - 1);
+            tree[edge[1]].emplace_back(edge[0], edge[2] - 1);
+        }
+
+        std::vector<int> freq(26, 0);
+        BinaryLifting(0, -1, freq, 0);
+
+        std::vector<int> result;
+        for (const std::vector<int>& query : queries) {
+            int common_ancestor = Ancestor(query[0], query[1]);
+            std::vector<int> freq_diff(26, 0);
+            int max_freq = 0, sum_freq = 0;
+            for (int i = 0; i < 26; ++i) {
+                freq_diff[i] = values[query[0]][i] + values[query[1]][i] - 2 * values[common_ancestor][i];
+                sum_freq += freq_diff[i];
+                max_freq = std::max(max_freq, freq_diff[i]);
+            }
+            result.push_back(sum_freq - max_freq);
+        }
+        return result;
+    }
+};
+
+int main() {
+  
+  Solution solution;
+  
+    //TEST
+
+    
+
+    //TEST_END
+    return 0;
+}
