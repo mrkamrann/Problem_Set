@@ -18,7 +18,7 @@ Input Type:
 
 A vector<int> denoting nums.
 
-Constraints:
+Input Constraints:
 
 The length of nums must be at least 1 and at most 30 inclusive.
 Each value in nums must be between 0 and 10,000 inclusive.
@@ -127,6 +127,131 @@ public:
 };
 
 int main(){
+
+Solution solution;
+  //TEST
+std::vector<int> nums_1 = {1};
+bool expected_1 = false;
+bool result_1 = solution.SplitVectorSameAverage(nums_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_2 = {1, 2};
+bool expected_2 = false;
+bool result_2 = solution.SplitVectorSameAverage(nums_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_3 = {1, 2, 3, 4, 5, 6, 7, 8};
+bool expected_3 = true;
+bool result_3 = solution.SplitVectorSameAverage(nums_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_4 = {3, 1, 4, 2, 5};
+bool expected_4 = true;
+bool result_4 = solution.SplitVectorSameAverage(nums_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_5 = {5, 3, 11, 19, 10};
+bool expected_5 = false;
+bool result_5 = solution.SplitVectorSameAverage(nums_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_6 = {6, 2, 8, 4, 3, 9};
+bool expected_6 = true;
+bool result_6 = solution.SplitVectorSameAverage(nums_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_7 = {10, 1, 2, 3, 9, 8, 7};
+bool expected_7 = false;
+bool result_7 = solution.SplitVectorSameAverage(nums_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_8 = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+bool expected_8 = true;
+bool result_8 = solution.SplitVectorSameAverage(nums_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_9 = {10000, 9999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+bool expected_9 = true;
+bool result_9 = solution.SplitVectorSameAverage(nums_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_10 = {};
+try {
+    solution.SplitVectorSameAverage(nums_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+try {
+    solution.SplitVectorSameAverage(nums_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_12 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
+bool expected_12 = true;
+bool result_12 = solution.SplitVectorSameAverage(nums_12);
+assert(result_12 == expected_12);
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_13 = {-1990, -2, -4};
+try {
+    solution.SplitVectorSameAverage(nums_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<int> nums_14 = {1, 2, 3, 10001}; 
+try {
+    solution.SplitVectorSameAverage(nums_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
   return 0;
 }
 
