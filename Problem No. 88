@@ -1,4 +1,28 @@
 /*
-Link:
+Link: https://leetcode.com/problems/split-the-array-to-make-coprime-products/
 
+Julie is working on a problem involving an integer vector nums of length len. She needs to find a way to split the vector such that the product of the 
+elements on the left side of the split and the product of the elements on the right side are coprime.
+
+Here's the detailed task Julie needs to perform:
+
+She has a 0-indexed integer vector nums with a length len.
+A split at an index idx (where 0 ≤ idx ≤ len - 2) is considered valid if the product of the first idx + 1 elements and the product of the remaining 
+elements in the vector are coprime.
+Two values are said to be coprime if their greatest common divisor (gcd) is 1.
+Julie needs to return the smallest index idx where the vector can be split validly. If no such valid split exists, she should return -1.
+
+Create a C++ Function FindValidSplit that will return an integer denoting the smallest index at which the vector can be split validly or -1 
+if no such split exists.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting nums.
+
+Input Constraints:
+
+The length of nums should be at least 1 and at most 10^4 inclusive.
+Each value in nums should be in the range [1, 10^6] inclusive.
 */
