@@ -1,4 +1,35 @@
 /*
-Link:
+Link: https://leetcode.com/problems/earliest-second-to-mark-indices-ii/description/
 
+Julie is working on a problem involving two 1-indexed integer vectors, nums and change_indices, with lengths len_nums and len_indices, respectively. 
+Her task is to mark all indices in the vector nums under the following conditions:
+
+Initially, all indices in nums are unmarked. Julie can perform one of the following operations each second, from second 1 to len_indices:
+
+1. Choose an index i in the range [1, len_nums] and decrement nums[i] by 1.
+2. Set nums[change_indices[s]] to any non-negative value at second s.
+3. Choose an index i in the range [1, len_nums] where nums[i] is equal to 0, and mark index i.
+4. Do nothing.
+
+Julie needs to determine the earliest second (in the range [1, len_indices]) when all indices in nums can be marked optimally. If it is impossible to mark all 
+indices within the given time, she should return -1.
+
+Julie’s task is to find the earliest second when all indices in nums can be marked, or determine if it is impossible.
+
+Create a C++ Function EarliestSecondToMarkIndices that will return an integer denoting the earliest second when all indices can be marked, 
+or -1 if it is impossible.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting nums.
+A vector<int> denoting change_indices.
+
+Input Constraints:
+
+The length of nums (len_nums) should be at least 1 and at most inclusive.
+Each value in nums should be in the range [0, 10^9] inclusive.
+The length of change_indices (len_indices) should be at least 1 and at most 5000 inclusive.
+Each value in change_indices should be in the range [1, len_nums] inclusive.
 */
