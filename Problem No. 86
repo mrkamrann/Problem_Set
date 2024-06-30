@@ -149,5 +149,169 @@ Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m -
 
 int main(){
   
+// TEST 
+std::vector<std::vector<int>> edges_1_1 = {{0, 1}, {1, 2}};
+std::vector<std::vector<int>> edges_2_1 = {{0, 1}, {1, 2}};
+int expected_1 = 3;
+int result_1 = MinimumDiameterAfterMerge(edges_1_1, edges_2_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_2 = {{0, 1}, {1, 2}, {2, 3}};
+std::vector<std::vector<int>> edges_2_2 = {{0, 1}, {1, 2}};
+int expected_2 = 4;
+int result_2 = MinimumDiameterAfterMerge(edges_1_2, edges_2_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> edges_1_3 = {{0, 1}, {1, 2}, {2, 3}};
+std::vector<std::vector<int>> edges_2_3 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+int expected_3 = 5;
+int result_3 = MinimumDiameterAfterMerge(edges_1_3, edges_2_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> edges_1_4 = {{0, 1}};
+std::vector<std::vector<int>> edges_2_4 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}};
+int expected_4 = 5;
+int result_4 = MinimumDiameterAfterMerge(edges_1_4, edges_2_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> edges_1_5 = {{0, 1}, {1, 2}};
+std::vector<std::vector<int>> edges_2_5 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+int expected_5 = 4;
+int result_5 = MinimumDiameterAfterMerge(edges_1_5, edges_2_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<std::vector<int>> edges_1_6 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_6 = {{0, 1}};
+int expected_6 = 4;
+int result_6 = MinimumDiameterAfterMerge(edges_1_6, edges_2_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_7 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_7 = {{0, 1}, {1, 2}, {2, 3}};
+int expected_7 = 5;
+int result_7 = MinimumDiameterAfterMerge(edges_1_7, edges_2_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_8 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_8 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+int expected_8 = 5;
+int result_8 = MinimumDiameterAfterMerge(edges_1_8, edges_2_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_9 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}};
+std::vector<std::vector<int>> edges_2_9 = {{0, 1}, {1, 2}, {2, 3}};
+int expected_9 = 6;
+int result_9 = MinimumDiameterAfterMerge(edges_1_9, edges_2_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+  
+// TEST 
+
+std::vector<std::vector<int>> edges_1_10 = {};
+std::vector<std::vector<int>> edges_2_10 = {{0, -1}, {1, 2}};
+try {
+    MinimumDiameterAfterMerge(edges_1_10, edges_2_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+
+std::vector<std::vector<int>> edges_1_11 = {{0, 4491}, {1, 2}};
+std::vector<std::vector<int>> edges_2_11 = {};
+try {
+    MinimumDiameterAfterMerge(edges_1_11, edges_2_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_12 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_12 = {{0, 1}, {1, -542}, {2, 3}, {3, -454}, {4, -5}};
+try {
+    MinimumDiameterAfterMerge(edges_1_12, edges_2_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_13(1e6, std::vector<int>(2,4));
+std::vector<std::vector<int>> edges_2_13 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+try {
+    MinimumDiameterAfterMerge(edges_1_13, edges_2_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_14 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_14(1e6, std::vector<int>(2,4));
+try {
+    MinimumDiameterAfterMerge(edges_1_14, edges_2_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_15 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_15 = {{0, 1}, {1, 1000000}, {2, 3}};
+try {
+    MinimumDiameterAfterMerge(edges_1_15, edges_2_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_16 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_16 = {{0, 1}, {1, -11112}, {2, 3}};
+try {
+    MinimumDiameterAfterMerge(edges_1_16, edges_2_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<std::vector<int>> edges_1_17 = {{0, 1}, {1, -445782}, {2, 3}, {3, 4}};
+std::vector<std::vector<int>> edges_2_17 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}};
+try {
+    MinimumDiameterAfterMerge(edges_1_17, edges_2_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+
   return 0;
 }
