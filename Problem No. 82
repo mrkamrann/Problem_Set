@@ -32,3 +32,160 @@ The value of restricted_vec[i] should not be equal to position.
 All values in restricted_vec should be unique.
 
 */
+
+#include <vector>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+
+    std::vector<int> MinReverseOperations(int len, int position, std::vector<int>& restricted_vec, int sub_len) {
+
+        if (len < 1 || len > 100000){
+           throw std::invalid_argument("The value of len should be at least 1 and at most 100,000 inclusive.");
+        }
+
+        if (position < 0 || position >= len){
+          throw std::invalid_argument("The value of position should be in the range [0, len - 1] inclusive.");
+        } 
+
+        if (restricted_vec.size() > static_cast<std::size_t>(len - 1)){
+           throw std::invalid_argument("The length of restricted_vec should be at most len - 1 inclusive.");
+        }
+
+        if (sub_len < 1 || sub_len > len){
+            throw std::invalid_argument("The value of sub_len should be in the range [1, len] inclusive.");
+         }
+        
+        std::vector<bool> restricted_set(len, false);
+        for (std::size_t i = 0; i < restricted_vec.size(); ++i) {
+            if (restricted_vec[i] < 0 || restricted_vec[i] >= len) throw std::invalid_argument("Each value of restricted_vec[i] should be in the range [0, len - 1] inclusive.");
+            if (restricted_vec[i] == position) throw std::invalid_argument("The value of restricted_vec[i] should not be equal to position.");
+            if (restricted_set[restricted_vec[i]]) throw std::invalid_argument("All values in restricted_vec should be unique.");
+            restricted_set[restricted_vec[i]] = true;
+        }
+        
+        std::vector<int> result(len, -1);
+        result[position] = 0;
+        if (sub_len == 1) return result;
+
+        std::vector<bool> visited(len, false);
+        std::queue<int> queue;
+
+        visited[position] = true;
+        queue.push(position);
+
+        while (!queue.empty()) {
+            int current_pos = queue.front();
+            queue.pop();
+
+            int start_pos, end_pos, location;
+
+            start_pos = current_pos;
+            end_pos = current_pos + sub_len - 1;
+            if (end_pos >= len) {
+                start_pos -= end_pos - len + 1;
+                end_pos = len - 1;
+            }
+
+            while (start_pos >= 0 && current_pos - start_pos < end_pos - current_pos) {
+                location = end_pos + start_pos - current_pos;
+                if (restricted_set[location]) {
+                    --start_pos;
+                    --end_pos;
+                    continue;
+                }
+                if (visited[location]) break;
+                visited[location] = true;
+                result[location] = result[current_pos] + 1;
+                queue.push(location);
+                --start_pos;
+                --end_pos;
+            }
+
+            start_pos = current_pos - sub_len + 1;
+            end_pos = current_pos;
+            if (start_pos < 0) {
+                end_pos -= start_pos;
+                start_pos = 0;
+            }
+
+            while (end_pos < len && current_pos - start_pos > end_pos - current_pos) {
+                location = end_pos + start_pos - current_pos;
+                if (restricted_set[location]) {
+                    ++start_pos;
+                    ++end_pos;
+                    continue;
+                }
+                if (visited[location]) break;
+                visited[location] = true;
+                result[location] = result[current_pos] + 1;
+                queue.push(location);
+                ++start_pos;
+                ++end_pos;
+            }
+
+            start_pos = current_pos - (sub_len - 1) / 2;
+            end_pos = current_pos + sub_len / 2;
+            if (sub_len & 1) {
+                ++start_pos;
+                ++end_pos;
+            }
+
+            if (end_pos >= len) {
+                start_pos -= end_pos - len + 1;
+                end_pos = len - 1;
+            }
+            if (start_pos < 0) {
+                end_pos -= start_pos;
+                start_pos = 0;
+            }
+
+            while (start_pos <= current_pos && end_pos < len && current_pos - start_pos < end_pos - current_pos) {
+                location = end_pos + start_pos - current_pos;
+                if (restricted_set[location]) {
+                    ++start_pos;
+                    ++end_pos;
+                    continue;
+                }
+                if (visited[location]) break;
+                visited[location] = true;
+                result[location] = result[current_pos] + 1;
+                queue.push(location);
+                ++start_pos;
+                ++end_pos;
+            }
+
+            start_pos = current_pos - (sub_len - 1) / 2 - 1;
+            end_pos = current_pos + sub_len / 2 - 1;
+            if (end_pos >= len) {
+                start_pos -= end_pos - len + 1;
+                end_pos = len - 1;
+            }
+            if (start_pos < 0) {
+                end_pos -= start_pos;
+                start_pos = 0;
+            }
+
+            while (end_pos >= current_pos && start_pos >= 0 && current_pos - start_pos > end_pos - current_pos) {
+                location = end_pos + start_pos - current_pos;
+                if (restricted_set[location]) {
+                    --start_pos;
+                    --end_pos;
+                    continue;
+                }
+                if (visited[location]) break;
+                visited[location] = true;
+                result[location] = result[current_pos] + 1;
+                queue.push(location);
+                --start_pos;
+                --end_pos;
+            }
+        }
+
+        return result;
+    }
+
+  int main(){
+    return 0;
+  }
