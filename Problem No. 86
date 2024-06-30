@@ -1,4 +1,34 @@
 /*
-Link:
+Link: https://leetcode.com/problems/find-minimum-diameter-after-merging-two-trees/
+
+Julie is given two undirected trees with len_n and len_m nodes, numbered from 0 to len_n - 1 and from 0 to len_m - 1, respectively. 
+Julie is provided with two 2D integer vectors edges_1 and edges_2 of lengths len_n - 1 and len_m - 1, respectively, where edges_1[i] = [a_i, b_i] indicates 
+that there is an edge between nodes a_i and b_i in the first tree and edges_2[i] = [u_i, v_i] indicates that there is an edge between nodes u_i and v_i in the 
+second tree.
+
+Julie must connect one node from the first tree with another node from the second tree with an edge.
+
+Return the minimum possible diameter of the resulting tree.
+
+The diameter of a tree is the length of the longest path between any two nodes in the tree.
+
+Create a C++ Function MinimumDiameterAfterMerge that will return an integer denoting the minimum possible diameter of the resulting tree.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector<vector<int>> denoting edges_1
+A vector<vector<int>> denoting edges_2
+An integer denoting len_n
+An integer denoting len_m
+
+Input Constraints
+
+The length of edges_1 should be exactly len_n - 1.
+The length of edges_2 should be exactly len_m - 1.
+Each value of edges_1[i][0] and edges_1[i][1] should be in the range [0, len_n - 1] inclusive.
+Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m - 1] inclusive.
+The values of len_n and len_m should be in the range [1, 100,000] inclusive.
 
 */
