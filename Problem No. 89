@@ -28,3 +28,114 @@ The value of index_diff should be in the range [1, len(nums)] inclusive.
 The value of value_diff should be in the range [0, 10^9] inclusive.
 
 */
+
+#include <vector>
+#include <set>
+#include <stdexcept>
+#include <climits>
+#include <cmath>
+#include <algorithm>
+#include <iostream>
+
+class Solution {
+private:
+  
+    std::multiset<std::pair<int, int>> value_index_set;
+
+    bool IsValidNearbyDuplicate(const std::vector<int>& nums, int index_diff, int value_diff, int index) {
+        int current_value = nums[index];
+        std::multiset<std::pair<int, int>>::iterator itr = value_index_set.lower_bound({current_value, 0});
+        int left_neighbor = INT_MAX;
+        int right_neighbor = INT_MAX;
+
+        if (itr != value_index_set.begin()) {
+            left_neighbor = std::prev(itr)->first;
+        }
+
+        if (std::next(itr) != value_index_set.end()) {
+            right_neighbor = std::next(itr)->first;
+        }
+
+        if (left_neighbor != INT_MAX && std::abs(left_neighbor - current_value) <= value_diff) {
+            return true;
+        }
+
+        if (right_neighbor != INT_MAX && std::abs(right_neighbor - current_value) <= value_diff) {
+            return true;
+        }
+
+        return false;
+    }
+
+public:
+    bool  AlmostDuplicatePairs(std::vector<int>& nums, int index_diff, int value_diff) {
+        int length_nums = nums.size();
+
+        if (length_nums < 2 || length_nums > 100000) {
+            throw std::invalid_argument("The length of nums must be between 2 and 100000 inclusive.");
+        }
+
+        for (int value : nums) {
+            if (value < -1000000000 || value > 1000000000) {
+                throw std::invalid_argument("Each value in nums must be between -1000000000 and 1000000000 inclusive.");
+            }
+        }
+
+        if (index_diff < 1 || index_diff > length_nums) {
+            throw std::invalid_argument("index_diff must be between 1 and len(nums) inclusive.");
+        }
+
+        if (value_diff < 0 || value_diff > 1000000000) {
+            throw std::invalid_argument("value_diff must be between 0 and 1000000000 inclusive.");
+        }
+
+        int window_size = index_diff;
+        int i = 0;
+        int j = std::min(length_nums - 1, window_size);
+        int current_index = 0;
+
+        for (int k = 0; k <= std::min(length_nums - 1, window_size); ++k) {
+            value_index_set.insert({nums[k], k});
+        }
+
+        while (j < length_nums) {
+            if (IsValidNearbyDuplicate(nums, index_diff, value_diff, current_index)) {
+                return true;
+            }
+
+            ++j;
+            ++current_index;
+
+            if (j < length_nums) {
+                value_index_set.insert({nums[j], j});
+            }
+
+            if ((j - current_index) + (current_index - i) > (2 * index_diff)) {
+                value_index_set.erase({nums[i], i});
+                ++i;
+            }
+        }
+
+        while (current_index < length_nums) {
+            if (IsValidNearbyDuplicate(nums, index_diff, value_diff, current_index)) {
+                return true;
+            }
+
+            ++current_index;
+
+            if ((current_index - i) > index_diff) {
+                value_index_set.erase({nums[i], i});
+                ++i;
+            }
+        }
+
+        return false;
+    }
+};
+
+int main() {
+  
+    Solution solution;
+
+    return 0;
+}
