@@ -8,7 +8,7 @@ reach a target amount.
 
 Julie wants to find the target_index-th smallest amount that can be made using these coins when considering each denomination separately.
 
-Create a C++ function FindKthSmallest that will return an integer denoting the target_index-th smallest amount that can be made using these coins.
+Create a C++ function CoinDenominationsAtTarget that will return an integer denoting the target_index-th smallest amount that can be made using these coins.
 
 Use appropriate error handling using the stdexcept library for the invalid test cases.
 
