@@ -14,15 +14,15 @@ one house from the other is k.
 
 Note that house_x and house_y can be equal.
 
-Create a C++ Function countOfPairs that will return a vector<long long> denoting 1-indexed vector result of length len.
+Create a C++ Function CountOfPairs that will return a vector<long long> denoting 1-indexed vector result of length len.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
 Input Type
 
-An int denoting len
-An int denoting house_x
-An int denoting house_y
+An integer denoting len
+An integer denoting house_x
+An integer denoting house_y
 
 Input Constraints
 
@@ -31,3 +31,95 @@ The value of house_x should be in the range [1, len] inclusive.
 The value of house_y should be in the range [1, len] inclusive.
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <iostream>
+#include <cstring>
+
+class Solution {
+private:
+    int distance_left[100001] = {};
+    int distance_right[100001] = {};
+
+public:
+    std::vector<long long> CountOfPairs(int len, int house_x, int house_y) {
+      
+        if (len < 2 || len > 100000) {
+            throw std::invalid_argument("The value of len should be in the range [2, 100,000] inclusive.");
+        }
+        if (house_x < 1 || house_x > len || house_y < 1 || house_y > len) {
+            throw std::invalid_argument("The value of house_x and house_y should be in the range [1, len] inclusive.");
+        }
+
+        if (house_x > house_y) {
+            std::swap(house_x, house_y);
+        }
+
+        for (int index = house_x + 1; index < house_y; index++) {
+            int temp_left = std::min(index - house_x, house_y - index + 1);
+            int temp_right = std::min(index - house_x + 1, house_y - index);
+            distance_left[temp_left]++;
+            distance_right[temp_right]++;
+        }
+
+        std::vector<long long> result(len, 0);
+
+        int line_pairs = len - std::max(house_y - house_x - 1, 0);
+        int circle_pairs = house_y - house_x + 1;
+        int left_index_1 = -(house_x - 2), right_index_1 = 0;
+        int left_index_2 = -(len - house_y - 1), right_index_2 = 0;
+        int sum_left = 0, sum_right = 0;
+
+        for (int k = 1; k <= len; k++) {
+            result[k - 1] += std::max(0, line_pairs - k);
+
+            if (2 * k < circle_pairs) {
+                result[k - 1] += circle_pairs;
+            } else if (2 * k == circle_pairs) {
+                result[k - 1] += circle_pairs / 2;
+            }
+
+            result[k - 1] += sum_left + sum_right;
+
+            if (left_index_1 >= 0) {
+                sum_left -= distance_left[left_index_1];
+            }
+            if (left_index_2 >= 0) {
+                sum_right -= distance_right[left_index_2];
+            }
+
+            left_index_1++;
+            right_index_1++;
+            left_index_2++;
+            right_index_2++;
+
+            if (right_index_1 <= len) {
+                sum_left += distance_left[right_index_1];
+            }
+            if (right_index_2 <= len) {
+                sum_right += distance_right[right_index_2];
+            }
+        }
+
+        if (house_x != house_y) {
+            result[0]--;
+        }
+
+        for (std::vector<long long>::iterator itr = result.begin(); itr != result.end(); ++itr) {
+            *itr *= 2;
+        }
+
+        return result;
+    }
+};
+
+int main() {
+  
+    Solution solution;
+    
+
+    return 0;
+}
+
