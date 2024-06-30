@@ -28,3 +28,94 @@ Each value of nums[i] should be in the range [1, 1,000,000] inclusive.
 The values for cost_1 and cost_2 should be in the range [1, 1,000,000] inclusive.
 
 */
+
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+long long SolveRemaining(long long last_element, long long remaining, long long cost_1, long long cost_2) {
+        const long long mod_value = 1000000007;
+
+        if (remaining < 2) return (last_element * cost_1) % mod_value;
+        
+        if (remaining % 2 == 0) {
+            cost_1 = std::min(cost_1, (remaining / 2LL + 1LL) * cost_2);
+        }
+        
+        if (cost_1 * 2 <= cost_2) return (last_element * cost_1) % mod_value;
+
+        long long min_price = last_element * cost_1;
+        long long total_cost_2 = remaining * cost_2;
+        long long max_operations = remaining - 1;
+        long long remaining_last_element = last_element % max_operations;
+        long long current_total_cost_2 = total_cost_2 * (last_element / max_operations);
+
+        if (remaining % 2 == 0) {
+            current_total_cost_2 += std::min(remaining_last_element * cost_1, 
+                                             (remaining / 2LL + remaining_last_element / 2LL + 1) * cost_2 + (1 - remaining_last_element % 2) * cost_1);
+        } else {
+            current_total_cost_2 += std::min(remaining_last_element * cost_1, 
+                                             (remaining / 2LL + (remaining_last_element - 1) / 2LL + 1) * cost_2 + (remaining_last_element % 2) * cost_1);
+        }
+
+        return std::min(current_total_cost_2, min_price);
+    }
+
+    int minCostToEqualizeArray(std::vector<int>& nums, int cost_1, int cost_2) {
+        if (nums.size() < 1 || nums.size() > 100000) throw std::invalid_argument("The length of nums should be at least 1 and at most 100,000 inclusive.");
+        if (cost_1 < 1 || cost_1 > 1000000) throw std::invalid_argument("The value of cost_1 should be in the range [1, 1,000,000] inclusive.");
+        if (cost_2 < 1 || cost_2 > 1000000) throw std::invalid_argument("The value of cost_2 should be in the range [1, 1,000,000] inclusive.");
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] < 1 || nums[i] > 1000000) throw std::invalid_argument("Each value of nums[i] should be in the range [1, 1,000,000] inclusive.");
+        }
+
+        std::vector<long long> long_nums;
+        const long long mod_value = 1000000007;
+        
+        for (int i = 0; i < nums.size(); i++) long_nums.push_back(static_cast<long long>(nums[i]));
+        long long long_cost_1 = static_cast<long long>(cost_1);
+        long long long_cost_2 = static_cast<long long>(cost_2);
+
+        std::sort(long_nums.begin(), long_nums.end());
+
+        if (long_nums.size() == 1) return 0;
+
+        for (long long i = 0; i < long_nums.size(); i++) long_nums[i] = long_nums.back() - long_nums[i];
+        while (long_nums.size() && long_nums.back() == 0) long_nums.pop_back();
+
+        long long total_cost = 0;
+        if (long_cost_2 >= long_cost_1 + long_cost_1) {
+            for (long long i = 0; i < long_nums.size(); i++) total_cost += long_nums[i];
+            return (total_cost * long_cost_1) % mod_value;
+        } else {
+            std::multiset<long long> minimum_spanning_tree;
+            for (long long i = 0; i < long_nums.size(); i++) minimum_spanning_tree.insert(long_nums[i]);
+
+            while (!minimum_spanning_tree.empty()) {
+                long long max_element_1 = *minimum_spanning_tree.rbegin();
+                minimum_spanning_tree.erase(minimum_spanning_tree.find(max_element_1));
+
+                if (minimum_spanning_tree.empty()) return (total_cost + SolveRemaining(max_element_1, nums.size() - 1, long_cost_1, long_cost_2)) % mod_value;
+
+                long long max_element_2 = *minimum_spanning_tree.rbegin();
+                minimum_spanning_tree.erase(minimum_spanning_tree.find(max_element_2));
+                long long reduce_operations = max_element_2 / 2LL;
+                if (reduce_operations == 0) reduce_operations++;
+
+                total_cost = (total_cost + (reduce_operations * long_cost_2)) % mod_value;
+
+                max_element_1 -= reduce_operations;
+                max_element_2 -= reduce_operations;
+
+                if (max_element_1 > 0) minimum_spanning_tree.insert(max_element_1);
+                if (max_element_2 > 0) minimum_spanning_tree.insert(max_element_2);
+            }
+        }
+        return total_cost;
+    }
+
+  int main(){
+    return 0;
+  }
