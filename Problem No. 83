@@ -28,4 +28,104 @@ The value of low should be in the range [1, 10^9] inclusive.
 The value of high should be in the range [1, 10^9] inclusive.
 The value of low should be less than or equal to high.
 The value of divisor should be in the range [1, 20] inclusive.
+
 */
+
+#include <vector>
+#include <cstring>
+#include <string>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+private:
+    int dp_table[2][2][10][10][10][20];
+
+    std::string SubtractOne(const std::string& num_str) {
+        std::string result = num_str;
+        std::reverse(result.begin(), result.end());
+
+        int first_non_zero_index = 0;
+        while (result[first_non_zero_index] == '0') {
+            first_non_zero_index++;
+        }
+
+        result[first_non_zero_index]--;
+        for (int i = 0; i < first_non_zero_index; i++) {
+            result[i] = '9';
+        }
+
+        while (!result.empty() && result.back() == '0') {
+            result.pop_back();
+        }
+
+        std::reverse(result.begin(), result.end());
+
+        if (result.empty()) {
+            result = "0";
+        }
+
+        return result;
+    }
+
+    int CountBeautifulNumbers(int index, bool is_started, bool is_smaller, int odd_count, int even_count, int remainder, const std::string& num_str, int divisor) {
+        if (index == num_str.length()) {
+            return (is_started && odd_count == even_count && remainder == 0);
+        }
+
+        int& answer = dp_table[is_started][is_smaller][index][odd_count][even_count][remainder];
+        if (answer != -1) {
+            return answer;
+        }
+
+        answer = 0;
+        int lower_bound = 0;
+        int upper_bound = is_smaller ? 9 : (num_str[index] - '0');
+
+        for (int digit = lower_bound; digit <= upper_bound; digit++) {
+            bool new_is_smaller = is_smaller || digit != upper_bound;
+            bool new_is_started = is_started || digit != 0;
+
+            int new_odd_count = odd_count + (new_is_started && digit % 2 != 0);
+            int new_even_count = even_count + (new_is_started && digit % 2 == 0);
+            int new_remainder = (remainder * 10 + digit) % divisor;
+
+            answer += CountBeautifulNumbers(index + 1, new_is_started, new_is_smaller, new_odd_count, new_even_count, new_remainder, num_str, divisor);
+        }
+
+        return answer;
+    }
+
+public:
+    int NumberOfBeautifulIntegers(int low, int high, int divisor) {
+        if (low < 1 || low > 1000000000) {
+            throw std::invalid_argument("The value of low should be in the range [1, 10^9] inclusive.");
+        }
+        if (high < 1 || high > 1000000000) {
+            throw std::invalid_argument("The value of high should be in the range [1, 10^9] inclusive.");
+        }
+        if (low > high) {
+            throw std::invalid_argument("The value of low should be less than or equal to high.");
+        }
+        if (divisor < 1 || divisor > 20) {
+            throw std::invalid_argument("The value of divisor should be in the range [1, 20] inclusive.");
+        }
+
+        std::memset(dp_table, -1, sizeof(dp_table));
+        int count_till_high = CountBeautifulNumbers(0, false, false, 0, 0, 0, std::to_string(high), divisor);
+
+        std::memset(dp_table, -1, sizeof(dp_table));
+        int count_till_low = CountBeautifulNumbers(0, false, false, 0, 0, 0, SubtractOne(std::to_string(low)), divisor);
+
+        return count_till_high - count_till_low;
+    }
+};
+
+int main() {
+    Solution solution;
+  
+    return 0;
+}
+
