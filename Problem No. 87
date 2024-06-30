@@ -35,3 +35,165 @@ The value of max_changes should be in the range [0, 100,000] inclusive.
 The sum of nums should satisfy the condition: max_changes + sum(nums) >= len_k.
 
 */
+
+
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <stdexcept>
+#include <climits>
+#include <numeric>
+#include <iostream>
+
+
+    std::vector<long long> FindMinimumMovesForXNearest(const std::vector<int>& nums, int nearest_x) {
+        int left_index = 0, right_index = 0;
+        std::vector<long long> nearest_distances(nums.size(), 0);
+
+        for (int index = 0; index < nums.size(); ++index) {
+            if (nums[index] == 1) {
+                left_index = index;
+                break;
+            }
+        }
+
+        long long move_sum = 0;
+        int count_ones = 0;
+        for (int index = left_index; index < nums.size(); ++index) {
+            if (nums[index] == 1) {
+                move_sum += index;
+                count_ones++;
+            }
+            if (count_ones == nearest_x) {
+                right_index = index;
+                break;
+            }
+        }
+
+        long long count_pass_ones = 0;
+        int next_right = right_index + 1;
+
+        while (next_right < nums.size()) {
+            if (nums[next_right] == 1) {
+                break;
+            }
+            next_right++;
+        }
+
+        nearest_distances[0] = move_sum;
+        count_pass_ones = (nums[0] == 1) ? 1 : 0;
+
+        for (int index = 1; index < nums.size(); ++index) {
+            nearest_distances[index] = nearest_distances[index - 1] + count_pass_ones - (nearest_x - count_pass_ones);
+
+            if (next_right < nums.size() && std::abs(index - left_index) > std::abs(index - next_right)) {
+                int next_left = left_index + 1;
+                while (next_left < nums.size()) {
+                    if (nums[next_left] == 1) {
+                        break;
+                    }
+                    next_left++;
+                }
+
+                nearest_distances[index] -= std::abs(index - left_index);
+                nearest_distances[index] += std::abs(index - next_right);
+
+                if (left_index < index && next_right > index) {
+                    count_pass_ones--;
+                }
+
+                next_right++;
+                while (next_right < nums.size()) {
+                    if (nums[next_right] == 1) {
+                        break;
+                    }
+                    next_right++;
+                }
+                left_index = next_left;
+            }
+
+            if (nums[index] == 1) {
+                count_pass_ones++;
+            }
+        }
+
+        return nearest_distances;
+    }
+
+    long long MinimumMoves(std::vector<int>& nums, int len_k, int max_changes) {
+        int len_n = nums.size();
+        
+        if (len_k < 1 || len_k > 100000 || max_changes < 0 || max_changes > 100000 || 
+            len_n < 2 || len_n > 100000 || 
+            std::any_of(nums.begin(), nums.end(), [](int num) { return num != 0 && num != 1; }) ||
+            max_changes + std::accumulate(nums.begin(), nums.end(), 0) < len_k) {
+            throw std::invalid_argument("Input constraints not satisfied.");
+        }
+
+        long long result = LLONG_MAX;
+        std::map<int, std::vector<long long>> minimum_steps_map;
+        std::vector<std::vector<long long>> nearest_distances(4);
+
+        if (len_k > max_changes) {
+            for (int index = 0; index <= 3; ++index) {
+                nearest_distances[index] = FindMinimumMovesForXNearest(nums, len_k - max_changes + index);
+            }
+        }
+
+        int total_ones = std::count(nums.begin(), nums.end(), 1);
+
+        for (int index = 0; index < nums.size(); ++index) {
+            long long current_steps = 0;
+            if (len_k > max_changes) {
+                int ones_in_range = 0;
+                if (index > 0 && nums[index - 1] == 1) ones_in_range++;
+                if (nums[index] == 1) ones_in_range++;
+                if (index < nums.size() - 1 && nums[index + 1] == 1) ones_in_range++;
+                int used_nearest = std::min(max_changes, ones_in_range);
+                long long minimum_steps = LLONG_MAX;
+
+                for (long long un = 0; un <= used_nearest; ++un) {
+                    if (len_k - max_changes + un > total_ones) continue;
+                    long long steps = 0;
+                    steps += (max_changes - un) * 2;
+                    steps += nearest_distances[un][index];
+                    minimum_steps = std::min(minimum_steps, steps);
+                }
+                current_steps = minimum_steps;
+
+            } else {
+                int needed_ones = len_k;
+                if (nums[index] == 1) {
+                    needed_ones--;
+                }
+                if (needed_ones == 0) return 0;
+                if (index > 0 && nums[index - 1] == 1) {
+                    needed_ones--;
+                    current_steps++;
+                }
+                if (needed_ones == 0) {
+                    result = std::min(result, current_steps);
+                    continue;
+                }
+                if (index < nums.size() - 1 && nums[index + 1] == 1) {
+                    needed_ones--;
+                    current_steps++;
+                }
+                if (needed_ones == 0) {
+                    result = std::min(result, current_steps);
+                    continue;
+                }
+                current_steps += needed_ones * 2;
+            }
+
+            result = std::min(result, current_steps);
+        }
+
+        return result;
+    }
+
+
+int main() {
+
+    return 0;
+}
