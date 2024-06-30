@@ -59,9 +59,16 @@ All values in restricted_vec should be unique.
         
         std::vector<bool> restricted_set(len, false);
         for (std::size_t i = 0; i < restricted_vec.size(); ++i) {
-            if (restricted_vec[i] < 0 || restricted_vec[i] >= len) throw std::invalid_argument("Each value of restricted_vec[i] should be in the range [0, len - 1] inclusive.");
-            if (restricted_vec[i] == position) throw std::invalid_argument("The value of restricted_vec[i] should not be equal to position.");
-            if (restricted_set[restricted_vec[i]]) throw std::invalid_argument("All values in restricted_vec should be unique.");
+
+            if (restricted_vec[i] < 0 || restricted_vec[i] >= len) {
+                throw std::invalid_argument("Each value of restricted_vec[i] should be in the range [0, len - 1] inclusive.");
+            }
+            if (restricted_vec[i] == position) {
+                throw std::invalid_argument("The value of restricted_vec[i] should not be equal to position.");
+            }
+            if (restricted_set[restricted_vec[i]]) {
+                throw std::invalid_argument("All values in restricted_vec should be unique.");
+            }
             restricted_set[restricted_vec[i]] = true;
         }
         
