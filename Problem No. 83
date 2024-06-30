@@ -1,4 +1,31 @@
 /*
-Link:
+Link: https://leetcode.com/problems/number-of-beautiful-integers-in-the-range/description/
 
+Julie, a meticulous mathematician and avid problem solver, has been given a challenge involving a 3 positive integers.
+She loves working with numbers and enjoys finding the most efficient solutions to complex problems. In this particular scenario, Julie is  given positive 
+integers low, high, and divisor.
+
+A number is beautiful if it meets both of the following conditions:
+
+The count of even digits in the number is equal to the count of odd digits.
+The number is divisible by divisor.
+Return the number of beautiful integers in the range [low, high].
+
+Create a C++ Function NumberOfBeautifulIntegers that will return an integer denoting the number of beautiful integers in the range [low, high].
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type
+
+An integer denoting low
+An integer denoting high
+An integer denoting divisor
+
+Input Constraints
+
+The value of low should be in the range [1, 10^9] inclusive.
+The value of high should be in the range [1, 10^9] inclusive.
+The value of low should be less than or equal to high.
+The value of divisor should be in the range [1, 20] inclusive.
 */
