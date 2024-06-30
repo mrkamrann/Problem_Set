@@ -1,4 +1,37 @@
 /*
-Link:
+
+Link: https://leetcode.com/problems/minimum-moves-to-pick-k-ones/
+
+Julie is given a binary vector nums of length len_n, a positive integer len_k, and a non-negative integer max_changes.
+
+Julie plays a game where the goal is to pick up len_k ones from nums using the minimum number of moves. When the game starts, Julie picks any index julie_index
+in the range [0, len_n - 1] and stands there. If nums[julie_index] == 1, Julie picks up the one and nums[julie_index] becomes 0 (this does not count as a move). 
+After this, Julie can make any number of moves (including zero) where in each move Julie must perform exactly one of the following actions:
+
+Select any index j != julie_index such that nums[j] == 0 and set nums[j] = 1. This action can be performed at most max_changes times.
+
+Select any two adjacent indices x and y (|x - y| == 1) such that nums[x] == 1 and nums[y] == 0, then swap their values (set nums[y] = 1 and nums[x] = 0).
+
+If y == julie_index, Julie picks up the one after this move and nums[y] becomes 0.
+
+Return the minimum number of moves required by Julie to pick exactly len_k ones.
+
+Create a C++ Function MinimumMoves that will return an integer denoting the minimum number of moves required by Julie to pick exactly len_k ones.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector<int> denoting nums
+An integer denoting len_k
+An integer denoting max_changes
+
+Input Constraints
+
+The length of nums (len_n) should be in the range [2, 100,000] inclusive.
+Each value of nums should be either 0 or 1.
+The value of len_k should be in the range [1, 100,000] inclusive.
+The value of max_changes should be in the range [0, 100,000] inclusive.
+The sum of nums should satisfy the condition: max_changes + sum(nums) >= len_k.
 
 */
