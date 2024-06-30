@@ -25,4 +25,103 @@ Input Constraints:
 
 The length of nums should be at least 1 and at most 10^4 inclusive.
 Each value in nums should be in the range [1, 10^6] inclusive.
+
 */
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+private:
+  
+    std::vector<int> smallest_prime_factor;
+    std::vector<int> last_index;
+    const int max_size = 1000001;
+  
+
+    void ComputeSmallestPrimeFactors() {
+        smallest_prime_factor.resize(max_size);
+        for (int i = 2; i < max_size; ++i) {
+            smallest_prime_factor[i] = i;
+        }
+        for (int i = 2; i < max_size; i += 2) {
+            smallest_prime_factor[i] = 2;
+        }
+        for (int i = 3; i * i < max_size; ++i) {
+            if (smallest_prime_factor[i] == i) {
+                for (int j = i * i; j < max_size; j += i) {
+                    if (smallest_prime_factor[j] == j) {
+                        smallest_prime_factor[j] = i;
+                    }
+                }
+            }
+        }
+    }
+
+    std::vector<int> ComputeUniquePrimeFactors(int value) {
+        std::vector<int> factors;
+        while (value != 1) {
+            factors.push_back(smallest_prime_factor[value]);
+            value /= smallest_prime_factor[value];
+        }
+        std::sort(factors.begin(), factors.end());
+        factors.erase(std::unique(factors.begin(), factors.end()), factors.end());
+        return factors;
+    }
+
+public:
+    int FindValidSplit(std::vector<int>& nums) {
+        int length = nums.size();
+
+        if (length < 1 || length > 10000) {
+            throw std::invalid_argument("The length of nums must be between 1 and 10000 inclusive.");
+        }
+
+        for (int value : nums) {
+            if (value < 1 || value > 1000000) {
+                throw std::invalid_argument("Each value in nums must be between 1 and 1000000 inclusive.");
+            }
+        }
+
+        if (length == 1) {
+            return -1;
+        }
+
+        ComputeSmallestPrimeFactors();
+        last_index.resize(max_size, -1);
+
+        for (int i = 0; i < length; ++i) {
+            std::vector<int> primes = ComputeUniquePrimeFactors(nums[i]);
+            for (int prime : primes) {
+                last_index[prime] = i;
+            }
+        }
+
+        int current_index = 0;
+        int bound_index = 0;
+
+        while (current_index <= bound_index) {
+            std::vector<int> primes = ComputeUniquePrimeFactors(nums[current_index]);
+            for (int prime : primes) {
+                bound_index = std::max(bound_index, last_index[prime]);
+            }
+            current_index++;
+        }
+
+        if (bound_index <= length - 2) {
+            return bound_index;
+        }
+
+        return -1;
+    }
+};
+
+int main() {
+    Solution solution;
+   
+    return 0;
+}
+
