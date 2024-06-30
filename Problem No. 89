@@ -1,4 +1,30 @@
 /*
-Link:
+Link: https://leetcode.com/problems/contains-duplicate-iii/description/
+
+Julie is solving a problem involving an integer vector nums and two integers index_diff and value_diff. She needs to determine if there exists a pair of 
+indices (i, j) in the vector such that the following conditions are met:
+
+The indices i and j are different (i != j).
+The absolute difference between the indices is less than or equal to index_diff (abs(i - j) ≤ index_diff).
+The absolute difference between the values at these indices is less than or equal to value_diff (abs(nums[i] - nums[j]) ≤ value_diff).
+If such a pair exists, she should return true; otherwise, she should return false.
+
+Create a C++ Function AlmostDuplicatePairs that will return a boolean indicating whether such a pair exists in the vector or not.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+
+Input Type
+
+A vector<int> denoting nums.
+An integer denoting index_diff.
+An integer denoting value_diff.
+
+Input Constraints:
+
+The length of nums should be at least 2 and at most 10^5 inclusive.
+Each value in nums should be in the range [-10^9, 10^9] inclusive.
+The value of index_diff should be in the range [1, len(nums)] inclusive.
+The value of value_diff should be in the range [0, 10^9] inclusive.
 
 */
