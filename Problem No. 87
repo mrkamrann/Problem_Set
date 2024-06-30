@@ -16,7 +16,7 @@ If y == julie_index, Julie picks up the one after this move and nums[y] becomes 
 
 Return the minimum number of moves required by Julie to pick exactly len_k ones.
 
-Create a C++ Function MinimumMoves that will return an integer denoting the minimum number of moves required by Julie to pick exactly len_k ones.
+Create a C++ Function MinimumMoves that will return a long long denoting the minimum number of moves required by Julie to pick exactly len_k ones.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -194,6 +194,219 @@ The sum of nums should satisfy the condition: max_changes + sum(nums) >= len_k.
 
 
 int main() {
+  // TEST 
+std::vector<int> nums_1 = {0, 1, 0, 1, 1};
+int len_k_1 = 3;
+int max_changes_1 = 1;
+long long expected_1 = 3;
+long long result_1 = MinimumMoves(nums_1, len_k_1, max_changes_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_2 = {1, 1, 1, 1, 1};
+int len_k_2 = 4;
+int max_changes_2 = 0;
+long long expected_2 = 4;
+long long result_2 = MinimumMoves(nums_2, len_k_2, max_changes_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_3 = {0, 0, 0, 0, 0};
+int len_k_3 = 5;
+int max_changes_3 = 5;
+long long expected_3 = 10;
+long long result_3 = MinimumMoves(nums_3, len_k_3, max_changes_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_4 = {1, 0, 1, 0, 0};
+int len_k_4 = 3;
+int max_changes_4 = 2;
+long long expected_4 = 4;
+long long result_4 = MinimumMoves(nums_4, len_k_4, max_changes_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_5 = {0, 1, 1, 0, 1};
+int len_k_5 = 4;
+int max_changes_5 = 2;
+long long expected_5 = 5;
+long long result_5 = MinimumMoves(nums_5, len_k_5, max_changes_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_6 = {0, 0, 0, 1, 0, 1, 0, 0};
+int len_k_6 = 4;
+int max_changes_6 = 3;
+long long expected_6 = 6;
+long long result_6 = MinimumMoves(nums_6, len_k_6, max_changes_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_7 = {1, 0, 1, 0, 1, 0, 1, 0};
+int len_k_7 = 5;
+int max_changes_7 = 2;
+long long expected_7 = 8;
+long long result_7 = MinimumMoves(nums_7, len_k_7, max_changes_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_8 = {1, 0, 0, 0, 0, 0, 1, 1};
+int len_k_8 = 6;
+int max_changes_8 = 3;
+long long expected_8 = 13;
+long long result_8 = MinimumMoves(nums_8, len_k_8, max_changes_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> nums_9 = {0, 1, 1, 0, 0, 0, 1, 0};
+int len_k_9 = 5;
+int max_changes_9 = 4;
+long long expected_9 = 7;
+long long result_9 = MinimumMoves(nums_9, len_k_9, max_changes_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_10 = {1, 0, 0, 0, 1};
+int len_k_10 = -2;
+int max_changes_10 = 2;
+try {
+    MinimumMoves(nums_10, len_k_10, max_changes_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_11 = {1, 0, 0, 0, 1};
+int len_k_11 = 2;
+int max_changes_11 = -2;
+try {
+    MinimumMoves(nums_11, len_k_11, max_changes_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_12 = {1, 0, 0, 0, 1};
+int len_k_12 = 2;
+int max_changes_12 = 2;
+std::vector<int> nums_invalid_12 = {1, 2, 0, 0, 1};
+try {
+    MinimumMoves(nums_invalid_12, len_k_12, max_changes_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_13 = {1, 1, 1, 1, 1};
+int len_k_13 = 6;
+int max_changes_13 = 0;
+try {
+    MinimumMoves(nums_13, len_k_13, max_changes_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_14 = {1, 1, 1, 1, 1};
+int len_k_14 = -999;
+int max_changes_14 = 0;
+try {
+    MinimumMoves(nums_14, len_k_14, max_changes_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_15 = {0, 0, 0, 0, 0};
+int len_k_15 = 50;
+int max_changes_15 = 2;
+try {
+    MinimumMoves(nums_15, len_k_15, max_changes_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_16 = {0, 0, 1, 1, 1};
+int len_k_16 = 5;
+int max_changes_16 = 0;
+try {
+    MinimumMoves(nums_16, len_k_16, max_changes_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_17 = {1, 0, 1, 0, 1};
+int len_k_17 = 4;
+int max_changes_17 = -9999;
+try {
+    MinimumMoves(nums_17, len_k_17, max_changes_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_18 = {1, 0, 1, 0, 1};
+int len_k_18 = -9999;
+int max_changes_18 = 2;
+try {
+    MinimumMoves(nums_18, len_k_18, max_changes_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_19 = {1, 0, 1, 0, 1};
+int len_k_19 = 2;
+int max_changes_19 = -1;
+try {
+    MinimumMoves(nums_19, len_k_19, max_changes_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_20 = {1, 0, 1, 0, 1};
+int len_k_20 = -2;
+int max_changes_20 = -1;
+try {
+    MinimumMoves(nums_20, len_k_20, max_changes_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
 
     return 0;
 }
