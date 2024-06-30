@@ -1,4 +1,30 @@
 /*
-Link:
+Link: https://leetcode.com/problems/minimum-cost-to-equalize-array/description/
+
+
+Julie, a meticulous mathematician and avid problem solver, has been given a challenge involving a vector of integers 
+and two specific costs associated with increment operations. She loves working with numbers and enjoys finding the most efficient solutions to complex problems. 
+In this particular scenario, Julie  has a vector nums and two integers cost_1 and cost_2. She is allowed to perform either of the following operations any number 
+of times:
+
+Choose an index i from nums and increase nums[i] by 1 for a cost of cost_1.
+Choose two different indices i, j, from nums and increase nums[i] and nums[j] by 1 for a cost of cost_2.
+Return the minimum cost required to make all elements in the vector equal. Since the answer may be very large, return it modulo 10^9 + 7;
+
+Create a C++ Function MinCostToEqualizeVector that will return an integer denoting the minimum cost required to make all elements in the vector equal
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting nums
+An integer denoting cost_1
+An integer denoting cost_2
+
+Input Constraints:
+
+The length of nums should be at least 1 and at most 100,000 inclusive.
+Each value of nums[i] should be in the range [1, 1,000,000] inclusive.
+The values for cost_1 and cost_2 should be in the range [1, 1,000,000] inclusive.
 
 */
