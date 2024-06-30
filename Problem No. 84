@@ -1,4 +1,33 @@
 /*
-Link:
+Link: https://leetcode.com/problems/count-of-sub-multisets-with-bounded-sum/description/
 
+Julie is given a 0-indexed vector nums of non-negative integers, and two integers low and high.
+
+Return the count of sub-multisets within nums where the sum of elements in each subset falls within the inclusive range of [low, high].
+
+Since the answer may be large, return it modulo 10^9 + 7.
+
+A sub-multiset is an unordered collection of elements of the vector in which a given value x can occur 0, 1, ..., occ[x] times,
+where occ[x] is the number of occurrences of x in the vector.
+
+Note that:
+
+Two sub-multisets are the same if sorting both sub-multisets results in identical multisets.
+The sum of an empty multiset is 0.
+
+Create a C++ Function CountSubMultisets that will return an integer denoting the the count of sub-multisets.
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting nums
+An integer denoting low
+An integer denoting high
+
+Input Constraints:
+
+The length of nums should be at least 1 and at most 20,000 inclusive.
+Each value of nums[i] should be in the range [0, 20,000] inclusive.
+The sum of nums should not exceed 20,000.
+The values for low and high should be in the range [0, 20,000] inclusive.
 */
