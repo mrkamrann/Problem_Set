@@ -1,4 +1,33 @@
 /*
-Link:
+Link: https://leetcode.com/problems/count-the-number-of-houses-at-a-certain-distance-ii/description/
+
+Julie is given three positive integers len, house_x, and house_y.
+
+In a city, there exist houses numbered 1 to len connected by len streets. There is a street connecting the house numbered i with the house numbered i + 1 
+for all 1 <= i <= len - 1. An additional street connects the house numbered house_x with the house numbered house_y.
+
+For each k, such that 1 <= k <= len, Julie needs to find the number of pairs of houses (house1, house2) such that the minimum number of streets that need to
+be traveled to reach house2 from house1 is k.
+
+Return a 1-indexed vector result of length len where result[k] represents the total number of pairs of houses such that the minimum streets required to reach 
+one house from the other is k.
+
+Note that house_x and house_y can be equal.
+
+Create a C++ Function countOfPairs that will return a vector<long long> denoting 1-indexed vector result of length len.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An int denoting len
+An int denoting house_x
+An int denoting house_y
+
+Input Constraints
+
+The value of len should be in the range [2, 100,000] inclusive.
+The value of house_x should be in the range [1, len] inclusive.
+The value of house_y should be in the range [1, len] inclusive.
 
 */
