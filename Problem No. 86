@@ -20,15 +20,134 @@ Input Type
 
 A vector<vector<int>> denoting edges_1
 A vector<vector<int>> denoting edges_2
-An integer denoting len_n
-An integer denoting len_m
 
 Input Constraints
 
+The values of len_n and len_m should be in the range [1, 100000] inclusive.
 The length of edges_1 should be exactly len_n - 1.
 The length of edges_2 should be exactly len_m - 1.
 Each value of edges_1[i][0] and edges_1[i][1] should be in the range [0, len_n - 1] inclusive.
 Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m - 1] inclusive.
-The values of len_n and len_m should be in the range [1, 100,000] inclusive.
+
 
 */
+
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <queue>
+#include <cassert>
+
+    void DepthFirstSearch(int node, int parent, std::vector<int> &node_depth, std::vector<std::vector<int>> &adjacency_list) {
+        for (std::vector<int>::iterator neighbor_itr = adjacency_list[node].begin(); neighbor_itr != adjacency_list[node].end(); ++neighbor_itr) {
+            if (*neighbor_itr == parent) {
+                continue;
+            }
+            node_depth[*neighbor_itr] = node_depth[node] + 1;
+            DepthFirstSearch(*neighbor_itr, node, node_depth, adjacency_list);
+        }
+    }
+
+    int CalculateDiameter(std::vector<std::vector<int>> &edges) {
+        int number_of_nodes = edges.size() + 1;
+        std::vector<std::vector<int>> adjacency_list(number_of_nodes);
+
+        for (std::vector<std::vector<int>>::iterator edge_itr = edges.begin(); edge_itr != edges.end(); ++edge_itr) {
+            adjacency_list[(*edge_itr)[0]].push_back((*edge_itr)[1]);
+            adjacency_list[(*edge_itr)[1]].push_back((*edge_itr)[0]);
+        }
+
+        std::vector<int> node_depth(number_of_nodes, 0);
+        DepthFirstSearch(0, -1, node_depth, adjacency_list);
+
+        int farthest_node = 0;
+        for (int node_index = 0; node_index < number_of_nodes; ++node_index) {
+            if (node_depth[node_index] > node_depth[farthest_node]) {
+                farthest_node = node_index;
+            }
+        }
+
+        std::fill(node_depth.begin(), node_depth.end(), 0);
+        DepthFirstSearch(farthest_node, -1, node_depth, adjacency_list);
+
+        return *std::max_element(node_depth.begin(), node_depth.end());
+    }
+
+    int CalculateMinHeight(std::vector<std::vector<int>> &edges) {
+        int number_of_nodes = edges.size() + 1;
+        std::vector<std::vector<int>> adjacency_list(number_of_nodes);
+        std::vector<int> node_degree(number_of_nodes, 0);
+
+        for (std::vector<std::vector<int>>::iterator edge_itr = edges.begin(); edge_itr != edges.end(); ++edge_itr) {
+            adjacency_list[(*edge_itr)[0]].push_back((*edge_itr)[1]);
+            adjacency_list[(*edge_itr)[1]].push_back((*edge_itr)[0]);
+            node_degree[(*edge_itr)[0]]++;
+            node_degree[(*edge_itr)[1]]++;
+        }
+
+        std::queue<int> node_queue;
+        for (int node_index = 0; node_index < number_of_nodes; ++node_index) {
+            if (node_degree[node_index] == 1) {
+                node_queue.push(node_index);
+            }
+        }
+
+        int steps = 0;
+        while (number_of_nodes > 2) {
+            int queue_size = node_queue.size();
+            number_of_nodes -= queue_size;
+            while (queue_size--) {
+                int current_node = node_queue.front();
+                node_queue.pop();
+                for (std::vector<int>::iterator neighbor_itr = adjacency_list[current_node].begin(); neighbor_itr != adjacency_list[current_node].end(); ++neighbor_itr) {
+                    node_degree[*neighbor_itr]--;
+                    if (node_degree[*neighbor_itr] == 1) {
+                        node_queue.push(*neighbor_itr);
+                    }
+                }
+            }
+            steps++;
+        }
+
+        return number_of_nodes == 2 ? steps + 1 : steps;
+    }
+
+    int MinimumDiameterAfterMerge(std::vector<std::vector<int>> &edges_1, std::vector<std::vector<int>> &edges_2) {
+       
+       int len_n = edges_1.size()+1;
+       int len_m = edges_2.size()+1;
+
+        if (len_n < 1 || len_n > 100000) {
+        throw std::invalid_argument("The value of len_n should be in the range [1, 100000] inclusive.");
+    }
+    if (len_m < 1 || len_m > 100000) {
+        throw std::invalid_argument("The value of len_m should be in the range [1, 100000] inclusive.");
+    }
+    if (edges_1.size() != len_n - 1) {
+        throw std::invalid_argument("The length of edges_1 should be exactly len_n - 1.");
+    }
+    if (edges_2.size() != len_m - 1) {
+        throw std::invalid_argument("The length of edges_2 should be exactly len_m - 1.");
+    }
+    for (const vector<int>&edge : edges_1) {
+        if (edge[0] < 0 || edge[0] >= len_n || edge[1] < 0 || edge[1] >= len_n) {
+            throw std::invalid_argument("Each value of edges_1[i][0] and edges_1[i][1] should be in the range [0, len_n - 1] inclusive.");
+        }
+    }
+    for (const vector<int>&edge : edges_2) {
+        if (edge[0] < 0 || edge[0] >= len_m || edge[1] < 0 || edge[1] >= len_m) {
+            throw std::invalid_argument("Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m - 1] inclusive.");
+        }
+    }
+        int min_height_1 = CalculateMinHeight(edges_1);
+        int min_height_2 = CalculateMinHeight(edges_2);
+        int diameter_1 = CalculateDiameter(edges_1);
+        int diameter_2 = CalculateDiameter(edges_2);
+
+        return std::max({min_height_1 + min_height_2 + 1, diameter_1, diameter_2});
+    }
+
+int main(){
+  
+  return 0;
+}
