@@ -36,6 +36,7 @@ The values for cost_1 and cost_2 should be in the range [1, 1,000,000] inclusive
 #include <cassert>
 
 long long SolveRemaining(long long last_element, long long remaining, long long cost_1, long long cost_2) {
+
         const long long mod_value = 1000000007;
 
         if (remaining < 2) return (last_element * cost_1) % mod_value;
@@ -63,12 +64,21 @@ long long SolveRemaining(long long last_element, long long remaining, long long 
         return std::min(current_total_cost_2, min_price);
     }
 
-    int minCostToEqualizeArray(std::vector<int>& nums, int cost_1, int cost_2) {
-        if (nums.size() < 1 || nums.size() > 100000) throw std::invalid_argument("The length of nums should be at least 1 and at most 100,000 inclusive.");
-        if (cost_1 < 1 || cost_1 > 1000000) throw std::invalid_argument("The value of cost_1 should be in the range [1, 1,000,000] inclusive.");
-        if (cost_2 < 1 || cost_2 > 1000000) throw std::invalid_argument("The value of cost_2 should be in the range [1, 1,000,000] inclusive.");
+    int MinCostToEqualizeArray(std::vector<int>& nums, int cost_1, int cost_2) {
+
+        if (nums.size() < 1 || nums.size() > 100000) {
+          throw std::invalid_argument("The length of nums should be at least 1 and at most 100,000 inclusive.");
+        }
+        if (cost_1 < 1 || cost_1 > 1000000){
+          throw std::invalid_argument("The value of cost_1 should be in the range [1, 1,000,000] inclusive.");
+        }
+        if (cost_2 < 1 || cost_2 > 1000000){
+          throw std::invalid_argument("The value of cost_2 should be in the range [1, 1,000,000] inclusive.");
+        }
         for (int i = 0; i < nums.size(); i++) {
-            if (nums[i] < 1 || nums[i] > 1000000) throw std::invalid_argument("Each value of nums[i] should be in the range [1, 1,000,000] inclusive.");
+            if (nums[i] < 1 || nums[i] > 1000000){
+                throw std::invalid_argument("Each value of nums[i] should be in the range [1, 1,000,000] inclusive.");
+            }
         }
 
         std::vector<long long> long_nums;
@@ -116,6 +126,172 @@ long long SolveRemaining(long long last_element, long long remaining, long long 
         return total_cost;
     }
 
-  int main(){
+int main(){
+    
+// TEST 
+std::vector<int> nums_1 = {1};
+int cost_1_1 = 1;
+int cost_2_1 = 1;
+int expected_1 = 0;
+int result_1 = MinCostToEqualizeArray(nums_1, cost_1_1, cost_2_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_2 = {1, 2, 3};
+int cost_1_2 = 2;
+int cost_2_2 = 3;
+int expected_2 = 5;
+int result_2 = MinCostToEqualizeArray(nums_2, cost_1_2, cost_2_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_3 = {4, 4, 4, 4};
+int cost_1_3 = 5;
+int cost_2_3 = 5;
+int expected_3 = 0;
+int result_3 = MinCostToEqualizeArray(nums_3, cost_1_3, cost_2_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_4 = {1, 1000000};
+int cost_1_4 = 1000000;
+int cost_2_4 = 1000000;
+int expected_4 = 998993007;
+int result_4 = MinCostToEqualizeArray(nums_4, cost_1_4, cost_2_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_5 = {1, 2, 2, 3};
+int cost_1_5 = 3;
+int cost_2_5 = 4;
+int expected_5 = 8;
+int result_5 = MinCostToEqualizeArray(nums_5, cost_1_5, cost_2_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_6 = {2, 2, 2, 2};
+int cost_1_6 = 1;
+int cost_2_6 = 1;
+int expected_6 = 0;
+int result_6 = MinCostToEqualizeArray(nums_6, cost_1_6, cost_2_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_7 = {1, 1, 1, 1, 1000000};
+int cost_1_7 = 100;
+int cost_2_7 = 1000;
+int expected_7 = 399999600;
+int result_7 = MinCostToEqualizeArray(nums_7, cost_1_7, cost_2_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_8 = {5, 7, 5, 7};
+int cost_1_8 = 10;
+int cost_2_8 = 10;
+int expected_8 = 20;
+int result_8 = MinCostToEqualizeArray(nums_8, cost_1_8, cost_2_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_9 = {1, 2, 3, 4, 5};
+int cost_1_9 = 3;
+int cost_2_9 = 2;
+int expected_9 = 10;
+int result_9 = MinCostToEqualizeArray(nums_9, cost_1_9, cost_2_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST 
+std::vector<int> nums_10 = {};
+int cost_1_10 = 1;
+int cost_2_10 = 1;
+try {
+    MinCostToEqualizeArray(nums_10, cost_1_10, cost_2_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_11 = {1};
+int cost_1_11 = 0;
+int cost_2_11 = 1;
+try {
+    MinCostToEqualizeArray(nums_11, cost_1_11, cost_2_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_12 = {1};
+int cost_1_12 = 1;
+int cost_2_12 = 0;
+try {
+    MinCostToEqualizeArray(nums_12, cost_1_12, cost_2_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_13 = {1, 2, 1000001};
+int cost_1_13 = 1;
+int cost_2_13 = 1;
+try {
+    MinCostToEqualizeArray(nums_13, cost_1_13, cost_2_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_14 = {1};
+int cost_1_14 = -1;
+int cost_2_14 = 1;
+try {
+    MinCostToEqualizeArray(nums_14, cost_1_14, cost_2_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_15 = {1};
+int cost_1_15 = 1;
+int cost_2_15 = -1;
+try {
+    MinCostToEqualizeArray(nums_15, cost_1_15, cost_2_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+std::vector<int> nums_16 = {1, -2, 3};
+int cost_1_16 = 1;
+int cost_2_16 = 1;
+try {
+    MinCostToEqualizeArray(nums_16, cost_1_16, cost_2_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
     return 0;
   }
