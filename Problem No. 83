@@ -126,6 +126,184 @@ public:
 int main() {
     Solution solution;
   
+    // TEST
+int low_1 = 1;
+int high_1 = 10;
+int divisor_1 = 2;
+int expected_1 = 1;
+int result_1 = solution.NumberOfBeautifulIntegers(low_1, high_1, divisor_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+int low_2 = 15;
+int high_2 = 30;
+int divisor_2 = 5;
+int expected_2 = 2;
+int result_2 = solution.NumberOfBeautifulIntegers(low_2, high_2, divisor_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+int low_3 = 100;
+int high_3 = 200;
+int divisor_3 = 10;
+int expected_3 = 0;
+int result_3 = solution.NumberOfBeautifulIntegers(low_3, high_3, divisor_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+int low_4 = 50;
+int high_4 = 75;
+int divisor_4 = 5;
+int expected_4 = 3;
+int result_4 = solution.NumberOfBeautifulIntegers(low_4, high_4, divisor_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+int low_5 = 7;
+int high_5 = 22;
+int divisor_5 = 3;
+int expected_5 = 3;
+int result_5 = solution.NumberOfBeautifulIntegers(low_5, high_5, divisor_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+int low_6 = 1;
+int high_6 = 100000;
+int divisor_6 = 1;
+int expected_6 = 3420;
+int result_6 = solution.NumberOfBeautifulIntegers(low_6, high_6, divisor_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+int low_7 = 200;
+int high_7 = 300;
+int divisor_7 = 20;
+int expected_7 = 0;
+int result_7 = solution.NumberOfBeautifulIntegers(low_7, high_7, divisor_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+int low_8 = 1;
+int high_8 = 1000000000;
+int divisor_8 = 20;
+int expected_8 = 1105750;
+int result_8 = solution.NumberOfBeautifulIntegers(low_8, high_8, divisor_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+int low_9 = 123456789;
+int high_9 = 987654321;
+int divisor_9 = 9;
+int expected_9 = 0;
+int result_9 = solution.NumberOfBeautifulIntegers(low_9, high_9, divisor_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+  
+// TEST
+int low_10 = 1000000001;
+int high_10 = 1000000002;
+int divisor_10 = 1;
+try {
+    solution.NumberOfBeautifulIntegers(low_10, high_10, divisor_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int low_11 = 0;
+int high_11 = 5;
+int divisor_11 = 2;
+try {
+    solution.NumberOfBeautifulIntegers(low_11, high_11, divisor_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int low_12 = 5;
+int high_12 = 5;
+int divisor_12 = 0;
+try {
+    solution.NumberOfBeautifulIntegers(low_12, high_12, divisor_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int low_13 = -9999;
+int high_13 = 10;
+int divisor_13 = 5;
+try {
+    solution.NumberOfBeautifulIntegers(low_13, high_13, divisor_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int low_14 = 1;
+int high_14 = -9999;
+int divisor_14 = 10;
+try {
+    solution.NumberOfBeautifulIntegers(low_14, high_14, divisor_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int low_15 = 1;
+int high_15 = 10;
+int divisor_15 = -5456;
+try {
+    solution.NumberOfBeautifulIntegers(low_15, high_15, divisor_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+int low_16 = INT_MAX;
+int high_16 = 10;
+int divisor_16 = 2;
+try {
+    solution.NumberOfBeautifulIntegers(low_16, high_16, divisor_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+int low_17 = 1;
+int high_17 = INT_MAX;
+int divisor_17 = 2;
+try {
+    solution.NumberOfBeautifulIntegers(low_17, high_17, divisor_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
     return 0;
 }
 
