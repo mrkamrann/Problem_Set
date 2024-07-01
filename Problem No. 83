@@ -11,7 +11,7 @@ The count of even digits in the number is equal to the count of odd digits.
 The number is divisible by divisor.
 Return the number of beautiful integers in the range [low, high].
 
-Create a C++ Function NumberOfBeautifulIntegers that will return an integer denoting the number of beautiful integers in the range [low, high].
+Create a C++ class Solution that will contain a function NumberOfBeautifulIntegers that will return an integer denoting the number of beautiful integers in the range [low, high].
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
