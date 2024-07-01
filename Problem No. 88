@@ -12,7 +12,7 @@ elements in the vector are coprime.
 Two values are said to be coprime if their greatest common divisor (gcd) is 1.
 Julie needs to return the smallest index idx where the vector can be split validly. If no such valid split exists, she should return -1.
 
-Create a C++ Function FindValidSplit that will return an integer denoting the smallest index at which the vector can be split validly or -1 
+Create a C++ class Solution that will contain a function FindValidSplit that will return an integer denoting the smallest index at which the vector can be split validly or -1 
 if no such split exists.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
