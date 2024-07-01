@@ -1,10 +1,12 @@
 /*
 Link: https://codeforces.com/problemset/problem/1418/G
 
+Julie, a meticulous mathematician and avid problem solver, has been given a challenge involving a vector of integers . She loves working with numbers and enjoys 
+finding the most efficient solutions to complex problems. In this particular scenario, Julie has a vector nums consisting of len integers. 
+We denote the subarray nums[left..right] as  the vector [nums_left, nums_left+1, ..., nums_right] where 1 ≤ left ≤ right ≤ len.
 
-Julie has a vector nums consisting of len integers. We denote the subarray nums[left..right] as the vector [nums_left, nums_left+1, ..., nums_right] where 1 ≤ left ≤ right ≤ len.
-
-A subarray is considered good if every integer that occurs in this subarray occurs there exactly thrice. For example, the vector [1, 2, 2, 2, 1, 1, 2, 2, 2] has three good subarrays:
+A subarray is considered good if every integer that occurs in this subarray occurs there exactly thrice. For example, the vector [1, 2, 2, 2, 1, 1, 2, 2, 2] 
+has three good subarrays:
 
 nums[1..6] = [1, 2, 2, 2, 1, 1]
 nums[2..4] = [2, 2, 2]
@@ -12,7 +14,8 @@ nums[7..9] = [2, 2, 2]
 
 Calculate the number of good subarrays of the given vector nums.
 
-Create a C++ Function GoodSubarrayCount that will return an integer denoting  the number of good subarrays of the given vector nums.
+Create a C++ class Solution that will contain function GoodSubarrayCount that will return a long long denoting the number of good subarrays 
+of the given vector nums.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
@@ -21,10 +24,230 @@ Input Type:
 
 A vector<int> denoting nums
 
-
 Input Constraints:
 
 The length of `nums` should be at least 1 and at most 500,000 inclusive.
 Each value of `nums[i]` should be in the range [1, len] inclusive.
 
 */
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <ctime>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+public:
+  
+    std::map<std::vector<int>, int> count;
+    std::vector<std::vector<int>> value;
+    std::vector<std::vector<int>> position;
+    std::vector<std::vector<int>> xor_value;
+
+    long long GoodSubarrayCount(std::vector<int>& nums) {
+      
+      int len = nums.size();
+      
+        if (nums.size() < 1 || nums.size() > 500000) {
+            throw std::invalid_argument("The length of nums should be at least 1 and at most 500,000 inclusive.");
+        }
+
+        for (int num : nums) {
+            if (num < 1 || num > len) {
+                throw std::invalid_argument("Each value of nums[i] should be in the range [1, len] inclusive.");
+            }
+        }
+      
+       count.clear();
+       value.clear();
+       position.clear();
+       xor_value.clear();
+       
+        value.resize(len + 1, std::vector<int>(60));
+        position.resize(len + 1);
+        xor_value.resize(len + 1, std::vector<int>(60, 0));
+
+        std::srand(std::time(0));
+        for (int i = 1; i <= len; i++) {
+            for (int j = 0; j < 60; j++) {
+                value[i][j] = std::rand() % 3;
+            }
+        }
+
+        long long result = 0;
+        count[xor_value[0]]++;
+        for (int i = 1, j = 0; i <= static_cast<int>(nums.size()); i++) {
+            int curr = nums[i - 1];
+            position[curr].push_back(i);
+            if (position[curr].size() > 3) {
+                while (j < position[curr][position[curr].size() - 4]) {
+                    if (--count[xor_value[j]] == 0) {
+                        count.erase(xor_value[j]);
+                    }
+                    j++;
+                }
+            }
+
+            xor_value[i] = xor_value[i - 1];
+            for (int k = 0; k < 60; k++) {
+                xor_value[i][k] = (xor_value[i][k] + value[curr][k]) % 3;
+            }
+            result += count[xor_value[i]];
+            count[xor_value[i]]++;
+        }
+        return result;
+    }
+};
+
+int main() {
+
+Solution solution;
+//TEST
+std::vector<int> nums_1 = {1, 2, 1};
+int expected_1 = 0; 
+long long result_1 = solution.GoodSubarrayCount(nums_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> nums_2 = {1, 2, 1, 2};
+int expected_2 = 0;  
+long long result_2 = solution.GoodSubarrayCount(nums_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> nums_3 = {1, 1, 1, 1};
+int expected_3 = 2;
+long long result_3 = solution.GoodSubarrayCount(nums_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> nums_4 = {2, 2, 2};
+int expected_4 = 1; 
+long long result_4 = solution.GoodSubarrayCount(nums_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> nums_5 = {3, 1, 2, 3};
+int expected_5 = 0;  
+long long result_5 = solution.GoodSubarrayCount(nums_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> nums_6 = {1, 2, 3, 4, 5};
+int expected_6 = 0; 
+long long result_6 = solution.GoodSubarrayCount(nums_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> nums_7 = {5, 5, 5, 5, 5};
+int expected_7 = 3; 
+long long result_7 = solution.GoodSubarrayCount(nums_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> nums_8 = {1, 3, 3, 3, 1};
+int expected_8 = 1;  
+long long result_8 = solution.GoodSubarrayCount(nums_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> nums_9 = {1, 2, 3, 2, 1};
+int expected_9 = 0; 
+long long result_9 = solution.GoodSubarrayCount(nums_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> nums_10(500001, 1); 
+try {
+    solution.GoodSubarrayCount(nums_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {0, 1, 2, 3}; 
+try {
+    solution.GoodSubarrayCount(nums_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_12 = {1, 2, 3, 501000}; 
+try {
+    solution.GoodSubarrayCount(nums_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_13 = {}; 
+try {
+    solution.GoodSubarrayCount(nums_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_14 = {-1, 1, 2}; 
+try {
+    solution.GoodSubarrayCount(nums_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_15 = {1, 2, 4};
+try {
+   
+    solution.GoodSubarrayCount(nums_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_16 = {1, 2, -9999};
+try {
+    solution.GoodSubarrayCount(nums_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_17 = {1, 2, 1000000000};
+try {
+    solution.GoodSubarrayCount(nums_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+    return 0;
+}
+
