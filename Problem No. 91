@@ -1,0 +1,30 @@
+/*
+Link: https://codeforces.com/problemset/problem/1418/G
+
+
+Julie has a vector nums consisting of len integers. We denote the subarray nums[left..right] as the vector [nums_left, nums_left+1, ..., nums_right] where 1 ≤ left ≤ right ≤ len.
+
+A subarray is considered good if every integer that occurs in this subarray occurs there exactly thrice. For example, the vector [1, 2, 2, 2, 1, 1, 2, 2, 2] has three good subarrays:
+
+nums[1..6] = [1, 2, 2, 2, 1, 1]
+nums[2..4] = [2, 2, 2]
+nums[7..9] = [2, 2, 2]
+
+Calculate the number of good subarrays of the given vector nums.
+
+Create a C++ Function GoodSubarrayCount that will return an integer denoting  the number of good subarrays of the given vector nums.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type:
+
+A vector<int> denoting nums
+
+
+Input Constraints:
+
+The length of `nums` should be at least 1 and at most 500,000 inclusive.
+Each value of `nums[i]` should be in the range [1, len] inclusive.
+
+*/
