@@ -14,7 +14,7 @@ one house from the other is k.
 
 Note that house_x and house_y can be equal.
 
-Create a C++ Function CountOfPairs that will return a vector<long long> denoting 1-indexed vector result of length len.
+Create a C++ class Solution that will contain a function CountOfPairs that will return a vector<long long> denoting 1-indexed vector result of length len.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
 
