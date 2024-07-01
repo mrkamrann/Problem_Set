@@ -117,8 +117,173 @@ public:
 
 int main() {
   
-    Solution solution;
-    
+Solution solution;
+  
+// TEST
+int len_1 = 10;
+int house_x_1 = 2;
+int house_y_1 = 5;
+std::vector<long long> expected_1 = {20,20,16,12,10,8,4,0,0,0};
+std::vector<long long> result_1 = solution.CountOfPairs(len_1, house_x_1, house_y_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+int len_2 = 5;
+int house_x_2 = 1;
+int house_y_2 = 5;
+std::vector<long long> expected_2 = {10,10,0,0,0};
+std::vector<long long> result_2 = solution.CountOfPairs(len_2, house_x_2, house_y_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+int len_3 = 7;
+int house_x_3 = 3;
+int house_y_3 = 7;
+std::vector<long long> expected_3 = {14,20,18,10,0,0,0};
+std::vector<long long> result_3 = solution.CountOfPairs(len_3, house_x_3, house_y_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+int len_4 = 100;
+int house_x_4 = 50;
+int house_y_4 = 100;
+std::vector<long long> expected_4 = {200,208,220,222,224,226,228,230,232,234,236,238,240,242,244,246,248,250,252,254,256,258,260,262,264,164,162,160,158,156,154,152,150,148,146,144,142,140,138,136,134,132,130,128,126,124,122,120,118,116,106,92,88,84,80,76,72,68,64,60,56,52,48,44,40,36,32,28,24,20,16,12,8,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+std::vector<long long> result_4 = solution.CountOfPairs(len_4, house_x_4, house_y_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+int len_5 = 3;
+int house_x_5 = 1;
+int house_y_5 = 3;
+std::vector<long long> expected_5 = {6,0,0};
+std::vector<long long> result_5 = solution.CountOfPairs(len_5, house_x_5, house_y_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+int len_6 = 2;
+int house_x_6 = 1;
+int house_y_6 = 2;
+std::vector<long long> expected_6 = {2,0};
+std::vector<long long> result_6 = solution.CountOfPairs(len_6, house_x_6, house_y_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+int len_7 = 4;
+int house_x_7 = 2;
+int house_y_7 = 3;
+std::vector<long long> expected_7 = {6,24,30,8};
+std::vector<long long> result_7 = solution.CountOfPairs(len_7, house_x_7, house_y_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+int len_8 = 6;
+int house_x_8 = 1;
+int house_y_8 = 6;
+std::vector<long long> expected_8 = {12,12,6,0,0,0};
+std::vector<long long> result_8 = solution.CountOfPairs(len_8, house_x_8, house_y_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+int len_9 = 8;
+int house_x_9 = 4;
+int house_y_9 = 8;
+std::vector<long long> expected_9 = {16,30,40,44,32,14,12,12};
+std::vector<long long> result_9 = solution.CountOfPairs(len_9, house_x_9, house_y_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+  
+// TEST
+int len_10 = -444;
+int house_x_10 = 0;
+int house_y_10 = 0;
+try {
+    solution.CountOfPairs(len_10, house_x_10, house_y_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_11 = 4;
+int house_x_11 = -999;
+int house_y_11 = 2;
+try {
+    solution.CountOfPairs(len_11, house_x_11, house_y_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_12 = 100000;
+int house_x_12 = 100001;
+int house_y_12 = 100001;
+try {
+    solution.CountOfPairs(len_12, house_x_12, house_y_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_13 = -10;
+int house_x_13 = -5;
+int house_y_13 = -3;
+try {
+    solution.CountOfPairs(len_13, house_x_13, house_y_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_14 = 100006;
+int house_x_14 = 1;
+int house_y_14 = 100001;
+try {
+    solution.CountOfPairs(len_14, house_x_14, house_y_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_15 = 50000;
+int house_x_15 = 0;
+int house_y_15 = 1;
+try {
+    solution.CountOfPairs(len_15, house_x_15, house_y_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int len_16 = 2;
+int house_x_16 = -1;
+int house_y_16 = -1;
+try {
+    solution.CountOfPairs(len_16, house_x_16, house_y_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
 
     return 0;
 }
