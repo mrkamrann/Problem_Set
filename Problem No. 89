@@ -9,7 +9,7 @@ The absolute difference between the indices is less than or equal to index_diff 
 The absolute difference between the values at these indices is less than or equal to value_diff (abs(nums[i] - nums[j]) ≤ value_diff).
 If such a pair exists, she should return true; otherwise, she should return false.
 
-Create a C++ Function AlmostDuplicatePairs that will return a boolean indicating whether such a pair exists in the vector or not.
+Create a C++ class Solution that will contain a function AlmostDuplicatePairs that will return a boolean indicating whether such a pair exists in the vector or not.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
