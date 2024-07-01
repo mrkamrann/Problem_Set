@@ -1,0 +1,220 @@
+/*
+Link : https://codeforces.com/contest/55/problem/D
+
+Julie, a meticulous mathematician and avid problem solver, has been given two integers. She loves working with integers and enjoys  finding the most efficient 
+solutions to complex problems. In this particular scenario, It seems to her that a positive integer number is beautiful if and only if it is divisible by each of
+its non-zero digits. We will not argue with this and just count the quantity of beautiful numbers in given ranges. 
+
+She has been given two values low and high, her task is to calculate the number of beautiful numbers in given intervals.
+
+Create a C++ class Solution that will contain function BeautifulNumber that will return a long long denoting the number of beautiful numbers between low and high
+inclusive.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A long long denoting low
+A long long denoting high
+
+Input Constraints:
+
+Each value of low and high should be in the range [1, 9 * 10^18] inclusive.
+For each pair (low, high), it should hold that 1 ≤ low ≤ high ≤ 9 * 10^18.
+
+*/
+
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+#include <numeric>
+#include <stdexcept>
+#include <cassert>
+
+class Solution {
+private:
+    long long dp_table[25][2525][55];
+    int mod_pos[2525];
+    int digit_count;
+    int digits[25];
+    
+    long long Dfs(int len, int remainder, int mod, int flag) {
+      
+        if (len == 0) return remainder % mod == 0;
+      
+        if (!flag && dp_table[len][remainder][mod_pos[mod]] != -1) return dp_table[len][remainder][mod_pos[mod]];
+        
+        long long sum = 0;
+        int max_digit = flag ? digits[len] : 9;
+        for (int digit = 0; digit <= max_digit; ++digit) {
+            sum += Dfs(len - 1, (remainder * 10 + digit) % 2520, digit == 0 ? mod : mod * digit / std::gcd(mod, digit), flag && digit == max_digit);
+          
+        }
+        
+        if (!flag) dp_table[len][remainder][mod_pos[mod]] = sum;
+        return sum;
+    }
+    
+    long long Solve(long long value) {
+        int length = 0;
+        while (value) {
+            digits[++length] = value % 10;
+            value /= 10;
+        }
+        return Dfs(length, 0, 1, 1);
+    }
+
+public:
+    Solution() {
+        std::memset(dp_table, -1, sizeof(dp_table));
+        digit_count = 0;
+        for (int i = 1; i <= 2520; ++i) {
+            if (2520 % i == 0) mod_pos[i] = ++digit_count;
+        }
+    }
+
+    long long BeautifulNumber(long long low, long long high) {
+        
+        if (low < 1 || high < 1 || low > high || high > 9 * (long long)1e18 || low > 9 * (long long)1e18 ) {
+        throw std::invalid_argument("Invalid input: low and high values must be in the range [1, 9 * 10^18] and low must be less than or equal to high.");
+    }
+        return Solve(high) - Solve(low - 1);
+    }
+};
+
+int main() {
+    
+Solution solution;
+
+// TEST
+long long low_1 = 1;
+long long high_1 = 10;
+long long expected_1 = 10;
+long long result_1 = solution.BeautifulNumber(low_1, high_1);
+assert(result_1 == expected_1);
+
+// TEST
+long long low_2 = 20;
+long long high_2 = 50;
+long long expected_2 = 10;
+long long result_2 = solution.BeautifulNumber(low_2, high_2);
+assert(result_2 == expected_2);
+
+// TEST
+long long low_3 = 100;
+long long high_3 = 1000;
+long long expected_3 = 106;
+long long result_3 = solution.BeautifulNumber(low_3, high_3);
+assert(result_3 == expected_3);
+
+// TEST
+long long low_4 = 123456;
+long long high_4 = 654321;
+long long expected_4 = 17566;
+long long result_4 = solution.BeautifulNumber(low_4, high_4);
+assert(result_4 == expected_4);
+
+// TEST
+long long low_5 = 5000000000;
+long long high_5 = 5000000010;
+long long expected_5 = 3;
+long long result_5 = solution.BeautifulNumber(low_5, high_5);
+assert(result_5 == expected_5);
+
+// TEST
+long long low_6 = 900000000000000000;
+long long high_6 = 900000000000000009;
+long long expected_6 = 2;
+long long result_6 = solution.BeautifulNumber(low_6, high_6);
+assert(result_6 == expected_6);
+
+// TEST
+long long low_7 = 800000000000000000;
+long long high_7 = 900000000000000000;
+long long expected_7 = 197468382899026;
+long long result_7 = solution.BeautifulNumber(low_7, high_7);
+assert(result_7 == expected_7);
+
+// TEST
+long long low_8 = 1;
+long long high_8 = 999999999999999999;
+long long expected_8 = 1986512740492024;
+long long result_8 = solution.BeautifulNumber(low_8, high_8);
+assert(result_8 == expected_8);
+
+// TEST
+long long low_9 = 10;
+long long high_9 = 20;
+long long expected_9 = 5;
+long long result_9 = solution.BeautifulNumber(low_9, high_9);
+assert(result_9 == expected_9);
+
+// TEST_END
+
+// TEST
+long long low_10 = -5;
+long long high_10 = 10;
+try {
+    solution.BeautifulNumber(low_10, high_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST
+long long low_11 = 10;
+long long high_11 = -20;
+try {
+    solution.BeautifulNumber(low_11, high_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST
+long long low_12 = -9999;
+long long high_12 = 10;
+try {
+    solution.BeautifulNumber(low_12, high_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST
+long long low_13 = 5555;
+long long high_13 = 56;
+try {
+    solution.BeautifulNumber(low_13, high_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST
+  
+long long low_14 = 9 * (long long)1e18 + 1;
+long long high_14 = 9 * (long long)1e18 + 10;
+try {
+    solution.BeautifulNumber(low_14, high_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST
+long long low_15 = 1;
+long long high_15 = 9 * (long long) 1e18 + 1;
+try {
+    solution.BeautifulNumber(low_15, high_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+// TEST_END
+  
+    return 0;
+}
+
+
