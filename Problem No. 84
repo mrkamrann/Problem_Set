@@ -88,18 +88,18 @@ private:
     }
 
 public:
-    int countSubMultisets(std::vector<int>& nums, int low, int high) {
-        if (nums.size() < 1 || nums.size() > 20000) {
+    int CountSubMultisets(std::vector<int>& nums, int low, int high) {
+        if (nums.size() < 1 || nums.size() > 20000 || low < 0 || low > 20000 || high < 0 ||high > 20000) {
             throw std::invalid_argument("The length of nums should be at least 1 and at most 20,000 inclusive.");
         }
         int total_sum = 0;
         std::map<int, int> count_map;
-        for (std::vector<int>::iterator it = nums.begin(); it != nums.end(); ++it) {
-            if (*it < 0 || *it > 20000) {
+        for (std::vector<int>::iterator itr = nums.begin(); itr != nums.end(); ++itr) {
+            if (*itr < 0 || *itr > 20000) {
                 throw std::invalid_argument("Each value of nums[i] should be in the range [0, 20,000] inclusive.");
             }
-            total_sum += *it;
-            count_map[*it]++;
+            total_sum += *itr;
+            count_map[*itr]++;
         }
         if (total_sum > 20000) {
             throw std::invalid_argument("The sum of nums should not exceed 20,000.");
@@ -129,6 +129,211 @@ public:
 int main(){
 
 Solution solution;
+  
+// TEST
+std::vector<int> nums_1 = {1, 2, 3, 4};
+int low_1 = 3;
+int high_1 = 6;
+int expected_1 = 8;
+int result_1 = solution.CountSubMultisets(nums_1, low_1, high_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<int> nums_2 = {5, 5, 5, 5};
+int low_2 = 10;
+int high_2 = 15;
+int expected_2 = 2;
+int result_2 = solution.CountSubMultisets(nums_2, low_2, high_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<int> nums_3 = {0, 0, 0, 0};
+int low_3 = 0;
+int high_3 = 0;
+int expected_3 = 5;
+int result_3 = solution.CountSubMultisets(nums_3, low_3, high_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<int> nums_4 = {1, 2, 2, 3, 3};
+int low_4 = 3;
+int high_4 = 6;
+int expected_4 = 8;
+int result_4 = solution.CountSubMultisets(nums_4, low_4, high_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<int> nums_5 = {10, 20, 30};
+int low_5 = 15;
+int high_5 = 50;
+int expected_5 = 5;
+int result_5 = solution.CountSubMultisets(nums_5, low_5, high_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<int> nums_6 = {100, 200, 300};
+int low_6 = 50;
+int high_6 = 600;
+int expected_6 = 7;
+int result_6 = solution.CountSubMultisets(nums_6, low_6, high_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<int> nums_7 = {1, 1, 1, 1, 1};
+int low_7 = 1;
+int high_7 = 5;
+int expected_7 = 5;
+int result_7 = solution.CountSubMultisets(nums_7, low_7, high_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<int> nums_8 = {1000, 2000, 3000, 4000, 5000};
+int low_8 = 3000;
+int high_8 = 10000;
+int expected_8 = 22;
+int result_8 = solution.CountSubMultisets(nums_8, low_8, high_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> nums_9 = {20000};
+int low_9 = 0;
+int high_9 = 20000;
+int expected_9 = 2;
+int result_9 = solution.CountSubMultisets(nums_9, low_9, high_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+std::vector<int> nums_10 = {100, 200};
+int low_10 = -10;
+int high_10 = 50;
+try {
+    solution.CountSubMultisets(nums_10, low_10, high_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_11 = {100, 200};
+int low_11 = 10;
+int high_11 = -50;
+try {
+    solution.CountSubMultisets(nums_11, low_11, high_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_12 = {100, 200};
+int low_12 = 50000;
+int high_12 = 60000;
+try {
+    solution.CountSubMultisets(nums_12, low_12, high_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_13 = {100, 200};
+int low_13 = 60000;
+int high_13 = 300;
+try {
+    solution.CountSubMultisets(nums_13, low_13, high_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_14 = {-100, 200};
+int low_14 = 0;
+int high_14 = 300;
+try {
+    solution.CountSubMultisets(nums_14, low_14, high_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_15 = {100, 200};
+int low_15 = 0;
+int high_15 = 60000;
+try {
+    solution.CountSubMultisets(nums_15, low_15, high_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> nums_16 = {20000, 1};
+int low_16 = 0;
+int high_16 = 20000;
+try {
+    solution.CountSubMultisets(nums_16, low_16, high_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+
+// TEST
+std::vector<int> nums_17(1e5,200);
+int low_17 = 0;
+int high_17 = 2000;
+try {
+    solution.CountSubMultisets(nums_17, low_17, high_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+
+// TEST
+std::vector<int> nums_18 = {2000, 1};
+int low_18 = 2;
+int high_18 = -9999;
+try {
+    solution.CountSubMultisets(nums_18, low_18, high_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+
+// TEST
+std::vector<int> nums_19 = {200, 1};
+int low_19 = -9999;
+int high_19 = 2000;
+try {
+    solution.CountSubMultisets(nums_19, low_19, high_19);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
 
 return 0;
 
