@@ -1,81 +1,106 @@
 /*
 Link : https://codeforces.com/problemset/problem/508/D
 
+While Julie's dad was at work, little girl Julie decided to play with dad's password to his secret database. Dad's password is a string consisting of 
+len + 2 characters. She has written all the possible len three-letter continuous substrings of the password on pieces of paper, one for each piece of paper, 
+and threw the password out. Each three-letter substring was written the number of times it occurred in the password. Thus, Julie ended up with len pieces of paper.
+
+Then Julie realized that dad will be upset to learn about her game and decided to restore the password or at least any string corresponding to the final set of 
+three-letter strings. You have to help her in this difficult task. We know that dad's password consisted of lowercase and uppercase letters of the Latin alphabet
+and digits. Uppercase and lowercase letters of the Latin alphabet are considered distinct.
+
+Create a C++ Function JulieAndPassword that will return a boolean denoting if she can crack the password or not.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector<string> denoting substrings containing len three-letter substrings of dad's password.
+
+Input Constraints:
+
+The value of len should be at least 1 and at most 2 * 10^5 inclusive.
+Each value of substrings[i] should be a string of length 3 consisting of lowercase or uppercase Latin letters or digits.
+
 */
 
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
-using namespace std;
+#include <stdexcept>
+#include <cassert>
 
-void dfs(int i, unordered_map<int, vector<int>> &v, string &ans) {
-    while (!v[i].empty()) {
-        int s = v[i].back();
-        v[i].pop_back();
-        dfs(s, v, ans);
-    }
-    ans += static_cast<char>(i % 256);
-}
-
-string func(vector<string>&vec) {
+void DepthFirstSearch(int index, std::unordered_map<int, std::vector<int>>& adjacency_list, std::string& result) {
   
-    int n = vec.size();
-    int len = n;
-
-    unordered_map<int, vector<int>> v;
-    unordered_map<int, int> count;
-    string ans;
-
-    for(auto &it : vec) {
-        string a = it;
-    
-        if (a.size() != 3) {
-           return "?";
+        while (!adjacency_list[index].empty()) {
+            int next_index = adjacency_list[index].back();
+            adjacency_list[index].pop_back();
+            DepthFirstSearch(next_index, adjacency_list, result);
         }
-        int st = static_cast<unsigned char>(a[0]) * 256 + static_cast<unsigned char>(a[1]);
-        int en = static_cast<unsigned char>(a[1]) * 256 + static_cast<unsigned char>(a[2]);
-        v[st].push_back(en);
-        count[st]++;
-        count[en]--;
+        result += static_cast<char>(index % 256);
     }
 
-    int p = 0, s = -1;
-    for (const auto &kv : count) {
-        if (kv.second >= 1) {
-            p++;
-            s = kv.first;
+    bool JulieAndPassword(std::vector<std::string>& substrings) {
+      
+        if (substrings.size() < 1 || substrings.size() > 200000) {
+            throw std::invalid_argument("The value of len should be at least 1 and at most 2 * 10^5 inclusive.");
         }
-    }
 
-    if (s == -1) {
-        for (const auto &kv : v) {
-            if (!kv.second.empty()) {
-                s = kv.first;
-                break;
+        for (const std::string& substring : substrings) {
+            if (substring.size() != 3) {
+                throw std::invalid_argument("Each value of substrings[i] should be a string of length 3.");
+            }
+            for (char character : substring) {
+                if (!std::isalnum(character)) {
+                    throw std::invalid_argument("Substrings should only contain lowercase or uppercase Latin letters or digits.");
+                }
             }
         }
+
+        int len = substrings.size();
+        std::unordered_map<int, std::vector<int>> adjacency_list;
+        std::unordered_map<int, int> node_count;
+        std::string result;
+
+        for (const std::string& substring : substrings) {
+            int start = static_cast<unsigned char>(substring[0]) * 256 + static_cast<unsigned char>(substring[1]);
+            int end = static_cast<unsigned char>(substring[1]) * 256 + static_cast<unsigned char>(substring[2]);
+            adjacency_list[start].push_back(end);
+            node_count[start]++;
+            node_count[end]--;
+        }
+
+        int positive_count = 0;
+        int start_node = -1;
+        for (const std::pair<const int, int>& node : node_count) {
+            if (node.second >= 1) {
+                positive_count++;
+                start_node = node.first;
+            }
+        }
+
+        if (start_node == -1) {
+            for (const std::pair<const int, std::vector<int>>& node : adjacency_list) {
+                if (!node.second.empty()) {
+                    start_node = node.first;
+                    break;
+                }
+            }
+        }
+
+        if (node_count[start_node] > 1 || positive_count > 1) {
+            return false;
+        }
+
+        DepthFirstSearch(start_node, adjacency_list, result);
+        result += static_cast<char>(start_node / 256);
+
+        return result.size() == static_cast<size_t>(len + 2);
     }
 
-    if (count[s] > 1 || p > 1) {
-        return "?";
-    }
 
-    dfs(s, v, ans);
-    ans += static_cast<char>(s / 256);
-
-    if (ans.size() == static_cast<size_t>(len + 2)) {
-        reverse(ans.begin(),ans.end());
-        return ans;
-    } 
-      
-  
-  else return "?";
-    
-}
-
-int main(){
-  vector<string>r = {"aca", "aba", "aba" , "cab", "bac"};
-  cout<<func(r);
-  return 0;
+int main() {
+   
+    return 0;
 }
