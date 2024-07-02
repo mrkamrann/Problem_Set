@@ -26,7 +26,7 @@ nums must contain exactly len integers, each integer being unique and ranging fr
 #include <unordered_map>
 #include <stdexcept>
 #include <cassert>
-
+#include <unordered_set>
 
     bool CheckPermutation(std::vector<int>& nums) {
       
@@ -83,6 +83,160 @@ nums must contain exactly len integers, each integer being unique and ranging fr
 
 int main() {
    
+    //TEST
+    std::vector<int> nums_1 = {1, 2, 3, 4, 5};
+    bool expected_1 = true;
+    bool result_1 = CheckPermutation(nums_1);
+    assert(result_1 == expected_1);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_2 = {5, 4, 3, 2, 1};
+    bool expected_2 = true;
+    bool result_2 = CheckPermutation(nums_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_3 = {3, 1, 2, 5, 4};
+    bool expected_3 = false;
+    bool result_3 = CheckPermutation(nums_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_4 = {1};
+    bool expected_4 = false;
+    bool result_4 = CheckPermutation(nums_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_5 = {2, 1};
+    bool expected_5 = false;
+    bool result_5 = CheckPermutation(nums_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_6 = {8,2,1,7,6,4,5,3};
+    bool expected_6 = true;
+    bool result_6 = CheckPermutation(nums_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_7 = {1,3,2};
+    bool expected_7 = false;
+    bool result_7 = CheckPermutation(nums_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_8 = {1,2,3,4,5,6,7,8,9};
+    bool expected_8 = true;
+    bool result_8 = CheckPermutation(nums_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_9 = {12,10,1,2,5,6,7,9,8,11,4,3};
+    bool expected_9 = true;
+    bool result_9 = CheckPermutation(nums_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+
+    //TEST
+    std::vector<int> nums_10 = {1, 2, 2, 4, 5}; 
+    try {
+        CheckPermutation(nums_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_11 = {1, 2, 3, 4, 6};
+    try {
+        CheckPermutation(nums_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_12 = {0, 2, 3, 4, 5}; // Value less than 1
+    try {
+        CheckPermutation(nums_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_13 = {1, 2, 3, 4, 300001};
+    try {
+        CheckPermutation(nums_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_14 = {1, 2, -3233};
+    try {
+        CheckPermutation(nums_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_15 = {}; 
+    try {
+        CheckPermutation(nums_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_16(300001,1); 
+  
+    try {
+        CheckPermutation(nums_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_17 = {1, 2, 3, -4, 5}; 
+    try {
+        CheckPermutation(nums_17);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<int> nums_18 = {2, 3, 4, 5, 6}; 
+    try {
+        CheckPermutation(nums_18);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
