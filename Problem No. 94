@@ -1,0 +1,81 @@
+/*
+Link : https://codeforces.com/problemset/problem/508/D
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+void dfs(int i, unordered_map<int, vector<int>> &v, string &ans) {
+    while (!v[i].empty()) {
+        int s = v[i].back();
+        v[i].pop_back();
+        dfs(s, v, ans);
+    }
+    ans += static_cast<char>(i % 256);
+}
+
+string func(vector<string>&vec) {
+  
+    int n = vec.size();
+    int len = n;
+
+    unordered_map<int, vector<int>> v;
+    unordered_map<int, int> count;
+    string ans;
+
+    for(auto &it : vec) {
+        string a = it;
+    
+        if (a.size() != 3) {
+           return "?";
+        }
+        int st = static_cast<unsigned char>(a[0]) * 256 + static_cast<unsigned char>(a[1]);
+        int en = static_cast<unsigned char>(a[1]) * 256 + static_cast<unsigned char>(a[2]);
+        v[st].push_back(en);
+        count[st]++;
+        count[en]--;
+    }
+
+    int p = 0, s = -1;
+    for (const auto &kv : count) {
+        if (kv.second >= 1) {
+            p++;
+            s = kv.first;
+        }
+    }
+
+    if (s == -1) {
+        for (const auto &kv : v) {
+            if (!kv.second.empty()) {
+                s = kv.first;
+                break;
+            }
+        }
+    }
+
+    if (count[s] > 1 || p > 1) {
+        return "?";
+    }
+
+    dfs(s, v, ans);
+    ans += static_cast<char>(s / 256);
+
+    if (ans.size() == static_cast<size_t>(len + 2)) {
+        reverse(ans.begin(),ans.end());
+        return ans;
+    } 
+      
+  
+  else return "?";
+    
+}
+
+int main(){
+  vector<string>r = {"aca", "aba", "aba" , "cab", "bac"};
+  cout<<func(r);
+  return 0;
+}
