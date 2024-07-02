@@ -102,5 +102,167 @@ void DepthFirstSearch(int index, std::unordered_map<int, std::vector<int>>& adja
 
 int main() {
    
+//TEST
+std::vector<std::string> substrings_1 = {"aca", "aba", "aba", "cab", "bac"};
+bool expected_1 = true;
+bool result_1 = JulieAndPassword(substrings_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_2 = {"ABC", "XYZ", "123"};
+bool expected_2 = false;
+bool result_2 = JulieAndPassword(substrings_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_3 = {"aaa", "aaa", "aaa", "aaa", "aaa", "aaa", "aaa"};
+bool expected_3 = true;
+bool result_3 = JulieAndPassword(substrings_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_4 = {"abc"};
+bool expected_4 = true;
+bool result_4 = JulieAndPassword(substrings_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_5 = {"111", "222", "333"};
+bool expected_5 = false;
+bool result_5 = JulieAndPassword(substrings_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_6 = {"Ab1", "Cd2", "Ef3"};
+bool expected_6 = false;
+bool result_6 = JulieAndPassword(substrings_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_7 = {"aaa", "aaa", "aab"};
+bool expected_7 = true;
+bool result_7 = JulieAndPassword(substrings_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_8 = {"123", "456", "789"};
+bool expected_8 = false;
+bool result_8 = JulieAndPassword(substrings_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_9 = {"123", "234", "345", "456", "567"};
+bool expected_9 = true;
+bool result_9 = JulieAndPassword(substrings_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_10 = {};
+try {
+    JulieAndPassword(substrings_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_11 = {"ab"};
+try {
+    JulieAndPassword(substrings_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_12 = {"abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"};
+try {
+    JulieAndPassword(substrings_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_13 = {"ab#", "cd$", "ef%"};
+try {
+    JulieAndPassword(substrings_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_14 = {"12", "34", "56"};
+try {
+    JulieAndPassword(substrings_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_15 = {"abc", "defg", "hij"};
+try {
+    JulieAndPassword(substrings_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_16 = {"", "bcd", "efg"};
+try {
+    JulieAndPassword(substrings_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_17(1e6, "abc");
+try {
+    JulieAndPassword(substrings_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_18 = {"abc", "def", ""};
+try {
+    JulieAndPassword(substrings_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> substrings_19 = {"abc", "def*", "ghi"};
+try {
+    JulieAndPassword(substrings_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
