@@ -29,7 +29,7 @@ vector<long long> denoting ticket_values
 Input Constraints
 
 1 ≤ len ≤ 10^5, 0 ≤ max_val ≤ 10^9, 1 ≤ k_val ≤ 10^5
-0 to max_val
+Each value in ticket_values should be in the range 0 to max_val inclusive.
 
 */
 
@@ -102,15 +102,185 @@ void CheckWinningChance(long long current_value, long long len, long long max_va
     }
 
 int main() {
-    long long len, max_val, k_val;
-    std::cin >> len >> max_val >> k_val;
-    std::vector<long long> ticket_values(len);
-    for (long long i = 0; i < len; ++i) {
-        std::cin >> ticket_values[i];
-    }
+   
+    
+  
+      //TEST
+    long long max_val_1 = 10;
+    long long k_val_1 = 3;
+    std::vector<long long> ticket_values_1 = {0, 1, 2, 3, 4, 5};
+    std::vector<long long> expected_1 = {7,4};
+    std::vector<long long> result_1 = CalculateWinningChance(max_val_1, k_val_1, ticket_values_1);
+  assert(result_1 == expected_1);
+    //TEST_END
 
-    std::vector<long long> result = CalculateWinningChance( max_val, k_val, ticket_values);
-    std::cout << result[0] << " " << result[1] << std::endl;
+    //TEST
+    long long max_val_2 = 20;
+    long long k_val_2 = 4;
+    std::vector<long long> ticket_values_2 = {5, 10, 15};
+    std::vector<long long> expected_2 = {21,0};
+    std::vector<long long> result_2 = CalculateWinningChance(max_val_2, k_val_2, ticket_values_2);
+     assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    long long max_val_3 = 100;
+    long long k_val_3 = 1;
+    std::vector<long long> ticket_values_3 = {0, 50, 100};
+    std::vector<long long> expected_3 = {25,1};
+    std::vector<long long> result_3 = CalculateWinningChance(max_val_3, k_val_3, ticket_values_3);
+   assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    long long max_val_4 = 0;
+    long long k_val_4 = 1;
+    std::vector<long long> ticket_values_4 = {0};
+    std::vector<long long> expected_4 = {0,0};
+    std::vector<long long> result_4 = CalculateWinningChance(max_val_4, k_val_4, ticket_values_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    long long max_val_5 = 10;
+    long long k_val_5 = 5;
+    std::vector<long long> ticket_values_5 = {2, 4, 6, 8, 10};
+    std::vector<long long> expected_5 = {11,3};
+    std::vector<long long> result_5 = CalculateWinningChance(max_val_5, k_val_5, ticket_values_5);
+     assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    long long max_val_6 = 1000000000;
+    long long k_val_6 = 100000;
+    std::vector<long long> ticket_values_6 = {1, 1000000000};
+    std::vector<long long> expected_6 = {1000000001, 0};
+    std::vector<long long> result_6 = CalculateWinningChance(max_val_6, k_val_6, ticket_values_6);
+   assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    long long max_val_7 = 50;
+    long long k_val_7 = 7;
+    std::vector<long long> ticket_values_7 = {5, 15, 25, 35, 45};
+    std::vector<long long> expected_7 = {51,0};
+    std::vector<long long> result_7 = CalculateWinningChance(max_val_7, k_val_7, ticket_values_7);
+      assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    long long max_val_8 = 1;
+    long long k_val_8 = 1;
+    std::vector<long long> ticket_values_8 = {0, 1};
+    std::vector<long long> expected_8 = {0,0};
+    std::vector<long long> result_8 = CalculateWinningChance(max_val_8, k_val_8, ticket_values_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    long long max_val_9 = 100;
+    long long k_val_9 = 10;
+    std::vector<long long> ticket_values_9 = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+    std::vector<long long> expected_9 = {101,11};
+    std::vector<long long> result_9 = CalculateWinningChance(max_val_9, k_val_9, ticket_values_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+    //TEST
+    long long max_val_10 = -1; 
+    long long k_val_10 = 5;
+    std::vector<long long> ticket_values_10 = {0, 1, 2, 3, 4};
+    try {
+        CalculateWinningChance(max_val_10, k_val_10, ticket_values_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_11 = 10;
+    long long k_val_11 = -1; 
+    std::vector<long long> ticket_values_11 = {0, 1, 2, 3, 4};
+    try {
+        CalculateWinningChance(max_val_11, k_val_11, ticket_values_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_12 = 10;
+    long long k_val_12 = 5;
+    std::vector<long long> ticket_values_12 = {0, 1, 2, 3, 11}; 
+    try {
+        CalculateWinningChance(max_val_12, k_val_12, ticket_values_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_13 = 10;
+    long long k_val_13 = 5;
+    std::vector<long long> ticket_values_13 = {-1, 1, 2, 3, 4}; 
+    try {
+        CalculateWinningChance(max_val_13, k_val_13, ticket_values_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_14 = 10;
+    long long k_val_14 = 5;
+    std::vector<long long> ticket_values_14; 
+    try {
+        CalculateWinningChance(max_val_14, k_val_14, ticket_values_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_15 = -10;
+    long long k_val_15 = 5;
+    std::vector<long long> ticket_values_15(100001, 1); 
+    try {
+        CalculateWinningChance(max_val_15, k_val_15, ticket_values_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_16 = 1000000000;
+    long long k_val_16 = -555; 
+    std::vector<long long> ticket_values_16 = {1, 2, 3, 4, 5};
+    try {
+        CalculateWinningChance(max_val_16, k_val_16, ticket_values_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    long long max_val_17 = 10;
+    long long k_val_17 = 9;
+    std::vector<long long> ticket_values_17 = {-999999, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; 
+    try {
+        CalculateWinningChance(max_val_17, k_val_17, ticket_values_17);  
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
