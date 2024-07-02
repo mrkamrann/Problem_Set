@@ -1,0 +1,99 @@
+/*
+Link : https://codeforces.com/problemset/problem/3/D
+
+
+Julie is faced with yet another problem on regular bracket sequences.
+
+A bracket sequence is called regular if, by inserting "+" and "1" into it, Julie gets a correct mathematical expression. For example, sequences "(())()", "()", and "(()(()))" are regular, 
+while ")(", "(()", and "(()))(" are not. Julie has a sequence of a bracket sequence that consists of characters "(", ")", and "?". Julie has to replace each character "?" with a bracket so that
+she gets a regular bracket sequence. She has also given a 2D vector costs denoting where costs[i][0] and costs[i][1] is the cost of replacing the ith '?' with an opening or closing bracket.
+
+For each character "?", the cost of its replacement with "(" and ")" is given. Among all the possible variants, Julie should choose the cheapest.
+
+Create a C++ Function LeastCostSequence that will return an integer denoting the minimum cost.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string denoting the sequence
+A vector<vector<long long>> denoting costs
+
+Input Constraints:
+
+The length of the sequence should be at least 2 and at most 50,000 inclusive.
+The sequence's length should be even.
+The sequence consists of the characters '(', ')' and '?'.
+Each value of costs[i][0] and costs[i][1] should be in the range [1, 1,000,000] inclusive.
+The number of costs should be equal to the number of '?' in the sequence.
+
+*/
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+    long long LeastCostSequence(std::string &sequence, std::vector<std::vector<long long>> &costs) {
+       
+       if (sequence.size() < 2 || sequence.size() > 50000) {
+            throw std::invalid_argument("Invalid input: sequence length should be at least 2 and at most 50,000 inclusive");
+        }
+        if (sequence.size() % 2 != 0) {
+            throw std::invalid_argument("Invalid input: sequence length should be even");
+        }
+        if (std::any_of(sequence.begin(), sequence.end(), [](char c) { return c != '(' && c != ')' && c != '?'; })) {
+            throw std::invalid_argument("Invalid input: sequence should only consist of the characters '(', ')' and '?'");
+        }
+        if (costs.size() != std::count(sequence.begin(), sequence.end(), '?')) {
+            throw std::invalid_argument("Invalid input: number of costs should be equal to the number of '?' in the sequence");
+        }
+        for (const std::vector<long long> &cost_pair : costs) {
+            if (cost_pair[0] < 1 || cost_pair[0] > 1000000 || cost_pair[1] < 1 || cost_pair[1] > 1000000) {
+                throw std::invalid_argument("Invalid input: each value of costs[i][0] and costs[i][1] should be in the range [1, 1,000,000] inclusive");
+            }
+        }
+
+        std::priority_queue<std::pair<int, int>> priority_queue;
+        long long total_cost = 0;
+        int balance = 0;
+        int cost_index = 0;
+
+        for (int i = 0; i < sequence.size() && balance >= 0; ++i) {
+            if (sequence[i] == '(') {
+                balance++;
+            } else if (sequence[i] == ')') {
+                balance--;
+            } else {
+                int opening_cost = costs[cost_index][0];
+                int closing_cost = costs[cost_index][1];
+                cost_index++;
+                balance--;
+                total_cost += closing_cost;
+                priority_queue.push({closing_cost - opening_cost, i});
+            }
+
+            while (balance < 0) {
+                if (!priority_queue.empty()) {
+                    balance += 2;
+                    total_cost -= priority_queue.top().first;
+                    priority_queue.pop();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (balance != 0) {
+            return -1;
+        }
+        return total_cost;
+    }
+
+
+int main() {
+  
+    return 0;
+}
