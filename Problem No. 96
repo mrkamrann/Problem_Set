@@ -1,3 +1,117 @@
 /*
 Link: https://codeforces.com/contest/1835/problem/B
+
+Julie, along with len other people indexed from 1 to len, came to take part in a lottery. Each participant received a ticket with an integer from 0 to max_val denotted
+by a vector tickets.
+
+In this lottery, one integer called target is drawn uniformly from 0 to max_val. Up to k_val tickets (or fewer, if there are not enough participants) with the 
+closest numbers to the target are declared the winners. In the event of a tie, the ticket belonging to the person with a smaller index is declared the winner.
+
+Julie decided to take part in the lottery. She knows the values on the tickets of all previous participants. She can pick whatever value she wants on her ticket,
+but unfortunately, since she is the last one to receive it, she is indexed with an integer len+1.
+
+Julie wants to win the lottery. Therefore, she wants to know which number she should pick to maximize her chances of winning. She wants to know the smallest 
+integer if there are many such integers. Your task is to find it and calculate her chance of winning.
+
+Create a C++ Function CalculateWinningChance that will return a vector<long long> denoting The first should be equal to the number of target values (from 0 to max_val), upon 
+drawing which Julie wins, given that she chooses her ticket optimally. The second should be equal to the integer Julie should pick to maximize her chance of 
+winning the lottery.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type:
+
+An Integers denoting max_val
+An Integer  denoting k_val
+vector<long long> denoting ticket_values
+
+Input Constraints
+
+1 ≤ len ≤ 10^5, 0 ≤ max_val ≤ 10^9, 1 ≤ k_val ≤ 10^5
+0 to max_val
+
 */
+
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+void CheckWinningChance(long long current_value, long long len, long long max_val, long long k_val, const std::vector<long long>& sorted_tickets, long long& max_win_count, long long& best_pick) {
+        long long left = std::upper_bound(sorted_tickets.begin() + 1, sorted_tickets.end(), current_value) - sorted_tickets.begin() - 1;
+        long long right = std::lower_bound(sorted_tickets.begin() + 1, sorted_tickets.end(), current_value) - sorted_tickets.begin();
+
+        if (left - k_val + 1 <= 0) {
+            left = 0;
+        } else {
+            left = (sorted_tickets[left - k_val + 1] + current_value) / 2 + 1;
+        }
+
+        if (right + k_val - 1 > len) {
+            right = max_val;
+        } else {
+            right = (sorted_tickets[right + k_val - 1] - 1 + current_value) / 2;
+        }
+
+        if (right - left + 1 > max_win_count || (right - left + 1 == max_win_count && current_value < best_pick)) {
+            best_pick = current_value;
+            max_win_count = right - left + 1;
+        }
+    }
+
+
+    std::vector<long long> CalculateWinningChance(long long max_val, long long k_val, const std::vector<long long>& ticket_values) {
+      
+        long long len = ticket_values.size();
+      
+        if (len < 1 || len > 100000 || max_val < 0 || max_val > 1000000000 || k_val < 1 || k_val > 100000) {
+            throw std::invalid_argument("Input values are out of bounds");
+        }
+        if (ticket_values.size() != static_cast<size_t>(len)) {
+            throw std::invalid_argument("Ticket values size does not match the number of participants");
+        }
+
+        for (const int &val : ticket_values) {
+            if (val < 0 || val > max_val) {
+                throw std::invalid_argument("Ticket values are out of bounds");
+            }
+        }
+
+        std::vector<long long> sorted_tickets(len + 1);
+        for (long long i = 1; i <= len; ++i) {
+            sorted_tickets[i] = ticket_values[i - 1];
+        }
+        std::sort(sorted_tickets.begin() + 1, sorted_tickets.end());
+
+        long long max_win_count = 0, best_pick = 0;
+        CheckWinningChance(0, len, max_val, k_val, sorted_tickets, max_win_count, best_pick);
+        CheckWinningChance(max_val, len, max_val, k_val, sorted_tickets, max_win_count, best_pick);
+        if (max_val) {
+            CheckWinningChance(1, len, max_val, k_val, sorted_tickets, max_win_count, best_pick);
+            CheckWinningChance(max_val - 1, len, max_val, k_val, sorted_tickets, max_win_count, best_pick);
+        }
+        for (long long i = 1; i <= len; ++i) {
+            for (long long j = -2; j <= 2; ++j) {
+                if (sorted_tickets[i] + j >= 0 && sorted_tickets[i] + j <= max_val) {
+                    CheckWinningChance(sorted_tickets[i] + j, len, max_val, k_val, sorted_tickets, max_win_count, best_pick);
+                }
+            }
+        }
+        return {max_win_count, best_pick};
+    }
+
+int main() {
+    long long len, max_val, k_val;
+    std::cin >> len >> max_val >> k_val;
+    std::vector<long long> ticket_values(len);
+    for (long long i = 0; i < len; ++i) {
+        std::cin >> ticket_values[i];
+    }
+
+    std::vector<long long> result = CalculateWinningChance( max_val, k_val, ticket_values);
+    std::cout << result[0] << " " << result[1] << std::endl;
+
+    return 0;
+}
+
