@@ -1,8 +1,9 @@
 /*
 Link: https://codeforces.com/contest/452/problem/F
 
-Julie is given a vector nums wihich a permutation of numbers from 1 to len. She needs to determine whether there exists a pair of integers a and b 
-(1 ≤ a, b ≤ len and a!=b) such that the element (a+b)/2 appears between a and b in this permutation.
+Julie, a meticulous mathematician and avid problem solver. She loves working with permutations and enjoys finding the most efficient 
+solutions to complex problems. In this particular scenario Julie is given a vector nums wihich a permutation of numbers from 1 to len. She needs to determine 
+whether there exists a pair of integers a and b  (1 ≤ a, b ≤ len and a!=b) such that the element (a+b)/2 appears between a and b in this permutation.
 
 Note: This is regular division, not integer division
 
@@ -10,14 +11,14 @@ Create a C++ Function CheckPermutation that will return a boolean indicating whe
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
-Input Type
+Input Type:
 
-A vector<int> named permutation representing the nums itself.
+A vector<int> denoting nums.
 
-Input Constraints
+Input Constraints:
 
 The value of len must be at least 1 and at most 300000 inclusive.
-nums must contain exactly n integers, each integer being unique and ranging from 1 to len inclusive.
+nums must contain exactly len integers, each integer being unique and ranging from 1 to len inclusive.
 
 */
 
