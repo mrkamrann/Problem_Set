@@ -49,7 +49,7 @@ The integer num should be in the range [1, 1,000,000] inclusive.
     }
 
     long long CalculateLuckyColorings(long long num) {
-        if (num < 1e6 || num < 1) {
+        if (num > 1e6 || num < 1) {
             throw std::invalid_argument("The integer num should be in the range [1, 1,000,000] inclusive.");
         }
 
@@ -84,5 +84,167 @@ The integer num should be in the range [1, 1,000,000] inclusive.
 
 int main() {
 
+  // TEST
+long long num_1 = 1;
+long long expected_1 = 3;
+long long result_1 = CalculateLuckyColorings(num_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+long long num_2 = 2;
+long long expected_2 = 63;
+long long result_2 = CalculateLuckyColorings(num_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+long long num_3 = 100;
+long long expected_3 = 485774850;
+long long result_3 = CalculateLuckyColorings(num_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+long long num_4 = 1000;
+long long expected_4 = 211491839;
+long long result_4 = CalculateLuckyColorings(num_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+long long num_5 = 10000;
+long long expected_5 = 509034322;
+long long result_5 = CalculateLuckyColorings(num_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+long long num_6 = 50000;
+long long expected_6 = 493928939;
+long long result_6 = CalculateLuckyColorings(num_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+long long num_7 = 100000;
+long long expected_7 = 667239909;
+long long result_7 = CalculateLuckyColorings(num_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+long long num_8 = 500000;
+long long expected_8 = 974728097;
+long long result_8 = CalculateLuckyColorings(num_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+long long num_9 = 1000000;
+long long expected_9 = 733684421;
+long long result_9 = CalculateLuckyColorings(num_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+long long num_10 = 0;
+try {
+    CalculateLuckyColorings(num_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_11 = -1;
+try {
+    CalculateLuckyColorings(num_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_12 = -100;
+try {
+    CalculateLuckyColorings(num_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_13 = 1000001;
+try {
+    CalculateLuckyColorings(num_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_14 = -1000000;
+try {
+    CalculateLuckyColorings(num_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_15 = -500;
+try {
+    CalculateLuckyColorings(num_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_16 = -1000;
+try {
+    CalculateLuckyColorings(num_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_17 = -10000;
+try {
+    CalculateLuckyColorings(num_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_18 = 0;
+try {
+    CalculateLuckyColorings(num_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+long long num_19 = -200000;
+try {
+    CalculateLuckyColorings(num_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
     return 0;
 }
