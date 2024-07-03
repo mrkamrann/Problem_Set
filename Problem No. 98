@@ -1,5 +1,36 @@
 /*
 Link: https://codeforces.com/problemset/problem/1550/E
+
+Julie is given a string str of length len. Each character in this string is either one of the first count lowercase Latin letters or a dollar sign ('$').
+
+Julie needs to replace every dollar sign with one of the first count lowercase Latin letters such that a specific value is maximized.
+
+Here’s how to determine this value:
+
+Let max_len_i represent the maximum length of a substring in str that consists entirely of the i-th Latin letter. A substring is defined as a contiguous 
+sequence of characters in a string. If the i-th letter does not appear in str, then max_len_i is 0.
+
+The value of the string str is the minimum value among max_len_i for all i from 1 to count.
+
+Julie needs to find the maximum possible value of the string str after replacing all dollar signs with appropriate lowercase Latin letters.
+
+Create a C++ Function FindMaximumValidDistance that should return an integer denoting the maximum possible value of the string str after replacing all dollar signs 
+with appropriate lowercase Latin letters.
+
+Appropriate error handling using the stdexcept library should be implemented for invalid test cases.
+
+Input Type
+
+An integer len representing the length of the string.
+An integer count representing the number of the first lowercase Latin letters used.
+A string str consisting of len characters, where each character is either one of the first count lowercase Latin letters or a dollar sign ('$').
+
+Input Constraints:
+
+The length of the string str (len) must be between 1 and 2 * 10^5 inclusive.
+The number of first lowercase Latin letters (count) must be between 1 and 17 inclusive.
+The string str must consist only of the first count lowercase Latin letters and/or the dollar sign ('$') character.
+
 */
 
 #include <iostream>
@@ -8,23 +39,22 @@ Link: https://codeforces.com/problemset/problem/1550/E
 #include <stdexcept>
 #include <cassert>
 
-class ValidSubstringChecker {
-public:
-    bool IsValid(int distance, int length, int unique_count, const std::string &input_string) {
-        std::vector<int> last_occurrence(unique_count, length);
-        std::vector<std::vector<int>> positions(length + 1, std::vector<int>(unique_count, length + 1));
+    bool IsValid(int distance, int len, int count, const std::string &str) {
+
+        std::vector<int> last_occurrence(count, len);
+        std::vector<std::vector<int>> positions(len + 1, std::vector<int>(count, len + 1));
         
-        for (int index = length - 1; index >= 0; --index) {
-            if (input_string[index] != '?') {
-                last_occurrence[input_string[index] - 'a'] = index;
+        for (int index = len - 1; index >= 0; --index) {
+            if (str[index] != '$') {
+                last_occurrence[str[index] - 'a'] = index;
             }
-            int current_min = length;
-            for (int char_index = 0; char_index < unique_count; ++char_index) {
+            int current_min = len;
+            for (int char_index = 0; char_index < count; ++char_index) {
                 positions[index][char_index] = (index + distance <= current_min ? index + distance : positions[index + 1][char_index]);
                 current_min = std::min(current_min, last_occurrence[char_index]);
             }
-            current_min = length;
-            for (int char_index = unique_count - 1; char_index >= 0; --char_index) {
+            current_min = len;
+            for (int char_index = count - 1; char_index >= 0; --char_index) {
                 if (index + distance > current_min) {
                     positions[index][char_index] = positions[index + 1][char_index];
                 }
@@ -32,29 +62,43 @@ public:
             }
         }
 
-        std::vector<int> dp(1 << unique_count, length + 1);
-        dp[0] = 0;
+        std::vector<int> dp_table(1 << count, len + 1);
+        dp_table[0] = 0;
 
-        for (int mask = 0; mask < (1 << unique_count); ++mask) {
-            if (dp[mask] < length + 1) {
-                for (int char_index = 0; char_index < unique_count; ++char_index) {
+        for (int mask = 0; mask < (1 << count); ++mask) {
+            if (dp_table[mask] < len + 1) {
+                for (int char_index = 0; char_index < count; ++char_index) {
                     if (!((mask >> char_index) & 1)) {
-                        dp[mask | (1 << char_index)] = std::min(dp[mask | (1 << char_index)], positions[dp[mask]][char_index]);
+                        dp_table[mask | (1 << char_index)] = std::min(dp_table[mask | (1 << char_index)], positions[dp_table[mask]][char_index]);
                     }
                 }
             }
         }
-        return dp[(1 << unique_count) - 1] <= length;
+        return dp_table[(1 << count) - 1] <= len;
     }
 
-    int FindMaximumValidDistance(int length, int unique_count, const std::string &input_string) {
+    int FindMaximumValidDistance(const std::string &str, int count) {
+
+         int len = str.size();
+
+         if (len < 1 || len > 2 * 100000) {
+            throw std::invalid_argument("The length of the string must be between 1 and 200000 inclusive.");
+        }
+        if (count < 1 || count > 17) {
+            throw std::invalid_argument("The number of unique characters must be between 1 and 17 inclusive.");
+        }
+        for (char character : str) {
+            if (character != '$' && (character < 'a' || character >= 'a' + count)) {
+                throw std::invalid_argument("The string must consist only of the first 'count' lowercase Latin letters and/or the '$' character.");
+            }
+        }
         int left = 1;
-        int right = length;
+        int right = len;
         int result = 0;
 
         while (left <= right) {
             int middle = (left + right) / 2;
-            if (IsValid(middle, length, unique_count, input_string)) {
+            if (IsValid(middle, len, count, str)) {
                 result = middle;
                 left = middle + 1;
             } else {
@@ -64,26 +108,11 @@ public:
 
         return result;
     }
-};
+
+
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int length;
-    int unique_count;
-    std::string input_string;
-
-    std::cin >> length >> unique_count >> input_string;
-
-    if (length <= 0 || unique_count <= 0 || input_string.empty()) {
-        throw std::invalid_argument("Invalid input values.");
-    }
-
-    ValidSubstringChecker valid_substring_checker;
-    int maximum_valid_distance = valid_substring_checker.FindMaximumValidDistance(length, unique_count, input_string);
-
-    std::cout << maximum_valid_distance << std::endl;
+    
 
     return 0;
 }
