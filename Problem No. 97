@@ -1,5 +1,30 @@
 /*
 Link : https://codeforces.com/problemset/problem/1712/E2
+
+Julie is given a 2D vector ranges of length len, represented as ranges[i] = [low_i, high_i], or each element in ranges vector contains two positive 
+integers, low and high.
+
+Julie needs to count the number of distinct triplets of integers (i, j, k) such that low_i <= i < j < k <= high_i and Lcm(i, j, k) >= i + j + k.
+
+Here, Lcm(i, j, k) denotes the least common multiple (LCM) of integers i, j, and k.
+
+Return a vector result, where result[i] denotes the number of suitable triplets for ranges[i].
+
+Create a C++ function CountSuitableTriplets that will return a vector<long long> denoting the vector result.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector of pairs vector<pair<int, int>> denoting the values of low and high for each test case.
+
+Input Constraints
+
+The value of len should be at least 1 and at most 10^5 inclusive.
+Each value of low_i should be in the range [1, 2 * 10^5] inclusive.
+Each value of high_i should be in the range [1, 2 * 10^5] inclusive.
+The condition low_i + 2 <= high_i must hold for each ranges[i].
+
 */
 
 #include <iostream>
@@ -32,76 +57,78 @@ private:
     std::vector<long long> tree_;
 };
 
-std::vector<long long> SolveTestCases(int test_case_count, const std::vector<std::array<int, 2>>& ranges) {
-    if (test_case_count < 1) {
-        throw std::invalid_argument("Number of test cases must be at least 1");
+std::vector<long long> CountSuitableTriplets(const std::vector<std::vector<long long>>& ranges) {
+     int len = ranges.size();
+  
+     if (len < 1 || len > 100000) {
+        throw std::invalid_argument("The value of len should be at least 1 and at most 10^5 inclusive.");
     }
 
-    std::vector<long long> results(test_case_count);
-    std::vector<std::array<int, 3>> queries(test_case_count);
+    for (const vector<long long>& range : ranges) {
+        int low = range[0];
+        int high = range[1];
 
-    for (int i = 0; i < test_case_count; ++i) {
-        int left = ranges[i][0];
-        int right = ranges[i][1];
-
-        if (left >= right || left < 1 || right > 200000) {
-            throw std::invalid_argument("Invalid range for left and right");
+        if (low < 1 || low > 200000) {
+            throw std::invalid_argument("Each value of low should be in the range [1, 2 * 10^5] inclusive.");
         }
 
-        left--;
+        if (high < 1 || high > 200000) {
+            throw std::invalid_argument("Each value of high should be in the range [1, 2 * 10^5] inclusive.");
+        }
 
-        queries[i][0] = left;
-        queries[i][1] = right;
-        queries[i][2] = i;
-
-        results[i] = static_cast<long long>(right - left) * (right - left - 1) * (right - left - 2) / 6;
-        results[i] -= std::max(0, (right / 15 - left / 6));
-        results[i] -= std::max(0, (right / 6 - left / 3));
+        if (low + 2 > high) {
+            throw std::invalid_argument("The condition low + 2 <= high must hold for each range.");
+        }
     }
 
-    std::sort(queries.begin(), queries.end(), [](const std::array<int, 3> &a, const std::array<int, 3> &b) {
-        return a[0] > b[0];
+    std::vector<long long> results(len);
+    std::vector<std::array<int, 3>> queries(len);
+
+    for (int i = 0; i < len; ++i) {
+        int low = ranges[i][0];
+        int high = ranges[i][1];
+
+        if (low >= high || low < 1 || high > 200000) {
+            throw std::invalid_argument("Invalid range for low and high");
+        }
+
+        low--;
+
+        queries[i][0] = low;
+        queries[i][1] = high;
+        queries[i][2] = i;
+
+        results[i] = static_cast<long long>(high - low) * (high - low - 1) * (high - low - 2) / 6;
+        results[i] -= std::max(0, (high / 15 - low / 6));
+        results[i] -= std::max(0, (high / 6 - low / 3));
+    }
+
+    std::sort(queries.begin(), queries.end(), [](const std::array<int, 3> &query_1, const std::array<int, 3> &query_2) {
+        return query_1[0] > query_2[0];
     });
 
     std::vector<long long> factors(200005);
     FenwickTree fenwick_tree(200005);
     int current = 200000;
 
-    for (const auto &query : queries) {
-        int left = query[0];
-        int right = query[1];
+    for (const std::array<int, 3> &query : queries) {
+        int low = query[0];
+        int high = query[1];
         int position = query[2];
 
-        while (current > left) {
+        while (current > low) {
             for (int i = current * 2; i <= 200000; i += current) {
                 fenwick_tree.Add(i, factors[i]++);
             }
             current--;
         }
-        results[position] -= fenwick_tree.Sum(right + 1);
+        results[position] -= fenwick_tree.Sum(high + 1);
     }
 
     return results;
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    int test_case_count;
-    std::cin >> test_case_count;
-
-    std::vector<std::array<int, 2>> ranges(test_case_count);
-
-    for (int i = 0; i < test_case_count; ++i) {
-        std::cin >> ranges[i][0] >> ranges[i][1];
-    }
-
-    std::vector<long long> results = SolveTestCases(test_case_count, ranges);
-
-    for (const long long &result : results) {
-        std::cout << result << '\n';
-    }
-
+    
     return 0;
 }
