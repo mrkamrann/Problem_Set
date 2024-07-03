@@ -1,0 +1,90 @@
+/*
+Link: https://codeforces.com/problemset/problem/1550/E
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+class ValidSubstringChecker {
+public:
+    bool IsValid(int distance, int length, int unique_count, const std::string &input_string) {
+        std::vector<int> last_occurrence(unique_count, length);
+        std::vector<std::vector<int>> positions(length + 1, std::vector<int>(unique_count, length + 1));
+        
+        for (int index = length - 1; index >= 0; --index) {
+            if (input_string[index] != '?') {
+                last_occurrence[input_string[index] - 'a'] = index;
+            }
+            int current_min = length;
+            for (int char_index = 0; char_index < unique_count; ++char_index) {
+                positions[index][char_index] = (index + distance <= current_min ? index + distance : positions[index + 1][char_index]);
+                current_min = std::min(current_min, last_occurrence[char_index]);
+            }
+            current_min = length;
+            for (int char_index = unique_count - 1; char_index >= 0; --char_index) {
+                if (index + distance > current_min) {
+                    positions[index][char_index] = positions[index + 1][char_index];
+                }
+                current_min = std::min(current_min, last_occurrence[char_index]);
+            }
+        }
+
+        std::vector<int> dp(1 << unique_count, length + 1);
+        dp[0] = 0;
+
+        for (int mask = 0; mask < (1 << unique_count); ++mask) {
+            if (dp[mask] < length + 1) {
+                for (int char_index = 0; char_index < unique_count; ++char_index) {
+                    if (!((mask >> char_index) & 1)) {
+                        dp[mask | (1 << char_index)] = std::min(dp[mask | (1 << char_index)], positions[dp[mask]][char_index]);
+                    }
+                }
+            }
+        }
+        return dp[(1 << unique_count) - 1] <= length;
+    }
+
+    int FindMaximumValidDistance(int length, int unique_count, const std::string &input_string) {
+        int left = 1;
+        int right = length;
+        int result = 0;
+
+        while (left <= right) {
+            int middle = (left + right) / 2;
+            if (IsValid(middle, length, unique_count, input_string)) {
+                result = middle;
+                left = middle + 1;
+            } else {
+                right = middle - 1;
+            }
+        }
+
+        return result;
+    }
+};
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int length;
+    int unique_count;
+    std::string input_string;
+
+    std::cin >> length >> unique_count >> input_string;
+
+    if (length <= 0 || unique_count <= 0 || input_string.empty()) {
+        throw std::invalid_argument("Invalid input values.");
+    }
+
+    ValidSubstringChecker valid_substring_checker;
+    int maximum_valid_distance = valid_substring_checker.FindMaximumValidDistance(length, unique_count, input_string);
+
+    std::cout << maximum_valid_distance << std::endl;
+
+    return 0;
+}
+
