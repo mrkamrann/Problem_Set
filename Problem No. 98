@@ -21,9 +21,8 @@ Appropriate error handling using the stdexcept library should be implemented for
 
 Input Type
 
-An integer len representing the length of the string.
-An integer count representing the number of the first lowercase Latin letters used.
 A string str consisting of len characters, where each character is either one of the first count lowercase Latin letters or a dollar sign ('$').
+An integer count representing the number of the first lowercase Latin letters used.
 
 Input Constraints:
 
@@ -113,7 +112,187 @@ The string str must consist only of the first count lowercase Latin letters and/
 
 int main() {
     
+   // TEST
+std::string str_1 = "a$a";
+int count_1 = 1;
+int expected_1 = 3;
+int result_1 = FindMaximumValidDistance(str_1, count_1);
+assert(result_1 == expected_1);
+// TEST_END
 
+// TEST
+std::string str_2 = "aa$a$aa";
+int count_2 = 1;
+int expected_2 = 7;
+int result_2 = FindMaximumValidDistance(str_2, count_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::string str_3 = "a$bc$def$ghijk$lmnop$";
+int count_3 = 17;
+int expected_3 = 1;
+int result_3 = FindMaximumValidDistance(str_3, count_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::string str_4 = "ab$ab$ab$ab";
+int count_4 = 2;
+int expected_4 = 2;
+int result_4 = FindMaximumValidDistance(str_4, count_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::string str_5 = "$$$$$";
+int count_5 = 1;
+int expected_5 = 5;
+int result_5 = FindMaximumValidDistance(str_5, count_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::string str_6 = "abacabadabacaba";
+int count_6 = 4;
+int expected_6 = 1;
+int result_6 = FindMaximumValidDistance(str_6, count_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::string str_7 = "a$a$a$a$a$a$a$a$a$a$a$a$a$a$a$a$a";
+int count_7 = 1;
+int expected_7 = 33;
+int result_7 = FindMaximumValidDistance(str_7, count_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::string str_8 = "abcdefghijklmnop";
+int count_8 = 16;
+int expected_8 = 1;
+int result_8 = FindMaximumValidDistance(str_8, count_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::string str_9 = "aaa$aaa$aaa$aaa$aaa$aaa$aaa$aaa$aaa$aaa";
+int count_9 = 1;
+int expected_9 = 39;
+int result_9 = FindMaximumValidDistance(str_9, count_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+std::string str_10 = "";
+int count_10 = 1;
+try {
+    FindMaximumValidDistance(str_10, count_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_11 = "a";
+int count_11 = -5445;
+try {
+    FindMaximumValidDistance(str_11, count_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_12 = "abcdefghijklmnopqrstuvwz";
+int count_12 = 18;
+try {
+    FindMaximumValidDistance(str_12, count_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_13(1e6, 'a');
+int count_13 = 1;
+try {
+    FindMaximumValidDistance(str_13, count_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_14 = "a$b$c";
+int count_14 = 2;
+try {
+    FindMaximumValidDistance(str_14, count_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_15 = "ab$c";
+int count_15 = 1;
+try {
+    FindMaximumValidDistance(str_15, count_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_16 = "abcdefghijklmnopqrstuvwxyz$";
+int count_16 = 24;
+try {
+    FindMaximumValidDistance(str_16, count_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_17 = "ab$c";
+int count_17 = -1;
+try {
+    FindMaximumValidDistance(str_17, count_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_18 = "12345468";
+int count_18 = 18;
+try {
+    FindMaximumValidDistance(str_18, count_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_19 = "ab$c";
+int count_19 = 99;
+try {
+    FindMaximumValidDistance(str_19, count_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
     return 0;
 }
 
