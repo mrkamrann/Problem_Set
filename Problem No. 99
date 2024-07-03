@@ -1,17 +1,41 @@
 /*
 Link : https://codeforces.com/contest/997/problem/C
+
+On one of the planets in the Solar System, there is a prestigious institution known as Atmosphere University. Here, many students, including a character named Julie, are fans 
+of a unique version of the bingo game.
+
+In this unusual world, a month consists of num^2 days, and calendars are represented as a square matrix with dimensions num × num
+The planet’s atmosphere interacts uniquely with sunlight, causing the sky to change colors daily. The possible colors are blue, green, or red.
+
+Julie and her classmates play a special bingo game by observing the sky for a whole month. Each day, they record the sky's color in the corresponding cell of their calendar.
+
+At the end of the month, they examine their calendar to determine if it was a "lucky" month. A month is considered lucky if at least one entire row or column on the calendar is filled with the same color.
+
+Julie wants to know how many different ways the calendar can be colored such that the month is considered lucky. Two colorings are considered different if at least one cell has a different color in them. 
+Since the number of possible colorings can be very large, Julie is interested in finding the result modulo 998244353.
+
+Create a C++ Function CalculateLuckyColorings that will return an integer denoting the number of lucky colorings of the calendar.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer num denoting the number of rows and columns in the calendar.
+
+Input Constraints
+
+The integer num should be in the range [1, 1,000,000] inclusive.
+
 */
 
 #include <iostream>
 #include <stdexcept>
 #include <cassert>
 
-class ModularCalculator {
-public:
-    static const long long modulus = 998244353;
 
     long long Power(long long base, long long exponent) {
         long long result = 1;
+        long long modulus = 998244353;
         base = base % modulus;
 
         while (exponent > 0) {
@@ -24,21 +48,22 @@ public:
         return result;
     }
 
-    long long CalculateResult(long long number) {
-        if (number < 0) {
-            throw std::invalid_argument("The input number cannot be negative.");
+    long long CalculateLuckyColorings(long long num) {
+        if (num < 1e6 || num < 1) {
+            throw std::invalid_argument("The integer num should be in the range [1, 1,000,000] inclusive.");
         }
 
-        long long base_power_n_squared = Power(3, number * number);
-        long long base_power_n = Power(3, number);
-        long long adjusted_base_power = Power(base_power_n - 3 + modulus, number);
+        long long base_power_n_squared = Power(3, num * num);
+        long long base_power_n = Power(3, num);
+        long long modulus = 998244353;
+        long long adjusted_base_power = Power(base_power_n - 3 + modulus, num);
 
         long long answer = base_power_n_squared - adjusted_base_power;
         long long current_term = 1;
 
-        for (long long i = 0; i <= number; ++i) {
-            long long base = Power(3, number - i);
-            long long current_result = current_term * (Power(base, number) - Power(base - ((i > 0) ? 1 : 3) + modulus, number)) % modulus;
+        for (long long i = 0; i <= num; ++i) {
+            long long base = Power(3, num - i);
+            long long current_result = current_term * (Power(base, num) - Power(base - ((i > 0) ? 1 : 3) + modulus, num)) % modulus;
 
             if (i > 0) {
                 current_result = current_result * 3 % modulus;
@@ -50,30 +75,14 @@ public:
                 answer += current_result;
             }
 
-            current_term = current_term * (number - i) % modulus * Power(i + 1, modulus - 2) % modulus;
+            current_term = current_term * (num - i) % modulus * Power(i + 1, modulus - 2) % modulus;
         }
 
         return (answer % modulus + modulus) % modulus;
     }
-};
+
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    long long input_number;
-    std::cin >> input_number;
-
-    ModularCalculator calculator;
-
-    try {
-        long long result = calculator.CalculateResult(input_number);
-        std::cout << result << std::endl;
-    } catch (const std::invalid_argument &error) {
-        std::cerr << "Error: " << error.what() << std::endl;
-        return 1;
-    }
 
     return 0;
 }
-
