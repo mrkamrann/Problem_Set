@@ -64,7 +64,7 @@ std::vector<long long> CountSuitableTriplets(const std::vector<std::vector<long 
         throw std::invalid_argument("The value of len should be at least 1 and at most 10^5 inclusive.");
     }
 
-    for (const vector<long long>& range : ranges) {
+    for (const std::vector<long long>& range : ranges) {
         int low = range[0];
         int high = range[1];
 
@@ -130,5 +130,157 @@ std::vector<long long> CountSuitableTriplets(const std::vector<std::vector<long 
 
 int main() {
     
+  // TEST
+std::vector<std::vector<long long>> ranges_1 = {{1, 4}, {2, 5}, {3, 6}};
+std::vector<long long> expected_1 = {3,4,3};
+std::vector<long long> result_1 = CountSuitableTriplets(ranges_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_2 = {{1, 10}, {2, 12}, {5, 15}};
+std::vector<long long> expected_2 = {108,154,163};
+std::vector<long long> result_2 = CountSuitableTriplets(ranges_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_3 = {{100000, 200000}, {150000, 200000}, {1, 200000}};
+std::vector<long long> expected_3 = {166666666650000,20833333325000,1333313306293252};
+std::vector<long long> result_3 = CountSuitableTriplets(ranges_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_4 = {{1, 100}, {2, 200}, {3, 300}};
+std::vector<long long> expected_4 = {160778,1291672,4363213};
+std::vector<long long> result_4 = CountSuitableTriplets(ranges_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_5 = {{1, 50}, {10, 60}, {20, 70}};
+std::vector<long long> expected_5 = {19306,20793,20817};
+std::vector<long long> result_5 = CountSuitableTriplets(ranges_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_6 = {{1, 6}, {2, 7}, {3, 8}};
+std::vector<long long> expected_6 = {15,18,19};
+std::vector<long long> result_6 = CountSuitableTriplets(ranges_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_7 = {{10, 30}, {15, 35}, {20, 40}};
+std::vector<long long> expected_7 = {1326,1329,1330};
+std::vector<long long> result_7 = CountSuitableTriplets(ranges_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_8 = {{50, 100}, {60, 110}, {70, 120}};
+std::vector<long long> expected_8 = {20825,20825,20825};
+std::vector<long long> result_8 = CountSuitableTriplets(ranges_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_9 = {{1, 20}, {5, 25}, {10, 30}};
+std::vector<long long> expected_9 = {1083,1321,1326};
+std::vector<long long> result_9 = CountSuitableTriplets(ranges_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_10 = {{0, 4}, {2, 5}, {3, 6}};
+try {
+    CountSuitableTriplets(ranges_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_11 = {{1, 4}, {2, 5}, {3, 200001}};
+try {
+    CountSuitableTriplets(ranges_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_12 = {{1, 4}, {2, 5}, {3, 4}};
+try {
+    CountSuitableTriplets(ranges_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_13 = {{1, 400000}, {2, 5}, {3, 6}};
+try {
+    CountSuitableTriplets(ranges_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_14 = {{1, 4}, {2, 10000000}, {3, 6}};
+try {
+    CountSuitableTriplets(ranges_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_15 = {{1, -99}, {2, 3}, {3, 6}};
+try {
+    CountSuitableTriplets(ranges_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_16 = {{-45461, 4}, {2, -5}, {3, 6}};
+try {
+    CountSuitableTriplets(ranges_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_17(1e6,std::vector<long long>(2,2));
+try {
+    CountSuitableTriplets(ranges_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<std::vector<long long>> ranges_18 = {};
+try {
+    CountSuitableTriplets(ranges_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
     return 0;
 }
