@@ -1,0 +1,107 @@
+/*
+Link : https://codeforces.com/problemset/problem/1712/E2
+*/
+
+#include <iostream>
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+class FenwickTree {
+public:
+    FenwickTree(int size) : size_(size), tree_(size) {}
+
+    void Add(int index, const long long &value) {
+        for (int i = index + 1; i <= size_; i += i & -i) {
+            tree_[i - 1] += value;
+        }
+    }
+
+    long long Sum(int index) {
+        long long result = 0;
+        for (int i = index; i > 0; i -= i & -i) {
+            result += tree_[i - 1];
+        }
+        return result;
+    }
+
+private:
+    int size_;
+    std::vector<long long> tree_;
+};
+
+std::vector<long long> SolveTestCases(int test_case_count, const std::vector<std::array<int, 2>>& ranges) {
+    if (test_case_count < 1) {
+        throw std::invalid_argument("Number of test cases must be at least 1");
+    }
+
+    std::vector<long long> results(test_case_count);
+    std::vector<std::array<int, 3>> queries(test_case_count);
+
+    for (int i = 0; i < test_case_count; ++i) {
+        int left = ranges[i][0];
+        int right = ranges[i][1];
+
+        if (left >= right || left < 1 || right > 200000) {
+            throw std::invalid_argument("Invalid range for left and right");
+        }
+
+        left--;
+
+        queries[i][0] = left;
+        queries[i][1] = right;
+        queries[i][2] = i;
+
+        results[i] = static_cast<long long>(right - left) * (right - left - 1) * (right - left - 2) / 6;
+        results[i] -= std::max(0, (right / 15 - left / 6));
+        results[i] -= std::max(0, (right / 6 - left / 3));
+    }
+
+    std::sort(queries.begin(), queries.end(), [](const std::array<int, 3> &a, const std::array<int, 3> &b) {
+        return a[0] > b[0];
+    });
+
+    std::vector<long long> factors(200005);
+    FenwickTree fenwick_tree(200005);
+    int current = 200000;
+
+    for (const auto &query : queries) {
+        int left = query[0];
+        int right = query[1];
+        int position = query[2];
+
+        while (current > left) {
+            for (int i = current * 2; i <= 200000; i += current) {
+                fenwick_tree.Add(i, factors[i]++);
+            }
+            current--;
+        }
+        results[position] -= fenwick_tree.Sum(right + 1);
+    }
+
+    return results;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int test_case_count;
+    std::cin >> test_case_count;
+
+    std::vector<std::array<int, 2>> ranges(test_case_count);
+
+    for (int i = 0; i < test_case_count; ++i) {
+        std::cin >> ranges[i][0] >> ranges[i][1];
+    }
+
+    std::vector<long long> results = SolveTestCases(test_case_count, ranges);
+
+    for (const long long &result : results) {
+        std::cout << result << '\n';
+    }
+
+    return 0;
+}
