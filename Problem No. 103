@@ -1,6 +1,32 @@
 /*
 Link : https://codeforces.com/contest/95/problem/D
 
+Julie likes horse racing very much. Horses numbered from start_range to end_range take part in the races. Julie wants to evaluate the probability of victory; 
+for some reason, to do that she needs to know the amount of nearly lucky horses' numbers. A nearly lucky number is an integer number that has at least two lucky 
+digits, the distance between which does not exceed max_k. Julie learned from some of her mates from Lviv that lucky digits are digits 4 and 7. The distance between
+the digits is the absolute difference between their positions in the number of a horse. For example, if max_k = 2, then numbers 412395497, 404, 4070400000070004007
+are nearly lucky and numbers 4, 4123954997, 4007000040070004007 are not.
+
+Julie prepared len queries [start_range, end_range] and invented number max_k, common for all of them. Your task is to find how many nearly happy numbers
+there are in each of these segments. Since the answers can be quite large, output them modulo 1000000007 (10^9 + 7).
+
+Create a C++ function DetermineNearlyLuckyNumbers that will return a vector of integers denoting the answers for each query.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An Integer denoting max_k;
+vector<vector<string>> denoting queries;
+
+Input Constraints:
+
+The length of queries(len) should be at least 1 and at most 1000 inclusive.
+Each queries's first value(start_range) should be in the range [1, 10^1000] inclusive.
+Each queries's second value(end_range) should be in the range [1, 10^1000] inclusive and should be greater than or equal to the first value.
+Both start_range and end_range should not contain any leading zeroes
+The value of max_k should be in the range [1, 1000] inclusive.
+
 */
 
 #include <cassert>
@@ -58,7 +84,7 @@ private:
     }
 
 public:
-    std::vector<int> NearlyHappyNumbers(int max_k, const std::vector<std::vector<std::string>>& queries) {
+    std::vector<int> DetermineNearlyLuckyNumbers(int max_k, const std::vector<std::vector<std::string>>& queries) {
         if (max_k < 1 || max_k > 1000) throw std::invalid_argument("Invalid max_k");
         if (queries.size() < 1 || queries.size() > 1000) throw std::invalid_argument("Invalid number of test cases");
         
