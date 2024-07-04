@@ -1,6 +1,35 @@
 /*
 Link : https://codeforces.com/problemset/problem/1221/E
 
+Julie and Rob are playing a game. Initially, they have a string str composed solely of characters . and X. The game proceeds as follows:
+
+Julie and Rob take turns alternately, with Julie always going first.
+On each turn, the player must select a contiguous substring of characters . (dots) and replace each dot with X.
+Julie must select a substring of length val_a, while Rob must select a substring of length val_b. It is guaranteed that val_a is strictly greater than val_b.
+For example, if str = "....X..", val_a = 3, and val_b = 2, then after Julie's move, the string could turn into "XXX.X..". If it is Rob's turn and the string is "....X..", then after Rob's move, 
+the string could become "XX..X..", ".XXX..", or "..XXX..".
+
+The game ends when a player cannot make a move, and that player loses. You need to determine who will win if both Julie and Rob play optimally.
+
+Return true if Julie can win and false otherwise.
+
+Create a C++ function DetermineWinner that will return a boolean indicating whether Julie can win.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An Integer denoting val_a
+An Integer denoting val_b
+A string denoting str
+
+Input Constraints:
+
+The value of val_a and val_b should be such that 1 ≤ val_b < val_a ≤ 300,000 inclusive.
+The length of string str should be at least 1 and at most 300,000 inclusive.
+str should only contain '.' and 'X'
+
+
 */
 
 #include <iostream>
@@ -9,7 +38,8 @@ Link : https://codeforces.com/problemset/problem/1221/E
 #include <cassert>
 
 
-    bool IsValidPattern(int val_a, int val_b, std::string &str) {
+    bool DetermineWinner(int val_a, int val_b, std::string &str)
+    {
         if (val_b < 1 || val_b >= val_a || val_a > 300000 || val_a < 1 || val_b > 300000) {
             throw std::invalid_argument("Invalid input values for val_a or val_b.");
         }
