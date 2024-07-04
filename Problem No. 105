@@ -1,6 +1,28 @@
 /*
 Link: https://codeforces.com/contest/1731/problem/F
 
+Julie has an integer vector vec_1, vec_2, ..., vec_count. Let FuncLsl(i) denote the number of indices j (1 ≤ j < i) such that vec_j < vec_i. 
+Similarly, FuncG(i) is defined as the number of indices j (i < j ≤ count) such that vec_j > vec_i. A position i in the vector vec is considered good if 
+FuncLsl(i) < FuncG(i).
+
+Julie wants to find the function FindFunc(vec) defined on vector vec as the sum of all elements vec_i such that i is good in vec. Given two integers count 
+and multiplier, Julie needs to compute the sum of FindFunc(vec) over all vectors vec of size count where each vec_i satisfies 1 ≤ vec_i ≤ multiplier, 
+modulo 998244353.
+
+Create a C++ function CalculateSumFindFunc that will return a long long denoting the sum of FindFunc over all valid vectors vec.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An Integer denoting count
+An Integer denoting multiplier
+
+Input Constraints:
+
+count should be in the range [1, 50].
+multiplier should be in the range [2, 998244352].
+
 */
 
 
@@ -10,7 +32,7 @@ Link: https://codeforces.com/contest/1731/problem/F
 #include <cassert>
 
 
-    long long ComputeResult(long long count, long long multiplier) {
+    long long CalculateSumFindFunc(long long count, long long multiplier) {
       
         const long long modulus = 998244353;
 
