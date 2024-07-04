@@ -1,0 +1,92 @@
+/*
+Link : https://codeforces.com/contest/60/problem/D
+
+*/
+
+#include <algorithm>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
+
+class Solution {
+public:
+    Solution() {
+        std::memset(mushrooms, 0, sizeof(mushrooms));
+        for (int index = 0; index < limit; ++index) {
+            union_find[index] = index;
+        }
+    }
+
+    int GetRoot(int index) {
+        return union_find[index] == index ? index : union_find[index] = GetRoot(union_find[index]);
+    }
+
+    int Solve(std::vector<int>& mushroom_counts) {
+      
+        std::unordered_set<int> seen;
+
+        if (mushroom_counts.size() < 1 || mushroom_counts.size() > 1000000) {
+            throw std::invalid_argument("Invalid number of lawns");
+        }
+        
+        for (int count : mushroom_counts) {
+          
+            if (count < 1 || count > 10000000) {
+                throw std::invalid_argument("Invalid number of mushrooms on a lawn");
+            }
+          
+            if (seen.find(count) != seen.end()) {
+                throw std::invalid_argument("Mushroom counts must be unique");
+            }
+            seen.insert(count);
+        }
+        
+      
+        int lawn_count = mushroom_counts.size();
+        for (int index = 1; index <= lawn_count; ++index) {
+            int mushrooms_on_lawn = mushroom_counts[index - 1];
+            mushrooms[mushrooms_on_lawn] = index;
+            union_find[index] = index;
+        }
+
+        int square_root_limit = static_cast<int>(std::sqrt(limit - 1));
+        for (int i = 1; i <= square_root_limit; ++i) {
+            for (int j = i + 1; j <= limit / 2 / i; ++j) {
+                int triple[3] = {2 * i * j, j * j - i * i, j * j + i * i};
+
+                if (j > square_root_limit && triple[1] > limit) break;
+                if (std::__gcd(triple[0], triple[1]) > 1) continue;
+
+                for (int k = 0; k < 3; ++k) {
+                    if (triple[k] < limit && mushrooms[triple[k]]) {
+                        for (int u = k + 1; u < 3; ++u) {
+                            if (triple[u] < limit && mushrooms[triple[u]]) {
+                                int lawn_1 = mushrooms[triple[k]], lawn_2 = mushrooms[triple[u]];
+                                if (GetRoot(lawn_1) != GetRoot(lawn_2)) {
+                                    union_find[GetRoot(lawn_1)] = GetRoot(lawn_2);
+                                    lawn_count--;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return lawn_count;
+    }
+
+private:
+    static const int limit = 10000010;
+    int mushrooms[limit];
+    int union_find[limit];
+};
+
+int main() {
+    Solution solution;
+    return 0;
+}
