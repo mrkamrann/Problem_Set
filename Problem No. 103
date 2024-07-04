@@ -8,75 +8,86 @@ Link : https://codeforces.com/contest/95/problem/D
 #include <stdexcept>
 #include <vector>
 #include <iostream>
-using namespace std;
-#include <bits/stdc++.h>
-
-const int P = 1e9 + 7;
-const int N = 1005;
 
 class Solution {
 private:
-    int dp[N][N][2], c, k, t;
-    std::vector<int> v;
-    std::string a, b;
+    static const int modulus = 1e9 + 7;
+    static const int max_val = 1005;
+    int dp_table[max_val][max_val][2];
+    int max_digit_count;
+    int max_distance;
+    int len;
+    std::vector<int> digits;
+    std::string start_range, end_range;
 
-    int Slv(int x, int st, bool ck, bool ans) {
-        if (x > c) return ans;
-        if (ck && ~dp[c - x][st ? x - st : 0][ans]) return dp[c - x][st ? x - st : 0][ans];
-        long long s = 0;
-        for (int i = ck ? 9 : v[x]; ~i; i--) {
+    int Solve(int position, int start_pos, bool is_below, bool has_valid_segment) {
+        if (position > max_digit_count) return has_valid_segment;
+        if (is_below && ~dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment]) 
+            return dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment];
+        
+        long long sum = 0;
+        for (int i = is_below ? 9 : digits[position]; i >= 0; i--) {
             if (i == 4 || i == 7) {
-                s += Slv(x + 1, x, ck || i < v[x], ans || st && x - st <= k);
+                sum += Solve(position + 1, position, is_below || i < digits[position], has_valid_segment || start_pos && position - start_pos <= max_distance);
             } else {
-                s += Slv(x + 1, st, ck || i < v[x], ans);
+                sum += Solve(position + 1, start_pos, is_below || i < digits[position], has_valid_segment);
             }
         }
-        s %= P;
-        if (ck) dp[c - x][st ? x - st : 0][ans] = s;
-        return s;
+        sum %= modulus;
+        if (is_below) dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment] = sum;
+        return sum;
     }
 
-    int Init(const std::string& str, bool ck) {
-         c = str.length();
-        v.resize(c + 1);
-        for (int i = 1; i <= c; i++) {
-            v[i] = str[i - 1] - '0';
+    int Initialize(const std::string& str, bool decrement) {
+        max_digit_count = str.length();
+        digits.resize(max_digit_count + 1);
+        for (int i = 1; i <= max_digit_count; i++) {
+            digits[i] = str[i - 1] - '0';
         }
-        if (ck) {
-            int i = c;
-            while (i > 0 && !v[i]) {
-                v[i] = 9;
+        if (decrement) {
+            int i = max_digit_count;
+            while (i > 0 && !digits[i]) {
+                digits[i] = 9;
                 i--;
             }
             if (i > 0) {
-                v[i]--;
+                digits[i]--;
             }
         }
-        return Slv(1, 0, 0, 0);
+        return Solve(1, 0, 0, 0);
     }
 
 public:
-    std::vector<int> Process(int max_k, const std::vector<std::pair<std::string, std::string>>& test_cases) {
-       
-        int test_count = test_cases.size();
-        t = test_count;
-        k = max_k;
-      
-        memset(dp, -1, sizeof(dp));
-        std::vector<int>result;
-      
-        for (const auto& test_case : test_cases) {
-            a = test_case.first;
-            b = test_case.second;
-            result.push_back((Init(b, false) - Init(a, true) + P) % P);
+    std::vector<int> NearlyHappyNumbers(int max_k, const std::vector<std::vector<std::string>>& queries) {
+        if (max_k < 1 || max_k > 1000) throw std::invalid_argument("Invalid max_k");
+        if (queries.size() < 1 || queries.size() > 1000) throw std::invalid_argument("Invalid number of test cases");
+        
+        for (const std::vector<std::string> &query : queries) {
+            if (query[0].length() > 100 || query[1].length() > 100 || query[0].length() < 1 || query[1].length() < 1 || query[0][0] == '0' || query[1][0] == '0') {
+                throw std::invalid_argument("Invalid range length");
+            }
+            
+            if (query[0][0] == '0' || query[1][0] == '0') {
+                throw std::invalid_argument("Ranges should not contain leading zeroes");
+            }
         }
-      return result;
+        
+        len = queries.size();
+        max_distance = max_k;
+        memset(dp_table, -1, sizeof(dp_table));
+        std::vector<int> result;
+
+        for (const std::vector<std::string> & query : queries) {
+            start_range = query[0];
+            end_range = query[1];
+            result.push_back((Initialize(end_range, false) - Initialize(start_range, true) + modulus) % modulus);
+        }
+        return result;
     }
 };
 
-
 int main() {
-    Solution solution;
-  
+    
+
     return 0;
 }
