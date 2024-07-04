@@ -1,0 +1,75 @@
+/*
+Link : https://codeforces.com/contest/930/problem/D
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <stdexcept>
+#include <cassert>
+
+
+    long long Solve(std::vector<std::pair<int, int>>& pairs) {
+        long long result = 0;
+        std::multiset<int> front_set, back_set;
+        std::vector<std::vector<int>> memo(620000);
+        
+        for (std::pair<int, int>& pair : pairs) {
+            memo[pair.first].push_back(pair.second);
+            back_set.insert(pair.second);
+        }
+        
+        for (int i = 0; i < 620000; ++i) {
+            if (i % 2 == 0) {
+                for (int& value : memo[i]) {
+                    back_set.erase(back_set.find(value));
+                    front_set.insert(value);
+                }
+            } else {
+                if (front_set.size() >= 2 && back_set.size() >= 2) {
+                    int left = std::max(*front_set.begin(), *back_set.begin()) + 1;
+                    int right = std::min(*front_set.rbegin(), *back_set.rbegin()) - 1;
+                    if (left <= right) {
+                        result += (right - left) / 2 + 1;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    long long PointsToPlaceWhite(std::vector<std::vector<long long>>& points) {
+        int len = points.size();
+        if (len < 1 || len > 100000) {
+            throw std::invalid_argument("Invalid number of points. Must be between 1 and 100000.");
+        }
+
+        std::vector<std::pair<int, int>> odd_pairs, even_pairs;
+        
+        for (int i = 0; i < len; ++i) {
+            long long x_val = points[i][0], y_val = points[i][1];
+            if (x_val < -100000 || x_val > 100000 || y_val < -100000 || y_val > 100000) {
+                throw std::invalid_argument("Invalid point coordinates. Must be between -100000 and 100000.");
+            }
+
+            x_val += 300000;
+            y_val += 100000;
+            if ((x_val + y_val) % 2 == 0) {
+                even_pairs.emplace_back(x_val + y_val, x_val - y_val);
+            } else {
+                odd_pairs.emplace_back(x_val + y_val + 1, x_val - y_val + 1);
+            }
+        }
+
+        long long result = 0;
+        result += Solve(even_pairs);
+        result += Solve(odd_pairs);
+        return result;
+    }
+
+
+int main() {
+   
+    return 0;
+}
