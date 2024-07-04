@@ -1,6 +1,35 @@
 /*
 Link : https://codeforces.com/contest/930/problem/D
 
+
+Consider the following game for two players, Julie and her opponent. There is one white token and some number of black tokens. Each token is placed on a plane 
+at a point with integer coordinates x_val and y_val.
+
+The players take turns making moves, with Julie (white token) starting. On each turn, a player moves all tokens of their color by 1 unit in one of the four 
+cardinal directions: up, down, left, or right. The opponent can choose different directions for each black token independently.
+
+After a turn by Julie, the white token cannot occupy a point where a black token is located. There are no other constraints on the locations of the tokens: 
+positions of black tokens can coincide after a turn by the opponent, and initially, the white token can be at the same point as a black token. 
+If at any moment Julie cannot make a move, she loses. If Julie makes 10^(100500) moves, she wins.
+
+You need to solve the following problem: Given the initial positions of all black tokens, determine the number of initial positions for the white token such 
+that if both players play optimally, the opponent wins.
+
+Create a C++ function DetermineWinningPositions that will return a long long denoting the number of initial positions where the opponent wins.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+vector<vector<<int>> denoting black_tokens
+
+Input Constraints:
+
+The length of black_tokens should be at least 1 and at most 10^5 inclusive.
+Each value of black_tokens[i][0] (x_val) should be in the range [−10^5, 10^5] inclusive.
+Each value of black_tokens[i][1] (y_val) should be in the range [−10^5, 10^5] inclusive.
+The initial positions of black tokens are guaranteed to be distinct.
+
 */
 
 #include <iostream>
@@ -39,18 +68,25 @@ Link : https://codeforces.com/contest/930/problem/D
         return result;
     }
 
-    long long PointsToPlaceWhite(std::vector<std::vector<long long>>& points) {
-        int len = points.size();
+    long long DetermineWinningPositions(std::vector<std::vector<long long>>& black_tokens) {
+        int len = black_tokens.size();
         if (len < 1 || len > 100000) {
-            throw std::invalid_argument("Invalid number of points. Must be between 1 and 100000.");
+            throw std::invalid_argument("Invalid number of black_tokens. Must be between 1 and 100000.");
         }
 
         std::vector<std::pair<int, int>> odd_pairs, even_pairs;
+
+        std::set<std::pair<int, int>> unique_points(black_tokens.begin(), black_tokens.end());
+
+        if (unique_points.size() != points.size())
+        {
+           throw std::invalid_argument("Initial positions of black tokens must be distinct.");
+        }
         
         for (int i = 0; i < len; ++i) {
-            long long x_val = points[i][0], y_val = points[i][1];
+            long long x_val = black_tokens[i][0], y_val = black_tokens[i][1];
             if (x_val < -100000 || x_val > 100000 || y_val < -100000 || y_val > 100000) {
-                throw std::invalid_argument("Invalid point coordinates. Must be between -100000 and 100000.");
+                throw std::invalid_argument("Invalid black_tokens coordinates. Must be between -100000 and 100000.");
             }
 
             x_val += 300000;
