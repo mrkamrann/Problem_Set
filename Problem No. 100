@@ -87,5 +87,172 @@ str should only contain '.' and 'X'
 
 int main() {
    
+//TEST
+int val_a_1 = 3;
+int val_b_1 = 2;
+std::string str_1 = "XX......XX...X";
+bool expected_1 = true;
+bool result_1 = DetermineWinner(val_a_1, val_b_1, str_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int val_a_2 = 4;
+int val_b_2 = 2;
+std::string str_2 = "X...X.X..X";
+bool expected_2 = false;
+bool result_2 = DetermineWinner(val_a_2, val_b_2, str_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int val_a_3 = 5;
+int val_b_3 = 3;
+std::string str_3 = ".......X..X";
+bool expected_3 = true;
+bool result_3 = DetermineWinner(val_a_3, val_b_3, str_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int val_a_4 = 13;
+int val_b_4 = 7;
+std::string str_4 = "..............";
+bool expected_4 = true;
+bool result_4 = DetermineWinner(val_a_4, val_b_4, str_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int val_a_5 = 250000;
+int val_b_5 = 125000;
+std::string str_5 = "X.X.X...X.X.";
+bool expected_5 = false;
+bool result_5 = DetermineWinner(val_a_5, val_b_5, str_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int val_a_6 = 6;
+int val_b_6 = 5;
+std::string str_6 = ".X.........";
+bool expected_6 = true;
+bool result_6 = DetermineWinner(val_a_6, val_b_6, str_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int val_a_7 = 100000;
+int val_b_7 = 1;
+std::string str_7 = "..X..X..X..X";
+bool expected_7 = false;
+bool result_7 = DetermineWinner(val_a_7, val_b_7, str_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int val_a_8 = 200000;
+int val_b_8 = 150000;
+std::string str_8 = ".X...X.X...X";
+bool expected_8 = false;
+bool result_8 = DetermineWinner(val_a_8, val_b_8, str_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int val_a_9 = 5;
+int val_b_9 = 4;
+std::string str_9 = "...............X.....";
+bool expected_9 = true;
+bool result_9 = DetermineWinner(val_a_9, val_b_9, str_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+  
+//TEST
+int val_a_10 = 3000099;
+int val_b_10 = 299999;
+std::string str_10 = "X.X.X.X.X.X.X.";
+try {
+    DetermineWinner(val_a_10, val_b_10, str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int val_a_11 = -9900000;
+int val_b_11 = 4000;
+std::string str_11 = "X..X..X..X..X.";
+try {
+    DetermineWinner(val_a_11, val_b_11, str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int val_a_12 = 1;
+int val_b_12 = -99999;
+std::string str_12 = "XX.XX.XX.XX.";
+try {
+    DetermineWinner(val_a_12, val_b_12, str_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int val_a_13 = 2;
+int val_b_13 = 1;
+std::string str_13 = "";
+try {
+    DetermineWinner(val_a_13, val_b_13, str_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+int val_a_15 = 1;
+int val_b_15 = 1;
+std::string str_15(1e6,'X');
+try {
+    DetermineWinner(val_a_15, val_b_15, str_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int val_a_16 = 30;
+int val_b_16 = 40;
+std::string str_16 = ".X.X.X.X.X.X.ABSJD";
+try {
+    DetermineWinner(val_a_16, val_b_16, str_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int val_a_17 = 300000;
+int val_b_17 = 2999999;
+std::string str_17 = "XX.XX..X.XX.";
+try {
+    DetermineWinner(val_a_17, val_b_17, str_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
     return 0;
 }
