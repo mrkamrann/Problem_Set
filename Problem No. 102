@@ -1,0 +1,91 @@
+/*
+Link : https://codeforces.com/contest/138/problem/D
+
+*/
+
+#include <vector>
+#include <set>
+#include <cstring>
+#include <stdexcept>
+
+class Solution {
+public:
+    int rows, cols;
+    std::vector<std::vector<char>> board;
+    int dp_table[42][42][42][42][2];
+
+    int HelperFunction(int start_row, int start_col, int end_row, int end_col, int parity) {
+        if (start_row > end_row || start_col > end_col) {
+            return 0;
+        }
+        if (dp_table[start_row][start_col][end_row][end_col][parity] != -1) {
+            return dp_table[start_row][start_col][end_row][end_col][parity];
+        }
+        std::set<int> mex_set;
+        for (int i = 1; i <= rows; ++i) {
+            for (int j = 1; j <= cols; ++j) {
+                int x_val = i + j, y_val = i - j + cols;
+                if ((x_val & 1) == parity && start_row <= x_val && x_val <= end_row && start_col <= y_val && y_val <= end_col) {
+                    if (board[i][j] == 'L') {
+                        mex_set.insert(HelperFunction(start_row, start_col, x_val - 1, end_col, parity) ^ HelperFunction(x_val + 1, start_col, end_row, end_col, parity));
+                    } else if (board[i][j] == 'R') {
+                        mex_set.insert(HelperFunction(start_row, start_col, end_row, y_val - 1, parity) ^ HelperFunction(start_row, y_val + 1, end_row, end_col, parity));
+                    } else {
+                        mex_set.insert(
+                            HelperFunction(start_row, start_col, x_val - 1, y_val - 1, parity) ^
+                            HelperFunction(start_row, y_val + 1, x_val - 1, end_col, parity) ^
+                            HelperFunction(x_val + 1, start_col, end_row, y_val - 1, parity) ^
+                            HelperFunction(x_val + 1, y_val + 1, end_row, end_col, parity)
+                        );
+                    }
+                }
+            }
+        }
+        int mex = 0;
+        while (mex_set.count(mex)) {
+            ++mex;
+        }
+        return dp_table[start_row][start_col][end_row][end_col][parity] = mex;
+    }
+
+    bool WinOrLose(std::vector<std::string> input_board) {
+        
+        int row_count = input_board.size(), col_count = input_board[0].size();
+        if (row_count < 1 || row_count > 20 || col_count < 1 || col_count > 20) {
+            throw std::invalid_argument("The number of rows and columns should be between 1 and 20 inclusive.");
+        }
+      
+        for(const std::string itr : input_board)
+        {
+          if(itr.size() != col_count)
+          {
+            throw std::invalid_argument("Size of column should be same");
+          }
+          for(const char character : itr)
+          {
+            if(character != 'R' && character != 'L' && character != 'X')
+            {
+               throw std::invalid_argument("Each cell contains one magical character: L, R or X.");
+            }
+          }
+        }
+      
+        board.resize(row_count + 1, std::vector<char>(col_count + 1));
+        rows = row_count;
+        cols = col_count;
+        for (int i = 1; i <= row_count; ++i) {
+            for (int j = 1; j <= col_count; ++j) {
+                board[i][j] = input_board[i - 1][j - 1];
+            }
+        }
+        std::memset(dp_table, -1, sizeof dp_table);
+        int result = HelperFunction(1, 1, rows + cols, rows + cols, 0) ^ HelperFunction(1, 1, rows + cols, rows + cols, 1);
+        return result ? 1 : 0;
+    }
+};
+
+int main() {
+    return 0;
+}
+
+
