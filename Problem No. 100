@@ -1,0 +1,61 @@
+/*
+Link : https://codeforces.com/problemset/problem/1221/E
+
+*/
+
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+    bool IsValidPattern(int val_a, int val_b, std::string &str) {
+        if (val_b < 1 || val_b >= val_a || val_a > 300000 || val_a < 1 || val_b > 300000) {
+            throw std::invalid_argument("Invalid input values for val_a or val_b.");
+        }
+        if (str.length() < 1 || str.length() > 300000) {
+            throw std::invalid_argument("Invalid input length for str.");
+        }
+        for (char character : str) {
+            if (character  != '.' && character  != 'X') {
+                throw std::invalid_argument("Invalid character in str. Only '.' and 'X' are allowed.");
+            }
+        }
+
+        int count_2 = 0;
+        int count_3 = 0;
+        int count_4 = 0;
+        int length = 0;
+        int dot_count = 0;
+
+        for (std::size_t i = 0; i <= str.length() && count_2 == 0 && count_4 < 2; i++) {
+            if (i < str.length() && str[i] == '.') {
+                dot_count++;
+            } else {
+                if (dot_count >= val_b && dot_count < val_a) {
+                    count_2++;
+                } else if (dot_count >= val_a && dot_count < 2 * val_b) {
+                    count_3++;
+                } else if (dot_count >= 2 * val_b) {
+                    count_4++;
+                    length = dot_count;
+                }
+                dot_count = 0;
+            }
+        }
+
+        bool condition_1 = length >= 2 * val_b && length <= (val_a + 2 * val_b - 2);
+        bool condition_2 = length >= 2 * val_a && length < (val_a + 3 * val_b - 1);
+        bool condition_3 = length >= 3 * val_a && length <= (val_a + 4 * val_b - 2);
+
+        if (count_2 || count_4 > 1) return false;
+        else if (((count_3 % 2 == 0) && (condition_1 || condition_3)) || ((count_3 % 2) && (!count_4 || condition_2))) return true;
+
+        return false;
+    }
+
+
+int main() {
+   
+    return 0;
+}
