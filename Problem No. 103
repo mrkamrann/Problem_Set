@@ -1,0 +1,82 @@
+/*
+Link : https://codeforces.com/contest/95/problem/D
+
+*/
+
+#include <cassert>
+#include <cstring>
+#include <stdexcept>
+#include <vector>
+#include <iostream>
+using namespace std;
+#include <bits/stdc++.h>
+
+const int P = 1e9 + 7;
+const int N = 1005;
+
+class Solution {
+private:
+    int dp[N][N][2], c, k, t;
+    std::vector<int> v;
+    std::string a, b;
+
+    int Slv(int x, int st, bool ck, bool ans) {
+        if (x > c) return ans;
+        if (ck && ~dp[c - x][st ? x - st : 0][ans]) return dp[c - x][st ? x - st : 0][ans];
+        long long s = 0;
+        for (int i = ck ? 9 : v[x]; ~i; i--) {
+            if (i == 4 || i == 7) {
+                s += Slv(x + 1, x, ck || i < v[x], ans || st && x - st <= k);
+            } else {
+                s += Slv(x + 1, st, ck || i < v[x], ans);
+            }
+        }
+        s %= P;
+        if (ck) dp[c - x][st ? x - st : 0][ans] = s;
+        return s;
+    }
+
+    int Init(const std::string& str, bool ck) {
+         c = str.length();
+        v.resize(c + 1);
+        for (int i = 1; i <= c; i++) {
+            v[i] = str[i - 1] - '0';
+        }
+        if (ck) {
+            int i = c;
+            while (i > 0 && !v[i]) {
+                v[i] = 9;
+                i--;
+            }
+            if (i > 0) {
+                v[i]--;
+            }
+        }
+        return Slv(1, 0, 0, 0);
+    }
+
+public:
+    std::vector<int> Process(int max_k, const std::vector<std::pair<std::string, std::string>>& test_cases) {
+       
+        int test_count = test_cases.size();
+        t = test_count;
+        k = max_k;
+      
+        memset(dp, -1, sizeof(dp));
+        std::vector<int>result;
+      
+        for (const auto& test_case : test_cases) {
+            a = test_case.first;
+            b = test_case.second;
+            result.push_back((Init(b, false) - Init(a, true) + P) % P);
+        }
+      return result;
+    }
+};
+
+
+int main() {
+    Solution solution;
+  
+    return 0;
+}
