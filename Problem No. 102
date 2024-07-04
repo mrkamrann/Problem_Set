@@ -24,7 +24,7 @@ Julie has been trying to defeat the computer opponent for three days but she jus
 guaranteed that she can beat the opponent, or she will have to hack the game.
 
 
-Create a C++ function DetermineGameOutcome that will return a boolean indicating the outcome if Julie can win or if it is impossible to win considering
+Create a C++ class WinOrLose that will contain a function DetermineGameOutcome that will return a boolean indicating the outcome if Julie can win or if it is impossible to win considering
 that the opponent plays optimally.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
@@ -45,12 +45,13 @@ Each character in input_board should be one of the following: 'L', 'R', or 'X'.
 #include <set>
 #include <cstring>
 #include <stdexcept>
+#include <cassert>
 
-class Solution {
+class WinOrLose{
 public:
     int rows, cols;
     std::vector<std::vector<char>> board;
-    int dp_table[42][42][42][42][2];
+    int dp_table[30][30][30][30][2];;
 
     int HelperFunction(int start_row, int start_col, int end_row, int end_col, int parity) {
         if (start_row > end_row || start_col > end_col) {
@@ -88,14 +89,21 @@ public:
 
     bool DetermineGameOutcome(std::vector<std::string> input_board) {
         
-        int row_count = input_board.size(), col_count = input_board[0].size();
-        if (row_count < 1 || row_count > 20 || col_count < 1 || col_count > 20) {
-            throw std::invalid_argument("The number of rows and columns should be between 1 and 20 inclusive.");
+        int row_count = input_board.size();
+        if (row_count < 1 || row_count > 20 ) {
+            throw std::invalid_argument("The number of rows  between 1 and 20 inclusive.");
+        }
+      
+        int col_count = input_board[0].size();
+      
+        if (col_count < 1 || col_count > 20) {
+            throw std::invalid_argument("The number of  columns should be between 1 and 20 inclusive.");
         }
       
         for(const std::string itr : input_board)
         {
-          if(itr.size() != col_count)
+          int tmp_len = itr.size();
+          if(tmp_len != col_count)
           {
             throw std::invalid_argument("Size of column should be same");
           }
@@ -107,7 +115,7 @@ public:
             }
           }
         }
-      
+        board.clear();
         board.resize(row_count + 1, std::vector<char>(col_count + 1));
         rows = row_count;
         cols = col_count;
@@ -123,6 +131,132 @@ public:
 };
 
 int main() {
+ 
+WinOrLose solution;
+//TEST
+std::vector<std::string> input_board_1 = {"XL", "XX"};
+bool expected_1 = false;
+bool result_1 = solution.DetermineGameOutcome(input_board_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_2 = {"LRR", "RLX", "LRL"};
+bool expected_2 = true;
+bool result_2 = solution.DetermineGameOutcome(input_board_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_3 = {"XXX", "XXX", "XXX"};
+bool expected_3 = true;
+bool result_3 = solution.DetermineGameOutcome(input_board_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_4 = {"LRLRLRLRLRLRLRLRLRLR", "RLRLRLRLRLRLRLRLRLRL", "LRLRLRLRLRLRLRLRLRLR"};
+bool expected_4 = false;
+bool result_4 = solution.DetermineGameOutcome(input_board_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_5 = {"LRX", "LRX", "LRX"};
+bool expected_5 = true;
+bool result_5 = solution.DetermineGameOutcome(input_board_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_6 = {"LRL", "RLR", "LRL"};
+bool expected_6 = true;
+bool result_6 = solution.DetermineGameOutcome(input_board_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_7 = {"LXXX", "RRRR", "XXXX"};
+bool expected_7 = false;
+bool result_7 = solution.DetermineGameOutcome(input_board_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_8 = {"LRLR", "RLRL", "LRLR", "RLRL"};
+bool expected_8 = false;
+bool result_8 = solution.DetermineGameOutcome(input_board_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_9 = {"LRR", "RLR", "LRL"};
+bool expected_9 = true;
+bool result_9 = solution.DetermineGameOutcome(input_board_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+std::vector<std::string> input_board_10 = {"LRX", "XRX", "LRL", "L"};  
+try {
+    solution.DetermineGameOutcome(input_board_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_11 = {"LRR", "RLX", ""}; 
+try {
+    solution.DetermineGameOutcome(input_board_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_12(25, std::string(3,'X')); 
+try {
+    solution.DetermineGameOutcome(input_board_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_13 = {"LRL", "RLR", "LXQ"}; 
+try {
+    solution.DetermineGameOutcome(input_board_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_14(14, std::string(35,'X')); 
+try {
+    solution.DetermineGameOutcome(input_board_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> input_board_15 = {};  
+try {
+    solution.DetermineGameOutcome(input_board_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
     return 0;
 }
 
