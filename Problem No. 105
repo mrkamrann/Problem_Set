@@ -60,7 +60,162 @@ multiplier should be in the range [2, 998244352].
 
 int main() {
 
+//TEST
   
+long long count_1 = 1;
+long long multiplier_1 = 2;
+long long expected_1 = 0;
+long long result_1 = CalculateSumFindFunc(count_1, multiplier_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+long long count_2 = 5;
+long long multiplier_2 = 10;
+long long expected_2 = 712965;
+long long result_2 = CalculateSumFindFunc(count_2, multiplier_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+long long count_3 = 10;
+long long multiplier_3 = 20;
+long long expected_3 = 662985869;
+long long result_3 = CalculateSumFindFunc(count_3, multiplier_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+long long count_4 = 15;
+long long multiplier_4 = 25;
+long long expected_4 = 526869038;
+long long result_4 = CalculateSumFindFunc(count_4, multiplier_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+long long count_5 = 20;
+long long multiplier_5 = 30;
+long long expected_5 = 484475403;
+long long result_5 = CalculateSumFindFunc(count_5, multiplier_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+long long count_6 = 25;
+long long multiplier_6 = 35;
+long long expected_6 = 215606962;
+long long result_6 = CalculateSumFindFunc(count_6, multiplier_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+long long count_7 = 30;
+long long multiplier_7 = 40;
+long long expected_7 = 290190641;
+long long result_7 = CalculateSumFindFunc(count_7, multiplier_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+
+long long count_8 = 35;
+long long multiplier_8 = 45;
+long long expected_8 = 794736703;
+long long result_8 = CalculateSumFindFunc(count_8, multiplier_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+
+long long count_9 = 40;
+long long multiplier_9 = 50;
+long long expected_9 = 774864703;
+long long result_9 = CalculateSumFindFunc(count_9, multiplier_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+
+long long count_10 = -999;
+long long multiplier_10 = 10;
+try {
+    CalculateSumFindFunc(count_10, multiplier_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+long long count_11 = 11;
+long long multiplier_11 = -999;
+try {
+    CalculateSumFindFunc(count_11, multiplier_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+long long count_12 = 99999;
+long long multiplier_12 = 89;
+try {
+    CalculateSumFindFunc(count_12, multiplier_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+long long count_13 = 10;
+long long multiplier_13 = 998244353;
+try {
+    CalculateSumFindFunc(count_13, multiplier_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+long long count_14 = -1;
+long long multiplier_14 = 10;
+try {
+    CalculateSumFindFunc(count_14, multiplier_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+long long count_15 = 10;
+long long multiplier_15 = -10;
+try {
+    CalculateSumFindFunc(count_15, multiplier_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     
 
     return 0;
