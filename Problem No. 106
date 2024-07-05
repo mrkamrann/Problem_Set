@@ -1,0 +1,56 @@
+/*
+Link: https://codeforces.com/contest/986/problem/C
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+void Dfs(int x, int n, std::vector<int>& vis, const std::vector<int>& p) {
+    if (vis[x])
+        return;
+    vis[x] = 1;
+    if (p[x]) 
+        Dfs(((1 << n) - 1) ^ x, n, vis, p);
+    for (int i = 0; i < n; ++i) {
+        if (x & (1 << i)) {
+            Dfs(x ^ (1 << i), n, vis, p);
+        }
+    }
+}
+
+int CountComponents(int n, int m, const std::vector<int>& arr) {
+    std::vector<int> p(1 << n, 0);
+    std::vector<int> vis(1 << n, 0);
+
+    for (int i = 1; i <= m; ++i) {
+        p[arr[i]] = 1;
+    }
+
+    int ans = 0;
+    for (int i = 1; i <= m; ++i) {
+        if (!vis[arr[i]]) {
+            ans++;
+            Dfs(((1 << n) - 1) ^ arr[i], n, vis, p);
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int n, m;
+    std::cin >> n >> m;
+    
+    std::vector<int> arr(m + 1);
+    for (int i = 1; i <= m; ++i) {
+        std::cin >> arr[i];
+    }
+
+    int result = CountComponents(n, m, arr);
+    std::cout << result << std::endl;
+
+    return 0;
+}
