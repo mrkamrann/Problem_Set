@@ -14,7 +14,7 @@ nums[7..9] = [2, 2, 2]
 
 Calculate the number of good subarrays of the given vector nums.
 
-Create a C++ class Solution that will contain function GoodSubarrayCount that will return a long long denoting the number of good subarrays 
+Create a C++ class SubarrayClass that will contain function GoodSubarrayCount that will return a long long denoting the number of good subarrays 
 of the given vector nums.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
@@ -26,8 +26,8 @@ A vector<int> denoting nums
 
 Input Constraints:
 
-The length of `nums` should be at least 1 and at most 500,000 inclusive.
-Each value of `nums[i]` should be in the range [1, len] inclusive.
+The length of nums should be at least 1 and at most 500,000 inclusive.
+Each value of nums[i] should be in the range [1, len] inclusive.
 
 */
 
@@ -38,7 +38,7 @@ Each value of `nums[i]` should be in the range [1, len] inclusive.
 #include <stdexcept>
 #include <cassert>
 
-class Solution {
+class SubarrayClass{
 public:
   
     std::map<std::vector<int>, int> count;
@@ -103,7 +103,7 @@ public:
 
 int main() {
 
-Solution solution;
+SubarrayClass solution;
 //TEST
 std::vector<int> nums_1 = {1, 2, 1};
 int expected_1 = 0; 
