@@ -1,0 +1,51 @@
+/*
+Link: https://codeforces.com/contest/364/problem/D
+*/
+
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const int MAX_TRIES = 13;
+
+LL find_max_gcd(int n, vector<LL>& a) {
+    LL mx = 1;
+    auto solve = [&](int x) {
+        vector<LL> b(n+1), c, d;
+        for(int i = 1; i <= n; ++i) b[i] = __gcd(a[i], a[x]);
+        sort(b.begin()+1, b.end());
+        
+        LL top = 0;
+        for(int i = 1; i <= n; ++i) {
+            if(i == 1 || b[i] != b[i-1]) {
+                c.push_back(b[i]);
+                d.push_back(1);
+                ++top;
+            } else {
+                d.back()++;
+            }
+        }
+        
+        for(int i = 0; i < top; ++i) {
+            for(int j = i+1; j < top; ++j) {
+                if(c[j] % c[i] == 0) d[i] += d[j];
+            }
+            if(d[i] * 2 >= n) mx = max(mx, c[i]);
+        }
+    };
+    
+    srand(14783);
+    random_shuffle(a.begin()+1, a.end());
+    for(int i = 0; i < MAX_TRIES; ++i) solve(rand() % n + 1);
+    
+    return mx;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<LL> a(n+1);
+    for(int i = 1; i <= n; ++i) cin >> a[i];
+    
+    cout << find_max_gcd(n, a) << endl;
+    return 0;
+}
