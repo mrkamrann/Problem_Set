@@ -1,53 +1,108 @@
 /*
 Link: https://codeforces.com/contest/105/problem/E
 
+Julie, Jimmy, and Flonne are on a straight half-line divided into segments of unit length, referred to as position. The positions are numbered by positive 
+integers starting from 1 at the end of the half-line (i.e., 1, 2, 3, etc.). The distance between any two positions is the absolute difference between their 
+respective numbers.
+
+Julie, Jimmy, and Flonne occupy distinct positions on the half-line and aim to reach the position with the largest possible number. Each character can perform 
+the following actions no more than once:
+
+Move a certain distance.
+Grab another character and lift them above their head.
+Throw the lifted character a certain distance.
+
+Each character has a movement_range parameter indicating the maximum distance they can move to a free position, provided the distance does not exceed their 
+movement range.
+
+A character can lift another character if they are exactly 1 position apart and if the latter is not already being held by another character. The lifted character 
+moves to the same position as the character lifting them, leaving their original position free. While being lifted, the character cannot perform any actions, and 
+the character holding them cannot move.
+
+Each character also has a throwing_range parameter indicating the maximum distance they can throw a lifted character to a free position. A character can only 
+throw another character they are currently holding.
+
+We accept scenarios where one character can grab another character who, in turn, holds a third character, forming a "column" of three characters. 
+For example, Julie can hold Jimmy while Jimmy holds Flonne. In this case, both Jimmy and Flonne cannot perform any actions, and Julie can only 
+throw Jimmy (along with Flonne) a certain distance.
+
+Julie, Jimmy, and Flonne can perform actions in any order, taking turns to ensure no two characters act simultaneously.
+
+Determine the maximum position number that at least one of the characters can reach. That is, the maximum number x such that one of the characters can reach
+position x.
+
+Create a C++ function DeliverPackages that will return an integer denoting the maximum number x such that one of the characters can reach
+position x.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<int> julie_vec  denoting [julie_position, julie_movement_range, julie_throwing_range].
+A vector<int> jimmy_vec  denoting [jimmy_position, jimmy_movement_range, jimmy_throwing_range].
+A vector<int> flonne_vec denoting [flonne_position, flonne_movement_range, flonne_throwing_range].
+
+Input Constraints:
+
+The length of julie_vec, jimmy_vec, and flonne_vec should be 3.
+Each position, movement range, and throwing range should be in the range [1, 10] inclusive.
+The three characters must occupy distinct positions.
+
 */
 
-#include <cstdio>
+#include <iostream>
 #include <cmath>
-#include <cstring>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
 
-#define check(i) ((i) - p[0] && (i) - p[1] && (i) - p[2])
+bool IsPositionFree(int position, int positions[]) {
+    return (position != positions[0]) && (position != positions[1]) && (position != positions[2]);
+}
 
-void dfs(int *p, int x, int y, int m[3], int t[3], bool f[48][48][48][8][8], int &ans) {
-    bool &res = f[p[0]][p[1]][p[2]][x][y];
+void DepthFirstSearch(int positions[], int can_move_mask, int can_throw_mask, int movement_ranges[], int throwing_ranges[], bool visited[48][48][48][8][8], int& max_position) {
+    bool& res = visited[positions[0]][positions[1]][positions[2]][can_move_mask][can_throw_mask];
     if (res) return;
     res = true;
 
-    int far = 0, near = 50;
+    int farthest = 0, nearest = 50;
     for (int i = 0; i < 3; i++) {
-        if (p[i] < 45 && p[i] > far) far = p[i];
-        if (p[i] < near) near = p[i];
+        if (positions[i] < 45 && positions[i] > farthest) farthest = positions[i];
+        if (positions[i] < nearest) nearest = positions[i];
     }
-    if (far > ans) ans = far;
+    if (farthest > max_position) max_position = farthest;
 
     for (int j = 0; j < 3; j++) {
-        int q[3] = {p[0], p[1], p[2]};
-        int z = 1 << j;
+        int new_positions[3] = {positions[0], positions[1], positions[2]};
+        int character_mask = 1 << j;
 
-        if (p[j] >= 45) {
-            int T = p[j] - 45;
-            for (int i = p[T] + t[T]; p[T] < 45 && i >= p[T] - t[T] && i > near - 2 && i; i--) {
-                if (check(i)) {
-                    q[j] = i;
-                    dfs(q, x, y, m, t, f, ans);
+        if (positions[j] >= 45) {
+            int target_character = positions[j] - 45;
+            for (int i = positions[target_character] + throwing_ranges[target_character]; 
+                 positions[target_character] < 45 && i >= positions[target_character] - throwing_ranges[target_character] && i > nearest - 2 && i; 
+                 i--) {
+                if (IsPositionFree(i, positions)) {
+                    new_positions[j] = i;
+                    DepthFirstSearch(new_positions, can_move_mask, can_throw_mask, movement_ranges, throwing_ranges, visited, max_position);
                 }
             }
-        } else if (check(j + 45)) {
-            if (y & z) {
+        } else if (IsPositionFree(j + 45, positions)) {
+            if (can_throw_mask & character_mask) {
                 for (int i = 0; i < 3; i++) {
-                    if (fabs(p[i] - p[j]) == 1) {
-                        q[i] = 45 + j;
-                        dfs(q, x, y ^ z, m, t, f, ans);
-                        q[i] = p[i];
+                    if (std::abs(positions[i] - positions[j]) == 1) {
+                        new_positions[i] = 45 + j;
+                        DepthFirstSearch(new_positions, can_move_mask, can_throw_mask ^ character_mask, movement_ranges, throwing_ranges, visited, max_position);
+                        new_positions[i] = positions[i];
                     }
                 }
             }
-            if (x & z) {
-                for (int i = p[j] + m[j]; i >= p[j] - m[j] && i > near - 2 && i; i--) {
-                    if (check(i)) {
-                        q[j] = i;
-                        dfs(q, x ^ z, y, m, t, f, ans);
+            if (can_move_mask & character_mask) {
+                for (int i = positions[j] + movement_ranges[j]; 
+                     i >= positions[j] - movement_ranges[j] && i > nearest - 2 && i; 
+                     i--) {
+                    if (IsPositionFree(i, positions)) {
+                        new_positions[j] = i;
+                        DepthFirstSearch(new_positions, can_move_mask ^ character_mask, can_throw_mask, movement_ranges, throwing_ranges, visited, max_position);
                     }
                 }
             }
@@ -55,18 +110,30 @@ void dfs(int *p, int x, int y, int m[3], int t[3], bool f[48][48][48][8][8], int
     }
 }
 
-void solve(int p[3], int m[3], int t[3]) {
-    bool f[48][48][48][8][8] = {false};
-    int ans = 0;
-    dfs(p, 7, 7, m, t, f, ans);
-    printf("%d\n", ans);
+int MaxReachablePosition(std::vector<int>& julie_vec, std::vector<int>& jimmy_vec, std::vector<int>& flonne_vec) {
+    if (julie_vec.size() != 3 || jimmy_vec.size() != 3 || flonne_vec.size() != 3) {
+        throw std::invalid_argument("Input vectors must each have exactly 3 elements.");
+    }
+    for (int i = 0; i < 3; ++i) {
+        if (julie_vec[i] < 1 || julie_vec[i] > 10 || jimmy_vec[i] < 1 || jimmy_vec[i] > 10 || flonne_vec[i] < 1 || flonne_vec[i] > 10) {
+            throw std::invalid_argument("Each position, movement range, and throwing range should be in the range [1, 10] inclusive.");
+        }
+    }
+    if (julie_vec[0] == jimmy_vec[0] || julie_vec[0] == flonne_vec[0] || jimmy_vec[0] == flonne_vec[0]) {
+        throw std::invalid_argument("The three characters must occupy distinct positions.");
+    }
+
+    int positions[3] = {julie_vec[0], jimmy_vec[0], flonne_vec[0]};
+    int movement_ranges[3] = {julie_vec[1], jimmy_vec[1], flonne_vec[1]};
+    int throwing_ranges[3] = {julie_vec[2], jimmy_vec[2], flonne_vec[2]};
+
+    bool visited[48][48][48][8][8] = {false};
+    int max_position = 0;
+    DepthFirstSearch(positions, 7, 7, movement_ranges, throwing_ranges, visited, max_position);
+    return max_position;
 }
 
 int main() {
-    int p[3], m[3], t[3];
-    for (int i = 0; i < 3; i++) {
-        scanf("%d%d%d", &p[i], &m[i], &t[i]);
-    }
-    solve(p, m, t);
+    
     return 0;
 }
