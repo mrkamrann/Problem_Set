@@ -1,89 +1,126 @@
 /*
 Link : https://codeforces.com/contest/1313/problem/D
 
+Julie is in a challenging situation as Santa Claus. She has to deal with num_children children lined up in front of her, numbered from 1 to num_children. 
+Julie knows num_spells spells. The i-th spell gives a candy to every child whose place is in the range [left_i, right_i]. Each spell can be used at most once. 
+It is also known that if all spells are used, each child will receive at most max_candies candies.
+
+It is not good for children to eat a lot of sweets, so each child can eat no more than one candy, while the remaining candies will be equally divided between 
+their Mom and Dad. Therefore, if a child receives an even number of candies (possibly zero), they will be unable to eat any candies and will be sad. 
+However, the children who receive an odd number of candies will be happy.
+
+Help Julie to determine the maximum number of children she can make happy by casting some of her spells.
+
+Return the maximum number of children that Julie can make happy.
+
+Create a C++ function MaxHappyChildren that will return an integer denoting the maximum number of children that can be made happy.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer num_spells
+An integer num_children
+An integer max_candies
+A vector<vector<int>> denoting spells
+
+Input Constraints
+
+1 ≤ num_spells ≤ 100000
+1 ≤ num_children ≤ 10^9
+1 ≤ max_candies ≤ 8
+1 ≤ left_i ≤ right_i ≤ num_children
+
 */
 
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+#include <climits>
+
 
 struct Thing {
-    int pos, id;
-    bool operator<(const Thing& j) const {
-        return pos != j.pos ? pos < j.pos : id < j.id;
+    int position, spell_id;
+    bool operator<(const Thing& other) const {
+        return position != other.position ? position < other.position : spell_id < other.spell_id;
     }
 };
 
-int ComputeMaxSegment(int n, int m, int K, const vector<pair<int, int>>& intervals) {
-    vector<Thing> a(2 * n + 1);
-    int tot = 0;
+int MaxHappyChildren(int num_children, int max_candies, const std::vector<std::pair<int, int>>& spells) {
+    int num_spells = spells.size();
+    if (num_spells < 1 || num_spells > 100000 || num_children < 1 || num_children > 1000000000 || max_candies < 1 || max_candies > 8) {
+        throw std::invalid_argument("Invalid input parameters.");
+    }
+    
+    for (int i = 0; i < num_spells; ++i) {
+        if (spells[i].first < 1 || spells[i].second > num_children || spells[i].first > spells[i].second) {
+            throw std::invalid_argument("Invalid spell range in spells.");
+        }
+    }
+    
+    std::vector<Thing> events(2 * num_spells + 1);
+    int total_events = 0;
 
-    for (int i = 0; i < n; ++i) {
-        int l = intervals[i].first;
-        int r = intervals[i].second;
-        a[++tot] = {l, i + 1};
-        a[++tot] = {r + 1, -(i + 1)};
+    for (int i = 0; i < num_spells; ++i) {
+        int left = spells[i].first;
+        int right = spells[i].second;
+        events[++total_events] = {left, i + 1};
+        events[++total_events] = {right + 1, -(i + 1)};
     }
 
-    sort(a.begin() + 1, a.begin() + tot + 1);
+    std::sort(events.begin() + 1, events.begin() + total_events + 1);
 
-    vector<int> f(256, INT_MIN);
-    f[0] = 0;
-    vector<int> p(10, 0);
+    std::vector<int> max_happiness(256, INT_MIN);
+    max_happiness[0] = 0;
+    std::vector<int> spell_status(10, 0);
 
-    int ans = INT_MIN;
+    int max_happy_children = INT_MIN;
 
-    for (int i = 1; i <= tot; ++i) {
-        int len = (i == tot) ? 0 : a[i + 1].pos - a[i].pos;
+    for (int i = 1; i <= total_events; ++i) {
+        int length = (i == total_events) ? 0 : events[i + 1].position - events[i].position;
 
-        if (a[i].id > 0) {
-            int k = 0;
-            for (int j = 1, f = 0; j <= K && !f; ++j) {
-                if (!p[j]) {
-                    p[j] = a[i].id;
-                    k = j - 1;
-                    f = 1;
+        if (events[i].spell_id > 0) {
+            int spell_index = 0;
+            for (int j = 1, found = 0; j <= max_candies && !found; ++j) {
+                if (!spell_status[j]) {
+                    spell_status[j] = events[i].spell_id;
+                    spell_index = j - 1;
+                    found = 1;
                 }
             }
-            for (int j = (1 << K) - 1; j >= 0; --j) {
-                f[j] = max(f[j], f[(j & (1 << k)) ? j - (1 << k) : j]) + (__builtin_popcount(j) & 1) * len;
+            for (int j = (1 << max_candies) - 1; j >= 0; --j) {
+                max_happiness[j] = std::max(max_happiness[j], max_happiness[(j & (1 << spell_index)) ? j - (1 << spell_index) : j]) + (__builtin_popcount(j) & 1) * length;
             }
         } else {
-            int k = 0;
-            for (int j = 1, f = 0; j <= K && !f; ++j) {
-                if (p[j] + a[i].id == 0) {
-                    p[j] = 0;
-                    k = j - 1;
-                    f = 1;
+            int spell_index = 0;
+            for (int j = 1, found = 0; j <= max_candies && !found; ++j) {
+                if (spell_status[j] + events[i].spell_id == 0) {
+                    spell_status[j] = 0;
+                    spell_index = j - 1;
+                    found = 1;
                 }
             }
-            for (int j = 0; j < (1 << K); ++j) {
-                if (j & (1 << k)) {
-                    f[j] = INT_MIN;
+            for (int j = 0; j < (1 << max_candies); ++j) {
+                if (j & (1 << spell_index)) {
+                    max_happiness[j] = INT_MIN;
                 } else {
-                    f[j] = max(f[j], f[j + (1 << k)]) + (__builtin_popcount(j) & 1) * len;
+                    max_happiness[j] = std::max(max_happiness[j], max_happiness[j + (1 << spell_index)]) + (__builtin_popcount(j) & 1) * length;
                 }
             }
         }
     }
 
-    for (int i = 0; i < (1 << K); ++i) {
-        ans = max(ans, f[i]);
+    for (int i = 0; i < (1 << max_candies); ++i) {
+        max_happy_children = std::max(max_happy_children, max_happiness[i]);
     }
 
-    return ans;
+    return max_happy_children;
 }
 
 int main() {
-    int n, m, K;
-    cin >> n >> m >> K;
-    
-    vector<pair<int, int>> intervals(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> intervals[i].first >> intervals[i].second;
-    }
-
-    int result = ComputeMaxSegment(n, m, K, intervals);
-    cout << result << endl;
+  
 
     return 0;
 }
