@@ -19,10 +19,9 @@ Use appropriate error handling using the stdexcept library for the invalid test 
 
 Input Type
 
-An integer num_spells
 An integer num_children
 An integer max_candies
-A vector<vector<int>> denoting spells
+A vector<pair<int,int>> denoting spells
 
 Input Constraints
 
