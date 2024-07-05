@@ -1,42 +1,93 @@
 /*
 Link: https://codeforces.com/contest/53/problem/E
 
+Julie lives in Bertown, where life has become difficult due to an excess of roads. The city has num_junctions junctions and num_roads two-way roads, 
+allowing one to travel between any two junctions. The government spends a significant amount of resources maintaining these roads. To address this, the mayor
+wants to close some roads so that only num_junctions - 1 roads remain, ensuring it's still possible to travel between any two junctions. Moreover, the mayor wants
+exactly num_dead_ends dead ends, where a dead end is defined as a junction connected by only one road. Your task is to count the number of ways to close the roads
+such that the following conditions are met:
+
+There are exactly num_junctions - 1 roads left.
+
+It is possible to travel between any two junctions.
+
+There are exactly num_dead_ends dead ends in the resulting map.
+
+Two ways are considered different if there is at least one road that is closed in the first way but open in the second.
+
+Return the number of ways to close the roads under the given conditions.
+
+Create a C++ function CountRoadClosures that will return an integer denoting the number of different ways of closing the roads. 
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer denoting num_junctions
+An integer denoting num_dead_ends
+A vector<pair<int,int>> denoting roads
+
+Input Constraints
+
+The values for num_junctions should be in the range [3, 10] inclusive.
+The length of roads(num_roads) should be at least num_junctions - 1 and at most num_junctions * (num_junctions - 1) / 2 inclusive.
+The values for num_dead_ends should be in the range [2, num_junctions - 1] inclusive.
+Each value of roads[i][0] and roads[i][1] should be in the range [1, num_junctions] inclusive.
+roads[i][0] should not be equal to roads[i][1]
+
 */
 
 
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <stdexcept>
 
-int CountBits(int x) {
-    int res = 0;
-    while (x) {
-        res += (x % 2);
-        x /= 2;
+ int CountBits(int value) {
+        int result = 0;
+        while (value) {
+            result += (value % 2);
+            value /= 2;
+        }
+        return result;
     }
-    return res;
-}
 
-long long CalculatePaths(int n, int m, int k, const vector<pair<int, int>>& edges) {
-    int lim = 1 << n;
-    vector<vector<long long>> f(1024, vector<long long>(1024, 0));
-    vector<vector<int>> e(10, vector<int>(10, 0));
-    
-    for (const auto& edge : edges) {
-        int u = edge.first - 1;
-        int v = edge.second - 1;
-        e[u][v] = e[v][u] = f[(1 << u) | (1 << v)][(1 << u) | (1 << v)] = 1;
-    }
-    
-    for (int s = 0; s < lim; ++s) {
-        for (int t = s; t; t = (t - 1) & s) {
-            if (f[s][t]) {
-                for (int i = 0; i < n; ++i) {
-                    if (s >> i & 1) {
-                        for (int j = 0; j < n; ++j) {
-                            if (!(s >> j & 1) && e[i][j]) {
-                                int res = (t & (lim - 1 - (1 << i))) | (1 << j);
-                                if (1 << j == (res & -res)) {
-                                    f[s | (1 << j)][res] += f[s][t];
+   long long CountRoadClosures(int num_junctions, int num_dead_ends, const std::vector<std::pair<int, int>>& roads) {
+
+        int num_roads = roads.size();
+
+        if (num_junctions < 3 || num_junctions > 10) throw std::invalid_argument("Invalid number of junctions");
+
+        if (num_roads < num_junctions - 1 || num_roads > num_junctions * (num_junctions - 1) / 2) throw std::invalid_argument("Invalid number of roads");
+
+        if (num_dead_ends < 2 || num_dead_ends > num_junctions - 1) throw std::invalid_argument("Invalid number of dead ends");
+
+        for (int i = 0; i < num_roads; ++i) {
+            if (roads[i].first == roads[i].second || roads[i].first < 1 || roads[i].first > num_junctions || roads[i].second < 1 || roads[i].second > num_junctions) {
+                throw std::invalid_argument("Invalid values in roads");
+            }
+        }
+
+        int limit = 1 << num_junctions;
+        std::vector<std::vector<long long>> dp_table(1024, std::vector<long long>(1024, 0));
+        std::vector<std::vector<int>> connections(10, std::vector<int>(10, 0));
+        
+        for (int i = 0; i < roads.size(); ++i) {
+            int u_val = roads[i].first - 1;
+            int v_val = roads[i].second - 1;
+            connections[u_val][v_val] = connections[v_val][u_val] = dp_table[(1 << u_val) | (1 << v_val)][(1 << u_val) | (1 << v_val)] = 1;
+        }
+        
+        for (int s = 0; s < limit; ++s) {
+            for (int t = s; t; t = (t - 1) & s) {
+                if (dp_table[s][t]) {
+                    for (int i = 0; i < num_junctions; ++i) {
+                        if (s >> i & 1) {
+                            for (int j = 0; j < num_junctions; ++j) {
+                                if (!(s >> j & 1) && connections[i][j]) {
+                                    int result = (t & (limit - 1 - (1 << i))) | (1 << j);
+                                    if (1 << j == (result & -result)) {
+                                        dp_table[s | (1 << j)][result] += dp_table[s][t];
+                                    }
                                 }
                             }
                         }
@@ -44,29 +95,19 @@ long long CalculatePaths(int n, int m, int k, const vector<pair<int, int>>& edge
                 }
             }
         }
-    }
-    
-    long long ans = 0;
-    for (int i = 0; i < lim; ++i) {
-        if (CountBits(i) == k) {
-            ans += f[lim - 1][i];
+        
+        long long answer = 0;
+        for (int i = 0; i < limit; ++i) {
+            if (CountBits(i) == num_dead_ends) {
+                answer += dp_table[limit - 1][i];
+            }
         }
+        
+        return answer;
     }
-    
-    return ans;
-}
+
 
 int main() {
-    int n, m, k;
-    cin >> n >> m >> k;
     
-    vector<pair<int, int>> edges(m);
-    for (int i = 0; i < m; ++i) {
-        cin >> edges[i].first >> edges[i].second;
-    }
-    
-    long long result = CalculatePaths(n, m, k, edges);
-    cout << result << endl;
-
     return 0;
 }
