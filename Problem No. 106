@@ -1,56 +1,95 @@
 /*
 Link: https://codeforces.com/contest/986/problem/C
 
+Julie is given a set of size set_size with integer elements between 0 and 2^bit_range − 1 inclusive. 
+Julie needs to build an undirected graph on these integers in the following way: connect two integers int_x 
+and int_y with an edge if and only if int_x & int_y = 0. Here & is the bitwise AND operation. Julie's task is 
+to count the number of connected components in that graph.
+
+Return the number of connected components in the graph.
+
+Create a C++ function CountConnectedComponents that will return an integer denoting the number of 
+connected components in the graph.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer bit_range
+An integer set_size
+A vector<int> denoting elements
+
+Input Constraints:
+
+0 ≤ bit_range ≤ 22
+1 ≤ set_size ≤ 2^bit_range
+0 ≤ elements[i] < 2^bit_range
+All elements[i] are distinct
+
 */
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
 #include <cassert>
+#include <unordered_set>
 
-void Dfs(int x, int n, std::vector<int>& vis, const std::vector<int>& p) {
-    if (vis[x])
-        return;
-    vis[x] = 1;
-    if (p[x]) 
-        Dfs(((1 << n) - 1) ^ x, n, vis, p);
-    for (int i = 0; i < n; ++i) {
-        if (x & (1 << i)) {
-            Dfs(x ^ (1 << i), n, vis, p);
+
+     void DepthFirstSearch(int index, int bit_range, std::vector<int>& visited, const std::vector<int>& presence) {
+        if (visited[index]) {
+            return;
         }
-    }
-}
-
-int CountComponents(int n, int m, const std::vector<int>& arr) {
-    std::vector<int> p(1 << n, 0);
-    std::vector<int> vis(1 << n, 0);
-
-    for (int i = 1; i <= m; ++i) {
-        p[arr[i]] = 1;
-    }
-
-    int ans = 0;
-    for (int i = 1; i <= m; ++i) {
-        if (!vis[arr[i]]) {
-            ans++;
-            Dfs(((1 << n) - 1) ^ arr[i], n, vis, p);
+        visited[index] = 1;
+        if (presence[index]) {
+            DepthFirstSearch(((1 << bit_range) - 1) ^ index, bit_range, visited, presence);
+        }
+        for (int i = 0; i < bit_range; ++i) {
+            if (index & (1 << i)) {
+                DepthFirstSearch(index ^ (1 << i), bit_range, visited, presence);
+            }
         }
     }
 
-    return ans;
-}
+    int CountConnectedComponents(int bit_range, int set_size, const std::vector<int>& elements) {
+        if (bit_range < 0 || bit_range > 22) {
+            throw std::invalid_argument("Invalid bit_range: must be between 0 and 22.");
+        }
+        if (set_size < 1 || set_size > (1 << bit_range)) {
+            throw std::invalid_argument("Invalid set_size: must be between 1 and 2^bit_range.");
+        }
+
+        for (const int& element : elements) {
+            if (element < 0 || element >= (1 << bit_range)) {
+                throw std::invalid_argument("Element out of valid range.");
+            }
+        }
+
+        
+        std::unordered_set<int> element_set(elements.begin(), elements.end());
+        if (element_set.size() != elements.size()) {
+            throw std::invalid_argument("Elements are not distinct.");
+        }
+
+        std::vector<int> presence(1 << bit_range, 0);
+        std::vector<int> visited(1 << bit_range, 0);
+
+        for (int i = 0; i < set_size; ++i) {
+            presence[elements[i]] = 1;
+        }
+
+        int connected_components = 0;
+        for (int i = 0; i < set_size; ++i) {
+            if (!visited[elements[i]]) {
+                connected_components++;
+                DepthFirstSearch(((1 << bit_range) - 1) ^ elements[i], bit_range, visited, presence);
+            }
+        }
+
+        return connected_components;
+    }
 
 int main() {
-    int n, m;
-    std::cin >> n >> m;
-    
-    std::vector<int> arr(m + 1);
-    for (int i = 1; i <= m; ++i) {
-        std::cin >> arr[i];
-    }
-
-    int result = CountComponents(n, m, arr);
-    std::cout << result << std::endl;
+   
 
     return 0;
 }
