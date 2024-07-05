@@ -1,51 +1,100 @@
 /*
 Link: https://codeforces.com/contest/364/problem/D
+
+Julie offered her sister Jane  find the gcd of some set of numbers denoted by a vector values of length len.
+
+Gcd is a positive integer g_val, such that all number from the set are evenly divisible by g_val and there isn't such h_val (h_val > g_val), that all numbers 
+of the set are evenly divisible by h_val.
+
+Unfortunately Jane couldn't cope with the task and Julie offered her to find the ghd of the same subset of numbers.
+
+Ghd is a positive integer g_val, such that at least half of numbers from the set are evenly divisible by g_val and there isn't such h_val (h_val > g_val) 
+that at least half of the numbers from the set are evenly divisible by h_val.
+
+Your task is to return the Ghd of the given vector values.
+
+Create a C++ Function FindGhd that will return a long long denoting Ghd of the given vector values.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases
+
+
+Input Type:
+
+vector<long long> denoting values
+
+Input Constraints:
+
+The length of values(len) should be at least 1 and at most 10^5 inclusive.
+Each value of values[i] should be in the range [1, 10^12] inclusive.
+
 */
 
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long LL;
-const int MAX_TRIES = 13;
 
-LL find_max_gcd(int n, vector<LL>& a) {
-    LL mx = 1;
-    auto solve = [&](int x) {
-        vector<LL> b(n+1), c, d;
-        for(int i = 1; i <= n; ++i) b[i] = __gcd(a[i], a[x]);
-        sort(b.begin()+1, b.end());
+#include <stdexcept>
+#include <cassert>
+#include <vector>
+#include <iostream>
+#include <functional>
+
+    long long FindGhd(std::vector<long long>& values) {
+      
+        int len = values.size();
+        if(len < 1 || len > 100000){
+          throw std::invalid_argument("The length of each values should be at least 1 and at most 1e5.");
+
+        }
+        for(int i = 0; i < len; ++i)
+        {
+          if(values[i] > 1e12 || values[i] < 1){
+            throw std::invalid_argument("The value of values[i] should be at least 1 and at most 1e12.");
+
+          }
+        }
+      
+        long long maximum_gcd = 1;
         
-        LL top = 0;
-        for(int i = 1; i <= n; ++i) {
-            if(i == 1 || b[i] != b[i-1]) {
-                c.push_back(b[i]);
-                d.push_back(1);
-                ++top;
-            } else {
-                d.back()++;
+         std::function<void(int)> CalculateGcd = [&](int index) {
+            std::vector<long long> gcd_values(len + 1), unique_gcds, gcd_counts;
+            for (int i = 1; i <= len; ++i) {
+                gcd_values[i] = std::__gcd(values[i], values[index]);
             }
+            std::sort(gcd_values.begin() + 1, gcd_values.end());
+            
+            int distinct_gcd_count = 0;
+            for (int i = 1; i <= len; ++i) {
+                if (i == 1 || gcd_values[i] != gcd_values[i - 1]) {
+                    unique_gcds.push_back(gcd_values[i]);
+                    gcd_counts.push_back(1);
+                    ++distinct_gcd_count;
+                } else {
+                    gcd_counts.back()++;
+                }
+            }
+            
+            for (int i = 0; i < distinct_gcd_count; ++i) {
+                for (int j = i + 1; j < distinct_gcd_count; ++j) {
+                    if (unique_gcds[j] % unique_gcds[i] == 0) {
+                        gcd_counts[i] += gcd_counts[j];
+                    }
+                }
+                if (gcd_counts[i] * 2 >= len) {
+                    maximum_gcd = std::max(maximum_gcd, unique_gcds[i]);
+                }
+            }
+        };
+        
+        std::srand(14783);
+        std::random_shuffle(values.begin() + 1, values.end());
+        for (int i = 0; i < 13; ++i) {
+            CalculateGcd(std::rand() % len + 1);
         }
         
-        for(int i = 0; i < top; ++i) {
-            for(int j = i+1; j < top; ++j) {
-                if(c[j] % c[i] == 0) d[i] += d[j];
-            }
-            if(d[i] * 2 >= n) mx = max(mx, c[i]);
-        }
-    };
-    
-    srand(14783);
-    random_shuffle(a.begin()+1, a.end());
-    for(int i = 0; i < MAX_TRIES; ++i) solve(rand() % n + 1);
-    
-    return mx;
-}
+        return maximum_gcd;
+    }
+
 
 int main() {
-    int n;
-    cin >> n;
-    vector<LL> a(n+1);
-    for(int i = 1; i <= n; ++i) cin >> a[i];
+   
     
-    cout << find_max_gcd(n, a) << endl;
     return 0;
 }
