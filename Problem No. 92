@@ -7,7 +7,7 @@ its non-zero digits. We will not argue with this and just count the quantity of 
 
 She has been given two values low and high, her task is to calculate the number of beautiful numbers in given intervals.
 
-Create a C++ class Solution that will contain function BeautifulNumber that will return a long long denoting the number of beautiful numbers between low and high
+Create a C++ class BeautifulClass that will contain function BeautifulNumber that will return a long long denoting the number of beautiful numbers between low and high
 inclusive.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
@@ -31,7 +31,7 @@ For each pair (low, high), it should hold that 1 ≤ low ≤ high ≤ 9 * 10^18.
 #include <stdexcept>
 #include <cassert>
 
-class Solution {
+class BeautifulClass{
 private:
     long long dp_table[25][2525][55];
     int mod_pos[2525];
@@ -65,7 +65,7 @@ private:
     }
 
 public:
-    Solution() {
+    BeautifulClass() {
         std::memset(dp_table, -1, sizeof(dp_table));
         digit_count = 0;
         for (int i = 1; i <= 2520; ++i) {
@@ -84,7 +84,7 @@ public:
 
 int main() {
     
-Solution solution;
+BeautifulClass solution;
 
 // TEST
 long long low_1 = 1;
