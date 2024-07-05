@@ -1,5 +1,30 @@
 /*
 Link: https://codeforces.com/contest/1027/problem/G
+
+Julie is responsible for catching the x_mouse in a campus with room_count rooms numbered from 0 to room_count − 1. The x_mouse is unique because it teleports every second from room i to room (i * x_val) mod room_count. 
+Julie does not know the starting position of the x_mouse.
+
+Julie needs to determine the minimum number of traps required to catch the x_mouse. She knows that if the x_mouse enters a room with a trap, it will immediately be caught. The only observation Julie has made
+is that the GCD(x_val, room_count) = 1.
+
+Return the only integer — the minimum number of traps Julie needs to install to catch the x_mouse.
+
+Create a C++ function  that will return an integer denoting the minimum number of traps required.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+
+Input Type:
+
+An integer denoting room_count (number of rooms)
+An integer denoting x_val (parameter of the x_mouse)
+
+Input Constraints:
+
+The value of room_count should be in the range [2, 10^14] inclusive.
+The value of x_val should be in the range [1, room_count - 1] inclusive.
+GCD(x_val, room_count) should be equal to 1.
+
 */
 
 #include <iostream>
@@ -112,3 +137,118 @@ int main() {
     cout << compute_answer(n, x) << endl;
     return 0;
 }
+
+
+
+
+
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+class Data {
+public:
+    std::vector<long long> divisors;
+    std::vector<long long> prime_factors;
+    std::vector<long long> secondary_prime_factors;
+};
+
+void PreWork(long long value, std::vector<long long>& divisors) {
+    for (long long i = 1; i * i <= value; i++) {
+        if (value % i == 0) {
+            divisors.push_back(i);
+            if (i * i != value) divisors.push_back(value / i);
+        }
+    }
+    std::sort(divisors.begin(), divisors.end());
+}
+
+void Work(long long value, std::vector<long long>& factors) {
+    for (long long i = 2; i * i <= value; i++) {
+        if (value % i == 0) {
+            factors.push_back(i);
+            while (value % i == 0) value /= i;
+        }
+    }
+    if (value > 1) factors.push_back(value);
+}
+
+long long Euler(long long value, const std::vector<long long>& factors) {
+    long long result = value;
+    for (long long prime : factors) {
+        if (result % prime == 0) result -= result / prime;
+    }
+    return result;
+}
+
+long long ModularMultiply(long long a, long long b, long long mod) {
+    a %= mod;
+    b %= mod;
+    long long result = a * b - static_cast<long long>((static_cast<long double>(a) * b / mod)) * mod;
+    return (result % mod + mod) % mod;
+}
+
+long long ModularExponentiate(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp) {
+        if (exp & 1) result = ModularMultiply(result, base, mod);
+        base = ModularMultiply(base, base, mod);
+        exp >>= 1;
+    }
+    return result;
+}
+
+long long ComputeAnswer(long long room_count, long long x_val) {
+    if (room_count < 2 || room_count > 100000000000000LL || x_val < 1 || x_val >= room_count || __gcd(x_val, room_count) != 1) {
+        throw std::invalid_argument("Invalid input parameters.");
+    }
+
+    Data data;
+
+    PreWork(room_count, data.divisors);
+    Work(room_count, data.prime_factors);
+    
+    long long answer = 0;
+    long long euler_result = Euler(room_count, data.prime_factors);
+    
+    if (euler_result > 1) {
+        Work(euler_result, data.secondary_prime_factors);
+    } else {
+        data.secondary_prime_factors.push_back(1);
+    }
+    
+    for (long long divisor : data.divisors) {
+        long long temp_euler = Euler(divisor, data.prime_factors);
+        long long temp_val = temp_euler;
+        
+        if (temp_val > 1) {
+            for (long long factor : data.secondary_prime_factors) {
+                while (temp_val % factor == 0 && ModularExponentiate(x_val, temp_val / factor, divisor) == 1) {
+                    temp_val /= factor;
+                }
+            }
+        }
+        
+        answer += temp_euler / temp_val;
+    }
+    
+    return answer;
+}
+
+int main() {
+    long long room_count = 10; //TEST
+    long long x_val = 3; //TEST_END
+
+    try {
+        std::cout << ComputeAnswer(room_count, x_val) << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    return 0;
+}
+
