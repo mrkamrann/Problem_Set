@@ -1,0 +1,72 @@
+/*
+Link: https://codeforces.com/contest/53/problem/E
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int CountBits(int x) {
+    int res = 0;
+    while (x) {
+        res += (x % 2);
+        x /= 2;
+    }
+    return res;
+}
+
+long long CalculatePaths(int n, int m, int k, const vector<pair<int, int>>& edges) {
+    int lim = 1 << n;
+    vector<vector<long long>> f(1024, vector<long long>(1024, 0));
+    vector<vector<int>> e(10, vector<int>(10, 0));
+    
+    for (const auto& edge : edges) {
+        int u = edge.first - 1;
+        int v = edge.second - 1;
+        e[u][v] = e[v][u] = f[(1 << u) | (1 << v)][(1 << u) | (1 << v)] = 1;
+    }
+    
+    for (int s = 0; s < lim; ++s) {
+        for (int t = s; t; t = (t - 1) & s) {
+            if (f[s][t]) {
+                for (int i = 0; i < n; ++i) {
+                    if (s >> i & 1) {
+                        for (int j = 0; j < n; ++j) {
+                            if (!(s >> j & 1) && e[i][j]) {
+                                int res = (t & (lim - 1 - (1 << i))) | (1 << j);
+                                if (1 << j == (res & -res)) {
+                                    f[s | (1 << j)][res] += f[s][t];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    long long ans = 0;
+    for (int i = 0; i < lim; ++i) {
+        if (CountBits(i) == k) {
+            ans += f[lim - 1][i];
+        }
+    }
+    
+    return ans;
+}
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    vector<pair<int, int>> edges(m);
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+    
+    long long result = CalculatePaths(n, m, k, edges);
+    cout << result << endl;
+
+    return 0;
+}
