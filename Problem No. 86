@@ -129,12 +129,12 @@ Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m -
     if (edges_2.size() != len_m - 1) {
         throw std::invalid_argument("The length of edges_2 should be exactly len_m - 1.");
     }
-    for (const vector<int>&edge : edges_1) {
+    for (const std::vector<int>&edge : edges_1) {
         if (edge[0] < 0 || edge[0] >= len_n || edge[1] < 0 || edge[1] >= len_n) {
             throw std::invalid_argument("Each value of edges_1[i][0] and edges_1[i][1] should be in the range [0, len_n - 1] inclusive.");
         }
     }
-    for (const vector<int>&edge : edges_2) {
+    for (const std::vector<int>&edge : edges_2) {
         if (edge[0] < 0 || edge[0] >= len_m || edge[1] < 0 || edge[1] >= len_m) {
             throw std::invalid_argument("Each value of edges_2[i][0] and edges_2[i][1] should be in the range [0, len_m - 1] inclusive.");
         }
