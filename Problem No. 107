@@ -1,0 +1,89 @@
+/*
+Link : https://codeforces.com/contest/1313/problem/D
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Thing {
+    int pos, id;
+    bool operator<(const Thing& j) const {
+        return pos != j.pos ? pos < j.pos : id < j.id;
+    }
+};
+
+int ComputeMaxSegment(int n, int m, int K, const vector<pair<int, int>>& intervals) {
+    vector<Thing> a(2 * n + 1);
+    int tot = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int l = intervals[i].first;
+        int r = intervals[i].second;
+        a[++tot] = {l, i + 1};
+        a[++tot] = {r + 1, -(i + 1)};
+    }
+
+    sort(a.begin() + 1, a.begin() + tot + 1);
+
+    vector<int> f(256, INT_MIN);
+    f[0] = 0;
+    vector<int> p(10, 0);
+
+    int ans = INT_MIN;
+
+    for (int i = 1; i <= tot; ++i) {
+        int len = (i == tot) ? 0 : a[i + 1].pos - a[i].pos;
+
+        if (a[i].id > 0) {
+            int k = 0;
+            for (int j = 1, f = 0; j <= K && !f; ++j) {
+                if (!p[j]) {
+                    p[j] = a[i].id;
+                    k = j - 1;
+                    f = 1;
+                }
+            }
+            for (int j = (1 << K) - 1; j >= 0; --j) {
+                f[j] = max(f[j], f[(j & (1 << k)) ? j - (1 << k) : j]) + (__builtin_popcount(j) & 1) * len;
+            }
+        } else {
+            int k = 0;
+            for (int j = 1, f = 0; j <= K && !f; ++j) {
+                if (p[j] + a[i].id == 0) {
+                    p[j] = 0;
+                    k = j - 1;
+                    f = 1;
+                }
+            }
+            for (int j = 0; j < (1 << K); ++j) {
+                if (j & (1 << k)) {
+                    f[j] = INT_MIN;
+                } else {
+                    f[j] = max(f[j], f[j + (1 << k)]) + (__builtin_popcount(j) & 1) * len;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < (1 << K); ++i) {
+        ans = max(ans, f[i]);
+    }
+
+    return ans;
+}
+
+int main() {
+    int n, m, K;
+    cin >> n >> m >> K;
+    
+    vector<pair<int, int>> intervals(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> intervals[i].first >> intervals[i].second;
+    }
+
+    int result = ComputeMaxSegment(n, m, K, intervals);
+    cout << result << endl;
+
+    return 0;
+}
