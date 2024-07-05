@@ -1,15 +1,13 @@
 /*
 Link: https://codeforces.com/contest/986/problem/C
 
-Julie is given a set of size set_size with integer elements between 0 and 2^bit_range − 1 inclusive. 
-Julie needs to build an undirected graph on these integers in the following way: connect two integers int_x 
-and int_y with an edge if and only if int_x & int_y = 0. Here & is the bitwise AND operation. Julie's task is 
+Julie is given a set of size set_size with integer elements between 0 and 2^bit_range − 1 inclusive.  Julie needs to build an undirected graph on these integers 
+in the following way: connect two integers int_x  and int_y with an edge if and only if int_x & int_y = 0. Here & is the bitwise AND operation. Julie's task is 
 to count the number of connected components in that graph.
 
 Return the number of connected components in the graph.
 
-Create a C++ function CountConnectedComponents that will return an integer denoting the number of 
-connected components in the graph.
+Create a C++ function CountConnectedComponents that will return an integer denoting the number of  connected components in the graph.
 
 Use appropriate error handling using the stdexcept library for the invalid test cases.
 
