@@ -2,26 +2,27 @@
 Link : https://codeforces.com/contest/60/problem/D
 
 Julie decided to help Pasha and Akim be friends again. She had a cunning plan — to destroy all the laughy mushrooms. She knows that the laughy mushrooms 
-can easily burst when they laugh. Mushrooms grow on the lawns. There are mushroom_count[i] mushrooms on ith lawn.
+can easily burst when they laugh. Mushrooms grow on the lawns. There are mushroom_counts[i] mushrooms on ith lawn.
 
 Julie knows that the lawns where the mushrooms grow have a unique ability. A lawn (say, i) can transfer laugh to another lawn (say, j) if there exists an 
-integer (say, b) such that some permutation of numbers mushroom_count[i], mushroom_count[j], and b forms a beautiful triple (i ≠ j). A beautiful triple is 
+integer (say, b) such that some permutation of numbers mushroom_counts[i], mushroom_counts[j], and b forms a beautiful triple (i ≠ j). A beautiful triple is 
 such three pairwise coprime numbers x, y, z, which satisfy the following condition: x^2 + y^2 = z^2.
 
 Julie wants to know on which minimal number of lawns she should laugh for all the laughy mushrooms to burst.
 
-Create a C++ function MinimumLawnsToLaugh that will return an integer denoting the minimal number of lawns Julie should laugh on.
+Create a C++ class MushroomClass that will contain a function MinimumLawnsToLaugh that will return an integer denoting the minimal number of lawns Julie should laugh on.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
 Input Type:
 
-vector<int> denoting mushroom_count
+vector<int> denoting mushroom_counts
 
 Input Constraints:
 
-The length of mushroom_count should be in the range [1, 10^6] inclusive.
-Each value in mushroom_count should be in the range [1, 10^7] inclusive and all values are distinct.
+The length of mushroom_counts should be in the range [1, 10^6] inclusive.
+Each value in mushroom_counts should be in the range [1, 10^6] inclusive 
+All values in mushroom_counts are distinct.
 
 */
 
@@ -34,10 +35,11 @@ Each value in mushroom_count should be in the range [1, 10^7] inclusive and all 
 #include <stdexcept>
 #include <cassert>
 #include <iostream>
+#include <unordered_set>
 
-class Solution {
+class MushroomClass{
 public:
-    Solution() {
+     MushroomClass() {
         std::memset(mushrooms, 0, sizeof(mushrooms));
         for (int index = 0; index < limit; ++index) {
             union_find[index] = index;
@@ -58,7 +60,7 @@ public:
         
         for (int count : mushroom_counts) {
           
-            if (count < 1 || count > 10000000) {
+            if (count < 1 || count > 1000000) {
                 throw std::invalid_argument("Invalid number of mushrooms on a lawn");
             }
           
@@ -68,7 +70,6 @@ public:
             seen.insert(count);
         }
         
-      
         int lawn_count = mushroom_counts.size();
         for (int index = 1; index <= lawn_count; ++index) {
             int mushrooms_on_lawn = mushroom_counts[index - 1];
@@ -103,12 +104,142 @@ public:
     }
 
 private:
-    static const int limit = 10000010;
+    static const int limit = 1000001;
     int mushrooms[limit];
     int union_find[limit];
 };
 
 int main() {
-    Solution solution;
+    
+MushroomClass solution;
+        
+//TEST
+
+std::vector<int> mushroom_counts_1 = {1};
+int expected_1 = 1;
+int result_1 = solution.MinimumLawnsToLaugh(mushroom_counts_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_2 = {100, 200, 300, 400, 500};
+int expected_2 = 5;
+int result_2 = solution.MinimumLawnsToLaugh(mushroom_counts_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_3 = {1000000, 999999, 999998, 999997};
+int expected_3 = 4;
+int result_3 = solution.MinimumLawnsToLaugh(mushroom_counts_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_4 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int expected_4 = 8;
+int result_4 = solution.MinimumLawnsToLaugh(mushroom_counts_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_5 = {123456, 234567, 345678, 456789, 567890};
+int expected_5 = 3;
+int result_5 = solution.MinimumLawnsToLaugh(mushroom_counts_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_6 = {100000, 200000, 300000, 400000, 500000, 600000};
+int expected_6 = 4;
+int result_6 = solution.MinimumLawnsToLaugh(mushroom_counts_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_7 = {1, 1000000};
+int expected_7 = 2;
+int result_7 = solution.MinimumLawnsToLaugh(mushroom_counts_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_8 = {500, 1000, 1500, 2000};
+int expected_8 = 1;
+int result_8 = solution.MinimumLawnsToLaugh(mushroom_counts_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_9 = {87654, 987654, 109875, 121987, 132198, 143219};
+int expected_9 = 3;
+int result_9 = solution.MinimumLawnsToLaugh(mushroom_counts_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_10 = {};
+try {
+    solution.MinimumLawnsToLaugh(mushroom_counts_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_11 = {1000001};
+try {
+    solution.MinimumLawnsToLaugh(mushroom_counts_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_12 = {1, 2, 3, 1};
+try {
+    solution.MinimumLawnsToLaugh(mushroom_counts_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> mushroom_counts_13 = {-999, 2, 3, 4};
+try {
+    solution.MinimumLawnsToLaugh(mushroom_counts_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+
+std::vector<int> mushroom_counts_14(1000001,1);
+try {
+    solution.MinimumLawnsToLaugh(mushroom_counts_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  
     return 0;
 }
