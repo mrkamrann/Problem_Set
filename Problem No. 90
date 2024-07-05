@@ -41,123 +41,130 @@ Each value in change_indices should be in the range [1, len_nums] inclusive.
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <cassert>
+#include <functional>
 
 
-    int EarliestSecondToMarkIndices(std::vector<int>& nums, std::vector<int>& change_indices) {
-      
-        int len_nums = nums.size();
-        int len_indices = change_indices.size();
+void AddToTree(std::vector<int>& segment_tree, int i, int value, int node, int start, int end) {
+    if (start == end) {
+        segment_tree[node] += value;
+        return;
+    }
+    int mid_point = start + (end - start) / 2;
+    if (i <= mid_point) AddToTree(segment_tree, i, value, 2 * node, start, mid_point);
+    else AddToTree(segment_tree, i, value, 2 * node + 1, mid_point + 1, end);
 
-        if (len_nums < 1 || len_nums > 5000) {
-            throw std::invalid_argument("The length of nums must be between 1 and 100000 inclusive.");
-        }
+    segment_tree[node] = segment_tree[2 * node] + segment_tree[2 * node + 1];
+}
 
-        for (int value : nums) {
-            if (value < 0 || value > 1000000000) {
-                throw std::invalid_argument("Each value in nums must be between 0 and 1000000000 inclusive.");
-            }
-        }
 
-        if (len_indices < 1 || len_indices > 5000) {
-            throw std::invalid_argument("The length of change_indices must be between 1 and 5000 inclusive.");
-        }
+int GetFromTree(std::vector<int>& segment_tree, int i, int node, int start, int end) {
+    if (i <= start) return segment_tree[node];
+    if (i > end) return 0;
+    int mid_point = start + (end - start) / 2;
+    return GetFromTree(segment_tree, i, 2 * node, start, mid_point) + GetFromTree(segment_tree, i, 2 * node + 1, mid_point + 1, end);
+}
 
-        for (int index : change_indices) {
-            if (index < 1 || index > len_nums) {
-                throw std::invalid_argument("Each value in change_indices must be between 1 and the length of nums inclusive.");
-            }
-        }
 
-        std::vector<int> last_index_marker(len_nums, len_indices);
+bool CheckValidity(int mid, const std::vector<int>& nums, const std::vector<int>& last_index_marker) {
+    std::vector<std::tuple<int, int, int>> data;
+    int len_nums = nums.size();
 
-        for (int j = len_indices - 1; j >= 0; --j) {
-            int current_index = change_indices[j] - 1;
-            if (nums[current_index] == 0) continue;
-            last_index_marker[current_index] = j;
-        }
-
-        auto check_validity = [&](int mid) -> bool {
-            std::vector<std::tuple<int, int, int>> data;
-
-            for (int i = 0; i < len_nums; ++i) {
-                if (last_index_marker[i] >= mid - 1) continue;
-                data.push_back({ nums[i], i, last_index_marker[i] });
-            }
-
-            std::sort(data.begin(), data.end(), [](const std::tuple<int, int, int>& val_a, const std::tuple<int, int, int>& val_b) {
-                if (std::get<0>(val_a) == std::get<0>(val_b)) return std::get<2>(val_a) < std::get<2>(val_b);
-                return std::get<0>(val_a) > std::get<0>(val_b);
-            });
-
-            std::vector<int> segment_tree(4 * mid, 0);
-
-            auto add_to_tree = [&](auto& self, int i, int value, int node, int start, int end) -> void {
-                if (start == end) {
-                    segment_tree[node] += value;
-                    return;
-                }
-                int mid_point = start + (end - start) / 2;
-                if (i <= mid_point) self(self, i, value, 2 * node, start, mid_point);
-                else self(self, i, value, 2 * node + 1, mid_point + 1, end);
-
-                segment_tree[node] = segment_tree[2 * node] + segment_tree[2 * node + 1];
-            };
-
-            auto get_from_tree = [&](auto& self, int i, int node, int start, int end) -> int {
-                if (i <= start) return segment_tree[node];
-                if (i > end) return 0;
-                int mid_point = start + (end - start) / 2;
-                return self(self, i, 2 * node, start, mid_point) + self(self, i, 2 * node + 1, mid_point + 1, end);
-            };
-
-            std::set<int> available_positions;
-            for (int i = 0; i < mid; ++i) available_positions.insert(i);
-
-            std::set<int> reset_indices;
-            for (auto& [value, num_index, change_index] : data) {
-                int used_positions = get_from_tree(get_from_tree, change_index, 1, 0, mid - 1);
-                if (used_positions + 2 > mid - change_index) continue;
-
-                reset_indices.insert(num_index);
-
-                int count = 1;
-                if (available_positions.find(change_index) == available_positions.end()) {
-                    available_positions.insert(change_index);
-                    add_to_tree(add_to_tree, change_index, -1, 1, 0, mid - 1);
-                    count += 1;
-                }
-
-                available_positions.erase(change_index);
-                add_to_tree(add_to_tree, change_index, 1, 1, 0, mid - 1);
-
-                while (count-- > 0) {
-                    auto it = available_positions.lower_bound(change_index + 1);
-                    add_to_tree(add_to_tree, *it, 1, 1, 0, mid - 1);
-                    available_positions.erase(it);
-                }
-            }
-
-            int64_t sum = 2 * reset_indices.size();
-            for (int i = 0; i < len_nums; ++i) {
-                if (reset_indices.find(i) != reset_indices.end()) continue;
-                sum += nums[i];
-            }
-
-            return sum + len_nums - reset_indices.size() <= mid;
-        };
-
-        if (!check_validity(len_indices)) return -1;
-
-        int left = 1, right = len_indices;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (check_validity(mid)) right = mid;
-            else left = mid + 1;
-        }
-
-        return left;
+    for (int i = 0; i < len_nums; ++i) {
+        if (last_index_marker[i] >= mid - 1) continue;
+        data.push_back(std::make_tuple(nums[i], i, last_index_marker[i]));
     }
 
+    std::sort(data.begin(), data.end(), [](const std::tuple<int, int, int>& val_a, const std::tuple<int, int, int>& val_b) {
+        if (std::get<0>(val_a) == std::get<0>(val_b)) return std::get<2>(val_a) < std::get<2>(val_b);
+        return std::get<0>(val_a) > std::get<0>(val_b);
+    });
+
+    std::vector<int> segment_tree(4 * mid, 0);
+
+    std::set<int> available_positions;
+    for (int i = 0; i < mid; ++i) available_positions.insert(i);
+
+    std::set<int> reset_indices;
+    for (std::tuple<int, int, int>& elem : data) {
+        int value = std::get<0>(elem);
+        int num_index = std::get<1>(elem);
+        int change_index = std::get<2>(elem);
+
+        int used_positions = GetFromTree(segment_tree, change_index, 1, 0, mid - 1);
+        if (used_positions + 2 > mid - change_index) continue;
+
+        reset_indices.insert(num_index);
+
+        int count = 1;
+        if (available_positions.find(change_index) == available_positions.end()) {
+            available_positions.insert(change_index);
+            AddToTree(segment_tree, change_index, -1, 1, 0, mid - 1);
+            count += 1;
+        }
+
+        available_positions.erase(change_index);
+        AddToTree(segment_tree, change_index, 1, 1, 0, mid - 1);
+
+        while (count-- > 0) {
+            std::set<int>::iterator it = available_positions.lower_bound(change_index + 1);
+            AddToTree(segment_tree, *it, 1, 1, 0, mid - 1);
+            available_positions.erase(it);
+        }
+    }
+
+    int64_t sum = 2 * reset_indices.size();
+    for (int i = 0; i < len_nums; ++i) {
+        if (reset_indices.find(i) != reset_indices.end()) continue;
+        sum += nums[i];
+    }
+
+    return sum + len_nums - reset_indices.size() <= mid;
+}
+
+int EarliestSecondToMarkIndices(std::vector<int>& nums, std::vector<int>& change_indices) {
+    int len_nums = nums.size();
+    int len_indices = change_indices.size();
+
+    if (len_nums < 1 || len_nums > 5000) {
+        throw std::invalid_argument("The length of nums must be between 1 and 5000 inclusive.");
+    }
+
+    for (int value : nums) {
+        if (value < 0 || value > 1000000000) {
+            throw std::invalid_argument("Each value in nums must be between 0 and 1000000000 inclusive.");
+        }
+    }
+
+    if (len_indices < 1 || len_indices > 5000) {
+        throw std::invalid_argument("The length of change_indices must be between 1 and 5000 inclusive.");
+    }
+
+    for (int index : change_indices) {
+        if (index < 1 || index > len_nums) {
+            throw std::invalid_argument("Each value in change_indices must be between 1 and the length of nums inclusive.");
+        }
+    }
+
+    std::vector<int> last_index_marker(len_nums, len_indices);
+
+    for (int j = len_indices - 1; j >= 0; --j) {
+        int current_index = change_indices[j] - 1;
+        if (nums[current_index] == 0) continue;
+        last_index_marker[current_index] = j;
+    }
+
+    if (!CheckValidity(len_indices, nums, last_index_marker)) return -1;
+
+    int left = 1, right = len_indices;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (CheckValidity(mid, nums, last_index_marker)) right = mid;
+        else left = mid + 1;
+    }
+
+    return left;
+}
 
 int main() {
 
