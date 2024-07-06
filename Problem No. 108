@@ -41,6 +41,8 @@ roads[i][0] should not be equal to roads[i][1]
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <cassert>
+
 
  int CountBits(int value) {
         int result = 0;
