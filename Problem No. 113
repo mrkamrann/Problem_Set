@@ -1,3 +1,58 @@
 /*
 Link: https://codeforces.com/contest/1975/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+    std::vector<int> ProcessBitwise(int num, std::vector<int>& input_values) {
+        if (num < 1 || num > 20) {
+            throw std::invalid_argument("Invalid input: num must be between 1 and 20");
+        }
+        int len = (1 << num);
+        if (input_values.size() != len - 1) {
+            throw std::invalid_argument("Invalid size of input_values");
+        }
+        for (int value : input_values) {
+            if (value < 0 || value >= (1 << (num + 1))) {
+                throw std::invalid_argument("Invalid value in input_values");
+            }
+        }
+
+        std::vector<int> bit_values(len, 0);
+        std::vector<int> odd_indices;
+
+        for (int i = 1; i < len; i++) {
+            bit_values[i] = input_values[i - 1];
+        }
+        bit_values[0] = 1;
+
+        for (int j = 0; j < num; j++) {
+            for (int k = 0; k < (1 << j); k++) {
+                for (int i = 0; i < (1 << (num - 1 - j)); i++) {
+                    int x_val = bit_values[k + (i << (j + 1))];
+                    int y_val = bit_values[k + (i << (j + 1)) + (1 << j)];
+                    bit_values[k + (i << (j + 1))] = x_val & y_val;
+                    bit_values[k + (i << (j + 1)) + (1 << j)] = x_val & (y_val >> 1);
+                }
+            }
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (bit_values[i] % 2) {
+                odd_indices.push_back(i);
+            }
+        }
+
+        return odd_indices;
+    }
+
+
+int main() {
+   
+    return 0;
+}
+
