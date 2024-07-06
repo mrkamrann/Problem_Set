@@ -3,4 +3,69 @@ Link: https://codeforces.com/contest/383/problem/E
 
 */
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <unordered_set>
+
+
+    long long ComputeResult(const std::vector<std::string>& word_list) {
+      
+      int word_count = word_list.size();
+      
+        if (word_count < 1 || word_count > 10000) {
+            throw std::invalid_argument("word_count must be between 1 and 10000.");
+        }
+        
+       std::unordered_set<std::string> unique_words;
+
+        for (const std::string& word : word_list) {
+            if (word.size() != 3) {
+                throw std::invalid_argument("Each word must be exactly 3 characters long.");
+            }
+            for (char character : word) {
+                if (character < 'a' || character > 'z') {
+                    throw std::invalid_argument("Each character must be a lowercase letter.");
+                }
+                if (!unique_words.insert(word).second) {
+                throw std::invalid_argument("Each word must be unique.");
+            }
+            }
+        }
+        
+        std::vector<int> frequency(1 << 24, 0);
+
+        for (const std::string& word : word_list) {
+            int index = 0;
+            for (int i = 0; i < 3; ++i) {
+                if (word[i] < 'y') {
+                    index |= 1 << (word[i] - 'a');
+                }
+            }
+            ++frequency[index];
+        }
+
+        for (int i = 0; i < 24; ++i) {
+            for (int j = 0; j < (1 << 24); ++j) {
+                if (j & (1 << i)) {
+                    frequency[j] += frequency[j ^ (1 << i)];
+                }
+            }
+        }
+
+        long long result = 0;
+        for (int i = 0; i < (1 << 24); ++i) {
+            result ^= 1LL * (word_count - frequency[i]) * (word_count - frequency[i]);
+        }
+        return result;
+    }
+
+  
+int main() {
+   
+
+    return 0;
+}
+
  
