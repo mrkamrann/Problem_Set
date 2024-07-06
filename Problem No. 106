@@ -14,7 +14,6 @@ Use appropriate error handling using the stdexcept library for the invalid test 
 Input Type:
 
 An integer bit_range
-An integer set_size
 A vector<int> denoting elements
 
 Input Constraints:
@@ -48,7 +47,10 @@ All elements[i] are distinct
         }
     }
 
-    int CountConnectedComponents(int bit_range, int set_size, const std::vector<int>& elements) {
+    int CountConnectedComponents(int bit_range, const std::vector<int>& elements) {
+      
+        int set_size = elements.size();
+      
         if (bit_range < 0 || bit_range > 22) {
             throw std::invalid_argument("Invalid bit_range: must be between 0 and 22.");
         }
@@ -88,6 +90,155 @@ All elements[i] are distinct
 
 int main() {
    
+    // TEST
+    std::vector<int> elements_1 = {1, 2, 3};
+    int bit_range_1 = 2;
+    int expected_1 = 2;
+    int result_1 = CountConnectedComponents(bit_range_1, elements_1);
+    assert(result_1 == expected_1);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_2 = {0, 1, 2, 3, 4, 5, 6, 7};
+    int bit_range_2 = 3;
+    int expected_2 = 1;
+    int result_2 = CountConnectedComponents(bit_range_2, elements_2);
+    assert(result_2 == expected_2);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_3 = {5, 10, 15};
+    int bit_range_3 = 4;
+    int expected_3 = 2;
+    int result_3 = CountConnectedComponents(bit_range_3, elements_3);
+    assert(result_3 == expected_3);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_4 = {0, 2, 4, 8, 16};
+    int bit_range_4 = 5;
+    int expected_4 = 1;
+    int result_4 = CountConnectedComponents(bit_range_4, elements_4);
+    assert(result_4 == expected_4);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_5 = {31, 63, 127};
+    int bit_range_5 = 7;
+    int expected_5 = 3;
+    int result_5 = CountConnectedComponents(bit_range_5, elements_5);
+    assert(result_5 == expected_5);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_6 = {1};
+    int bit_range_6 = 1;
+    int expected_6 = 1;
+    int result_6 = CountConnectedComponents(bit_range_6, elements_6);
+    assert(result_6 == expected_6);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_7 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    int bit_range_7 = 4;
+    int expected_7 = 1;
+    int result_7 = CountConnectedComponents(bit_range_7, elements_7);
+    assert(result_7 == expected_7);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_8 = {100, 200, 300};
+    int bit_range_8 = 9;
+    int expected_8 = 3;
+    int result_8 = CountConnectedComponents(bit_range_8, elements_8);
+    assert(result_8 == expected_8);
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_9 = {1048575, 524287, 262143};
+    int bit_range_9 = 20;
+    int expected_9 = 3;
+    int result_9 = CountConnectedComponents(bit_range_9, elements_9);
+    assert(result_9 == expected_9);
+    // TEST_END
+
+   
+    // TEST
+    std::vector<int> elements_10 = {1, 2, 3};
+    int bit_range_10 = 23;
+    try {
+        CountConnectedComponents(bit_range_10, elements_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_11 = {1, 2, 3};
+    int bit_range_11 = -99;
+    try {
+        CountConnectedComponents(bit_range_11, elements_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_12 = {};
+    int bit_range_12 = 3;
+    try {
+        CountConnectedComponents(bit_range_12, elements_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_13 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 999999999};
+    int bit_range_13 = 4;
+    try {
+        CountConnectedComponents(bit_range_13, elements_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_14 = {1, 1, 2};
+    int bit_range_14 = 2;
+    try {
+        CountConnectedComponents(bit_range_14, elements_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_15 = {1, -2, 3};
+    int bit_range_15 = 2;
+    try {
+        CountConnectedComponents(bit_range_15, elements_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    std::vector<int> elements_16(1e5,1);
+    int bit_range_16 = 3;
+    try {
+        CountConnectedComponents(bit_range_16, elements_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
 
     return 0;
 }
