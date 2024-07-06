@@ -43,89 +43,82 @@ The values for low and high should be in the range [0, 20,000] inclusive.
 
 class Solution {
 public:
-    const int mod_value = 1e9 + 7;
-    std::vector<std::pair<int, int>> value_pairs;
-    int dp_table_1[51][20001];
-    int dp_table_2[51][20001];
-    int num_elements;
-
-    int RecursiveCount(int level, int sum_left) {
-        if (sum_left < 0) {
-            return 0;
-        }
-        if (level == num_elements) {
-            if (sum_left) {
-                return 0;
-            }
-            return 1;
-        }
-        int &answer = dp_table_1[level][sum_left];
-        if (answer != -1) {
-            return answer;
-        }
-        if (value_pairs[level].first) {
-            answer = (RecursiveCount(level + 1, sum_left) + CalculateSubsets(level + 1, sum_left)) % mod_value;
-            answer -= CalculateSubsets(level + 1, sum_left - (value_pairs[level].first * value_pairs[level].second));
-            answer %= mod_value;
-            if (answer < 0) {
-                answer += mod_value;
-            }
-        } else {
-            answer = (1LL * RecursiveCount(level + 1, sum_left) * (value_pairs[level].second + 1)) % mod_value;
-        }
+    int RecursiveCount(int level, int sum_left, int num_elements, const std::vector<std::pair<int, int>>& value_pairs, int dp_table_1[201][20001], int dp_table_2[201][20001]) {
+    if (sum_left < 0) {
+        return 0;
+    }
+    if (level == num_elements) {
+        return sum_left == 0 ? 1 : 0;
+    }
+    int &answer = dp_table_1[level][sum_left];
+    if (answer != -1) {
         return answer;
     }
+    int mod_value = 1e9+7;
+    if (value_pairs[level].first) {
+        answer = (RecursiveCount(level + 1, sum_left, num_elements, value_pairs, dp_table_1, dp_table_2) 
+                 + CalculateSubsets(level + 1, sum_left, num_elements, value_pairs, dp_table_1, dp_table_2)) % mod_value;
+        answer -= CalculateSubsets(level + 1, sum_left - (value_pairs[level].first * value_pairs[level].second), num_elements, value_pairs, dp_table_1, dp_table_2);
+        answer %= mod_value;
+        if (answer < 0) {
+            answer += mod_value;
+        }
+    } else {
+        answer = (1LL * RecursiveCount(level + 1, sum_left, num_elements, value_pairs, dp_table_1, dp_table_2) * (value_pairs[level].second + 1)) % mod_value;
+    }
+    return answer;
+}
 
-    int CalculateSubsets(int level, int sum_left) {
-        if (sum_left < 0) {
-            return 0;
+int CalculateSubsets(int level, int sum_left, int num_elements, const std::vector<std::pair<int, int>>& value_pairs, int dp_table_1[201][20001], int dp_table_2[201][20001]) {
+    if (sum_left < 0) {
+        return 0;
+    }
+    if (dp_table_2[level][sum_left] != -1) {
+        return dp_table_2[level][sum_left];
+    }
+    int mod_value = 1e9+7;
+    int answer = (CalculateSubsets(level, sum_left - value_pairs[level - 1].first, num_elements, value_pairs, dp_table_1, dp_table_2) 
+                 + RecursiveCount(level, sum_left - value_pairs[level - 1].first, num_elements, value_pairs, dp_table_1, dp_table_2)) % mod_value;
+    return dp_table_2[level][sum_left] = answer;
+}
+
+int countSubMultisets(std::vector<int>& nums, int low, int high) {
+    if (nums.size() < 1 || nums.size() > 20000) {
+        throw std::invalid_argument("The length of nums should be at least 1 and at most 20,000 inclusive.");
+    }
+    int total_sum = 0;
+    std::map<int, int> count_map;
+    for (int num : nums) {
+        if (num < 0 || num > 20000) {
+            throw std::invalid_argument("Each value of nums[i] should be in the range [0, 20,000] inclusive.");
         }
-        if (dp_table_2[level][sum_left] != -1) {
-            return dp_table_2[level][sum_left];
-        }
-        int answer = (CalculateSubsets(level, sum_left - value_pairs[level - 1].first) + RecursiveCount(level, sum_left - value_pairs[level - 1].first)) % mod_value;
-        return dp_table_2[level][sum_left] = answer;
+        total_sum += num;
+        count_map[num]++;
+    }
+    if (total_sum > 20000) {
+        throw std::invalid_argument("The sum of nums should not exceed 20,000.");
+    }
+    int num_elements = count_map.size();
+    std::vector<std::pair<int, int>> value_pairs(count_map.begin(), count_map.end());
+
+    high = std::min(high, total_sum);
+    if (low < 0 || low > 20000 || high < 0 || high > 20000) {
+        throw std::invalid_argument("The values for low and high should be in the range [0, 20,000] inclusive.");
     }
 
+    int dp_table_1[201][20001];
+    int dp_table_2[201][20001];
+    int mod_value = 1e9+7;
+    memset(dp_table_1, -1, sizeof(dp_table_1));
+    memset(dp_table_2, -1, sizeof(dp_table_2));
 
-    int CountSubMultisets(std::vector<int>& nums, int low, int high) {
-        if (nums.size() < 1 || nums.size() > 20000 || low < 0 || low > 20000 || high < 0 ||high > 20000) {
-            throw std::invalid_argument("The length of nums should be at least 1 and at most 20,000 inclusive.");
-        }
-        int total_sum = 0;
-        std::map<int, int> count_map;
-        for (std::vector<int>::iterator itr = nums.begin(); itr != nums.end(); ++itr) {
-            if (*itr < 0 || *itr > 20000) {
-                throw std::invalid_argument("Each value of nums[i] should be in the range [0, 20,000] inclusive.");
-            }
-            total_sum += *itr;
-            count_map[*itr]++;
-        }
-        if (total_sum > 20000) {
-            throw std::invalid_argument("The sum of nums should not exceed 20,000.");
-        }
-        num_elements = count_map.size();
-        value_pairs.clear();
-        for (std::map<int, int>::iterator it = count_map.begin(); it != count_map.end(); ++it) {
-            value_pairs.push_back({it->first, it->second});
-        }
-        high = std::min(high, total_sum);
-        if (low < 0 || low > 20000 || high < 0 || high > 20000) {
-            throw std::invalid_argument("The values for low and high should be in the range [0, 20,000] inclusive.");
-        }
-        for (int i = 0; i <= num_elements; i++) {
-            for (int j = 0; j <= high; j++) {
-                dp_table_1[i][j] = dp_table_2[i][j] = -1;
-            }
-        }
-        int result = 0;
-        for (int sum_left = low; sum_left <= high; sum_left++) {
-            result = (result * 1LL + RecursiveCount(0, sum_left)) % mod_value;
-        }
-        return result;
+    int result = 0;
+    for (int sum_left = low; sum_left <= high; sum_left++) {
+        result = (result + RecursiveCount(0, sum_left, num_elements, value_pairs, dp_table_1, dp_table_2)) % mod_value;
     }
+    return result;
+}
 };
-
 int main(){
 
 Solution solution;
