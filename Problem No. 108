@@ -109,5 +109,265 @@ roads[i][0] should not be equal to roads[i][1]
 
 int main() {
     
+   // TEST
+int num_junctions_1 = 3;
+int num_dead_ends_1 = 2;
+std::vector<std::pair<int, int>> roads_1 = {{1, 2}, {2, 3}};
+long long expected_1 = 1;
+long long result_1 = CountRoadClosures(num_junctions_1, num_dead_ends_1, roads_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+int num_junctions_2 = 4;
+int num_dead_ends_2 = 2;
+std::vector<std::pair<int, int>> roads_2 = {{1, 2}, {2, 3}, {3, 4}};
+long long expected_2 = 1;
+long long result_2 = CountRoadClosures(num_junctions_2, num_dead_ends_2, roads_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+int num_junctions_3 = 5;
+int num_dead_ends_3 = 3;
+std::vector<std::pair<int, int>> roads_3 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+long long expected_3 = 0;
+long long result_3 = CountRoadClosures(num_junctions_3, num_dead_ends_3, roads_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+int num_junctions_4 = 3;
+int num_dead_ends_4 = 2;
+std::vector<std::pair<int, int>> roads_4 = {{1, 2}, {2, 3}, {1, 3}};
+long long expected_4 = 3;
+long long result_4 = CountRoadClosures(num_junctions_4, num_dead_ends_4, roads_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+int num_junctions_5 = 4;
+int num_dead_ends_5 = 2;
+std::vector<std::pair<int, int>> roads_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}};
+long long expected_5 = 12;
+long long result_5 = CountRoadClosures(num_junctions_5, num_dead_ends_5, roads_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+int num_junctions_6 = 8;
+int num_dead_ends_6 = 5;
+std::vector<std::pair<int, int>> roads_6 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}};
+long long expected_6 = 0;
+long long result_6 = CountRoadClosures(num_junctions_6, num_dead_ends_6, roads_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+int num_junctions_7 = 4;
+int num_dead_ends_7 = 2;
+std::vector<std::pair<int, int>> roads_7 =  {{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}};
+long long expected_7 = 12;
+long long result_7 = CountRoadClosures(num_junctions_7, num_dead_ends_7, roads_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+int num_junctions_8 = 10;
+int num_dead_ends_8 = 7;
+std::vector<std::pair<int, int>> roads_8 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+long long expected_8 = 0;
+long long result_8 = CountRoadClosures(num_junctions_8, num_dead_ends_8, roads_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+int num_junctions_9 = 4;
+int num_dead_ends_9 = 3;
+std::vector<std::pair<int, int>> roads_9 =  {{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}};
+long long expected_9 = 4;
+long long result_9 = CountRoadClosures(num_junctions_9, num_dead_ends_9, roads_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+int num_junctions_10 = 2;
+int num_dead_ends_10 = 1;
+std::vector<std::pair<int, int>> roads_10 = {{1, 2}};
+try {
+    CountRoadClosures(num_junctions_10, num_dead_ends_10, roads_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_11 = 10;
+int num_dead_ends_11 = 11;
+std::vector<std::pair<int, int>> roads_11 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_11, num_dead_ends_11, roads_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_12 = 11;
+int num_dead_ends_12 = 8;
+std::vector<std::pair<int, int>> roads_12 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_12, num_dead_ends_12, roads_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_13 = 3;
+int num_dead_ends_13 = 2;
+std::vector<std::pair<int, int>> roads_13 = {{1, 1}, {2, 3}};
+try {
+    CountRoadClosures(num_junctions_13, num_dead_ends_13, roads_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_14 = 10;
+int num_dead_ends_14 = 8;
+std::vector<std::pair<int, int>> roads_14 = {{-999, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_14, num_dead_ends_14, roads_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_15 = 10;
+int num_dead_ends_15 = 8;
+std::vector<std::pair<int, int>> roads_15 = {{1, 2}, {2, 11}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_15, num_dead_ends_15, roads_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+int num_junctions_16 = 10;
+int num_dead_ends_16 = 11;
+std::vector<std::pair<int, int>> roads_16 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_16, num_dead_ends_16, roads_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_17 = 10;
+int num_dead_ends_17 = -8;
+std::vector<std::pair<int, int>> roads_17 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_17, num_dead_ends_17, roads_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_18 = 3;
+int num_dead_ends_18 = 2;
+std::vector<std::pair<int, int>> roads_18 = {{1, 1}, {2, 3}};
+try {
+    CountRoadClosures(num_junctions_18, num_dead_ends_18, roads_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_19 = 10;
+int num_dead_ends_19 = 8;
+std::vector<std::pair<int, int>> roads_19 = {{0, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_19, num_dead_ends_19, roads_19);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_20 = 10;
+int num_dead_ends_20 = 8;
+std::vector<std::pair<int, int>> roads_20 = {{1, 2}, {2, 11}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}};
+try {
+    CountRoadClosures(num_junctions_20, num_dead_ends_20, roads_20);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_21 = -3;
+int num_dead_ends_21 = 2;
+std::vector<std::pair<int, int>> roads_21(1e6,{1,2});
+try {
+    CountRoadClosures(num_junctions_21, num_dead_ends_21, roads_21);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_22 = 5;
+int num_dead_ends_22 = -1;
+std::vector<std::pair<int, int>> roads_22 = {};
+try {
+    CountRoadClosures(num_junctions_22, num_dead_ends_22, roads_22);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_23 = 6;
+int num_dead_ends_23 = 2;
+std::vector<std::pair<int, int>> roads_23 = {{1, -999992}, {2, 3}, {3, 4}, {4, 5}, {5, 6}};
+try {
+    CountRoadClosures(num_junctions_23, num_dead_ends_23, roads_23);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int num_junctions_24 = 4;
+int num_dead_ends_24 = 3;
+std::vector<std::pair<int, int>> roads_24 = {{1, 999999}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}};
+try {
+    CountRoadClosures(num_junctions_24, num_dead_ends_24, roads_24);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
     return 0;
 }
