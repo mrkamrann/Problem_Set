@@ -42,11 +42,11 @@ The values for low and high should be in the range [0, 20,000] inclusive.
 #include <cassert>
 
 class Solution {
-private:
+public:
     const int mod_value = 1e9 + 7;
     std::vector<std::pair<int, int>> value_pairs;
-    int dp_table_1[201][20010];
-    int dp_table_2[201][20010];
+    int dp_table_1[51][20001];
+    int dp_table_2[51][20001];
     int num_elements;
 
     int RecursiveCount(int level, int sum_left) {
@@ -87,7 +87,7 @@ private:
         return dp_table_2[level][sum_left] = answer;
     }
 
-public:
+
     int CountSubMultisets(std::vector<int>& nums, int low, int high) {
         if (nums.size() < 1 || nums.size() > 20000 || low < 0 || low > 20000 || high < 0 ||high > 20000) {
             throw std::invalid_argument("The length of nums should be at least 1 and at most 20,000 inclusive.");
