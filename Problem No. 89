@@ -1,318 +1,283 @@
 /*
-Link: https://leetcode.com/problems/contains-duplicate-iii/description/
+Link: https://leetcode.com/problems/abbreviating-the-product-of-a-range/description/
 
-Julie is solving a problem involving an integer vector nums and two integers index_diff and value_diff. She needs to determine if there exists a pair of 
-indices (i, j) in the vector such that the following conditions are met:
+Julie is given two positive integers left and right with left <= right. Julie needs to calculate the product of all integers in the inclusive range [left, right].
 
-The indices i and j are different (i != j).
-The absolute difference between the indices is less than or equal to index_diff (abs(i - j) ≤ index_diff).
-The absolute difference between the values at these indices is less than or equal to value_diff (abs(nums[i] - nums[j]) ≤ value_diff).
-If such a pair exists, she should return true; otherwise, she should return false.
+Since the product may be very large, Julie will abbreviate it following these steps:
 
-Create a C++ class Solution that will contain a function AlmostDuplicatePairs that will return a boolean indicating whether such a pair exists in the vector or not.
+Julie will count all trailing zeros in the product and remove them. Let us denote this count as c.
 
-Use appropriate error handling using the stdexcept library for invalid test cases.
+For example, there are 3 trailing zeros in 1000, and there are 0 trailing zeros in 546.
+Julie will denote the remaining number of digits in the product as d. If d > 10, then she will express the product as <pre>...<suf> where <pre> denotes 
+the first 5 digits of the product, and <suf> denotes the last 5 digits of the product after removing all trailing zeros. If d <= 10, she will keep it unchanged.
+
+For example, Julie will express 1234567654321 as 12345...54321, but 1234567 is represented as 1234567.
+Finally, Julie will represent the product as a string "<pre>...<suf>ec".
+
+For example, 12345678987600000 will be represented as "12345...89876e5".
+
+Julie needs to return a string denoting the abbreviated product of all integers in the inclusive range [left, right].
+
+Create a C++ function FindAbbreviatedProduct that will return a string denoting the abbreviated product of all integers.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
 
 
 Input Type
 
-A vector<int> denoting nums.
-An integer denoting index_diff.
-An integer denoting value_diff.
+An Integer denoting left
+An Integer denoting right
 
-Input Constraints:
+Input Constraints
 
-The length of nums should be at least 2 and at most 10^5 inclusive.
-Each value in nums should be in the range [-10^9, 10^9] inclusive.
-The value of index_diff should be in the range [1, len(nums)] inclusive.
-The value of value_diff should be in the range [0, 10^9] inclusive.
+The value of left and right should be in the range [1, 10000] both inclusive
+The value of left should be less than equal to right
+
 
 */
 
-#include <vector>
-#include <set>
-#include <stdexcept>
-#include <climits>
-#include <cmath>
-#include <algorithm>
 #include <iostream>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
 
-class Solution {
-private:
-  
-    std::multiset<std::pair<int, int>> value_index_set;
 
-    bool IsValidNearbyDuplicate(const std::vector<int>& nums, int index_diff, int value_diff, int index) {
-        int current_value = nums[index];
-        std::multiset<std::pair<int, int>>::iterator itr = value_index_set.lower_bound({current_value, 0});
-        int left_neighbor = INT_MAX;
-        int right_neighbor = INT_MAX;
-
-        if (itr != value_index_set.begin()) {
-            left_neighbor = std::prev(itr)->first;
+    std::string FindAbbreviatedProduct(int left, int right) {
+      
+        if (left < 1 || right < 1 || left > 10000 || right > 10000 || left > right) {
+            throw std::invalid_argument("Invalid input values.");
         }
 
-        if (std::next(itr) != value_index_set.end()) {
-            right_neighbor = std::next(itr)->first;
+        double upper_product = 1;
+        long long lower_product = 1;
+        long long offset = 1e12;
+        long long cut_offset = 1e5;
+        double log_product = 0.0;
+        int trailing_zeros = 0;
+
+        for (int i = left; i <= right; ++i) {
+            log_product += std::log10(i);
+            upper_product *= i;
+            lower_product *= i;
+
+            while (upper_product >= offset) {
+                upper_product /= 10;
+            }
+
+            while (lower_product % 10 == 0) {
+                lower_product /= 10;
+                ++trailing_zeros;
+            }
+
+            lower_product %= offset;
         }
 
-        if (left_neighbor != INT_MAX && std::abs(left_neighbor - current_value) <= value_diff) {
-            return true;
+        int digit_length = static_cast<int>(log_product) + 1 - trailing_zeros;
+
+        while (upper_product >= cut_offset) {
+            upper_product /= 10;
         }
 
-        if (right_neighbor != INT_MAX && std::abs(right_neighbor - current_value) <= value_diff) {
-            return true;
-        }
+        lower_product %= cut_offset;
+        int upper_int = static_cast<int>(upper_product);
 
-        return false;
+        if (digit_length <= 10) {
+            std::string result(digit_length, '0');
+            std::string upper_str = std::to_string(upper_int);
+            std::string lower_str = std::to_string(lower_product);
+
+            for (std::size_t i = 0; i < upper_str.length() && digit_length > 0; ++i, --digit_length) {
+                result[i] = upper_str[i];
+            }
+
+            for (int k = 1; !lower_str.empty() && digit_length > 0; --digit_length, ++k) {
+                result[result.length() - k] = lower_str.back();
+                lower_str.pop_back();
+            }
+
+            return result + "e" + std::to_string(trailing_zeros);
+        } else {
+            std::string result = std::to_string(lower_product);
+            return std::to_string(upper_int) + "..." + std::string(5 - result.size(), '0') + result + "e" + std::to_string(trailing_zeros);
+        }
     }
 
-public:
-    bool  AlmostDuplicatePairs(std::vector<int>& nums, int index_diff, int value_diff) {
-        int length_nums = nums.size();
-
-        if (length_nums < 2 || length_nums > 100000) {
-            throw std::invalid_argument("The length of nums must be between 2 and 100000 inclusive.");
-        }
-
-        for (int value : nums) {
-            if (value < -1000000000 || value > 1000000000) {
-                throw std::invalid_argument("Each value in nums must be between -1000000000 and 1000000000 inclusive.");
-            }
-        }
-
-        if (index_diff < 1 || index_diff > length_nums) {
-            throw std::invalid_argument("index_diff must be between 1 and len(nums) inclusive.");
-        }
-
-        if (value_diff < 0 || value_diff > 1000000000) {
-            throw std::invalid_argument("value_diff must be between 0 and 1000000000 inclusive.");
-        }
-
-        int window_size = index_diff;
-        int i = 0;
-        int j = std::min(length_nums - 1, window_size);
-        int current_index = 0;
-
-        for (int k = 0; k <= std::min(length_nums - 1, window_size); ++k) {
-            value_index_set.insert({nums[k], k});
-        }
-
-        while (j < length_nums) {
-            if (IsValidNearbyDuplicate(nums, index_diff, value_diff, current_index)) {
-                return true;
-            }
-
-            ++j;
-            ++current_index;
-
-            if (j < length_nums) {
-                value_index_set.insert({nums[j], j});
-            }
-
-            if ((j - current_index) + (current_index - i) > (2 * index_diff)) {
-                value_index_set.erase({nums[i], i});
-                ++i;
-            }
-        }
-
-        while (current_index < length_nums) {
-            if (IsValidNearbyDuplicate(nums, index_diff, value_diff, current_index)) {
-                return true;
-            }
-
-            ++current_index;
-
-            if ((current_index - i) > index_diff) {
-                value_index_set.erase({nums[i], i});
-                ++i;
-            }
-        }
-
-        return false;
-    }
-};
-
-int main() {
+int main(){
+    
+  //TEST
   
- Solution solution;
-   // TEST
-std::vector<int> nums_1 = {1, 2, 3, 4, 5};
-int index_diff_1 = 3;
-int value_diff_1 = 1;
-bool expected_1 = true;
-bool result_1 = solution.AlmostDuplicatePairs(nums_1, index_diff_1, value_diff_1);
-assert(result_1 == expected_1);
-// TEST_END
+  int left_1 = 1;
+  int right_1 = 4;
+  std::string expected_1 = "24e0";
+  std::string result_1 = FindAbbreviatedProduct(left_1, right_1);
+  assert(result_1 == expected_1);
+  
+  //TEST_END
+  
+  
+//TEST
 
-// TEST
-std::vector<int> nums_2 = {10, 20, 30, 40, 50};
-int index_diff_2 = 4;
-int value_diff_2 = 10;
-bool expected_2 = true;
-bool result_2 = solution.AlmostDuplicatePairs(nums_2, index_diff_2, value_diff_2);
+int left_2 = 1;
+int right_2 = 2;
+std::string expected_2 = "2e0";
+std::string result_2 = FindAbbreviatedProduct(left_2, right_2);
 assert(result_2 == expected_2);
-// TEST_END
 
-// TEST
-std::vector<int> nums_3 = {-10, -20, -30, -40, -50};
-int index_diff_3 = 2;
-int value_diff_3 = 15;
-bool expected_3 = true;
-bool result_3 = solution.AlmostDuplicatePairs(nums_3, index_diff_3, value_diff_3);
+//TEST_END
+
+//TEST
+
+int left_3 = 1;
+int right_3 = 3;
+std::string expected_3 = "6e0";
+std::string result_3 = FindAbbreviatedProduct(left_3, right_3);
 assert(result_3 == expected_3);
-// TEST_END
 
-// TEST
-std::vector<int> nums_4 = {-1000000000, 1000000000, 999999999, -999999999};
-int index_diff_4 = 1;
-int value_diff_4 = 2000000;
-bool expected_4 = true;
-bool result_4 = solution.AlmostDuplicatePairs(nums_4, index_diff_4, value_diff_4);
+//TEST_END
+
+//TEST
+
+int left_4 = 1;
+int right_4 = 4;
+std::string expected_4 = "24e0";
+std::string result_4 = FindAbbreviatedProduct(left_4, right_4);
 assert(result_4 == expected_4);
-// TEST_END
 
-// TEST
-std::vector<int> nums_5 = {0, 0, 0, 0, 0};
-int index_diff_5 = 1;
-int value_diff_5 = 0;
-bool expected_5 = true;
-bool result_5 = solution.AlmostDuplicatePairs(nums_5, index_diff_5, value_diff_5);
+//TEST_END
+
+//TEST
+
+int left_5 = 1;
+int right_5 = 5;
+std::string expected_5 = "12e1";
+std::string result_5 = FindAbbreviatedProduct(left_5, right_5);
 assert(result_5 == expected_5);
-// TEST_END
 
-// TEST
-std::vector<int> nums_6 = {1, 3, 6, 10, 15, 21, 28};
-int index_diff_6 = 3;
-int value_diff_6 = 5;
-bool expected_6 = true;
-bool result_6 = solution.AlmostDuplicatePairs(nums_6, index_diff_6, value_diff_6);
+//TEST_END
+
+//TEST
+
+int left_6 = 1;
+int right_6 = 6;
+std::string expected_6 = "72e1";
+std::string result_6 = FindAbbreviatedProduct(left_6, right_6);
 assert(result_6 == expected_6);
-// TEST_END
 
-// TEST
-std::vector<int> nums_7 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-int index_diff_7 = 2;
-int value_diff_7 = 0;
-bool expected_7 = true;
-bool result_7 = solution.AlmostDuplicatePairs(nums_7, index_diff_7, value_diff_7);
+//TEST_END
+
+//TEST
+
+int left_7 = 1;
+int right_7 = 7;
+std::string expected_7 = "504e1";
+std::string result_7 = FindAbbreviatedProduct(left_7, right_7);
 assert(result_7 == expected_7);
-// TEST_END
 
-// TEST
-std::vector<int> nums_8 = {1000000000, 0, 1000000000};
-int index_diff_8 = 1;
-int value_diff_8 = 1000000000;
-bool expected_8 = true;
-bool result_8 = solution.AlmostDuplicatePairs(nums_8, index_diff_8, value_diff_8);
+//TEST_END
+
+//TEST
+
+int left_8 = 1;
+int right_8 = 8;
+std::string expected_8 = "4032e1";
+std::string result_8 = FindAbbreviatedProduct(left_8, right_8);
 assert(result_8 == expected_8);
-// TEST_END
 
-// TEST
-std::vector<int> nums_9 = {100000, 200000, 300000, 400000, 500000};
-int index_diff_9 = 4;
-int value_diff_9 = 100000;
-bool expected_9 = true;
-bool result_9 = solution.AlmostDuplicatePairs(nums_9, index_diff_9, value_diff_9);
+//TEST_END
+
+//TEST
+
+int left_9 = 1;
+int right_9 = 9;
+std::string expected_9 = "36288e1";
+std::string result_9 = FindAbbreviatedProduct(left_9, right_9);
 assert(result_9 == expected_9);
-// TEST_END
 
-// TEST
-std::vector<int> nums_10 = {1};
-int index_diff_10 = 1;
-int value_diff_10 = 1;
-try {
-    solution.AlmostDuplicatePairs(nums_10, index_diff_10, value_diff_10);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_11 = {1, 2, 3, 4, 5};
-int index_diff_11 = 0;
-int value_diff_11 = 1;
-try {
-    solution.AlmostDuplicatePairs(nums_11, index_diff_11, value_diff_11);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_12 = {1, 2, 3, 4, 5};
-int index_diff_12 = -5656;
-int value_diff_12 = 1;
-try {
-    solution.AlmostDuplicatePairs(nums_12, index_diff_12, value_diff_12);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_13 = {1, 2, 3, 4, 5};
-int index_diff_13 = 3;
-int value_diff_13 = -999;
-try {
-    solution.AlmostDuplicatePairs(nums_13, index_diff_13, value_diff_13);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_14 = {1, 2, 3, 4, 5};
-int index_diff_14 = 3;
-int value_diff_14 = 1000000001;
-try {
-    solution.AlmostDuplicatePairs(nums_14, index_diff_14, value_diff_14);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_15 = {1000000001, 2, 3, 4, 5};
-int index_diff_15 = 2;
-int value_diff_15 = 1;
-try {
-    solution.AlmostDuplicatePairs(nums_15, index_diff_15, value_diff_15);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
-
-// TEST
-std::vector<int> nums_16(1e6,5);
-int index_diff_16 = 2;
-int value_diff_16 = 1;
-try {
-    solution.AlmostDuplicatePairs(nums_16, index_diff_16, value_diff_16);
-    assert(false);
-} catch (const std::invalid_argument& e) {
-    assert(true);
-}
-// TEST_END
+//TEST_END
   
-// TEST
-std::vector<int> nums_17 = {};
-int index_diff_17 = 2;
-int value_diff_17 = 1;
+//TEST
+
+int left_10 = 56565;
+int right_10 = 10;
 try {
-    solution.AlmostDuplicatePairs(nums_17, index_diff_17, value_diff_17);
+    FindAbbreviatedProduct(left_10, right_10);
     assert(false);
-} catch (const std::invalid_argument& e) {
+} catch(const std::invalid_argument& e) {
     assert(true);
 }
-// TEST_END
 
+//TEST_END
 
-    return 0;
+//TEST
+
+int left_11 = 1;
+int right_11 = 999999999;
+try {
+    FindAbbreviatedProduct(left_11, right_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
 }
+
+//TEST_END
+
+//TEST
+
+int left_12 = 99999999;
+int right_12 = 12;
+try {
+    FindAbbreviatedProduct(left_12, right_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int left_13 = 1;
+int right_13 = -5456413;
+try {
+    FindAbbreviatedProduct(left_13, right_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int left_14 = -999999;
+int right_14 = 23;
+try {
+    FindAbbreviatedProduct(left_14, right_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+int left_15 = 99;
+int right_15 = 15;
+try {
+    FindAbbreviatedProduct(left_15, right_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+  return 0;
+  
+ 
+}
+
+
+
+
