@@ -3,3 +3,63 @@ Link: https://codeforces.com/contest/1987/problem/F2
 
 */
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+    int MaximumRemovals(std::vector<int>& nums) {
+      
+        int len = nums.size();
+      
+        if (len < 1 || len > 800) {
+            throw std::invalid_argument("Invalid array length");
+        }
+        for (int i = 1; i <= len; ++i) {
+            if (nums[i] < 1 || nums[i] > len) {
+                throw std::invalid_argument("Invalid array element");
+            }
+        }
+
+        std::vector<std::vector<int>> dp_table(len + 2, std::vector<int>(len + 2, INT_MAX));
+        std::vector<int> max_possible_value(len + 1, 0);
+        
+        for (int i = 1; i <= len + 1; ++i) {
+            dp_table[i][i - 1] = 0;
+        }
+
+        for (int length = 2; length <= len; length += 2) {
+            for (int left = 1; left + length - 1 <= len; ++left) {
+                if (left - nums[left] < 0 || (left - nums[left]) % 2 != 0) {
+                    continue;
+                }
+                int right = left + length - 1;
+                for (int mid = left + 1; mid <= right; mid += 2) {
+                    if (dp_table[left + 1][mid - 1] <= (left - nums[left]) / 2) {
+                        dp_table[left][right] = std::min(dp_table[left][right], std::max((left - nums[left]) / 2, dp_table[mid + 1][right] - (mid - left + 1) / 2));
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i <= len; ++i) {
+            max_possible_value[i] = max_possible_value[i - 1];
+            for (int j = i - 1; j >= 1; j -= 2) {
+                if (max_possible_value[j - 1] >= dp_table[j][i]) {
+                    max_possible_value[i] = std::max(max_possible_value[i], max_possible_value[j - 1] + (i - j + 1) / 2);
+                }
+            }
+        }
+
+        return max_possible_value[len];
+    }
+
+
+int main() {
+    
+   
+    return 0;
+}
+
+
