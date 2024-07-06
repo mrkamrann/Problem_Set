@@ -74,8 +74,8 @@ long long Euler(long long value, const std::vector<long long>& factors) {
 long long ModularMultiply(long long val_a, long long val_b, long long mod) {
     val_a %= mod;
     val_b %= mod;
-    long long result = val_a * val_b - static_cast<long long>((static_cast<long double>(val_a) * val_b / mod)) * mod;
-    return (result % mod + mod) % mod;
+    unsigned long long result = (unsigned long long) val_a * val_b - static_cast<unsigned long long>((static_cast<long double>(val_a) * val_b / mod)) * mod;
+    return (long long)(result % mod + mod) % mod;
 }
 
 long long ModularExponentiate(long long base, long long exp, long long mod) {
@@ -88,8 +88,8 @@ long long ModularExponentiate(long long base, long long exp, long long mod) {
     return result;
 }
 
-long long ComputeAnswer(long long room_count, long long x_val) {
-    if (room_count < 2 || room_count > 100000000000000LL || x_val < 1 || x_val >= room_count || __gcd(x_val, room_count) != 1) {
+long long CatchXMouse(long long room_count, long long x_val) {
+    if (room_count < 2 || room_count > 100000000000000LL || x_val < 1 || x_val >= room_count || std::__gcd(x_val, room_count) != 1) {
         throw std::invalid_argument("Invalid input parameters.");
     }
 
@@ -127,7 +127,164 @@ long long ComputeAnswer(long long room_count, long long x_val) {
 
 int main() {
   
- 
+   // TEST 
+long long room_count_1 = 10;
+long long x_val_1 = 3;
+long long expected_1 = 4; 
+long long result_1 = CatchXMouse(room_count_1, x_val_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST 
+long long room_count_2 = 15;
+long long x_val_2 = 4;
+long long expected_2 = 9;
+long long result_2 = CatchXMouse(room_count_2, x_val_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST 
+long long room_count_3 = 29;
+long long x_val_3 = 12;
+long long expected_3 = 8; 
+long long result_3 = CatchXMouse(room_count_3, x_val_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 
+long long room_count_4 = 50;
+long long x_val_4 = 17;
+long long expected_4 = 6; 
+long long result_4 = CatchXMouse(room_count_4, x_val_4);
+ assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 
+long long room_count_5 = 101;
+long long x_val_5 = 18;
+long long expected_5 = 2; 
+long long result_5 = CatchXMouse(room_count_5, x_val_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 
+long long room_count_6 = 1234567890000;
+long long x_val_6 = 17;
+long long expected_6 = 13616;
+long long result_6 = CatchXMouse(room_count_6, x_val_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+long long room_count_7 = 999999999999;
+long long x_val_7 = 2;
+long long expected_7 = 101120777; 
+long long result_7 = CatchXMouse(room_count_7, x_val_7);
+ assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+long long room_count_8 = 9876543254564;
+long long x_val_8 = 5;
+long long expected_8 = 500; 
+long long result_8 = CatchXMouse(room_count_8, x_val_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST 
+long long room_count_9 = 1000000000;
+long long x_val_9 = 3;
+long long expected_9 = 521;
+long long result_9 = CatchXMouse(room_count_9, x_val_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST
+long long room_count_10 = 2;
+long long x_val_10 = 1;
+long long expected_10 = 2; 
+long long result_10 = CatchXMouse(room_count_10, x_val_10);
+ assert(result_10 == expected_10);
+// TEST_END
+
+// TEST 
+long long room_count_11 = 100000000000000;
+long long x_val_11 = 99999999999999;
+long long expected_11 = 50000000000001; 
+long long result_11 = CatchXMouse(room_count_11, x_val_11);
+ assert(result_11 == expected_11);
+// TEST_END
+
+// TEST 
+long long room_count_12 = 1000;
+long long x_val_12 = 1;
+long long expected_12 = 1000;
+long long result_12 = CatchXMouse(room_count_12, x_val_12);
+ assert(result_12 == expected_12);
+// TEST_END
+
+// TEST 
+long long room_count_13 = 1001;
+long long x_val_13 = 1000;
+long long expected_13 = 501;
+long long result_13 = CatchXMouse(room_count_13, x_val_13);
+assert(result_13 == expected_13);
+// TEST_END
+
+// TEST
+long long room_count_14 = 18;
+long long x_val_14 = 9; 
+try {
+    long long result_14 = CatchXMouse(room_count_14, x_val_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST
+try {
+    long long room_count_15 = 1; 
+    long long x_val_15 = 1;
+    long long result_15 = CatchXMouse(room_count_15, x_val_15);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST
+try {
+    long long room_count_16 = 10;
+    long long x_val_16 = 10; 
+    long long result_16 = CatchXMouse(room_count_16, x_val_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST
+try {
+    long long room_count_17 = -10;
+    long long x_val_17 = 3;
+    long long result_17 = CatchXMouse(room_count_17, x_val_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
+
+// TEST
+try {
+    long long room_count_18 = 10;
+    long long x_val_18 = -3;
+    long long result_18 = CatchXMouse(room_count_18, x_val_18);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+// TEST_END
 
     return 0;
 }
