@@ -1,13 +1,39 @@
 /*
 Link: https://codeforces.com/contest/1987/problem/F2
 
+
+Bob has a vector of integers nums of length len.
+
+In one operation, Bob will perform the following two-step process:
+
+Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
+
+Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
+
+Find the maximum number of times that Bob can perform the operation above.
+
+Return an integer — the maximum number of times that Bob can perform the operation.
+
+Create a C++ function MaximumRemovals that will return an integer denoting the the maximum number of times that Bob can perform the operation.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<int> denoting nums
+
+Input Constraints:
+
+The value of len should be at least 1 and at most 800 inclusive.
+Each value of nums[i] should be in the range [1, len] inclusive.
+
 */
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
 #include <climits>
-#include <cassert>
+
 
 int MaximumRemovals(std::vector<int>& nums) {
     int len = nums.size();
@@ -55,6 +81,7 @@ int MaximumRemovals(std::vector<int>& nums) {
     return max_possible_value[len];
 }
 
+#include <cassert>
 
 int main() {
     
