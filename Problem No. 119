@@ -1,0 +1,271 @@
+/*
+Link: https://codeforces.com/contest/1493/problem/E
+
+*/
+
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+     std::string AddBinary(const std::string& binary_str) {
+       
+        int length = binary_str.size();
+
+        std::string result = binary_str;
+        int index = length - 1;
+        while (index >= 0 && result[index] == '1') {
+            result[index] = '0';
+            index--;
+        }
+        if (index >= 0) {
+            result[index] = '1';
+        }
+        return result;
+    }
+
+     std::string ProcessBinaryStrings(const std::string& left, const std::string& right) {
+      
+      int length = right.size(); 
+       
+  
+      if (length < 1 || length > 1000000) {
+            throw std::invalid_argument("Invalid length of the binary string");
+        }
+
+
+        if (left.size() != right.size()) {
+            throw std::invalid_argument("Binary strings must be of the same length");
+        }
+       
+        if (left > right) {
+            throw std::invalid_argument("Left binary string must be less than or equal to right binary string");
+        }
+       
+        for (char character : left) {
+            if (character != '0' && character != '1') {
+                throw std::invalid_argument("Left binary string contains invalid characters");
+            }
+        }
+        for (char character : right) {
+            if (character != '0' && character != '1') {
+                throw std::invalid_argument("Right binary string contains invalid characters");
+            }
+        }
+
+        if (right[0] == '0' && right.size() > 1) {
+            throw std::invalid_argument("Right binary string must not have leading zeros unless it is exactly '0'");
+        }
+        
+        std::string result;
+
+        if (left[0] == '0' && right[0] == '1') {
+            result.assign(length, '1');
+            return result;
+        } else if (right[length - 1] == '1' || AddBinary(left) == right || left == right) {
+            return right;
+        }
+
+        return AddBinary(right);
+    }
+
+
+int main() {
+    
+    //TEST
+    std::string left_1 = "10101010";
+    std::string right_1 ="11010101";
+    std::string expected_1 = "11010101";
+    std::string result_1 = ProcessBinaryStrings(left_1, right_1);
+    assert(result_1 == expected_1);
+    //TEST_END
+
+    //TEST
+    std::string left_2 = "0101010";
+    std::string right_2 = "1101110";
+    std::string expected_2 = "1111111";
+    std::string result_2 = ProcessBinaryStrings(left_2, right_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::string left_3 = "001";
+    std::string right_3 = "111";
+    std::string expected_3 = "111";
+    std::string result_3 = ProcessBinaryStrings(left_3, right_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::string left_4 = "0000";
+    std::string right_4 = "1011";
+    std::string expected_4 = "1111";
+    std::string result_4 = ProcessBinaryStrings(left_4, right_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::string left_5 = "1110";
+    std::string right_5 = "1111";
+    std::string expected_5 = "1111";
+    std::string result_5 = ProcessBinaryStrings(left_5, right_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::string left_6 = "0110";
+    std::string right_6 = "1000";
+    std::string expected_6 = "1111";
+    std::string result_6 = ProcessBinaryStrings(left_6, right_6);
+    assert(result_6 == expected_6);
+    
+    //TEST_END
+
+    //TEST
+    std::string left_7 = "1001";
+    std::string right_7 = "1010";
+    std::string expected_7 = "1010";
+    std::string result_7 = ProcessBinaryStrings(left_7, right_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::string left_8 = "1100";
+    std::string right_8 = "1101";
+    std::string expected_8 = "1101";
+    std::string result_8 = ProcessBinaryStrings(left_8, right_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::string left_9 = "00100011";
+    std::string right_9 ="10101010";
+    std::string expected_9 = "11111111";
+    std::string result_9 = ProcessBinaryStrings(left_9, right_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+  
+    
+    //TEST
+   
+    std::string left_10 = "";
+    std::string right_10 = "";
+    try {
+        std::string result_10 = ProcessBinaryStrings(left_10, right_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+   
+    std::string left_11(1000001, '0');
+    std::string right_11(1000001, '1');
+    try {
+        std::string result_11 = ProcessBinaryStrings(left_11, right_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    
+    std::string left_12 = "00000";
+    std::string right_12 = "0000";
+    try {
+        std::string result_12 = ProcessBinaryStrings(left_12, right_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+  
+    std::string left_13 = "0000";
+    std::string right_13 = "00000";
+    try {
+        std::string result_13 = ProcessBinaryStrings(left_13, right_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+   
+    std::string left_14 = "110";
+    std::string right_14 = "101";
+    try {
+        std::string result_14 = ProcessBinaryStrings(left_14, right_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+   
+    std::string left_15 = "01A0";
+    std::string right_15 = "0110";
+    try {
+        std::string result_15 = ProcessBinaryStrings(left_15, right_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    
+    std::string left_16 = "0101";
+    std::string right_16 = "01B0";
+    try {
+        std::string result_16 = ProcessBinaryStrings(left_16, right_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    
+    std::string left_17 = "0000";
+    std::string right_17 = "000";
+    try {
+        std::string result_17 = ProcessBinaryStrings(left_17, right_17);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+
+    std::string left_18 = "01010";
+    std::string right_18 = "1010";
+    try {
+        std::string result_18 = ProcessBinaryStrings(left_18, right_18);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+
+    std::string left_19 = "1010";
+    std::string right_19 = "01010";
+    try {
+        std::string result_19 = ProcessBinaryStrings(left_19, right_19);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    return 0;
+}
