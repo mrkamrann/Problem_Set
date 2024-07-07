@@ -1,3 +1,60 @@
 /*
 Link : https://codeforces.com/contest/360/problem/C
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+    int CalculateResult(int max_operations, std::string& input_string)
+    {
+        int string_length = input_string.size();
+      
+        if (string_length < 1 || string_length > 2000 || max_operations < 0 || max_operations > 2000) {
+            throw std::invalid_argument("Invalid input for string_length or max_operations");
+        }
+        if (input_string.length() != static_cast<size_t>(string_length)) {
+            throw std::invalid_argument("Input string length does not match the provided string_length");
+        }
+        for (char character : input_string) {
+            if (character < 'a' || character > 'z') {
+                throw std::invalid_argument("Input string contains invalid characters");
+            }
+        }
+
+        const int modulus = 1000000007;
+        std::vector<std::vector<int>> f_vec(string_length + 1, std::vector<int>(max_operations + 1, 0));
+        std::vector<std::vector<int>> g_vec(string_length + 1, std::vector<int>(max_operations + 1, 0));
+        f_vec[0][0] = g_vec[0][0] = 1;
+
+        for (int i = 1; i <= string_length; i++) {
+            for (int j = 0; j <= max_operations; j++) {
+                f_vec[i][j] = static_cast<long long>(g_vec[i - 1][j]) * (input_string[i - 1] - 'a') % modulus;
+                for (int k = 0, temp; k < i && (temp = (k + 1) * (string_length - i + 1)) <= j; k++) {
+                    f_vec[i][j] = (f_vec[i][j] + static_cast<long long>(f_vec[i - k - 1][j - temp]) * (122 - input_string[i - 1]) % modulus) % modulus;
+                }
+                g_vec[i][j] = (g_vec[i - 1][j] + f_vec[i][j]) % modulus;
+            }
+        }
+
+        return g_vec[string_length][max_operations];
+    }
+
+
+int main() {
+  
+    int string_length, max_operations;
+    std::cin >> string_length >> max_operations;
+
+    std::string input_string;
+    std::cin >> input_string;
+
+  
+   std::cout<<CalculateResult(max_operations, input_string)<<std::endl;
+
+    return 0;
+}
+
+
