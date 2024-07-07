@@ -2,17 +2,13 @@
 Link: https://codeforces.com/contest/1987/problem/F2
 
 
-Bob has a vector of integers nums of length len.
+Bob has a vector of integers nums of length len. In one operation, Bob will perform the following two-step process:
 
-In one operation, Bob will perform the following two-step process:
+1. Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
 
-Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
+2. Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
 
-Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
-
-Find the maximum number of times that Bob can perform the operation above.
-
-Return an integer — the maximum number of times that Bob can perform the operation.
+Your task is to find the maximum number of times that Bob can perform the operation above.
 
 Create a C++ function MaximumRemovals that will return an integer denoting the the maximum number of times that Bob can perform the operation.
 
