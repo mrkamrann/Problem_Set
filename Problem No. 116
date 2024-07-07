@@ -1,3 +1,73 @@
 /*
 Link: https://codeforces.com/contest/1270/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm> 
+
+
+    long long CalculateAnswer(const std::string& input_string) {
+
+        int string_length = input_string.length();
+        
+        if (string_length < 1 || string_length > 200000) {
+            throw std::invalid_argument("Invalid input string length");
+        }
+      
+        for (int i = 1; i <= string_length; ++i) {
+          
+            if (input_string[i - 1] != '0' && input_string[i - 1] != '1') {
+                throw std::invalid_argument("Invalid character in input string");
+            }
+        }
+
+        int block_size = static_cast<int>(std::sqrt(string_length));
+        std::vector<int> prefix_sum(string_length + 1, 0);
+        std::vector<int> transformed_prefix(string_length + 1, 0);
+        std::vector<int> stack(string_length + 1, 0);
+        int stack_top = 0;
+        long long result = 0;
+
+        for (int i = 1; i <= string_length; ++i) {
+    
+            prefix_sum[i] = prefix_sum[i - 1] + (input_string[i - 1] == '1');
+        }
+
+        for (int i = 1; i <= block_size; ++i) {
+            for (int j = 0; j <= string_length; ++j) {
+                transformed_prefix[j] = i * prefix_sum[j] - j;
+            }
+            std::sort(transformed_prefix.begin(), transformed_prefix.begin() + string_length + 1);
+            for (int j = 0; j <= string_length;) {
+                int k = j + 1;
+                while (k <= string_length && transformed_prefix[k] == transformed_prefix[j]) ++k;
+                result += 1LL * (k - j) * (k - j - 1) / 2;
+                j = k;
+            }
+        }
+
+        for (int i = 1; i <= string_length; ++i) {
+            if (input_string[i - 1] == '1') stack[++stack_top] = i;
+            for (int j = stack_top; j >= 1 && (stack_top - j + 1) * (block_size + 1) <= i; --j) {
+                int left_bound = std::max(i - stack[j] + 1, (stack_top - j + 1) * (block_size + 1));
+                int right_bound = i - stack[j - 1];
+                if (left_bound <= right_bound) {
+                    result += right_bound / (stack_top - j + 1) - (left_bound - 1) / (stack_top - j + 1);
+                }
+            }
+        }
+
+        return result;
+    }
+
+  
+  
+int main() {
+  
+ 
+    return 0;
+}
