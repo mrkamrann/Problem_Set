@@ -6,11 +6,10 @@ Link: https://codeforces.com/contest/1270/problem/F
 #include <vector>
 #include <cmath>
 #include <stdexcept>
-#include <cassert>
 #include <algorithm> 
 
 
-    long long CalculateAnswer(const std::string& input_string) {
+    long long AwesomeSubstrings(const std::string& input_string) {
 
         int string_length = input_string.length();
         
@@ -64,10 +63,114 @@ Link: https://codeforces.com/contest/1270/problem/F
         return result;
     }
 
-  
+#include <cassert>  
   
 int main() {
   
- 
+// TEST 
+std::string input_string_1 = "0";
+long long expected_1 = 0; 
+long long result_1 = AwesomeSubstrings(input_string_1);
+assert(result_1 == expected_1);
+//TEST_END
+  
+// TEST 
+std::string input_string_2 = "1";
+long long expected_2 = 1;
+long long result_2 = AwesomeSubstrings(input_string_2);
+assert(result_2 == expected_2);
+//TEST_END
+  
+// TEST 
+std::string input_string_3 = "01";
+long long expected_3 = 2; 
+long long result_3 = AwesomeSubstrings(input_string_3);
+assert(result_3 == expected_3);
+//TEST_END
+  
+// TEST 
+std::string input_string_4 = "10";
+long long expected_4 = 2; 
+long long result_4 = AwesomeSubstrings(input_string_4);
+assert(result_4 == expected_4);
+//TEST_END
+  
+// TEST 
+std::string input_string_5 = "110";
+long long expected_5 = 4; 
+long long result_5 = AwesomeSubstrings(input_string_5);
+assert(result_5 == expected_5);
+//TEST_END
+  
+// TEST 
+std::string input_string_6 = "111";
+long long expected_6 = 6; 
+long long result_6 = AwesomeSubstrings(input_string_6);
+assert(result_6 == expected_6);
+//TEST_END
+  
+// TEST 
+std::string input_string_7 = "000";
+long long expected_7 = 0; 
+long long result_7 = AwesomeSubstrings(input_string_7);
+assert(result_7 == expected_7);
+//TEST_END
+  
+// TEST 
+std::string input_string_8 = "101";
+long long expected_8 = 4; 
+long long result_8 = AwesomeSubstrings(input_string_8);
+assert(result_8 == expected_8);
+//TEST_END
+  
+// TEST 
+std::string input_string_9 = "0101";
+long long expected_9 = 7;
+long long result_9 = AwesomeSubstrings(input_string_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+  
+// TEST 
+std::string input_string_10 = "";
+try {
+    AwesomeSubstrings(input_string_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST 
+std::string input_string_11 = std::string(200001, '0'); 
+try {
+    AwesomeSubstrings(input_string_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+  
+//TEST_END
+
+// TEST 
+std::string input_string_12 = "2"; 
+try {
+    AwesomeSubstrings(input_string_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+// TEST 
+std::string input_string_13 = "a";
+try {
+    AwesomeSubstrings(input_string_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
     return 0;
 }
