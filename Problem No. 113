@@ -1,9 +1,12 @@
 /*
 Link: https://codeforces.com/contest/1975/problem/F
 
-BOB defines the binary encoding of a finite set of natural numbers t ⊆ {0, 1, 2, ...} as f(t) = ∑i∈t 2^i. For example, f({0, 2}) = 2^0 + 2^2 = 5 and f({}) = 0. Notice that f is a bijection from all such sets to all non-negative integers. As such, f^(-1) is also defined.
+Bob defines the binary encoding of a finite set of natural numbers t ⊆ {0, 1, 2, ...} as f(t) = ∑i∈t 2^i. For example, f({0, 2}) = 2^0 + 2^2 = 5 and f({}) = 0.
+Notice that f is a bijection from all such sets to all non-negative integers. As such, f^(-1) is also defined.
 
-BOB is given an integer num along with 2^num - 1 sets input_values_1, input_values_2, ..., input_values_(2^num - 1).
+Bob is given an integer num along with 2^num - 1 sets input_values_1, input_values_2, ..., input_values_(2^num - 1).  — the sets input_values given in their 
+binary encoding where
+input_values_i = f^(-1)(input_values_i).
 
 Find all sets s that satisfy the following constraint:
 
@@ -11,29 +14,22 @@ s ⊆ {0, 1, ..., num - 1}. Note that s can be empty.
 For all non-empty subsets t ⊆ {0, 1, ..., num - 1}, |s ∩ t| ∈ input_values_f(t).
 Due to the large input and output, both input and output will be given in terms of binary encodings of the sets.
 
-INPUT:
 
-The first line of input contains a single integer num (1 ≤ num ≤ 20).
+Your task is to return k integers indicating the number of possible s, you should output f(s) for all possible s in increasing order.
 
-The second line of input contains 2^num - 1 integers input_values_1, input_values_2, ..., input_values_(2^num - 1) (0 ≤ input_values_i < 2^num + 1) — the sets input_values given in their binary encoding where input_values_i = f^(-1)(input_values_i).
-
-OUTPUT:
-
-The first line of output should contain an integer k indicating the number of possible s.
-
-In the following k lines, you should output f(s) for all possible s in increasing order.
-
-Create a C++ function DeliverPackages that will return an integer denoting the minimum number of trips required.
+Create a C++ function ProcessBitwise that will return a vector<int> denoting f(s) for all possible s in increasing order.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
 INPUT TYPE:
 
-A vector<int> denoting input_values
 An integer denoting num
+A vector<int> denoting input_values
+
 INPUT CONSTRAINTS:
 
 The value of num should be at least 1 and at most 20 inclusive.
+The length of input_values is equal to 2^num - 1
 Each value of input_values[i] should be in the range [0, 2^num + 1) inclusive.
 
 */
