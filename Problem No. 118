@@ -1,3 +1,231 @@
 /*
-Link: 
+Link:  https://codeforces.com/contest/264/problem/D
 */
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+ long long ColorfulStones(std::string &source, std::string &target) {
+         
+        if (source.size() < 1 || source.size() > 1e6 || target.size() < 1 || target.size() > 1e6) {
+            throw std::invalid_argument("Invalid input string size");
+        }
+        for (char &character : source) {
+            if (character != 'R' && character != 'G' && character != 'B') {
+                throw std::invalid_argument("Invalid character in source string");
+            }
+        }
+        for (char &character : target) {
+            if (character != 'R' && character != 'G' && character != 'B') {
+                throw std::invalid_argument("Invalid character in target string");
+            }
+        }
+
+         long long result = 0;
+    size_t source_size = source.size();
+    size_t target_size = target.size();
+    std::vector<std::vector<long long>> counter(101, std::vector<long long>(101, 0));
+    
+    size_t source_index = 0, target_index = 0, iter_index = 1;
+
+    while (target_index < iter_index && source_index < source_size) {
+        while (iter_index < target_size && source[source_index] != target[iter_index - 1]) {
+            counter[target[iter_index - 1]][target[iter_index++]]++;
+        }
+        if (source_index > 0 && source[source_index] != source[source_index - 1]) {
+            result += iter_index - target_index - counter[source[source_index]][source[source_index - 1]];
+        } else {
+            result += iter_index - target_index;
+        }
+        if (source[source_index] == target[target_index] && iter_index > ++target_index) {
+            counter[target[target_index - 1]][target[target_index]]--;
+        }
+        if (iter_index < target_size && iter_index++ > target_index) {
+            counter[target[iter_index - 2]][target[iter_index - 1]]++;
+        }
+        source_index++;
+    }
+    
+    return result;
+}
+
+
+int main() {
+  
+//TEST
+std::string source_1 = "R";
+std::string target_1 = "R";
+long long expected_1 = 1;
+long long result_1 = ColorfulStones(source_1, target_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::string source_2 = "RGB";
+std::string target_2 = "RGB";
+long long expected_2 = 3;
+long long result_2 = ColorfulStones(source_2, target_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::string source_3 = "RRR";
+std::string target_3 = "R";
+long long expected_3 = 1;
+long long result_3 = ColorfulStones(source_3, target_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::string source_4 = "RRG";
+std::string target_4 = "RG";
+long long expected_4 = 3;
+long long result_4 = ColorfulStones(source_4, target_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::string source_5 = "RGBRGB";
+std::string target_5 = "RGB";
+long long expected_5 = 3;
+long long result_5 = ColorfulStones(source_5, target_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::string source_6 = "RGB";
+std::string target_6 = "BGR";
+long long expected_6 = 7;
+long long result_6 = ColorfulStones(source_6, target_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::string source_7 = "RRGGBB";
+std::string target_7 = "RGB";
+long long expected_7 = 7;
+long long result_7 = ColorfulStones(source_7, target_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::string source_8 = "RRGGBB";
+std::string target_8 = "GRB";
+long long expected_8 = 13;
+long long result_8 = ColorfulStones(source_8, target_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::string source_9 = "BBGRRGG";
+std::string target_9 = "BGR";
+long long expected_9 = 6;
+long long result_9 = ColorfulStones(source_9, target_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::string source_10 = "";
+std::string target_10 = "R";
+try {
+    ColorfulStones(source_10, target_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_11 = "R";
+std::string target_11 = "";
+try {
+    ColorfulStones(source_11, target_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_12 = "A";
+std::string target_12 = "R";
+try {
+    ColorfulStones(source_12, target_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_13 = "R";
+std::string target_13 = "A";
+try {
+    ColorfulStones(source_13, target_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_14 = std::string(1000001, 'R');
+std::string target_14 = "R";
+try {
+    ColorfulStones(source_14, target_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_15 = "R";
+std::string target_15 = std::string(1000001, 'R');
+try {
+    ColorfulStones(source_15, target_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_16 = "RGR";
+std::string target_16 = "RGZ";
+try {
+    ColorfulStones(source_16, target_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_17 = "RGB";
+std::string target_17 = "RGBX";
+try {
+    ColorfulStones(source_17, target_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string source_18 = "RGB";
+std::string target_18 = "RG1";
+try {
+    ColorfulStones(source_18, target_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+    return 0;
+}
+
