@@ -38,7 +38,7 @@ Each value of values[i] should be in the range [1, 10^12] inclusive.
 #include <numeric>
 #include <random>
 #include <ctime>
-#include <cassert>
+
 
 long long FindGhd(std::vector<long long>& values) {
   
@@ -94,6 +94,7 @@ long long FindGhd(std::vector<long long>& values) {
     return maximum_gcd;
 }
 
+#include <cassert>
 
 int main() {
   
