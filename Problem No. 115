@@ -1,11 +1,45 @@
 /*
 Link: https://codeforces.com/contest/183/problem/E
+
+The prestigious kindergarten consists of num_kids kids, numbered 1 through num_kids. Each of them are given allowance in rubles by their parents denoted by a vector
+allowance.
+
+Today, they are going to the most famous candy shop in the town. The shop sells candies in packages: for all i between 1 and max_candies, inclusive, 
+it sells a package containing exactly i candies. A candy costs one ruble, so a package containing x candies costs x rubles.
+
+The kids will purchase candies in turns, starting from kid 1. In a single turn, kid i will purchase one candy package. Due to the highly competitive nature of the 
+kindergarten, during a turn, the number of candies contained in the package purchased by the kid will always be strictly greater than the number of candies 
+contained in the package purchased by the kid in the preceding turn (an exception is in the first turn: the first kid may purchase any package). 
+Then, the turn proceeds to kid i + 1, or to kid 1 if it was kid num_kids's turn. This process can be ended at any time, but at the end of the purchase process,
+all the kids must have the same number of candy packages. Of course, the amount spent by each kid on the candies cannot exceed their allowance.
+
+You work at the candy shop and would like to prepare the candies for the kids. Return the maximum number of candies that can be sold by the candy shop to the kids.
+If the kids cannot purchase any candy (due to insufficient allowance), return 0.
+
+
+Return  a single integer denoting the maximum number of candies that can be sold by the candy shop.
+
+Create a C++ function CalculateMaxSum that will return a long long denoting the maximum number of candies that can be sold.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting max_candies
+A vector<long long> denoting allowances
+
+Input Constraints:
+
+The value of num_kids should be between 2 and 200,000 inclusive.
+The value of max_candies should be between 2 and 5,000,000 inclusive.
+Each allowance should be a positive integer not exceeding 10^9.
+
 */
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <cassert>
+
 
      long long CalculateMaxSum(int max_candies, std::vector<long long>& allowances) {
        
@@ -44,6 +78,7 @@ Link: https://codeforces.com/contest/183/problem/E
         return ans;
     }
 
+#include <cassert>
 
 int main() {
   
