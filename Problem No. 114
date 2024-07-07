@@ -6,11 +6,10 @@ Link: https://codeforces.com/contest/383/problem/E
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <cassert>
 #include <unordered_set>
 
 
-    long long XorOfSquares( std::vector<std::string>& word_list) {
+    long long XorOfSquares(const std::vector<std::string>& word_list) {
       
       int word_count = word_list.size();
       
@@ -26,8 +25,8 @@ Link: https://codeforces.com/contest/383/problem/E
                 throw std::invalid_argument("Each word must be exactly 3 characters long.");
             }
             for (const char &character : word) {
-                if (character < 'a' || character > 'v'){
-                    throw std::invalid_argument("Each character must be a lowercase letter from a to r.");
+                if (character < 'a' || character > 't'){
+                    throw std::invalid_argument("Each character must be a lowercase letter from a to t.");
                 }
             }
           
@@ -37,20 +36,20 @@ Link: https://codeforces.com/contest/383/problem/E
             unique_words.insert(word);
         }
         
-        std::vector<int> frequency(1 << 22, 0);
+        std::vector<int> frequency(1 << 20, 0);
 
         for (const std::string& word : word_list) {
             int index = 0;
             for (int i = 0; i < 3; ++i) {
-                if (word[i] < 's') {
+                if (word[i] < 'u') {
                     index |= 1 << (word[i] - 'a');
                 }
             }
             ++frequency[index];
         }
 
-        for (int i = 0; i < 22; ++i) {
-            for (int j = 0; j < (1 << 22); ++j) {
+        for (int i = 0; i < 20; ++i) {
+            for (int j = 0; j < (1 << 20); ++j) {
                 if (j & (1 << i)) {
                     frequency[j] += frequency[j ^ (1 << i)];
                 }
@@ -58,76 +57,77 @@ Link: https://codeforces.com/contest/383/problem/E
         }
 
         long long result = 0;
-        for (int i = 0; i < (1 << 22); ++i) {
+        for (int i = 0; i < (1 << 20); ++i) {
             result ^= 1LL * (word_count - frequency[i]) * (word_count - frequency[i]);
         }
         return result;
     }
 
+#include <cassert>
   
 int main() {
    
     // TEST
-std::vector<std::string> word_list_1 = {"abc", "bcd", "cde", "def", "efg", "fgh"};
-long long expected_1 = 48;
+std::vector<std::string> word_list_1 = {"abc", "def", "ghi", "jkl", "mno", "rst"};
+long long expected_1 = 0;
 long long result_1 = XorOfSquares(word_list_1);
-cout << result_1 << endl; // assert(result_1 == expected_1);
+assert(result_1 == expected_1);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_2 = {"aaa", "bbb", "ccc", "ddd", "eee", "fff"};
 long long expected_2 = 0;
 long long result_2 = XorOfSquares(word_list_2);
-cout << result_2 << endl; // assert(result_2 == expected_2);
+assert(result_2 == expected_2);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_3 = {"bcd", "cde", "def", "efg", "fgh", "ghi"};
 long long expected_3 = 0;
 long long result_3 = XorOfSquares(word_list_3);
-cout << result_3 << endl; // assert(result_3 == expected_3);
+assert(result_3 == expected_3);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_4 = {"abc", "def", "ghi", "jkl", "mno"};
 long long expected_4 = 0;
 long long result_4 = XorOfSquares(word_list_4);
-cout << result_4 << endl; // assert(result_4 == expected_4);
+assert(result_4 == expected_4);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_5 = {"abc", "abd", "abe", "abf", "abg", "abh"};
 long long expected_5 = 0;
 long long result_5 = XorOfSquares(word_list_5);
-cout << result_5 << endl; // assert(result_5 == expected_5);
+assert(result_5 == expected_5);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_6 = {"abc", "abd", "abe", "abf", "abg", "abh"};
 long long expected_6 = 0;
 long long result_6 = XorOfSquares(word_list_6);
-cout << result_6 << endl; // assert(result_6 == expected_6);
+assert(result_6 == expected_6);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_7 = {"ged", "blb", "ggg"};
 long long expected_7 = 0;
 long long result_7 = XorOfSquares(word_list_7);
-cout << result_7 << endl; // assert(result_7 == expected_7);
+ assert(result_7 == expected_7);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_8 = {"abc", "bcd", "cde", "def", "efg", "fgh", "ghi", "hij", "ijk", "jkl"};
 long long expected_8 = 0;
 long long result_8 = XorOfSquares(word_list_8);
-cout << result_8 << endl; // assert(result_8 == expected_8);
+assert(result_8 == expected_8);
 // TEST_END
 
 // TEST
 std::vector<std::string> word_list_9 = {"adp", "gef", "phi", "jkl", "mmo", "pqr"};
 long long expected_9 = 0;
 long long result_9 = XorOfSquares(word_list_9);
-cout << result_9 << endl; // assert(result_9 == expected_9);
+assert(result_9 == expected_9);
 // TEST_END
 
 //TEST
@@ -189,7 +189,6 @@ try {
     assert(true);
 }
 //TEST_END
-
 
     return 0;
 }
