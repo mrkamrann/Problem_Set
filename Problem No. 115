@@ -1,4 +1,218 @@
 /*
-Link: 
+Link: https://codeforces.com/contest/183/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+     long long CalculateMaxSum(int max_candies, std::vector<long long>& allowances) {
+       
+        int num_kids = allowances.size();
+       
+        if (num_kids < 2 || num_kids > 200000 || max_candies < 2 || max_candies > 5000000 || num_kids > max_candies) {
+            throw std::invalid_argument("Invalid number of kids or maximum candies.");
+        }
+        for (const long long& allowance : allowances) {
+            if (allowance <= 0 || allowance > static_cast<long long>(max_candies) * (max_candies + 1) / 2) {
+                throw std::invalid_argument("Invalid allowance for a kid.");
+            }
+        }
+
+        long long ans = 0;
+        for (int i = 1; i <= max_candies / num_kids; i++) {
+            long long temp = 1LL * i * (max_candies + max_candies - (i - 1) * num_kids) / 2;
+            std::vector<long long> b_vec(num_kids);
+            for (int j = num_kids - 1; j >= 0; j--) {
+                temp = std::min(temp, allowances[j]);
+                b_vec[j] = temp;
+                temp -= i;
+            }
+            if (b_vec[0] < 1LL * i * (1 + 1 + (i - 1) * num_kids) / 2) continue;
+            long long start = std::max(1LL, b_vec[0] - 1LL * (i - 1) * (max_candies - num_kids + 1 + max_candies - num_kids + 1 - (i - 2) * num_kids) / 2);
+            long long lef = max_candies - start + 1 - i, sum = b_vec[0], cur = b_vec[0];
+            for (int j = 1; j < num_kids; j++) {
+                long long used = std::min(lef - (num_kids - j - 1) * i, b_vec[j] - cur);
+                cur += used;
+                sum += cur;
+                lef -= used;
+            }
+            ans = std::max(ans, sum);
+        }
+
+        return ans;
+    }
+
+
+int main() {
+  
+  //TEST
+int max_candies_1 = 10;
+std::vector<long long> allowances_1 = {6, 7, 8};
+long long expected_1 = 21;
+long long result_1 = CalculateMaxSum(max_candies_1, allowances_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int max_candies_2 = 5;
+std::vector<long long> allowances_2 = {4, 5};
+long long expected_2 = 9;
+long long result_2 = CalculateMaxSum(max_candies_2, allowances_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int max_candies_3 = 15;
+std::vector<long long> allowances_3 = {10, 12, 8, 15, 11};
+long long expected_3 = 42;
+long long result_3 = CalculateMaxSum(max_candies_3, allowances_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int max_candies_4 = 8;
+std::vector<long long> allowances_4 = {3, 6, 2, 7};
+long long expected_4 = 0;
+long long result_4 = CalculateMaxSum(max_candies_4, allowances_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int max_candies_5 = 6;
+std::vector<long long> allowances_5 = {5, 4};
+long long expected_5 = 7;
+long long result_5 = CalculateMaxSum(max_candies_5, allowances_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int max_candies_6 = 12;
+std::vector<long long> allowances_6 = {2, 5, 6, 4, 8, 9};
+long long expected_6 = 27;
+long long result_6 = CalculateMaxSum(max_candies_6, allowances_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int max_candies_7 = 7;
+std::vector<long long> allowances_7 = {7, 6, 5, 4, 3};
+long long expected_7 = 0;
+long long result_7 = CalculateMaxSum(max_candies_7, allowances_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int max_candies_8 = 20;
+std::vector<long long> allowances_8 = {15, 16, 12, 19, 18, 17};
+long long expected_8 = 81;
+long long result_8 = CalculateMaxSum(max_candies_8, allowances_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int max_candies_9 = 25;
+std::vector<long long> allowances_9 = {10, 15, 20, 18, 12, 22, 25, 24};
+long long expected_9 = 119;
+long long result_9 = CalculateMaxSum(max_candies_9, allowances_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+ 
+
+//TEST
+int max_candies_10 = 1;
+std::vector<long long> allowances_10 = {1, 2, 3};
+try {
+    CalculateMaxSum(max_candies_10, allowances_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int max_candies_11 = 5000001;
+std::vector<long long> allowances_11 = {1000000, 2000000, 3000000};
+try {
+    CalculateMaxSum(max_candies_11, allowances_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int max_candies_12 = 5;
+std::vector<long long> allowances_12 = {0, 5, 10};
+try {
+    CalculateMaxSum(max_candies_12, allowances_12);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int max_candies_13 = 8;
+std::vector<long long> allowances_13 = {}; 
+try {
+    CalculateMaxSum(max_candies_13, allowances_13);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+
+//TEST
+int max_candies_14 = -5;
+std::vector<long long> allowances_14 = {5, 6, 7};
+try {
+    CalculateMaxSum(max_candies_14, allowances_14);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int max_candies_15 = 10;
+std::vector<long long> allowances_15 = {-3, 8, 10}; 
+try {
+    CalculateMaxSum(max_candies_15, allowances_15);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int max_candies_16 = -15;
+std::vector<long long> allowances_16 = {-5, -10, -15};
+try {
+    CalculateMaxSum(max_candies_16, allowances_16);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+int max_candies_17 = 15;
+std::vector<long long> allowances_17(1e6,1);
+try {
+    CalculateMaxSum(max_candies_17, allowances_17);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+    return 0;
+}
+
 
