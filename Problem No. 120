@@ -1,0 +1,263 @@
+/*
+Link: https://codeforces.com/contest/1677/problem/D
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+long long PermutationsCount(int operations, std::vector<int>& values) {
+  
+    int length = values.size();
+
+  
+    if (length < 1 || length > 1000000) {
+        throw std::invalid_argument("Invalid length: must be in the range 1 to 1,000,000");
+    }
+
+    if (operations < 0 || operations >= length) {
+        throw std::invalid_argument("Invalid operations: must be in the range 0 to length - 1");
+    }
+  
+    for (int i = 0; i < length; ++i) {
+        if (values[i] < -1 || values[i] > i) { 
+            throw std::invalid_argument("Invalid value in sequence: must be in the range -1 to i");
+        }
+    }
+
+    long long result = 1;
+
+    for (int i = 0; i < length; ++i) {
+        if (i < operations || values[i - operations] == -1) {
+            result = result * (i + 1) % 998244353;
+        } else if (values[i - operations] == 0) {
+            result = result * (operations + 1) % 998244353;
+        }
+        if (i >= length - operations && (values[i] != 0 && values[i] != -1)) {
+            result = 0;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    
+   //TEST
+
+std::vector<int> values_1 = {0,1,1,0,0};
+int operations_1 = 2;
+long long expected_1 = 6; 
+long long result_1 = PermutationsCount(operations_1, values_1);
+assert(result_1 == expected_1);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_2 = {0,1,2,3,4};
+int operations_2 = 0;
+long long expected_2 = 1; 
+long long result_2 = PermutationsCount(operations_2, values_2);
+assert(result_2 == expected_2);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_3 = {0, 1};
+int operations_3 = 1;
+long long expected_3 = 0; 
+long long result_3 = PermutationsCount(operations_3, values_3);
+assert(result_3 == expected_3);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_4 = {-1, 1, 2,0,0};
+int operations_4 = 2;
+long long expected_4 = 6; 
+long long result_4 = PermutationsCount(operations_4, values_4);
+assert(result_4 == expected_4);
+ 
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_5 = {-1, 0, -1, 2, 3};
+int operations_5 = 3;
+long long expected_5 = 0; 
+long long result_5 = PermutationsCount(operations_5, values_5);
+assert(result_5 == expected_5);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_6 = {0, 0, 0, -1, 0};
+int operations_6 = 3;
+long long expected_6 = 96; 
+long long result_6 = PermutationsCount(operations_6, values_6);
+assert(result_6 == expected_6);
+
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_7 = {0, -1, 0, 0, -1, -1};
+int operations_7 = 5;
+long long expected_7 = 720; 
+long long result_7 = PermutationsCount(operations_7, values_7);
+assert(result_7 == expected_7);
+ 
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_8 = {-1, 0, -1, 0, -1, 3, 6, 7, 2, 1, 8, 3, 1, -1, 14, -1, 0, 0, -1};
+int operations_8 = 3;
+long long expected_8 = 5953536; 
+long long result_8 = PermutationsCount(operations_8, values_8);
+assert(result_8 == expected_8);
+ 
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_9 = {0, -1, -1, 0, -1, 0, -1, 0};
+int operations_9 = 2;
+long long expected_9 = 7560; 
+long long result_9 = PermutationsCount(operations_9, values_9);
+assert(result_9 == expected_9);
+  
+//TEST_END
+  
+//TEST
+
+std::vector<int> values_10 = {0, 1, 2, 3, 4};
+int operations_10 = -1; 
+try {
+    PermutationsCount(operations_10, values_10);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> values_11 = {0, 1, 2, 3, 4}; 
+int operations_11 = 5; 
+try {
+    PermutationsCount(operations_11, values_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_12 = {-1}; 
+int operations_12 = 1;
+try {
+    PermutationsCount(operations_12, values_12);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_13 = {-1, 99 , 2}; 
+int operations_13 = 1;
+try {
+    PermutationsCount(operations_13, values_13);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_14 = {0, 1, 2, 3, 4}; 
+int operations_14 = 6; 
+try {
+    PermutationsCount(operations_14, values_14);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_15 = {0, -1, -1, 3}; 
+int operations_15 = -444;
+try {
+    PermutationsCount(operations_15, values_15);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_16 = {0, 2, 1}; 
+int operations_16 = 1;
+try {
+    PermutationsCount(operations_16, values_16);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_17(1000001, 0); 
+int operations_17 = 500000;
+try {
+    PermutationsCount(operations_17, values_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+
+std::vector<int> values_18 = {0, 1, 2}; 
+int operations_18 = -2; 
+try {
+    PermutationsCount(operations_18, values_18);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+
+//TEST_END
+    return 0;
+}
+
