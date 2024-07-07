@@ -5,10 +5,10 @@ Link : https://codeforces.com/contest/360/problem/C
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <cassert>
 
 
-    int CalculateResult(int max_operations, std::string& input_string)
+
+    int BeautyEqualsK(int max_operations, std::string& input_string)
     {
         int string_length = input_string.size();
       
@@ -42,17 +42,138 @@ Link : https://codeforces.com/contest/360/problem/C
         return g_vec[string_length][max_operations];
     }
 
+#include <cassert>
 
 int main() {
   
-    int string_length, max_operations;
-    std::cin >> string_length >> max_operations;
+   // TEST 
+int max_operations_1 = 1;
+std::string input_string_1 = "a";
+int expected_1 = 25;
+int result_1 = BeautyEqualsK(max_operations_1, input_string_1);
+assert(result_1 == expected_1);
+// TEST_END
 
-    std::string input_string;
-    std::cin >> input_string;
+// TEST 
+int max_operations_2 = 2;
+std::string input_string_2 = "ab";
+int expected_2 = 74;
+int result_2 = BeautyEqualsK(max_operations_2, input_string_2);
+assert(result_2 == expected_2);
+// TEST_END
 
+// TEST 
+int max_operations_3 = 3;
+std::string input_string_3 = "abc";
+int expected_3 = 173;
+int result_3 = BeautyEqualsK(max_operations_3, input_string_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST 
+int max_operations_4 = 0;
+std::string input_string_4 = "abc";
+int expected_4 = 6;
+int result_4 = BeautyEqualsK(max_operations_4, input_string_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST 
+int max_operations_5 = 4;
+std::string input_string_5 = "abcd";
+int expected_5 = 622;
+int result_5 = BeautyEqualsK(max_operations_5, input_string_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST 
+int max_operations_6 = 5;
+std::string input_string_6 = "aaaaa";
+int expected_6 = 50;
+int result_6 = BeautyEqualsK(max_operations_6, input_string_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST 
+int max_operations_7 = 2;
+std::string input_string_7 = "aaabbb";
+int expected_7 = 72;
+int result_7 = BeautyEqualsK(max_operations_7, input_string_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST 
+int max_operations_8 = 0;
+std::string input_string_8 = "aabbbcc";
+int expected_8 = 72;
+int result_8 = BeautyEqualsK(max_operations_8, input_string_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST 
+int max_operations_9 = 3;
+std::string input_string_9 = "aabcc";
+int expected_9 = 529;
+int result_9 = BeautyEqualsK(max_operations_9, input_string_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+// TEST 
+int max_operations_10 = -999;
+std::string input_string_10 = "a";
+try {
+    BeautyEqualsK(max_operations_10, input_string_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+int max_operations_11 = 1;
+std::string input_string_11 = "";
+try {
+    BeautyEqualsK(max_operations_11, input_string_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+int max_operations_12 = 2001;
+std::string input_string_12 = "abc";
+try {
+    BeautyEqualsK(max_operations_12, input_string_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST 
+int max_operations_13 = 1;
+std::string input_string_13 = std::string(2001, 'a');
+try {
+    BeautyEqualsK(max_operations_13, input_string_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
   
-   std::cout<<CalculateResult(max_operations, input_string)<<std::endl;
+// TEST 
+int max_operations_14 = 1;
+std::string input_string_14 = "ABCD";
+try {
+    BeautyEqualsK(max_operations_14, input_string_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
 
     return 0;
 }
