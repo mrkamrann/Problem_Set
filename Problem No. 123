@@ -1,3 +1,92 @@
 /*
 Link: https://codeforces.com/contest/93/problem/E
+
+Harry very much likes a multiplayer role-playing game WineAge II. Who knows, perhaps that might be the reason for his poor performance at the university. 
+As any person who plays the game, he is interested in equipping his hero with as good a weapon and outfit as possible.
+
+One day, as he was reading the game's forum yet again, he discovered a very interesting fact. As it turns out, each weapon in the game is characterized with 
+k different numbers: a_1, ..., a_k. They are called hit indicators and according to the game developers' plan they are pairwise coprime.
+
+The damage that is inflicted during a hit depends not only on the weapon's characteristics, but also on the hero's strength parameter. Thus, if the hero's strength
+equals initial_value, then the inflicted damage will be calculated as the number of numbers on the segment  1 to n, that aren't divisible by any hit indicator a_i.
+
+Recently, having fulfilled another quest, Harry found a new Lostborn sword. He wants to know how much damage he will inflict upon his enemies if he uses it.
+
+Given two integers initial_value and hit_count. They are the indicators of Harry's hero's strength and the number of hit indicators which is denoted by a 
+vector named factors with hit_count number of integers. They are the Lostborn sword's hit indicators. The given hit_count numbers are pairwise coprime.
+
+Output:
+
+Return  a single number — the damage that will be inflicted by Harry K.'s hero when he uses his new weapon.
+
+Create a C++ function NewWeaponDamage that will return the calculated damage.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<int> denoting factors
+An integer denoting initial_value
+
+Input Constraints:
+
+The value of initial_value should be between 1 and 10^13 inclusive.
+The value of hit_count should be between 1 and 100 inclusive.
+Each value in factors should be between 1 and 1000 inclusive, and are pairwise coprime.
+
 */
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <stdexcept>
+#include <numeric>
+
+long long HelperFunction(long long multiplier, int index, const std::vector<int>& factors, std::vector<std::vector<long long>>& memo) {
+    if (multiplier == 0 || index < 0) return multiplier;
+    if (multiplier < 50000 && memo[index][multiplier]) return memo[index][multiplier];
+    long long result = HelperFunction(multiplier, index - 1, factors, memo) - HelperFunction(multiplier / factors[index], index - 1, factors, memo);
+    if (multiplier < 50000) memo[index][multiplier] = result;
+    return result;
+}
+
+bool ArePairwiseCoprime(const std::vector<int>& factors) {
+  
+    int factor_count = factors.size();
+    for (int i = 0; i < factor_count; ++i) {
+        for (int j = i + 1; j < factor_count; ++j) {
+            if (std::gcd(factors[i], factors[j]) != 1) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+long long NewWeaponDamage(std::vector<int>& factors, long long initial_value) {
+    if (factors.size() < 1 || factors.size() > 100) throw std::invalid_argument("Number of factors out of valid range");
+    if (initial_value < 1 || initial_value > 1e13) throw std::invalid_argument("Initial value out of valid range");
+
+    for (const int factor : factors) {
+        if (factor < 1 || factor > 1000) throw std::invalid_argument("Factor out of valid range");
+    }
+
+    if (!ArePairwiseCoprime(factors)) {
+        throw std::invalid_argument("Factors are not pairwise coprime");
+    }
+
+    int factor_count = factors.size();
+    std::sort(factors.begin(), factors.end());
+
+    std::vector<std::vector<long long>> memo(factor_count, std::vector<long long>(50000, 0));
+
+    return HelperFunction(initial_value, factor_count - 1, factors, memo);
+}
+
+#include <cassert>
+
+int main() {
+   
+    return 0;
+}
+
