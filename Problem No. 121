@@ -1,3 +1,108 @@
 /*
 Link : https://codeforces.com/problemset/problem/1120/E
+
+A positive integer input_number is given. Harry claims that he knows such a positive integer n that if one multiplies n by input_number, the sum of its digits 
+decreases input_number times. In other words, S(input_number * n) = S(n) / input_number, where S(x) denotes the sum of digits of the number x.
+
+Find out if what Harry told can be true.
+
+Your task is to return a string If there is no such number n, return "−1".
+
+Otherwise print any appropriate positive integer n.
+
+Create a C++ function GenerateString that will return an integer denoting the appropriate positive integer n. If there is no such number n, return "−1". 
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting input_number
+
+Input Constraints:
+
+The value of input_number should be between 2 and 10^3 inclusive.
+
 */
+
+#include <string>
+#include <stdexcept>
+
+
+ long long CalculateGcd(long long u_val, long long v_val) {
+        while (v_val) {
+            u_val %= v_val;
+            std::swap(u_val, v_val);
+        }
+        return u_val;
+    }
+
+     long long SumOfDigits(long long num) {
+        long long result = 0;
+        while (num) {
+            result += num % 10;
+            num /= 10;
+        }
+        return result;
+    }
+
+ std::string GenerateString(long long input_number) {
+      
+        if (input_number < 2 || input_number > 1000) {
+            throw std::invalid_argument("Input must be between 2 and 103 inclusive.");
+        }
+
+        const int zero_padding = 5;
+        const long long max_number = 500000;
+        std::string zero_string(zero_padding, '0');
+        std::string number_string, result_string;
+        long long sum = 0;
+        long long temp = 1;
+        long long numerator, gcd_value;
+
+        long long denominator = SumOfDigits(input_number) * input_number - 1;
+
+        for (long long i = 0; temp; ++i) {
+            if (number_string.empty() || number_string.back() != '9') {
+                if (input_number * (SumOfDigits(input_number - temp) + 1) < sum + 1) {
+                    numerator = sum + 1 - input_number * (SumOfDigits(input_number - temp) + 1);
+                    gcd_value = CalculateGcd(numerator, denominator);
+                    if ((numerator / gcd_value) * (zero_padding + 1) + 
+                        (denominator / gcd_value) * (zero_padding + number_string.size()) <= max_number) {
+                        number_string.back()++;
+                        break;
+                    }
+                }
+            }
+            temp *= 10;
+            long long quotient = temp / input_number;
+            sum += quotient;
+            if (!number_string.empty() || quotient) number_string += std::to_string(quotient);
+            temp %= input_number;
+        }
+
+        if (!temp) {
+            if (input_number > sum) {
+                return "-1";
+            } else if (input_number == sum) {
+                return number_string;
+            }
+            numerator = sum - input_number;
+            gcd_value = CalculateGcd(numerator, denominator);
+        }
+
+        for (long long i = 1; i <= (denominator / gcd_value); ++i) {
+            result_string += number_string + zero_string;
+        }
+        for (long long i = 1; i <= (numerator / gcd_value); ++i) {
+            result_string += "1" + zero_string;
+        }
+
+        return result_string;
+    }
+
+#include <cassert>
+
+int main() {
+   
+    return 0;
+}
