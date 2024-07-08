@@ -8,7 +8,7 @@ g(x, y) satisfying left ≤ x ≤ y ≤ right.
 
 Your task is to return the value of f(left, right) for the given pair of left and right in binary representation without extra leading zeros.
 
-Create a C++ function ProcessBinaryStrings that will return an integer denoting the value of f(left, right).
+Create a C++ function ProcessBinaryStrings that will return an string denoting the value of f(left, right).
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
