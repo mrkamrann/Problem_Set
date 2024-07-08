@@ -16,9 +16,9 @@ the colors of those stones.
 A pair of positions (position of Liss, position of Vasya) is called a state. A state is called reachable if the state is reachable by performing instructions zero 
 or more times from the initial state (1, 1). Calculate the number of distinct reachable states.
 
-Return the number of distinct reachable states in a single line.
+Your task is to return the number of distinct reachable states.
 
-Create a C++ function ColorfulStones that will return an integer denoting the number of distinct reachable states.
+Create a C++ function ColorfulStones that will return a long long denoting the number of distinct reachable states.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
