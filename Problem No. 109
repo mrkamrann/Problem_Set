@@ -31,7 +31,7 @@ Julie, Jimmy, and Flonne can perform actions in any order, taking turns to ensur
 Determine the maximum position number that at least one of the characters can reach. That is, the maximum number x such that one of the characters can reach
 position x.
 
-Create a C++ function DeliverPackages that will return an integer denoting the maximum number x such that one of the characters can reach
+Create a C++ function MaxReachablePosition that will return an integer denoting the maximum number x such that one of the characters can reach
 position x.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
@@ -56,12 +56,17 @@ The three characters must occupy distinct positions.
 #include <stdexcept>
 #include <cassert>
 
-bool IsPositionFree(int position, int positions[]) {
+
+bool IsPositionFree(int position, const std::vector<int>& positions) {
     return (position != positions[0]) && (position != positions[1]) && (position != positions[2]);
 }
 
-void DepthFirstSearch(int positions[], int can_move_mask, int can_throw_mask, int movement_ranges[], int throwing_ranges[], bool visited[48][48][48][8][8], int& max_position) {
-    bool& res = visited[positions[0]][positions[1]][positions[2]][can_move_mask][can_throw_mask];
+
+void DepthFirstSearch(std::vector<int>& positions, int can_move_mask, int can_throw_mask, const std::vector<int>& movement_ranges, const std::vector<int>& throwing_ranges, std::vector<std::vector<std::vector<std::vector<std::vector<bool>>>>>& visited, int& max_position) {
+  
+  
+    bool res = visited[positions[0]][positions[1]][positions[2]][can_move_mask][can_throw_mask];
+  
     if (res) return;
     res = true;
 
@@ -73,7 +78,7 @@ void DepthFirstSearch(int positions[], int can_move_mask, int can_throw_mask, in
     if (farthest > max_position) max_position = farthest;
 
     for (int j = 0; j < 3; j++) {
-        int new_positions[3] = {positions[0], positions[1], positions[2]};
+        std::vector<int> new_positions = positions;
         int character_mask = 1 << j;
 
         if (positions[j] >= 45) {
@@ -110,6 +115,7 @@ void DepthFirstSearch(int positions[], int can_move_mask, int can_throw_mask, in
     }
 }
 
+
 int MaxReachablePosition(std::vector<int>& julie_vec, std::vector<int>& jimmy_vec, std::vector<int>& flonne_vec) {
     if (julie_vec.size() != 3 || jimmy_vec.size() != 3 || flonne_vec.size() != 3) {
         throw std::invalid_argument("Input vectors must each have exactly 3 elements.");
@@ -123,11 +129,11 @@ int MaxReachablePosition(std::vector<int>& julie_vec, std::vector<int>& jimmy_ve
         throw std::invalid_argument("The three characters must occupy distinct positions.");
     }
 
-    int positions[3] = {julie_vec[0], jimmy_vec[0], flonne_vec[0]};
-    int movement_ranges[3] = {julie_vec[1], jimmy_vec[1], flonne_vec[1]};
-    int throwing_ranges[3] = {julie_vec[2], jimmy_vec[2], flonne_vec[2]};
+    std::vector<int>positions = {julie_vec[0], jimmy_vec[0], flonne_vec[0]};
+    std::vector<int>movement_ranges = {julie_vec[1], jimmy_vec[1], flonne_vec[1]};
+    std::vector<int>throwing_ranges = {julie_vec[2], jimmy_vec[2], flonne_vec[2]};
 
-    bool visited[48][48][48][8][8] = {false};
+    std::vector<std::vector<std::vector<std::vector<std::vector<bool>>>>> visited(48, std::vector<std::vector<std::vector<std::vector<bool>>>>(48, std::vector<std::vector<std::vector<bool>>>(48, std::vector<std::vector<bool>>(8, std::vector<bool>(8, false)))));
     int max_position = 0;
     DepthFirstSearch(positions, 7, 7, movement_ranges, throwing_ranges, visited, max_position);
     return max_position;
@@ -420,5 +426,6 @@ try {
     assert(true);
 }
 // TEST_END
+
     return 0;
 }
