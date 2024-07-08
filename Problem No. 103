@@ -10,7 +10,7 @@ are nearly lucky and numbers 4, 4123954997, 4007000040070004007 are not.
 Julie prepared len queries [start_range, end_range] and invented number max_k, common for all of them. Your task is to find how many nearly happy numbers
 there are in each of these segments. Since the answers can be quite large, output them modulo 1000000007 (10^9 + 7).
 
-Create a C++ class LuckyNumberClass that will contain a function DetermineNearlyLuckyNumbers that will return a vector of integers denoting the answers 
+Create a C++ function DetermineNearlyLuckyNumbers that will return a vector of integers denoting the answers 
 for each query.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
@@ -29,172 +29,171 @@ Both start_range and end_range should not contain any leading zeroes
 The value of max_k should be in the range [1, 1000] inclusive.
 
 */
-
-#include <cassert>
+#include <cstdio>
 #include <cstring>
-#include <stdexcept>
-#include <vector>
 #include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
 
-class LuckyNumberClass{
-private:
-    static const int modulus = 1e9 + 7;
-    static const int max_val = 1005;
-    int dp_table[max_val][max_val][2];
-    int max_digit_count;
-    int max_distance;
-    int len;
-    std::vector<int> digits;
-    std::string start_range, end_range;
-
-    int Solve(int position, int start_pos, bool is_below, bool has_valid_segment) {
-        if (position > max_digit_count) return has_valid_segment;
-        if (is_below && ~dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment]) 
-            return dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment];
-        
-        long long sum = 0;
-        for (int i = is_below ? 9 : digits[position]; i >= 0; i--) {
-            if (i == 4 || i == 7) {
-                sum += Solve(position + 1, position, is_below || i < digits[position], has_valid_segment || start_pos && position - start_pos <= max_distance);
-            } else {
-                sum += Solve(position + 1, start_pos, is_below || i < digits[position], has_valid_segment);
-            }
-        }
-        sum %= modulus;
-        if (is_below) dp_table[max_digit_count - position][start_pos ? position - start_pos : 0][has_valid_segment] = sum;
-        return sum;
-    }
-
-    int Initialize(const std::string& str, bool decrement) {
-        max_digit_count = str.length();
-        digits.resize(max_digit_count + 1);
-        for (int i = 1; i <= max_digit_count; i++) {
-            digits[i] = str[i - 1] - '0';
-        }
-        if (decrement) {
-            int i = max_digit_count;
-            while (i > 0 && !digits[i]) {
-                digits[i] = 9;
-                i--;
-            }
-            if (i > 0) {
-                digits[i]--;
-            }
-        }
-        return Solve(1, 0, 0, 0);
-    }
-
-public:
-  
-    bool IsGreater(const std::string& num1, const std::string& num2) {
-    if (num1.length() > num2.length())
+bool IsGreater(const std::string& str_1, const std::string& str_2) {
+    if (str_1.length() > str_2.length())
     {
         return true;
     } 
-      else if (num1.length() < num2.length()) 
+      else if (str_1.length() < str_2.length()) 
     {
         return false;
     }
-    return num1 > num2;
+    return str_1 > str_2;
 }
-    std::vector<int> DetermineNearlyLuckyNumbers(int max_k, const std::vector<std::vector<std::string>>& queries) {
-        if (max_k < 1 || max_k > 1000) throw std::invalid_argument("Invalid max_k");
+
+long long DepthFirstSearch(int total_len, bool do_check, int last, int yes, int max_k, const std::vector<int>& digits, std::vector<std::vector<std::vector<long long>>>& dp_table) {
+  
+    if (total_len == 0) return yes;
+    if (!do_check && ~dp_table[total_len][last][yes]) return dp_table[total_len][last][yes];
+    int upper_bound = do_check ? digits[total_len] : 9;
+    long long answer = 0;
+    for (int i = 0; i <= upper_bound; i++) {
+        if (i == 4 || i == 7)
+            answer = (answer + DepthFirstSearch(total_len - 1, do_check && (i == upper_bound), total_len, yes | (last && (last - total_len <= max_k)), max_k, digits, dp_table)) % 1000000007;
+        else
+            answer = (answer + DepthFirstSearch(total_len - 1, do_check && (i == upper_bound), last, yes, max_k, digits, dp_table)) % 1000000007;
+    }
+    if (!do_check) dp_table[total_len][last][yes] = answer;
+    return answer;
+}
+
+long long HelperFunction(const std::string& str, int max_k, std::vector<std::vector<std::vector<long long>>>& dp_table) {
+  
+    int total = str.size();
+    std::vector<int> arr(total + 1);
+    for (int i = total - 1; i >= 0; i--)
+    {
+        arr[total - i] = str[i] - '0';
+    }
+    return DepthFirstSearch(total, true, 0, 0, max_k, arr, dp_table);
+}
+
+std::vector<long long> DetermineNearlyLuckyNumbers(int max_k, std::vector<std::vector<std::string>>& queries) {
+  
+  
+   if (max_k < 1 || max_k > 1000) throw std::invalid_argument("Invalid max_k");
+  
         if (queries.size() < 1 || queries.size() > 1000) throw std::invalid_argument("Invalid number of test cases");
         
         for (const std::vector<std::string> &query : queries) {
-            if (query[0].length() > 100 || query[1].length() > 100 || query[0].length() < 1 || query[1].length() < 1 || query[0][0] == '0' || query[1][0] == '0'||query[0][0] == '-' || query[1][0] == '-' || IsGreater(query[0],query[1])) {
+          
+            if (query[0].length() > 100 || query[1].length() > 100 || query[0].length() < 1 || query[1].length() < 1 || query[0][0] == '0' || query[1][0] == '0'|| query[0][0] == '-' || query[1][0] == '-' || IsGreater(query[0],query[1])) {
                 throw std::invalid_argument("Invalid range length");
             }
             
           
         }
-        
-        len = queries.size();
-        max_distance = max_k;
-        memset(dp_table, -1, sizeof(dp_table));
-        std::vector<int> result;
+  
+    std::vector<std::vector<std::vector<long long>>> dp_table(1005, std::vector<std::vector<long long>>(1005, std::vector<long long>(2, -1)));
+  std::vector<long long> results;
+  
 
-        for (const std::vector<std::string> & query : queries) {
-            start_range = query[0];
-            end_range = query[1];
-            result.push_back((Initialize(end_range, false) - Initialize(start_range, true) + modulus) % modulus);
+  for(std::vector<std::string> &query : queries)
+  {
+     std::string &str_1 = query[0], &str_2 = query[1];
+     int len_1 = str_1.size(), len_2 = str_2.size();
+    
+     long long tmp_1 = HelperFunction(str_1, max_k, dp_table); 
+
+        bool found = false;
+        int last_index = -1;
+        for (int i = 0; i < str_1.size(); i++) {
+            if (str_1[i] == '4' || str_1[i] == '7') {
+                if (last_index == -1) last_index = i;
+                else if (i - last_index <= max_k) {
+                    found = true;
+                    break;
+                }
+                last_index = i;
+            }
         }
-        return result;
-    }
-};
+
+        long long tmp_2 = HelperFunction(str_2, max_k, dp_table);
+
+        long long answer = (found ? 1 : 0);
+        results.push_back((1000000007 + ((answer + tmp_2 - tmp_1) % 1000000007)) % 1000000007);
+  }
+  return results; 
+}
 
 int main() {
-
-LuckyNumberClass solution;
+  
 //TEST
 std::vector<std::vector<std::string>> queries_1 = {{"1", "10"}, {"100", "200"}, {"500", "1000"}};
 int max_k_1 = 3;
-std::vector<int> expected_1 = {0,4,52}; 
-std::vector<int> result_1 = solution.DetermineNearlyLuckyNumbers(max_k_1, queries_1);
+std::vector<long long> expected_1 = {0,4,52}; 
+std::vector<long long> result_1 = DetermineNearlyLuckyNumbers(max_k_1, queries_1);
 assert(result_1 == expected_1);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_2 = {{"1", "1"}, {"1000", "1000"}};
 int max_k_2 = 2;
-std::vector<int> expected_2 = {0,0};  
-std::vector<int> result_2 = solution.DetermineNearlyLuckyNumbers(max_k_2, queries_2);
+std::vector<long long> expected_2 = {0,0};  
+std::vector<long long> result_2 = DetermineNearlyLuckyNumbers(max_k_2, queries_2);
 assert(result_2 == expected_2);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_3 = {{"1", "1000"}};
 int max_k_3 = 1;
-std::vector<int> expected_3 = {72}; 
-std::vector<int> result_3 = solution.DetermineNearlyLuckyNumbers(max_k_3, queries_3);
+std::vector<long long> expected_3 = {72}; 
+std::vector<long long> result_3 = DetermineNearlyLuckyNumbers(max_k_3, queries_3);
 assert(result_3 == expected_3);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_4 = {{"123", "456"}, {"789", "1000"}};
 int max_k_4 = 2;
-std::vector<int> expected_4 = {31,10};  
-std::vector<int> result_4 = solution.DetermineNearlyLuckyNumbers(max_k_4, queries_4);
+std::vector<long long> expected_4 = {31,10};  
+std::vector<long long> result_4 = DetermineNearlyLuckyNumbers(max_k_4, queries_4);
 assert(result_4 == expected_4);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_5 = {{"999", "1000"}};
 int max_k_5 = 1;
-std::vector<int> expected_5 = {0};  
-std::vector<int> result_5 = solution.DetermineNearlyLuckyNumbers(max_k_5, queries_5);
+std::vector<long long> expected_5 = {0};  
+std::vector<long long> result_5 = DetermineNearlyLuckyNumbers(max_k_5, queries_5);
 assert(result_5 == expected_5);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_6 = {{"1000", "1000"}};
 int max_k_6 = 1;
-std::vector<int> expected_6 = {0};  
-std::vector<int> result_6 = solution.DetermineNearlyLuckyNumbers(max_k_6, queries_6);
+std::vector<long long> expected_6 = {0};  
+std::vector<long long> result_6 = DetermineNearlyLuckyNumbers(max_k_6, queries_6);
 assert(result_6 == expected_6);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_7 = {{"1", "999"}};
 int max_k_7 = 1;
-std::vector<int> expected_7 = {72};  
-std::vector<int> result_7 = solution.DetermineNearlyLuckyNumbers(max_k_7, queries_7);
+std::vector<long long> expected_7 = {72};  
+std::vector<long long> result_7 = DetermineNearlyLuckyNumbers(max_k_7, queries_7);
 assert(result_7 == expected_7);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_8 = {{"1", "100"}, {"101", "200"}, {"201", "300"}};
 int max_k_8 = 3;
-std::vector<int> expected_8 = {4,4,4};  
-std::vector<int> result_8 = solution.DetermineNearlyLuckyNumbers(max_k_8, queries_8);
+std::vector<long long> expected_8 = {4,4,4};  
+std::vector<long long> result_8 = DetermineNearlyLuckyNumbers(max_k_8, queries_8);
 assert(result_8 == expected_8);
 //TEST_END
 
 //TEST
 std::vector<std::vector<std::string>> queries_9 = {{"1", "10"}, {"10", "20"}, {"20", "30"}};
 int max_k_9 = 3;
-std::vector<int> expected_9 = {0,0,0};  
-std::vector<int> result_9 = solution.DetermineNearlyLuckyNumbers(max_k_9, queries_9);
+std::vector<long long> expected_9 = {0,0,0};  
+std::vector<long long> result_9 = DetermineNearlyLuckyNumbers(max_k_9, queries_9);
 assert(result_9 == expected_9);
 //TEST_END
 
@@ -202,7 +201,7 @@ assert(result_9 == expected_9);
 std::vector<std::vector<std::string>> queries_10 = {{"01000", "999"}};  
 int max_k_10 = 1;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_10, queries_10);
+    DetermineNearlyLuckyNumbers(max_k_10, queries_10);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -213,7 +212,7 @@ try {
 std::vector<std::vector<std::string>> queries_11 = {};  
 int max_k_11 = 1;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_11, queries_11);
+    DetermineNearlyLuckyNumbers(max_k_11, queries_11);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -224,7 +223,7 @@ try {
 std::vector<std::vector<std::string>> queries_12 = {{"", "100"}};
 int max_k_12 = 1;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_12, queries_12);
+    DetermineNearlyLuckyNumbers(max_k_12, queries_12);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -235,7 +234,7 @@ try {
 std::vector<std::vector<std::string>> queries_13 = {{"1", "1001"}};  
 int max_k_13 = -9991;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_13, queries_13);
+    DetermineNearlyLuckyNumbers(max_k_13, queries_13);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -246,7 +245,7 @@ try {
 std::vector<std::vector<std::string>> queries_14 = {{"-1001", "-2000"}};  
 int max_k_14 = 1;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_14, queries_14);
+    DetermineNearlyLuckyNumbers(max_k_14, queries_14);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -257,7 +256,7 @@ try {
 std::vector<std::vector<std::string>> queries_15{{"-1001", std::string(200,'1')}};
 int max_k_15 = 2;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_15, queries_15);
+    DetermineNearlyLuckyNumbers(max_k_15, queries_15);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -268,7 +267,7 @@ try {
 std::vector<std::vector<std::string>> queries_16(2000, std::vector<std::string>(2,"100")); 
 int max_k_16 = 1;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_16, queries_16);
+    DetermineNearlyLuckyNumbers(max_k_16, queries_16);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
@@ -279,13 +278,13 @@ try {
 std::vector<std::vector<std::string>> queries_17 = {{"1", "1000"}, {"1000", "999"}}; 
 int max_k_17 = 2;
 try {
-    solution.DetermineNearlyLuckyNumbers(max_k_17, queries_17);
+    DetermineNearlyLuckyNumbers(max_k_17, queries_17);
     assert(false);
 } catch(const std::invalid_argument& e) {
     assert(true);
 }
 //TEST_END
 
-
     return 0;
 }
+
