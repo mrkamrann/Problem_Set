@@ -1,12 +1,45 @@
 /*
 Link: https://codeforces.com/contest/1677/problem/D
 
+
+Alice has a permutation p. She performed the following operation to p exactly operations times: in one operation, for each i from 1 to length−1 in order, 
+if p[i] > p[i+1], swap p[i] and p[i+1]. After exactly operations times of operations, Alice got a new sequence a, which is also a permutation.
+
+After that, Alice wrote down the value sequence values of a on paper. Denote the value sequence values of the permutation a of length length as
+values[i] = ∑[a[j] < a[i]] for j from 1 to i-1, where the value of [a[j] < a[i]] is defined as 1 if a[j] < a[i], otherwise it is 0. In other words, values[i] is 
+equal to the number of elements greater than a[i] that are to the left of position i. Then Alice went out to work.
+
+There are three naughty cats in Alice's house. When she came home, she found the paper with the value sequence values to be bitten out by the cats, leaving several
+holes, so that the value of some positions could not be seen clearly. She forgot what the original permutation p was. She wants to know how many different
+permutations p there are, so that the value sequence values of the new permutation a after exactly operations operations is the same as the values written on the 
+paper (not taking into account the unclear positions).
+
+Since the answer may be too large, print it modulo 998244353.
+
+Return a single integer — the number of different permutations modulo 998244353.
+
+Create a C++ function PermutationsCount that will return a long long denoting the number of different permutations.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting operations
+A vector<int> of integers denoting values
+
+Input Constraints:
+
+The value of length should be between 1 and 10^6 inclusive.
+The value of operations should be between 0 and length−1 inclusive.
+The value of values[i] should be between −1 and i−1 inclusive.
+It is guaranteed that the sum of length over all test cases does not exceed 10^6.
+
 */
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <cassert>
+
 
 long long PermutationsCount(int operations, std::vector<int>& values) {
   
@@ -42,6 +75,8 @@ long long PermutationsCount(int operations, std::vector<int>& values) {
 
     return result;
 }
+
+#include <cassert>
 
 int main() {
     
