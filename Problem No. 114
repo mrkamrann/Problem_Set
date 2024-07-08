@@ -12,7 +12,7 @@ Alex wants to know the xor of the squared answers to all the possible questions.
 
 Your Task is to return the xor of the squared answers to the queries.
 
-Create a C++ function XorOfSquares that will return an integer denoting the xor of the squared answers to the queries.
+Create a C++ function XorOfSquares that will return a long long denoting the xor of the squared answers to the queries.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
