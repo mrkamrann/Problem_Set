@@ -32,7 +32,6 @@ Input Constraints:
 The value of length should be between 1 and 10^6 inclusive.
 The value of operations should be between 0 and length−1 inclusive.
 The value of values[i] should be between −1 and i−1 inclusive.
-It is guaranteed that the sum of length over all test cases does not exceed 10^6.
 
 */
 
