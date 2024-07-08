@@ -39,7 +39,7 @@ The source and target should consist only of the characters 'R', 'G', and 'B'.
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <cassert>
+
 
  long long ColorfulStones(std::string &source, std::string &target) {
          
@@ -85,6 +85,7 @@ The source and target should consist only of the characters 'R', 'G', and 'B'.
     return result;
 }
 
+#include <cassert>
 
 int main() {
   
