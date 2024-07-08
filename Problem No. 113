@@ -14,10 +14,10 @@ s ⊆ {0, 1, ..., num - 1}. Note that s can be empty.
 For all non-empty subsets t ⊆ {0, 1, ..., num - 1}, |s ∩ t| ∈ input_values_f(t).
 Due to the large input and output, both input and output will be given in terms of binary encodings of the sets.
 
+Your task is to return k integers indicating the number of possible s, you should output f(s) for all possible s in increasing order. if there are no possible s 
+then return {-1}.
 
-Your task is to return k integers indicating the number of possible s, you should output f(s) for all possible s in increasing order.
-
-Create a C++ function ProcessBitwise that will return a vector<int> denoting f(s) for all possible s in increasing order.
+Create a C++ function ProcessBitwise that will return a vector<int> denoting f(s) for all possible s in increasing order, or return a {-1} if there are no possible s
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
