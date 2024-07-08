@@ -1,12 +1,36 @@
 /*
 Link: https://codeforces.com/contest/1493/problem/E
 
+Alex, a meticulous mathematician and avid problem solver, has been given two integers. He loves working with integers and enjoys  finding the most efficient 
+solutions to complex problems. In this particular scenario, Alex is given two integers left and right in binary representation. Let g(x, y) be equal to the 
+bitwise XOR of all integers from x to y inclusive  (that is x ⊕ (x + 1) ⊕ ⋯ ⊕ (y - 1) ⊕ y). Let's define f(left, right) as the maximum of all values of 
+g(x, y) satisfying left ≤ x ≤ y ≤ right.
+
+Your task is to return the value of f(left, right) for the given pair of left and right in binary representation without extra leading zeros.
+
+Create a C++ function ProcessBinaryStrings that will return an integer denoting the value of f(left, right).
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string denoting left
+A string denoting right
+
+Input Constraints:
+
+The value of length should be between 1 and 10^6 inclusive.
+The left and right should be valid binary strings of length length.
+It is guaranteed that left ≤ right.
+Both the strings left and right contains only '0' and '1'
+The binary representation of right does not contain any extra leading zeros (if right = 0, the binary representation of it consists of a single zero)
+
 */
 
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include <cassert>
+
 
 
      std::string AddBinary(const std::string& binary_str) {
@@ -70,6 +94,8 @@ Link: https://codeforces.com/contest/1493/problem/E
         return AddBinary(right);
     }
 
+
+#include <cassert>
 
 int main() {
     
