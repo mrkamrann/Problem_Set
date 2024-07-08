@@ -1,5 +1,35 @@
 /*
 Link : https://codeforces.com/contest/360/problem/C
+
+Hemant loves strings of length string_length, consisting of lowercase English letters, very much. He has one such string input_string.
+For each string t of length string_length, Hemant defines its beauty relative to input_string as the number of pairs of indexes i, j (1 ≤ i ≤ j ≤ string_length),
+such that substring t[i..j] is lexicographically larger than substring input_string[i..j].
+
+Hemant wondered how many strings t are there, such that their beauty relative to input_string equals exactly max_operations. Help him find the remainder 
+after dividing this number by 1000000007 (10^9 + 7).
+
+A substring input_string[i..j] of string input_string = input_string_1 input_string_2 ... input_string_string_length is string input_string_i input_string_{i+1} ... input_string_j.
+
+String x = x_1 x_2 ... x_p is lexicographically larger than string y = y_1 y_2 ... y_p, if there is such number r (r < p), that x_1 = y_1, x_2 = y_2, ... , x_r = y_r and x_{r+1} > y_{r+1}. 
+The string characters are compared by their ASCII codes.
+
+Return a single number — the number of strings t, such that their beauty relative to input_string equals exactly max_operations modulo 1000000007 (10^9 + 7).
+
+Create a C++ function BeautyEqualsKs that will return an integer denoting the answer to the problem modulo 1000000007.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting max_operations
+A string denoting input_string
+
+Input Constraints:
+
+The value of string_length should be between 1 and 2000 inclusive.
+The value of max_operations should be between 0 and 2000 inclusive.
+The input_string should be a non-empty string consisting only of lowercase English letters.
+
 */
 
 #include <iostream>
