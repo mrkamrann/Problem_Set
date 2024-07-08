@@ -21,12 +21,12 @@ Create a C++ function ProcessBitwise that will return a vector<int> denoting f(s
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
-INPUT TYPE:
+Input Type:
 
 An integer denoting num
 A vector<int> denoting input_values
 
-INPUT CONSTRAINTS:
+Input Constraints:
 
 The value of num should be at least 1 and at most 20 inclusive.
 The length of input_values is equal to 2^num - 1
