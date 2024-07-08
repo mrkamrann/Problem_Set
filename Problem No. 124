@@ -28,7 +28,8 @@ Input Constraints:
 The length of len should be at least 1 and at most 100,000 inclusive.
 The value of source_1 should be in the range [0, 1,000,000,000] inclusive.
 The value of source_2 should be in the range [0, 1,000,000,000] inclusive.
-The values for customers should be in the range [0, 1,000,000,000] inclusive. There will be no two equal numbers among source_1, source_2, customers[0], ..., customers[len-1].
+The values for customers should be in the range [0, 1,000,000,000] inclusive. There will be no two equal numbers among source_1, source_2, 
+customers[0], ..., customers[len-1].
 
 */
 
