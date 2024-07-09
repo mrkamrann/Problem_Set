@@ -1,5 +1,40 @@
 /*
 Link : https://codeforces.com/problemset/problem/370/E
+
+Jack received an impressive list of summer reading books at school. Unlike other modern schoolchildren, Jack loves reading, so he read some book each day of 
+the summer.
+
+As Jack was reading books, he was making notes in the Reader's Diary. Each day he wrote the order number of the book he was reading. The books in the list are 
+numbered starting from 1 and Jack was reading them in the order they go in the list. Jack never reads a new book until he finishes reading the previous one. 
+Unfortunately, Jack wasn't accurate and some days he forgot to note the number of the book and the notes for those days remained empty.
+
+As Jack knows that the literature teacher will want to check the Reader's Diary, so he needs to restore the lost records. Jack is sure that he spends at least 
+two and at most five days for each book. Jack finished reading all the books he had started. Assume that the reading list contained many books. So many, in fact, 
+that it is impossible to read all of them in a summer. Help Jack find a way to restore the lost records If it is possible  to restore the diary records,
+Jack prefers the one that shows the maximum number of read books.
+
+You are given an integer num_days — the number of summer days. and a vector records containing num_days integers records1, records2, ... records_num_days — the records 
+in the diary in the order they were written.
+If Jack forgot to write the number of the book on the i-th day, then records_i equals 0.
+
+
+If it is impossible to correctly fill the blanks in the diary (the diary may contain mistakes initially), return -1.
+
+Otherwise, return  the maximum number of books Jack could have read in the summer if we stick to the diary. 
+
+Create a C++ Function RestoreDiary that will return a vector of integers representing the correctly inserted records.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type: 
+
+A vector<int> denoting records
+
+Input Constraints: 
+
+The value of num_days should be at least 2 and at most 2·10^5 inclusive.
+Each value of records[i] should be in the range [0, 10^5] inclusive.
+
 */
 
 
@@ -7,7 +42,10 @@ Link : https://codeforces.com/problemset/problem/370/E
 #include <stdexcept>
 #include <cassert>
 
-int CalculateSequence(int num_days, const std::vector<int>& records) {
+int RestoreDiary(const std::vector<int>& records) {
+
+    int num_days = records.size();
+
     if (num_days < 2 || num_days > 200000) {
         throw std::invalid_argument("Number of days is out of valid range");
     }
