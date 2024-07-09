@@ -1,3 +1,86 @@
 /*
 Link: https://codeforces.com/problemset/problem/1516/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+
+long long QuickPower(long long base, long long exponent) {
+  
+    long long modulus = 1000000007;
+    long long result = 1;
+    while (exponent) {
+        if (exponent & 1) {
+            result = result * base % modulus;
+        }
+        exponent >>= 1;
+        base = base * base % modulus;
+    }
+    return result;
+}
+
+long long Combination(long long num, long long selection) {
+    long long modulus = 1000000007;
+    long long result = 1;
+    for (long long index = 1; index <= selection; index++) {
+        result = result * (num - index + 1) % modulus * QuickPower(index, modulus - 2) % modulus;
+    }
+    return result;
+}
+
+std::vector<std::vector<long long>> HelperFunction(int limit) {
+    long long modulus = 1000000007;
+    std::vector<std::vector<long long>> vec_a(limit + 1, std::vector<long long>(limit + 1, 0));
+    vec_a[0][0] = 1;
+    for (int index_i = 1; index_i <= limit; index_i++) {
+        vec_a[index_i][0] = 1;
+        for (int index_j = 1; index_j <= index_i; index_j++) {
+            vec_a[index_i][index_j] = ((2 * index_i - index_j - 1) * vec_a[index_i - 1][index_j - 1] + (index_j + 1) * vec_a[index_i - 1][index_j]) % modulus;
+        }
+    }
+    return vec_a;
+}
+
+std::vector<long long> CalculateResult(int num, int limit, const std::vector<std::vector<long long>>& vec_a) {
+    long long modulus = 1000000007;
+    std::vector<long long> result(limit + 1, 0);
+    result[0] = 1;
+    for (int index_i = 1; index_i <= limit; index_i++) {
+        for (int index_j = 0; index_j <= index_i; index_j++) {
+            result[index_i] = (result[index_i] + vec_a[index_i][index_j] * Combination(num + index_j, 2 * index_i)) % modulus;
+        }
+    }
+    for (int index_i = 2; index_i <= limit; index_i++) {
+        result[index_i] = (result[index_i] + result[index_i - 2]) % modulus;
+    }
+    return result;
+}
+
+std::vector<long long> CalculateFunction(int num, int limit) {
+    if (num < 2 || num > 1000000000 || limit < 1 || limit > 200) {
+        throw std::invalid_argument("Input values are out of valid range");
+    }
+
+    long long modulus = 1000000007;
+    std::vector<std::vector<long long>> vec_a = HelperFunction(limit);
+    std::vector<long long> result = CalculateResult(num, limit, vec_a);
+    std::vector<long long> final_result;
+    for (int index_i = 1; index_i <= limit; index_i++) {
+        final_result.push_back(result[index_i]);
+    }
+    return final_result;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+
+int main() {
+ 
+
+    return 0;
+}
+
