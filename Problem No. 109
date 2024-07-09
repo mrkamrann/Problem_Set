@@ -199,7 +199,6 @@ void DepthFirstSearch(int index, const std::vector<int>& permutation, std::vecto
 }
 
 int MaxReachablePosition(std::vector<int>& julie_vec, std::vector<int>& jimmy_vec, std::vector<int>& flonne_vec) {
-    
   
       if (julie_vec.size() != 3 || jimmy_vec.size() != 3 || flonne_vec.size() != 3) {
         throw std::invalid_argument("Input vectors must each have exactly 3 elements.");
@@ -260,36 +259,36 @@ int main() {
    
    // TEST
 std::vector<int> julie_vec_1 = {1, 2, 3};
-std::vector<int> jimmy_vec_1 = {4, 5, 6};
-std::vector<int> flonne_vec_1 = {7, 8, 9};
-int expected_1 = 23;
+std::vector<int> jimmy_vec_1 = {4, 1, 2};
+std::vector<int> flonne_vec_1 = {7, 2, 1};
+int expected_1 = 13;
 int result_1 = MaxReachablePosition(julie_vec_1, jimmy_vec_1, flonne_vec_1);
 assert(result_1 == expected_1);
 // TEST_END
 
 // TEST
 std::vector<int> julie_vec_2 = {3, 3, 3};
-std::vector<int> jimmy_vec_2 = {6, 6, 6};
-std::vector<int> flonne_vec_2 = {9, 9, 9};
-int expected_2 = 26;
+std::vector<int> jimmy_vec_2 = {6, 2, 2};
+std::vector<int> flonne_vec_2 = {4, 1, 1};
+int expected_2 = 12;
 int result_2 = MaxReachablePosition(julie_vec_2, jimmy_vec_2, flonne_vec_2);
 assert(result_2 == expected_2);
 // TEST_END
 
 // TEST
-std::vector<int> julie_vec_3 = {1, 4, 7};
-std::vector<int> jimmy_vec_3 = {2, 5, 8};
-std::vector<int> flonne_vec_3 = {3, 6, 9};
-int expected_3 = 26;
+std::vector<int> julie_vec_3 = {1, 4, 3};
+std::vector<int> jimmy_vec_3 = {2, 2, 1};
+std::vector<int> flonne_vec_3 = {3, 1, 2};
+int expected_3 = 11;
 int result_3 = MaxReachablePosition(julie_vec_3, jimmy_vec_3, flonne_vec_3);
 assert(result_3 == expected_3);
 // TEST_END
 
 // TEST
-std::vector<int> julie_vec_4 = {10, 9, 8};
-std::vector<int> jimmy_vec_4 = {7, 6, 5};
-std::vector<int> flonne_vec_4 = {4, 3, 2};
-int expected_4 = 25;
+std::vector<int> julie_vec_4 = {10, 1, 1};
+std::vector<int> jimmy_vec_4 = {2, 2, 1};
+std::vector<int> flonne_vec_4 = {1, 3, 2};
+int expected_4 = 11;
 int result_4 = MaxReachablePosition(julie_vec_4, jimmy_vec_4, flonne_vec_4);
 assert(result_4 == expected_4);
 // TEST_END
@@ -297,17 +296,17 @@ assert(result_4 == expected_4);
 // TEST
 std::vector<int> julie_vec_5 = {5, 5, 5};
 std::vector<int> jimmy_vec_5 = {6, 6, 6};
-std::vector<int> flonne_vec_5 = {7, 7, 7};
-int expected_5 = 27;
+std::vector<int> flonne_vec_5 = {2, 2, 2};
+int expected_5 = 20;
 int result_5 = MaxReachablePosition(julie_vec_5, jimmy_vec_5, flonne_vec_5);
 assert(result_5 == expected_5);
 // TEST_END
 
 // TEST
-std::vector<int> julie_vec_6 = {1, 10, 3};
-std::vector<int> jimmy_vec_6 = {4, 9, 6};
-std::vector<int> flonne_vec_6 = {7, 8, 2};
-int expected_6 = 26;
+std::vector<int> julie_vec_6 = {1, 8, 3};
+std::vector<int> jimmy_vec_6 = {4, 4, 4};
+std::vector<int> flonne_vec_6 = {7, 1, 2};
+int expected_6 = 17;
 int result_6 = MaxReachablePosition(julie_vec_6, jimmy_vec_6, flonne_vec_6);
 assert(result_6 == expected_6);
 // TEST_END
@@ -315,26 +314,26 @@ assert(result_6 == expected_6);
 // TEST
 std::vector<int> julie_vec_7 = {2, 3, 4};
 std::vector<int> jimmy_vec_7 = {5, 6, 7};
-std::vector<int> flonne_vec_7 = {8, 9, 10};
-int expected_7 = 27;
+std::vector<int> flonne_vec_7 = {8, 1, 1};
+int expected_7 = 18;
 int result_7 = MaxReachablePosition(julie_vec_7, jimmy_vec_7, flonne_vec_7);
 assert(result_7 == expected_7);
 // TEST_END
 
 // TEST
-std::vector<int> julie_vec_8 = {9, 8, 7};
-std::vector<int> jimmy_vec_8 = {6, 5, 4};
+std::vector<int> julie_vec_8 = {1, 6, 6};
+std::vector<int> jimmy_vec_8 = {2, 5, 4};
 std::vector<int> flonne_vec_8 = {3, 2, 1};
-int expected_8 = 22;
+int expected_8 = 17;
 int result_8 = MaxReachablePosition(julie_vec_8, jimmy_vec_8, flonne_vec_8);
 assert(result_8 == expected_8);
 // TEST_END
 
 // TEST
-std::vector<int> julie_vec_9 = {3, 6, 9};
-std::vector<int> jimmy_vec_9 = {2, 5, 8};
-std::vector<int> flonne_vec_9 = {1, 4, 7};
-int expected_9 = 26;
+std::vector<int> julie_vec_9 = {3, 1, 1};
+std::vector<int> jimmy_vec_9 = {2, 1, 1};
+std::vector<int> flonne_vec_9 = {1, 2, 2};
+int expected_9 = 8;
 int result_9 = MaxReachablePosition(julie_vec_9, jimmy_vec_9, flonne_vec_9);
 assert(result_9 == expected_9);
 // TEST_END
@@ -542,7 +541,6 @@ try {
 } catch(const std::invalid_argument& e) {
     assert(true);
 }
-
 // TEST_END
   
     return 0;
