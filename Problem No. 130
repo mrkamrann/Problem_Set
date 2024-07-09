@@ -1,3 +1,96 @@
 /*
 Link: https://codeforces.com/problemset/problem/1485/E
 */
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
+#include <cassert>
+
+
+void DepthFirstSearch(int node, int depth, const std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& levels) {
+    for (int val : edges[node]) {
+        levels[depth].push_back(val);
+        DepthFirstSearch(val, depth + 1, edges, levels);
+    }
+}
+
+long long Solve(const std::vector<int>& parent, const std::vector<int>& values) {
+  
+    int num_vertices = parent.size() + 1;
+  
+    if (num_vertices < 2 || num_vertices > 200000) {
+        throw std::invalid_argument("num_vertices must be in the range [2, 200000]");
+    }
+    
+    if (parent.size() != values.size()) {
+        throw std::invalid_argument("size of both vectors should be equal");
+    }
+  
+    
+    
+    for (int parent_value : parent) {
+        if (parent_value < 1 || parent_value > num_vertices) {
+            throw std::invalid_argument("parent values must be in the range [1, num_vertices]");
+        }
+    }
+    int infinity = 1000000007;
+    for (int value : values) {
+        if (value < 1 || value > 1000000000) {
+            throw std::invalid_argument("values must be in the range [1, 1000000000]");
+        }
+    }
+
+    std::vector<std::vector<int>> edges(num_vertices + 1);
+    std::vector<std::vector<int>> levels(num_vertices + 1);
+    std::vector<long long> dp_table(num_vertices + 1, 0);
+    long long answer = 0;
+
+    for (int i = 0; i < num_vertices - 1; ++i) {
+        edges[parent[i]].push_back(i + 2);
+    }
+
+    DepthFirstSearch(1, 1, edges, levels);
+
+    for (int i = 1; !levels[i].empty(); ++i) {
+        int max_value = 0, min_value = infinity;
+        long long pos = 0, neg = -1 * infinity;
+
+        for (int node : levels[i]) {
+            max_value = std::max(max_value, values[node - 2]);
+            min_value = std::min(min_value, values[node - 2]);
+            pos = std::max(pos, dp_table[parent[node - 2]] + values[node - 2]);
+            neg = std::max(neg, dp_table[parent[node - 2]] - values[node - 2]);
+        }
+
+        for (int node : levels[i]) {
+            answer = std::max(answer, dp_table[node] = std::max({
+                std::max(values[node - 2] - min_value, max_value - values[node - 2]) + dp_table[parent[node - 2]],
+                pos - values[node - 2],
+                neg + values[node - 2]
+            }));
+        }
+
+        levels[i].clear();
+    }
+
+    return answer;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    
+
+    return 0;
+}
+
