@@ -1,5 +1,32 @@
 /*
 Link : https://codeforces.com/problemset/problem/729/F
+
+At evening, James and Zara the financiers became boring, so they decided to play a game. They prepared num_papers papers with the income of some company for some time periods. Note that the income can be positive, zero, or negative.
+
+James and Zara placed the papers in a row and decided to take turns making moves. James will take the papers from the left side, Zara will take the papers from the right side. James goes first and takes 1 or 2 (his choice) papers from the left. Then, on each turn, a player can take k or k+1 papers from his side if the opponent took exactly k papers in the previous turn. Players can't skip moves. The game ends when there are no papers left, or when some of the players can't make a move.
+
+Your task is to determine the difference between the sum of incomes on the papers James took and the sum of incomes on the papers Zara took, assuming both players play optimally. James wants to maximize the difference, Zara wants to minimize it.
+
+
+Given a vector containing num_papers integers papers1, papers2, ..., papers_num_papers , where papers_i is the income on the i-th paper from the left.
+
+Return the difference between the sum of incomes on the papers James took and the sum of incomes on the papers Zara took, assuming both players play optimally. 
+James wants to maximize the difference, Zara wants to minimize it.
+
+Create a C++ Function CalculateDifference that will return a long long denoting the difference between the sums of incomes taken by James and Zara.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type: 
+
+A vector<int> denoting papers
+
+Input Constraints: 
+
+The value of num_papers should be at least 1 and at most 4000 inclusive.
+Each value of papers[i] should be in the range [-10^5, 10^5] inclusive.
+
+
 */
 
 #include <iostream>
@@ -8,7 +35,10 @@ Link : https://codeforces.com/problemset/problem/729/F
 #include <cstdio>
 #include <functional>
 
-long long Solve(int num_papers, const std::vector<int>& papers) {
+long long CalculateDifference(const std::vector<int>& papers) {
+
+    int num_papers = papers.size();
+
     if (num_papers < 1 || num_papers > 4000) {
         throw std::invalid_argument("Number of papers is out of valid range (1 ≤ n ≤ 4000)");
     }
