@@ -1,3 +1,92 @@
 /*
 Link : https://codeforces.com/problemset/problem/370/E
 */
+
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int CalculateSequence(int num_days, const std::vector<int>& records) {
+    if (num_days < 2 || num_days > 200000) {
+        throw std::invalid_argument("Number of days is out of valid range");
+    }
+    for (int record : records) {
+        if (record < 0 || record > 100000) {
+            throw std::invalid_argument("Record is out of valid range");
+        }
+    }
+
+    std::vector<int> answer(num_days, 0);
+    std::vector<int> visited(num_days, 0);
+    std::vector<std::pair<int, int>> upper(num_days, {0, 0}), lower(num_days, {0, 0});
+
+    if (records[0] > 1) {
+        return -1;
+    }
+
+    upper[0] = {1, 1};
+    lower[0] = {1, 1};
+
+    for (int i = 1; i < num_days; i++) {
+        upper[i] = upper[i - 1];
+        lower[i] = lower[i - 1];
+
+        if (++upper[i].second > 2) {
+            upper[i].first++;
+            upper[i].second = 1;
+        }
+        if (++lower[i].second > 5) {
+            lower[i].first++;
+            lower[i].second = 1;
+        }
+
+        if (records[i]) {
+            if (upper[i].first < records[i] || lower[i].first > records[i]) {
+                return -1;
+            }
+            if (lower[i].first < records[i]) {
+                lower[i].first = records[i];
+                lower[i].second = 1;
+            }
+            if (upper[i].first > records[i]) {
+                upper[i].first = records[i];
+                upper[i].second = 2;
+            }
+        }
+    }
+
+    answer[num_days - 1] = upper[num_days - 1].first;
+    if (upper[num_days - 1].second == 1) {
+        answer[num_days - 1]--;
+    }
+    visited[answer[num_days - 1]]++;
+
+    for (int i = num_days - 2; i >= 0; i--) {
+        answer[i] = std::min(answer[i + 1], upper[i].first);
+        if (visited[answer[i]] == 5) {
+            answer[i]--;
+        }
+        visited[answer[i]]++;
+    }
+
+    for (int i = 0; i < num_days; i++) {
+        if (lower[i].first > answer[i]) {
+            return -1;
+        }
+    }
+    if (answer[0] == -1) {
+        return -1;
+    }
+    return answer.back();
+}
+
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    
+
+    return 0;
+}
