@@ -1,3 +1,67 @@
 /*
 Link : https://codeforces.com/problemset/problem/729/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+#include <functional>
+
+long long Solve(int num_papers, const std::vector<int>& papers) {
+    if (num_papers < 1 || num_papers > 4000) {
+        throw std::invalid_argument("Number of papers is out of valid range (1 ≤ n ≤ 4000)");
+    }
+    for (int paper : papers) {
+        if (paper < -100000 || paper > 100000) {
+            throw std::invalid_argument("Paper value is out of valid range (-100000 ≤ ai ≤ 100000)");
+        }
+    }
+
+    std::vector<long long> prefix_sum(num_papers + 1, 0);
+    for (int index = 1; index <= num_papers; ++index) {
+        prefix_sum[index] = prefix_sum[index - 1] + papers[index - 1];
+    }
+
+    std::vector<std::vector<std::vector<long long>>> memo(90, std::vector<std::vector<long long>>(4001, std::vector<long long>(90, 0)));
+    std::vector<std::vector<std::vector<bool>>> visited(90, std::vector<std::vector<bool>>(4001, std::vector<bool>(90, false)));
+
+    std::function<long long(int, int, int, int)> DepthFirstSearch = [&](int index_i, int left, int depth, int turn) {
+        int right = num_papers - (left + depth) + 1;
+        if (right - left - 1 < index_i) {
+            return 0LL;
+        }
+        if (turn) {
+            if (visited[index_i][left][depth]) {
+                return memo[index_i][left][depth];
+            }
+            long long result = DepthFirstSearch(index_i, left + index_i, depth - index_i, turn ^ 1) + prefix_sum[left + index_i] - prefix_sum[left];
+            if (right - left - 1 >= index_i + 1) {
+                result = std::max(result, DepthFirstSearch(index_i + 1, left + index_i + 1, depth - index_i - 1, turn ^ 1) + prefix_sum[left + index_i + 1] - prefix_sum[left]);
+            }
+            visited[index_i][left][depth] = true;
+            memo[index_i][left][depth] = result;
+            return result;
+        } else {
+            long long result = DepthFirstSearch(index_i, left, depth + index_i, turn ^ 1) - prefix_sum[right - 1] + prefix_sum[right - index_i - 1];
+            if (right - left - 1 >= index_i + 1) {
+                result = std::min(result, DepthFirstSearch(index_i + 1, left, depth + index_i + 1, turn ^ 1) - prefix_sum[right - 1] + prefix_sum[right - index_i - 2]);
+            }
+            return result;
+        }
+    };
+
+    return DepthFirstSearch(1, 0, 0, 1);
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+#include <functional>
+
+int main() {
+  
+
+    return 0;
+}
