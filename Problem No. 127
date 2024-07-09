@@ -1,5 +1,29 @@
 /*
 Link: https://codeforces.com/problemset/problem/1516/E
+
+This time around, Baby Chris will play with permutations. He has num cubes arranged in a row, with numbers from 1 to num written on them. 
+He'll make exactly limit operations. In each operation, he'll pick up 2 cubes and switch their positions.
+
+He's wondering: how many different sequences of cubes can he have at the end? Since Chris doesn't know how many operations he'll make, he wants the answer 
+for every possible number of operations between 1 and limit.
+
+Return a vector<long long> with limit integers. The i-th of them is the number of possible sequences Chris can end up with if he does exactly i operations. 
+Since this number can be very large, return the remainder when it's divided by 10^9 + 7.
+
+Create a C++ Function CountPermutations that will return a vector<long long> representing the number of possible sequences for each number of operations.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type :
+
+An integer denoting num
+An integer denoting limit
+
+Input Constraints: 
+
+The value of num should be at least 2 and at most 10^9 inclusive.
+The value of limit should be at least 1 and at most 200 inclusive.
+
 */
 
 #include <iostream>
@@ -58,7 +82,7 @@ std::vector<long long> CalculateResult(int num, int limit, const std::vector<std
     return result;
 }
 
-std::vector<long long> CalculateFunction(int num, int limit) {
+std::vector<long long> CountPermutations(int num, int limit) {
     if (num < 2 || num > 1000000000 || limit < 1 || limit > 200) {
         throw std::invalid_argument("Input values are out of valid range");
     }
