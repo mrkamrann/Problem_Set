@@ -1,5 +1,34 @@
 /*
 Link: https://codeforces.com/problemset/problem/331/C3
+
+Yet another Armageddon is coming! This time the culprit is the Mohan tribe calendar.
+
+The beavers in this tribe knew math very well. Smart Beaver, an archaeologist, got a sacred plate with a magic integer on it. The translation from Old Beaverish 
+is as follows:
+
+"May the Great Beaver bless you! May your chakras open and may your third eye never turn blind from beholding the Truth! Take the magic number,  subtract a digit 
+from it (the digit must occur in the number) and get a new magic number. Repeat this operation until a magic number equals zero. The Earth will stand on 
+Three Beavers for the time, equal to the number of subtractions you perform!"
+
+Distinct subtraction sequences can obviously get you different number of operations. But the Smart Beaver is ready to face the worst and is asking you to 
+count the minimum number of operations he needs to reduce the magic number to zero.
+
+
+Return a single integer — the minimum number of subtractions that turns the magic number to a zero.
+
+Create a C++ Function ReduceMagicNumber that will return a long long denoting the minimum number of subtractions required.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
+Input Type:
+
+An integer denoting number
+
+Input Constraints: 
+
+The value of number should be at least 0 and at most 10^18 inclusive.
+
 */
 
 #include <iostream>
@@ -39,7 +68,7 @@ std::pair<long long, int> DepthFirstSearch(long long number, int previous_max, s
     return result;
 }
 
-long long CalculateSteps(long long number) {
+long long ReduceMagicNumber(long long number) {
 
     if (number < 0 || number > 1000000000000000000) {
         throw std::invalid_argument("Number is out of valid range");
