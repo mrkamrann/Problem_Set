@@ -1,3 +1,76 @@
 /*
 Link: https://codeforces.com/problemset/problem/331/C3
 */
+
+#include <iostream>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+#include <utility>
+#include <vector>
+
+std::pair<long long, int> DepthFirstSearch(long long number, int previous_max, std::vector<std::vector<std::vector<std::vector<std::pair<long long, int>>>>>& memo) {
+    if (number == 0) {
+        return std::make_pair(0ll, 0);
+    }
+    if (number < 10) {
+        return std::make_pair(1ll, std::max(0, previous_max - static_cast<int>(number)));
+    }
+
+    int length = 0;
+    long long multiplier = 1;
+    while (multiplier <= number / 10) {
+        multiplier *= 10;
+        length++;
+    }
+
+    std::pair<long long, int> result = DepthFirstSearch(number % multiplier, std::max(previous_max, static_cast<int>(number / multiplier)), memo);
+    if (result.second == 0) {
+        result.first++;
+        result.second = std::max(previous_max, static_cast<int>(number / multiplier));
+    }
+    std::pair<long long, int> &current_memo = memo[length][number / multiplier][previous_max][result.second];
+    if (!current_memo.first) {
+        current_memo = DepthFirstSearch(number / multiplier * multiplier - result.second, previous_max, memo);
+    }
+
+    result.first += current_memo.first;
+    result.second = current_memo.second;
+    return result;
+}
+
+long long CalculateSteps(long long number) {
+
+    if (number < 0 || number > 1000000000000000000) {
+        throw std::invalid_argument("Number is out of valid range");
+    }
+
+    std::vector<std::vector<std::vector<std::vector<std::pair<long long, int>>>>> memo(
+        19, 
+        std::vector<std::vector<std::vector<std::pair<long long, int>>>>(
+            10, 
+            std::vector<std::vector<std::pair<long long, int>>>(
+                10, 
+                std::vector<std::pair<long long, int>>(
+                    10, 
+                    std::make_pair(0ll, 0)
+                )
+            )
+        )
+    );
+
+    return DepthFirstSearch(number, 0, memo).first;
+}
+
+#include <iostream>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+#include <utility>
+#include <vector>
+
+int main() {
+  
+
+    return 0;
+}
