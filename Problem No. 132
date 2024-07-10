@@ -1,3 +1,71 @@
 /*
 Link : https://codeforces.com/problemset/problem/1366/G
 */
+
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+
+
+int ComputeMinimumCost(const std::string &source, const std::string &target) {
+    if (source.empty() || target.empty() || target.length() > source.length() || target.length() < 1 || source.length() > 10000) {
+        throw std::invalid_argument("Invalid input constraints");
+    }
+
+    for (char character : source) {
+        if (!(character >= 'a' && character <= 'z') && character != '.') {
+            throw std::invalid_argument("Source string must only contain lowercase Latin letters and dots");
+        }
+    }
+
+    for (char character : target) {
+        if (!(character >= 'a' && character <= 'z')) {
+            throw std::invalid_argument("Target string must only contain lowercase Latin letters");
+        }
+    }
+
+    int source_length = source.length();
+    int target_length = target.length();
+
+    std::vector<std::vector<int>> cost_matrix(source_length + 1, std::vector<int>(target_length + 1, 10000));
+    std::vector<int> index_stack(source_length + 1, 0);
+    int stack_head = 0;
+
+    cost_matrix[0][0] = 0;
+
+    for (int i = 1; i <= source_length; i++) {
+        for (int j = 0; j <= target_length; j++) {
+            cost_matrix[i][j] = cost_matrix[i - 1][j] + 1;
+        }
+
+        if (source[i - 1] != '.') {
+            for (int j = 1; j <= target_length; j++) {
+                if (target[j - 1] == source[i - 1]) {
+                    cost_matrix[i][j] = std::min(cost_matrix[i][j], cost_matrix[i - 1][j - 1]);
+                }
+            }
+            index_stack[++stack_head] = i;
+        } else if (stack_head) {
+            int pos = index_stack[stack_head] - 1;
+            stack_head--;
+            for (int j = 0; j <= target_length; j++) {
+                cost_matrix[i][j] = std::min(cost_matrix[i][j], cost_matrix[pos][j]);
+            }
+        }
+    }
+
+    return cost_matrix[source_length][target_length];
+}
+
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+
+    return 0;
+}
