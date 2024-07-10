@@ -29,7 +29,7 @@ Note that any time you multiply a rotatable number by numbers from 1 to its leng
 
 Return a single integer — the largest b you found. If no such b exists, return -1 instead.
 
-Create a C++ function DeliverPackages that will return the largest b, if not possible return -1;
+Create a C++ function RotatableNumber that will return an integer denoting the largest b, if not possible return -1;
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
@@ -47,6 +47,7 @@ The value of start_value should be between 2 and 10^9 inclusive.
 
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 bool IsPrime(int num) {
         if (num <= 1) {
@@ -92,10 +93,148 @@ bool IsPrime(int num) {
         return -1;
     }
 
+#include <iostream>
+#include <stdexcept>
 #include <cassert>
 
 int main() {
    
+//TEST
+int num_1 = 6;
+int start_value_1 = 11;
+int expected_1 = 10; 
+int result_1 = RotatableNumber(num_1, start_value_1);
+assert(result_1 == expected_1);
+//TEST_END
 
+//TEST
+int num_2 = 100;
+int start_value_2 = 3257;
+int expected_2 = 3250; 
+int result_2 = RotatableNumber(num_2, start_value_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int num_3 = 5000000;
+int start_value_3 = 2000000;
+int expected_3 = -1; 
+int result_3 = RotatableNumber(num_3, start_value_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_4 = 96;
+int start_value_4 = 9561;
+int expected_4 = 9547; 
+int result_4 = RotatableNumber(num_4, start_value_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_5 = 100;
+int start_value_5 = 3661;
+int expected_5 = 3654;
+int result_5 = RotatableNumber(num_5, start_value_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_6 = 1000000;
+int start_value_6 = 5000000;
+int expected_6 = -1; 
+int result_6 = RotatableNumber(num_6, start_value_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_7 = 4935742;   
+int start_value_7 = 3393126;
+int expected_7 = 3393099; 
+int result_7 = RotatableNumber(num_7, start_value_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_8 = 2000000;
+int start_value_8 = 7000000;
+int expected_8 = -1; 
+int result_8 = RotatableNumber(num_8, start_value_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_9 = 3500000;
+int start_value_9 = 8000000;
+int expected_9 = -1; 
+int result_9 = RotatableNumber(num_9, start_value_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int num_10 = 0;
+int start_value_10 = 2;
+try {
+    RotatableNumber(num_10, start_value_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_11 = 5000001;
+int start_value_11 = 2;
+try {
+    RotatableNumber(num_11, start_value_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_12 = 1;
+int start_value_12 = 1;
+try {
+    RotatableNumber(num_12, start_value_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_13 = 1;
+int start_value_13 = 1000000001;
+try {
+    RotatableNumber(num_13, start_value_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_14 = -1;
+int start_value_14 = 2;
+try {
+    RotatableNumber(num_14, start_value_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_15 = 1;
+int start_value_15 = -2;
+try {
+    RotatableNumber(num_15, start_value_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
