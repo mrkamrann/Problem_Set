@@ -6,11 +6,11 @@ decreases input_number times. In other words, S(input_number * n) = S(n) / input
 
 Find out if what Harry told can be true.
 
-Your task is to return a string If there is no such number n, return "−1".
+Your task is to return a true If there exists such number else, is no such number n, return false.
 
 Otherwise print any appropriate positive integer n.
 
-Create a C++ function GenerateString that will return an integer denoting the appropriate positive integer n. If there is no such number n, return "−1". 
+Create a C++ function GenerateString that will return a boolean denoting true if an appropriate positive integer n exists. If there is no such number n, return false. 
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
@@ -26,6 +26,7 @@ The value of input_number should be between 2 and 10^3 inclusive.
 
 #include <string>
 #include <stdexcept>
+#include <cassert>
 
 
  long long CalculateGcd(long long u_val, long long v_val) {
@@ -45,7 +46,7 @@ The value of input_number should be between 2 and 10^3 inclusive.
         return result;
     }
 
- std::string GenerateString(long long input_number) {
+ bool GenerateString(long long input_number) {
       
         if (input_number < 2 || input_number > 1000) {
             throw std::invalid_argument("Input must be between 2 and 103 inclusive.");
@@ -82,27 +83,116 @@ The value of input_number should be between 2 and 10^3 inclusive.
 
         if (!temp) {
             if (input_number > sum) {
-                return "-1";
+                return false;
             } else if (input_number == sum) {
-                return number_string;
+                return false;
             }
             numerator = sum - input_number;
             gcd_value = CalculateGcd(numerator, denominator);
         }
 
-        for (long long i = 1; i <= (denominator / gcd_value); ++i) {
-            result_string += number_string + zero_string;
-        }
-        for (long long i = 1; i <= (numerator / gcd_value); ++i) {
-            result_string += "1" + zero_string;
-        }
-
-        return result_string;
+  
+        return true;
     }
 
+#include <string>
+#include <stdexcept>
 #include <cassert>
 
 int main() {
+  
+  //TEST
+long long input_number_1 = 200;
+bool expected_1 = false;
+bool result_1 = GenerateString(input_number_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long input_number_2 = 7;
+bool expected_2 = true;
+bool result_2 = GenerateString(input_number_2);
+ assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long input_number_3 = 50;
+bool expected_3 = false;
+bool result_3 = GenerateString(input_number_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long input_number_4 = 999;
+bool expected_4 = true;
+bool result_4 = GenerateString(input_number_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long input_number_5 = 22;
+bool expected_5 = true;
+bool result_5 = GenerateString(input_number_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long input_number_6 = 30;
+bool expected_6 = true;
+bool result_6 = GenerateString(input_number_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long input_number_7 = 600;
+bool expected_7 = true;
+bool result_7 = GenerateString(input_number_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long input_number_8 = 400;
+bool expected_8 = false;
+bool result_8 = GenerateString(input_number_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long input_number_9 = 16;
+bool expected_9 = false;
+bool result_9 = GenerateString(input_number_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+long long input_number_10 = 0;
+try {
+    GenerateString(input_number_10);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long input_number_11 = 1001;
+try {
+     GenerateString(input_number_11);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long input_number_12 = -1;
+try {
+    GenerateString(input_number_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
    
     return 0;
 }
