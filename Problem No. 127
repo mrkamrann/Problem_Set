@@ -30,6 +30,7 @@ The value of limit should be at least 1 and at most 200 inclusive.
 #include <vector>
 #include <stdexcept>
 #include <cstdio>
+#include <cassert>
 
 long long QuickPower(long long base, long long exponent) {
   
@@ -101,9 +102,158 @@ std::vector<long long> CountPermutations(int num, int limit) {
 #include <vector>
 #include <stdexcept>
 #include <cstdio>
+#include <cassert>
 
 int main() {
  
+
+  //TEST
+int num_1 = 2;
+int limit_1 = 1;
+std::vector<long long> expected_1 = {1};
+std::vector<long long> result_1 = CountPermutations(num_1, limit_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int num_2 = 3;
+int limit_2 = 2;
+std::vector<long long> expected_2 = {3, 3};
+std::vector<long long> result_2 = CountPermutations(num_2, limit_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int num_3 = 4;
+int limit_3 = 3;
+std::vector<long long> expected_3 = {6,12,12};
+std::vector<long long> result_3 = CountPermutations(num_3, limit_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_4 = 5;
+int limit_4 = 4;
+std::vector<long long> expected_4 = {10,36,60,60};
+std::vector<long long> result_4 = CountPermutations(num_4, limit_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_5 = 6;
+int limit_5 = 5;
+std::vector<long long> expected_5 = {15,86,240,360,360};
+std::vector<long long> result_5 = CountPermutations(num_5, limit_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_6 = 7;
+int limit_6 = 6;
+std::vector<long long> expected_6 = {21,176,756,1800,2520,2520};
+std::vector<long long> result_6 = CountPermutations(num_6, limit_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_7 = 10;
+int limit_7 = 5;
+std::vector<long long> expected_7 = {45,871,9495,64144,278820};
+std::vector<long long> result_7 = CountPermutations(num_7, limit_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_8 = 8;
+int limit_8 = 3;
+std::vector<long long> expected_8 = {28,323,1988};
+std::vector<long long> result_8 = CountPermutations(num_8, limit_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_9 = 9;
+int limit_9 = 4;
+std::vector<long long> expected_9 = {36,547,4572,22996};
+std::vector<long long> result_9 = CountPermutations(num_9, limit_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int num_10 = 2;
+int limit_10 = 1;
+std::vector<long long> expected_10 = {1};
+std::vector<long long> result_10 = CountPermutations(num_10, limit_10);
+assert(result_10 == expected_10);
+//TEST_END
+
+//TEST
+int num_11 = 5;
+int limit_11 = 201;
+try {
+    CountPermutations(num_11, limit_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  
+//TEST
+int num_12 = 1;
+int limit_12 = 5;
+try {
+    CountPermutations(num_12, limit_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_13 = 5;
+int limit_13 = 999999999;
+try {
+    CountPermutations(num_13, limit_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_14 = -5;
+int limit_14 = 5;
+try {
+    CountPermutations(num_14, limit_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_15 = 5;
+int limit_15 = -5;
+try {
+    CountPermutations(num_15, limit_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_16 = 1000000001;
+int limit_16 = 5;
+try {
+    CountPermutations(num_16, limit_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
