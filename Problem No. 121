@@ -8,8 +8,6 @@ Find out if what Harry told can be true.
 
 Your task is to return a true If there exists such number else, is no such number n, return false.
 
-Otherwise print any appropriate positive integer n.
-
 Create a C++ function GenerateString that will return a boolean denoting true if an appropriate positive integer n exists. If there is no such number n, return false. 
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
