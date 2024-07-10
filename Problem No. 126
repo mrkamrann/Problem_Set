@@ -14,7 +14,7 @@ Distinct subtraction sequences can obviously get you different number of operati
 count the minimum number of operations he needs to reduce the magic number to zero.
 
 
-Return a single integer — the minimum number of subtractions that turns the magic number to a zero.
+Return a single number — the minimum number of subtractions that turns the magic number to a zero.
 
 Create a C++ Function ReduceMagicNumber that will return a long long denoting the minimum number of subtractions required.
 
@@ -100,6 +100,112 @@ long long ReduceMagicNumber(long long number) {
 
 int main() {
   
+  //TEST
+long long number_1 = 0;
+long long expected_1 = 0;
+long long result_1 = ReduceMagicNumber(number_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long number_2 = 1;
+long long expected_2 = 1;
+long long result_2 = ReduceMagicNumber(number_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long number_3 = 2;
+long long expected_3 = 1;
+long long result_3 = ReduceMagicNumber(number_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long number_4 = 10;
+long long expected_4 = 2;
+long long result_4 = ReduceMagicNumber(number_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long number_5 = 123456789012345678;
+long long expected_5 = 14061238979821497;
+long long result_5 = ReduceMagicNumber(number_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long number_6 = 999999999999999999;
+long long expected_6 = 113502443819651914;
+long long result_6 = ReduceMagicNumber(number_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long number_7 = 1000000000000000000;
+long long expected_7 = 113502443819651915;
+long long result_7 = ReduceMagicNumber(number_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long number_8 = 9876;
+long long expected_8 = 1398;
+long long result_8 = ReduceMagicNumber(number_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long number_9 = 100;
+long long expected_9 = 17;
+long long result_9 = ReduceMagicNumber(number_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+long long number_10 = 0;
+long long expected_10 = 0;
+long long result_10 = ReduceMagicNumber(number_10);
+assert(result_10 == expected_10);
+//TEST_END
+
+//TEST
+long long number_11 = 1000000;
+long long expected_11 = 128207;
+long long result_11 = ReduceMagicNumber(number_11);
+assert(result_11 == expected_11);
+//TEST_END
+
+//TEST
+long long number_12 = -1;
+try {
+    ReduceMagicNumber(number_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long number_13 = -1000000000000000000;
+try {
+    ReduceMagicNumber(number_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long number_14 = 1000000000000000001;
+try {
+    ReduceMagicNumber(number_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
