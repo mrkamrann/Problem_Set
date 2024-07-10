@@ -1,3 +1,91 @@
 /*
-Link : https://codeforces.com/problemset/problem/616/F
+Link : https://codeforces.com/contest/329/problem/E
 */
+
+  
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <stdexcept>
+
+long long CalculateDistance(const std::vector<std::vector<long long>> &coordinates) {
+   
+    if (city_count < 3 || city_count > 100000) {
+        throw std::invalid_argument("City count must be between 3 and 100000");
+    }
+
+
+    int mid = (city_count + 1) / 2;
+    std::vector<long long> x_coord(city_count), y_coord(city_count);
+
+    for (int i = 0; i < city_count; ++i) {
+      
+      if (coordinates[i][0] < 0 || coordinates[i][0] < 0 || coordinates[i][0] > 1e9 || coordinates[i][0] > 1e9) {
+            throw std::invalid_argument("Coordinates must be non-negative and within [0, 1e9]");
+        }
+        x_coord[i] = coordinates[i][0];
+        y_coord[i] = coordinates[i][1];
+        
+    }
+
+    std::vector<long long> sorted_x = x_coord, sorted_y = y_coord;
+
+    std::sort(sorted_x.begin(), sorted_x.end());
+    std::sort(sorted_y.begin(), sorted_y.end());
+  
+    for (int i = 1; i < city_count; ++i) {
+        if (sorted_x[i] == sorted_x[i - 1] && sorted_y[i] == sorted_y[i - 1]) {
+            throw std::invalid_argument("All given points must be distinct");
+        }
+    }
+
+    long long median_x = sorted_x[mid - 1];
+    long long median_y = sorted_y[mid - 1];
+    long long dir_x = sorted_x[mid] - sorted_x[mid - 1];
+    long long dir_y = sorted_y[mid] - sorted_y[mid - 1];
+
+    if (city_count % 2 == 1) {
+        dir_x = std::min(dir_x, sorted_x[mid - 1] - sorted_x[mid - 2]);
+        dir_y = std::min(dir_y, sorted_y[mid - 1] - sorted_y[mid - 2]);
+    }
+
+    long long total_distance = 0;
+    bool quadrant_1 = false, quadrant_2 = false, central_point = false;
+
+    for (int i = 0; i < city_count; ++i) {
+      
+        total_distance += std::abs(median_x - x_coord[i]) + std::abs(median_y - y_coord[i]);
+        if (x_coord[i] > median_x && y_coord[i] <= median_y) {
+            quadrant_1 = true;
+        }
+        if (x_coord[i] > median_x && y_coord[i] > median_y) {
+            quadrant_2 = true;
+        }
+        if (x_coord[i] == median_x && y_coord[i] == median_y) {
+            central_point = true;
+        }
+    }
+
+    if ((city_count % 2 == 0) || central_point) {
+        if (quadrant_1 && quadrant_2) {
+            total_distance = std::max(total_distance - dir_x, total_distance - dir_y);
+        }
+    }
+
+    return total_distance * 2;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <stdexcept>
+
+int main() {
+  
+    return 0;
+}
+
