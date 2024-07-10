@@ -28,8 +28,8 @@ Input Constraints:
 The length of len should be at least 1 and at most 100,000 inclusive.
 The value of source_1 should be in the range [0, 1,000,000,000] inclusive.
 The value of source_2 should be in the range [0, 1,000,000,000] inclusive.
-The values for customers should be in the range [0, 1,000,000,000] inclusive. There will be no two equal numbers among source_1, source_2, 
-customers[0], ..., customers[len-1].
+The values for customers should be in the range [0, 1,000,000,000] inclusive. 
+There will be no two equal numbers among source_1, source_2, customers[0], ..., customers[len-1].
 
 */
 
@@ -38,6 +38,7 @@ customers[0], ..., customers[len-1].
 #include <algorithm>
 #include <cmath>
 #include <unordered_set>
+#include <cassert>
 
 bool CheckerFunction(int distance, int source_1, int source_2, const std::vector<int>& arr) {
   
@@ -110,10 +111,181 @@ int FindMinimumDistance(int source_1, int source_2, const std::vector<int>&custo
     return left;
 }
 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <unordered_set>
 #include <cassert>
 
 int main() {
     
+  //TEST
+int source_1_1 = 1;
+int source_2_1 = 2;
+std::vector<int> customers_1 = {3, 4, 5};
+int expected_1 = 1; 
+int result_1 = FindMinimumDistance(source_1_1, source_2_1, customers_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int source_1_2 = 100;
+int source_2_2 = 200;
+std::vector<int> customers_2 = {300, 400, 500};
+int expected_2 = 100; 
+int result_2 = FindMinimumDistance(source_1_2, source_2_2, customers_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int source_1_3 = 12349;
+int source_2_3 = 987;
+std::vector<int> customers_3 = {230, 345601, 45012};
+int expected_3 = 333252; 
+int result_3 = FindMinimumDistance(source_1_3, source_2_3, customers_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int source_1_4 = 1;
+int source_2_4 = 9999;
+std::vector<int> customers_4 = {100000};
+int expected_4 = 90001; 
+int result_4 = FindMinimumDistance(source_1_4, source_2_4, customers_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int source_1_5 = 500000;
+int source_2_5 = 25000;
+std::vector<int> customers_5 = {7500, 1000000, 1};
+int expected_5 = 500000; 
+int result_5 = FindMinimumDistance(source_1_5, source_2_5, customers_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int source_1_6 = 6000000;
+int source_2_6 = 3000;
+std::vector<int> customers_6 = {900000, 10000, 2};
+int expected_6 = 5997000; 
+int result_6 = FindMinimumDistance(source_1_6, source_2_6, customers_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int source_1_7 = 700000000;
+int source_2_7 = 100000000;
+std::vector<int> customers_7 = {800000000, 900000000, 1};
+int expected_7 = 699999999; 
+int result_7 = FindMinimumDistance(source_1_7, source_2_7, customers_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int source_1_8 = 800000000;
+int source_2_8 = 200000000;
+std::vector<int> customers_8 = {900000000, 1000000000, 3};
+int expected_8 = 799999997; 
+int result_8 = FindMinimumDistance(source_1_8, source_2_8, customers_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int source_1_9 = 90;
+int source_2_9 = 3;
+std::vector<int> customers_9 = {10000, 2, 4};
+int expected_9 = 9910; 
+int result_9 = FindMinimumDistance(source_1_9, source_2_9, customers_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int source_1_10 = 0;
+int source_2_10 = 1000000009;
+std::vector<int> customers_10 = {500000005};
+try {
+    FindMinimumDistance(source_1_10, source_2_10, customers_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_11 = 1000000001;
+int source_2_11 = 1000000000;
+std::vector<int> customers_11 = {500000000};
+try {
+    FindMinimumDistance(source_1_11, source_2_11, customers_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_12 = 500000000;
+int source_2_12 = 1000000000;
+std::vector<int> customers_12 = {1000000001};
+try {
+    FindMinimumDistance(source_1_12, source_2_12, customers_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_13 = -1;
+int source_2_13 = 1000000000;
+std::vector<int> customers_13 = {500000000};
+try {
+    FindMinimumDistance(source_1_13, source_2_13, customers_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_14 = 500000000;
+int source_2_14 = -1;
+std::vector<int> customers_14 = {1000000000};
+try {
+    FindMinimumDistance(source_1_14, source_2_14, customers_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_15 = 500000000;
+int source_2_15 = 1000000000;
+std::vector<int> customers_15 = {-1};
+try {
+    FindMinimumDistance(source_1_15, source_2_15, customers_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int source_1_16 = 1;
+int source_2_16 = 2;
+std::vector<int> customers_16 = {};
+try {
+    FindMinimumDistance(source_1_16, source_2_16, customers_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
   
     return 0;
 
