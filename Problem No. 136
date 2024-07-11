@@ -9,7 +9,7 @@ with integer non-negative coefficients such that P(t_val) = a_val, P(P(t_val)) =
 
 Martin does not like losing bets, but he has no idea how to solve this task, so please help him solve the problem.
 
-Create a C++ function CountPolynomials that will return an integer denoting the number of polynomials satisfying the conditions or -1 if the number is infinite. 
+Create a C++ function CountPolynomials that will return a long long denoting the number of polynomials satisfying the conditions or -1 if the number is infinite. 
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
