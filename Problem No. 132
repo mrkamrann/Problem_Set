@@ -1,5 +1,38 @@
 /*
 Link : https://codeforces.com/problemset/problem/1366/G
+
+Let's denote the function f(source) that takes a string source consisting of lowercase Latin letters and dots, and returns a string consisting of lowercase
+Latin letters as follows:
+
+Let r be an empty string;
+Process the characters of source from left to right. For each character c, do the following: if c is a lowercase Latin letter, append c at the end of the 
+string r; otherwise, delete the last character from r (if r is empty before deleting the last character — the function crashes);
+Return r as the result of the function.
+
+You are given two strings source and target. You have to delete the minimum possible number of characters from source so that 
+f(source) = target (and the function does not crash). Note that you aren't allowed to insert new characters into source or reorder the existing ones.
+
+It is possible to remove some number of characters from source so that f(source) = target.
+
+Return one integer — the minimum possible number of characters you have to delete from source so f(source) does not crash and returns target as the 
+result of the function.
+
+Create a C++ function ComputeMinimumCost that will return an integer denoting the minimum number of characters to delete.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A string denoting source
+A string denoting target
+
+Input Constraints:
+
+The length of target and source should be at least 1 and at most 10000 inclusive.
+The length of source should be at greater than equal to the length of target.
+source contains lowercase Latin letters and '.'
+target contains lowercase Latin letters 
+
 */
 
 #include <iostream>
@@ -10,6 +43,7 @@ Link : https://codeforces.com/problemset/problem/1366/G
 
 
 int ComputeMinimumCost(const std::string &source, const std::string &target) {
+
     if (source.empty() || target.empty() || target.length() > source.length() || target.length() < 1 || source.length() > 10000) {
         throw std::invalid_argument("Invalid input constraints");
     }
