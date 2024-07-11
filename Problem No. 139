@@ -1,3 +1,94 @@
 /*
 Link: https://codeforces.com/contest/1394/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <climits>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+std::vector<int> Solve(std::vector<int>& nums) {
+    int len = static_cast<int>(nums.size());
+    if (len < 1 || len > 100000) {
+        throw std::invalid_argument("Array size out of valid range.");
+    }
+    
+    for (int i = 0; i < len; ++i) {
+        if (nums[i] < 1 || nums[i] > len) {
+            throw std::invalid_argument("Array element out of valid range.");
+        }
+    }
+    
+    int reduction_count = 0;
+    std::unordered_map<int, int> array_elements;
+    std::vector<int> min_jumps(len + 1, INT_MAX), 
+                     sequence_count_1(len + 1), 
+                     sequence_count_2(len + 1), 
+                     continuation_1(len + 1, -1), 
+                     continuation_2(len + 1);
+    std::vector<std::vector<int>> subsequences(len + 1);
+    int current_position = 0, element_index = 0;
+    std::vector<int> result;
+    
+    for (int i = 1; i <= len; ++i) {
+        array_elements[++current_position] = nums[element_index++];
+        subsequences[current_position].clear();
+        min_jumps[current_position] = INT_MAX;
+        
+        if (array_elements[current_position] == array_elements[current_position - 1]) {
+            subsequences[current_position].push_back(1);
+        }
+        
+        for (int jump_length : subsequences[current_position - 1]) {
+            if (i - 2 * jump_length - 1 > 0 && array_elements[current_position] == array_elements[current_position - 2 * jump_length - 1]) {
+                subsequences[current_position].push_back(jump_length + 1);
+            }
+        }
+        
+        for (int jump_length : subsequences[current_position]) {
+            min_jumps[current_position] = std::min(min_jumps[current_position], jump_length);
+        }
+        
+        if (min_jumps[current_position] < INT_MAX && std::find(subsequences[current_position - min_jumps[current_position]].begin(), subsequences[current_position - min_jumps[current_position]].end(), min_jumps[current_position]) != subsequences[current_position - min_jumps[current_position]].end()) {
+            current_position -= 2 * min_jumps[current_position];
+            reduction_count += 2;
+        }
+        
+        if (min_jumps[current_position] < INT_MAX) {
+            sequence_count_1[current_position] = sequence_count_1[current_position - min_jumps[current_position]] + 1;
+            continuation_1[current_position] = (continuation_1[current_position - min_jumps[current_position]] != -1) ? continuation_1[current_position - min_jumps[current_position]] : current_position - min_jumps[current_position];
+        } else {
+            sequence_count_1[current_position] = 0;
+            continuation_1[current_position] = -1;
+        }
+        
+        continuation_2[current_position] = continuation_2[current_position - 1];
+        sequence_count_2[current_position] = sequence_count_2[current_position - 1];
+        
+        if (!((current_position - continuation_2[current_position]) & 1) && std::find(subsequences[current_position].begin(), subsequences[current_position].end(), (current_position - continuation_2[current_position]) >> 1) != subsequences[current_position].end()) {
+            sequence_count_2[current_position]++;
+            continuation_2[current_position] = (continuation_2[current_position] + current_position) >> 1;
+        }
+        
+        result.push_back(sequence_count_1[current_position] + sequence_count_2[current_position] - (continuation_1[current_position] == continuation_2[current_position]) + reduction_count);
+    }
+    
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <climits>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+int main() {
+   
+    return 0;
+}
+
