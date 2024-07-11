@@ -29,11 +29,12 @@ Each value of papers[i] should be in the range [-10^5, 10^5] inclusive.
 
 */
 
-#include <iostream>
+
 #include <vector>
 #include <stdexcept>
 #include <cstdio>
 #include <functional>
+#include <cassert>
 
 long long CalculateDifference(const std::vector<int>& papers) {
 
@@ -53,8 +54,8 @@ long long CalculateDifference(const std::vector<int>& papers) {
         prefix_sum[index] = prefix_sum[index - 1] + papers[index - 1];
     }
 
-    std::vector<std::vector<std::vector<long long>>> memo(90, std::vector<std::vector<long long>>(4001, std::vector<long long>(90, 0)));
-    std::vector<std::vector<std::vector<bool>>> visited(90, std::vector<std::vector<bool>>(4001, std::vector<bool>(90, false)));
+    std::vector<std::vector<std::vector<long long>>> memo(90, std::vector<std::vector<long long>>(num_papers + 5, std::vector<long long>(90, 0)));
+    std::vector<std::vector<std::vector<bool>>> visited(90, std::vector<std::vector<bool>>(num_papers + 5, std::vector<bool>(90, false)));
 
     std::function<long long(int, int, int, int)> DepthFirstSearch = [&](int index_i, int left, int depth, int turn) {
         int right = num_papers - (left + depth) + 1;
@@ -84,14 +85,128 @@ long long CalculateDifference(const std::vector<int>& papers) {
     return DepthFirstSearch(1, 0, 0, 1);
 }
 
-#include <iostream>
+
 #include <vector>
 #include <stdexcept>
 #include <cstdio>
 #include <functional>
+#include <cassert>
 
 int main() {
+   
+// TEST 
+std::vector<int> papers_1 = {1};
+long long expected_1 = 1;
+long long result_1 = CalculateDifference(papers_1);
+assert(result_1 == expected_1);
+//TEST_END 
   
+// TEST 
+std::vector<int> papers_2 = {0, 0};
+long long expected_2 = 0;
+long long result_2 = CalculateDifference(papers_2);
+assert(result_2 == expected_2);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_3 = {1, -1};
+long long expected_3 = 2;
+long long result_3 = CalculateDifference(papers_3);
+assert(result_3 == expected_3);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_4 = {100, -100, 100, -100};
+long long expected_4 = 100;
+long long result_4 = CalculateDifference(papers_4);
+assert(result_4 == expected_4);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_5 = {50000, 100000, -100000};
+long long expected_5 = 150000;
+long long result_5 = CalculateDifference(papers_5);
+assert(result_5 == expected_5);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_6 = {0, 0, 0, 0, 0};
+long long expected_6 = 0;
+long long result_6 = CalculateDifference(papers_6);
+assert(result_6 == expected_6);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_7 = {100, 200, 300, 400, 500};
+long long expected_7 = -300;
+long long result_7 = CalculateDifference(papers_7);
+assert(result_7 == expected_7);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_8 = {-1, -2, -3, -4, -5};
+long long expected_8 = 6;
+long long result_8 = CalculateDifference(papers_8);
+assert(result_8 == expected_8);
+//TEST_END 
+  
+// TEST 
+std::vector<int> papers_9 = {99999, -99999};
+long long expected_9 = 199998;
+long long result_9 = CalculateDifference(papers_9);
+assert(result_9 == expected_9);
+//TEST_END 
+  
+// TEST
+std::vector<int> papers_10 = {};
+try {
+    CalculateDifference(papers_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> papers_11 = {-1000000};
+try {
+    CalculateDifference(papers_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> papers_12 = {100005};
+try {
+    CalculateDifference(papers_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> papers_13 = {100000, -500000, 75000};
+try {
+    CalculateDifference(papers_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> papers_14 = {-100, -200000, -300};
+try {
+    CalculateDifference(papers_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
 
     return 0;
 }
