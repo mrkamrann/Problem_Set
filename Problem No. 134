@@ -1,5 +1,46 @@
 /*
 Link : https://codeforces.com/contest/607/problem/C
+
+James received a peculiar holiday gift: two grid paths of length path_length. A grid path is an ordered sequence of neighboring squares in an infinite grid. 
+Two squares are neighboring if they share a side.
+
+One example of a grid path is (0, 0) → (0, 1) → (0, 2) → (1, 2) → (1, 1) → (0, 1) → (−1, 1). Note that squares in this sequence might be repeated, i.e., the path
+has self-intersections.
+
+Movement within a grid path is restricted to adjacent squares within the sequence. That is, from the i-th square, one can only move to the (i-1)-th or (i+1)-th 
+squares of this path. Note that there is only a single valid move from the first and last squares of a grid path. Also note, that even if there is some j-th 
+square of the path that coincides with the i-th square, only moves to (i-1)-th and (i+1)-th squares are available. For example, from the second square in the 
+above sequence, one can only move to either the first or third squares.
+
+To ensure that movement is not ambiguous, the two grid paths will not have an alternating sequence of three squares. For example, a contiguous
+subsequence (0, 0) → (0, 1) → (0, 0) cannot occur in a valid grid path.
+
+One marble is placed on the first square of each grid path. James wants to get both marbles to the last square of each grid path. However, there is a catch.
+Whenever he moves one marble, the other marble will copy its movement if possible. For instance, if one marble moves east, then the other marble will try and 
+move east as well. By try, we mean if moving east is a valid move, then the marble will move east.
+
+Moving north increases the second coordinate by 1, while moving south decreases it by 1. Similarly, moving east increases the first coordinate by 1, while 
+moving west decreases it.
+
+Given these two valid grid paths, James wants to know if it is possible to move both marbles to the ends of their respective paths. That is, if it is possible 
+to move the marbles such that both marbles rest on the last square of their respective paths.
+
+Create a C++ function CanReachEnd that will return a boolean indicating whether it is possible for both marbles to reach the end of their respective paths. 
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string denoting path_a  
+A string denoting path_b 
+
+Input Constraints:
+
+The value of path_length should be at least 2 and at most 1,000,000 inclusive.
+The length of path_a should be exactly path_length - 1.
+The length of path_b should be exactly path_length - 1.
+The strings path_a and path_b should only contain the characters 'N', 'E', 'S', and 'W'.
+
 */
 
 #include <iostream>
@@ -9,7 +50,7 @@ Link : https://codeforces.com/contest/607/problem/C
 #include <stdexcept>
 #include <cassert>
 
-bool ProcessStrings(const std::string& path_a, const std::string& path_b) {
+bool CanReachEnd(const std::string& path_a, const std::string& path_b) {
   
     int path_length = path_a.size();
 
