@@ -1,3 +1,53 @@
 /*
 Link : https://codeforces.com/contest/1750/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+
+long long CalculateF(int len, int module) {
+
+    if (len < 1 || len > 5000) {
+        throw std::invalid_argument("len must be between 1 and 5000");
+    }
+
+    if (module < 10 || module > 1000000000) {
+        throw std::invalid_argument("module must be between 10 and 1,000,000,000");
+    }
+
+    std::vector<long long> f_vec(len + 1, 0);
+    std::vector<long long> g_vec(len + 1, 0);
+    std::vector<long long> h_vec(len + 1, 0);
+    long long temp = 1;
+
+    g_vec[0] = 1;
+    for (int i = 1; i <= len; ++i) {
+        g_vec[i] = g_vec[i - 1];
+        for (int j = 1; j < i; ++j) {
+            if (3 * j < i) {
+                g_vec[i] = (g_vec[i] + g_vec[i - 3 * j - 1] * f_vec[j]) % module;
+            }
+            h_vec[i] = (h_vec[i] + f_vec[j] * f_vec[i - j]) % module;
+            if (2 * j < i) {
+                f_vec[i] = (f_vec[i] + h_vec[j] * g_vec[i - 2 * j - 1]) % module;
+            }
+        }
+        if (i > 2) {
+            temp = temp * 2 % module;
+        }
+        f_vec[i] = (temp + module - f_vec[i]) % module;
+    }
+    return f_vec[len];
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+
+int main() {
+
+
+    return 0;
+}
+
