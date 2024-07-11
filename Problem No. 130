@@ -5,7 +5,8 @@ Raj is given num_vertices - 1 integers parent_2, parent_3, ..., parent_num_verti
 The leaves are all at the same distance d from the root.
 
 Recall that a tree is a connected undirected graph without cycles. The distance between two vertices is the number of edges on the simple path between them.
-All non-root vertices with degree 1 are leaves. If vertices s and f are connected by an edge and the distance of f from the root is greater than the distance of s from the root, then f is called a child of s.
+All non-root vertices with degree 1 are leaves. If vertices s and f are connected by an edge and the distance of f from the root is greater than the distance of
+s from the root, then f is called a child of s.
 
 Initially, there are a red coin and a blue coin on the vertex 1. Let r be the vertex where the red coin is and let b be the vertex where the blue coin is. 
 Raj should make d moves. A move consists of three steps:
