@@ -107,6 +107,114 @@ int MinimumMoves(const std::string& str) {
 
 int main() {
    
+  // TEST
+std::string str_1 = "BVVKV";
+int expected_1 = 2;
+int result_1 = MinimumMoves(str_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::string str_2 = "VVKEVKK";
+int expected_2 = 3;
+int result_2 = MinimumMoves(str_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::string str_3 = "VKVKVVVKVOVKVQKKKVVK";
+int expected_3 = 8;
+int result_3 = MinimumMoves(str_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::string str_4 = "VKVK";
+int expected_4 = 3;
+int result_4 = MinimumMoves(str_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::string str_5 = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHWXYZABC";
+int expected_5 = 0;
+int result_5 = MinimumMoves(str_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::string str_6 = "HELLO";
+int expected_6 = 0;
+int result_6 = MinimumMoves(str_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::string str_7 = "THISISATESTSTRING";
+int expected_7 = 0;
+int result_7 = MinimumMoves(str_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::string str_8 = "VAKVAKLIMAKVVVKKK";
+int expected_8 = 4;
+int result_8 = MinimumMoves(str_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::string str_9 = "VVKAVZVAAZ";
+int expected_9 = 1;
+int result_9 = MinimumMoves(str_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+  
+// TEST
+std::string str_10 = "";
+try {
+    MinimumMoves(str_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::string str_11(80,'A');
+try {
+    MinimumMoves(str_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::string str_12 = "ABC1";
+try {
+    MinimumMoves(str_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+  
+std::string str_13 = "AbC";
+try {
+    MinimumMoves(str_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
     return 0;
 }
 
