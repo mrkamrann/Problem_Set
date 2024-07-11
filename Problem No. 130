@@ -139,6 +139,148 @@ long long MaxPointsAfterMoves(const std::vector<int>& parent, const std::vector<
 
 int main() {
     
+    // TEST
+std::vector<int> parent_1 = {1, 1, 1, 2, 3, 4, 4, 5, 5, 6, 7, 8, 8};
+std::vector<int> values_1 = {2, 3, 7, 7, 6, 9, 5, 9, 7, 3, 6, 6, 5};
+long long expected_1 = 14;
+long long result_1 = MaxPointsAfterMoves(parent_1, values_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<int> parent_2 = {1, 1, 2};
+std::vector<int> values_2 = {1, 2, 3};
+long long expected_2 = 1;
+long long result_2 = MaxPointsAfterMoves(parent_2, values_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<int> parent_3 = {1, 2, 2};
+std::vector<int> values_3 = {1, 10, 10};
+long long expected_3 = 0;
+long long result_3 = MaxPointsAfterMoves(parent_3, values_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<int> parent_4 = {1, 1, 2, 2};
+std::vector<int> values_4 = {100, 200, 300, 400};
+long long expected_4 = 200;
+long long result_4 = MaxPointsAfterMoves(parent_4, values_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<int> parent_5 = {1, 15, 1, 10, 4, 9, 11, 2, 4, 1, 8, 6, 10, 11};
+std::vector<int> values_5 = {62, 13, 12, 43, 39, 65, 42, 86, 25, 38, 19, 19, 43, 62};
+long long expected_5 = 163;
+long long result_5 = MaxPointsAfterMoves(parent_5, values_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<int> parent_6 = {1, 1, 2, 3, 4};
+std::vector<int> values_6 = {1, 2, 3, 4, 5};
+long long expected_6 = 2;
+long long result_6 = MaxPointsAfterMoves(parent_6, values_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<int> parent_7 = {1, 2, 2, 3, 4};
+std::vector<int> values_7 = {10, 20, 30, 40, 50};
+long long expected_7 = 20;
+long long result_7 = MaxPointsAfterMoves(parent_7, values_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<int> parent_8 = {1, 1, 1, 1, 1, 1, 1, 1};
+std::vector<int> values_8 = {1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000};
+long long expected_8 = 0;
+long long result_8 = MaxPointsAfterMoves(parent_8, values_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> parent_9 = {1, 2, 3, 4, 5, 6, 7, 8};
+std::vector<int> values_9 = {1, 2, 3, 4, 5, 6, 7, 8};
+long long expected_9 = 0;
+long long result_9 = MaxPointsAfterMoves(parent_9, values_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+
+// TEST
+std::vector<int> parent_10 = {};
+std::vector<int> values_10 = {1, 2, 3, 4};
+try {
+    MaxPointsAfterMoves(parent_10, values_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::vector<int> parent_11(1e6,1);
+std::vector<int> values_11 = {1, 2, 3, 4};
+try {
+    MaxPointsAfterMoves(parent_11, values_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::vector<int> parent_12 = {1, 1, -44, 1};
+std::vector<int> values_12 = {1, 2, 30000000, 4};
+try {
+    MaxPointsAfterMoves(parent_12, values_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+// TEST
+std::vector<int> parent_13 = {1, 1, 1};
+std::vector<int> values_13 = {-99, 2, 3, 4};
+try {
+    MaxPointsAfterMoves(parent_13, values_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+std::vector<int> parent_14 = {1, 1, 1};
+std::vector<int> values_14 = {1000000007, 2, 3, 4};
+try {
+    MaxPointsAfterMoves(parent_14, values_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+  
+// TEST
+std::vector<int> parent_15 = {1, 5, 1};
+std::vector<int> values_15 = {-99, 2, 3, 4};
+try {
+    MaxPointsAfterMoves(parent_15, values_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
 
     return 0;
 }
