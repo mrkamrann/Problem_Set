@@ -1,5 +1,32 @@
 /*
 Link : https://codeforces.com/contest/1065/problem/G
+
+Let's denote the sequence of Fibonacci strings:
+
+F(0) = 0, F(1) = 1, F(i) = F(i−2) + F(i−1), where the plus sign denotes the concatenation of two strings.
+
+Let's denote the lexicographically sorted sequence of suffixes of string F(i) as A(F(i)). For example, F(4) is 01101, and A(F(4)) is the following sequence: 
+01, 01101, 1, 101, 1101. Elements in this sequence are numbered from 1.
+
+Your task is to print max_length first characters of limit-th element of A(F(length)). If there are less than max_length characters in this suffix, 
+then output the whole suffix.
+
+Create a C++ function GetFibonacciSuffix that will return a string denoting the first max_length characters of the limit-th element of A(F(length)) or the whole 
+element if its length is less than max_length.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting length
+An integer denoting limit
+An integer denoting max_length
+
+Input Constraints:
+
+The value of length should be at least 1 and at most 200 inclusive.
+The value of limit should be at least 1 and at most 10^18 inclusive.
+The value of max_length should be at least 1 and at most 200 inclusive.
 */
 
 #include <iostream>
@@ -22,7 +49,7 @@ long long CalculateOccurrences(int length, long long limit, const std::string& p
     return occurrences[length];
 }
 
-std::string FindPattern(int length, long long limit, int max_length) {
+std::string GetFibonacciSuffix(int length, long long limit, int max_length) {
 
     if (length < 0 || length > 200 || limit < 1 || limit > 1000000000000000000LL || max_length < 0 || max_length > 200) {
         throw std::invalid_argument("Invalid input values");
