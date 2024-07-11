@@ -1,12 +1,42 @@
 /*
 Link : https://codeforces.com/contest/1750/problem/F
+
+Everyone was happy coding until suddenly a power shortage happened, and the best competitive programming site went down. Fortunately, a system administrator bought
+some new equipment recently, including some UPSs. Thus there are some servers that are still online, but we need all of them to be working in order to keep the 
+round rated.
+
+Imagine the servers being a binary string s of length len. If the i-th server is online, then si=1, and si=0 otherwise.
+A system administrator can do the following operation called electricity spread, which consists of the following phases:
+
+Select two servers at positions 1 ≤ i < j ≤ len such that both are online (i.e., s_i = 1 and s_j = 1). The spread starts only from online servers.
+Check if we have enough power to make the spread. We consider having enough power if the number of turned on servers in range [i, j] is at least the number 
+of turned off servers in range [i, j]. More formally, check whether 2*(si + si+1 + ... + sj) ≥ j - i + 1.
+If the check is positive, turn on all the offline servers in range [i, j]. More formally, make sk := 1 for all k from i to j.
+We call a binary string s of length len rated if we can turn on all servers (i.e., make si=1 for 1 ≤ i ≤ len) using the electricity spread operation any number 
+of times (possibly, 0). Your task is to find the number of rated strings of length len modulo module.
+
+Create a C++ function CountRatedStrings that will return a long long denoting the number of rated binary strings of length len modulo module. 
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting len
+An integer denotin module
+
+Input Constraints:
+
+The value of len should be at least 1 and at most 5000 inclusive.
+The value of module should be at least 10 and at most 10^9 inclusive.
+
 */
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <cassert>
 
-long long CalculateF(int len, int module) {
+long long CountRatedStrings(int len, int module) {
 
     if (len < 1 || len > 5000) {
         throw std::invalid_argument("len must be between 1 and 5000");
@@ -17,33 +47,48 @@ long long CalculateF(int len, int module) {
     }
 
     std::vector<long long> f_vec(len + 1, 0);
+
     std::vector<long long> g_vec(len + 1, 0);
+
     std::vector<long long> h_vec(len + 1, 0);
+
     long long temp = 1;
 
     g_vec[0] = 1;
-    for (int i = 1; i <= len; ++i) {
+
+    for (int i = 1; i <= len; ++i)
+    {
         g_vec[i] = g_vec[i - 1];
-        for (int j = 1; j < i; ++j) {
-            if (3 * j < i) {
+
+        for (int j = 1; j < i; ++j)
+         {
+            if (3 * j < i)
+            {
                 g_vec[i] = (g_vec[i] + g_vec[i - 3 * j - 1] * f_vec[j]) % module;
             }
+
             h_vec[i] = (h_vec[i] + f_vec[j] * f_vec[i - j]) % module;
-            if (2 * j < i) {
+
+            if (2 * j < i)
+            {
                 f_vec[i] = (f_vec[i] + h_vec[j] * g_vec[i - 2 * j - 1]) % module;
             }
         }
-        if (i > 2) {
+        if (i > 2)
+        {
             temp = temp * 2 % module;
         }
+
         f_vec[i] = (temp + module - f_vec[i]) % module;
     }
+
     return f_vec[len];
 }
 
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <cassert>
 
 int main() {
 
