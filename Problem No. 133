@@ -1,5 +1,27 @@
 /*
 Link : https://codeforces.com/contest/329/problem/E
+
+Given a problem where there are city_count cities represented on a Cartesian plane by their coordinates in a 2D vector called coordinates, 
+where coordinates[i] = [x_i, y_i], we need to compute the longest possible length of a Hamiltonian cycle among these cities. The distance between two 
+cities is defined using the Manhattan distance. A Hamiltonian cycle of the cities is defined as a permutation of all n cities. The length of this Hamiltonian cycle
+is defined as the sum of the distances between adjacent cities in the permutation plus the distance between the first and final city in the permutation. 
+
+Return a single number denoting the longest possible length of a Hamiltonian cycle of the given cities.
+
+Create a C++ function CalculateDistance that will return a long long  denoting the longest possible length of a Hamiltonian cycle.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<vector<int>> denoting coordinates
+
+Input Constraints:
+
+The value of city_count should be at least 3 and at most 100000 inclusive.
+Each value of coordinates[i][0] and coordinates[i][1] should be in the range [0, 10^9] inclusive.
+All given coordinates[i] will be distinct
+
 */
 
   
