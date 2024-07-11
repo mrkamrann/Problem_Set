@@ -1,3 +1,57 @@
 /*
 Link: https://codeforces.com/contest/388/problem/D
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+#include <cassert>
+
+
+
+int DepthFirstSearch(int bit_position, int leading_bits, bool is_max, const std::vector<int>& bits, std::vector<std::vector<std::vector<int>>>& dp_table) {
+    if (bit_position == -1) {
+        return 1;
+    }
+    int modulus = 1e9 + 7;
+    int& result = dp_table[bit_position][leading_bits][is_max];
+    if (result) {
+        return result;
+    }
+    if (!is_max || bits[bit_position]) {
+        result = DepthFirstSearch(bit_position - 1, leading_bits + 1, is_max, bits, dp_table);
+    }
+    for (int i = 0; i <= (leading_bits && (is_max ? bits[bit_position] : 1)); ++i) {
+        result = (result + static_cast<long long>(DepthFirstSearch(bit_position - 1, leading_bits, is_max && i == bits[bit_position], bits, dp_table)) * std::max((1 << leading_bits >> 1), 1)) % modulus;
+    }
+    return result;
+}
+
+int Solve(int limit) {
+  
+    if (limit < 0 || limit > 1000000000) {
+        throw std::invalid_argument("Limit should lie between 1 and 1000000000");
+    }
+    
+    std::vector<int> bits;
+    while (limit) {
+        bits.push_back(limit & 1);
+        limit >>= 1;
+    }
+    
+    std::vector<std::vector<std::vector<int>>> dp_table(bits.size(), std::vector<std::vector<int>>(30, std::vector<int>(2, 0)));
+    
+    return DepthFirstSearch(bits.size() - 1, 0, true, bits, dp_table);
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstdio>
+#include <cassert>
+
+int main() {
+    
+    return 0;
+}
