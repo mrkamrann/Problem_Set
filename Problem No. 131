@@ -1,5 +1,29 @@
 /*
 Link: https://codeforces.com/problemset/problem/840/C
+
+Rohan was walking through a public park a year ago when he found an vector of len numbers on a bench. He believes that a permutation p of this vector is 
+correct if, for all 1 ≤ i < len, the condition found[p[i]] * found[p[i + 1]] is not a perfect square holds true. Rohan wants to determine the number of 
+correct permutations modulo 10^9 + 7.
+
+Input data contains a single integer len  — the length of the vector.
+
+Also given len integers found_1, found_2, ..., found_len  — the found vector.
+
+Return a single number — the number of correct permutations modulo 10^9 + 7.
+
+Create a C++ function NumberOfPermutations that will return an integer denoting the number of correct permutations.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting found
+
+Input Constraints:
+
+The length of found should be at least 1 and at most 300 inclusive.
+Each value of found should be in the range [1, 10^9] inclusive.
+
 */
 
 
@@ -20,7 +44,7 @@ void Process(std::vector<int>& found) {
     std::sort(found.begin(), found.end());
 }
 
-int Solve(std::vector<int>& found) {
+int NumberOfPermutations(std::vector<int>& found) {
     int len = found.size();
 
     if (len < 1 || len > 300) {
