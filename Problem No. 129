@@ -1,5 +1,34 @@
 /*
 Link: https://codeforces.com/problemset/problem/771/D
+
+Yash prepares problems for a programming competition. Of course, it would be unprofessional to mention the sponsor's name in the statement. Yash takes it 
+seriously and he is going to change some words. To make it still possible to read, he will try to modify each word as little as possible.
+
+Yash has a string str that consists of uppercase English letters. In one move, he can swap two adjacent letters of the string. For example, he can transform a 
+string "ABBC" into "BABC" or "ABCB" in one move.
+
+Yash wants to obtain a string without a substring "VK" (i.e. there should be no letter 'V' immediately followed by letter 'K'). It can be easily proved that 
+it's possible for any initial string str.
+
+What is the minimum possible number of moves Yash can do?
+
+You are given an integer len  — the length of the string, and a string str, consisting of uppercase English letters. The length of the string is equal to len.
+
+Return one number, denoting the minimum possible number of moves Yash can do, in order to obtain a string without a substring "VK".
+
+Create a C++ Function MinimumMoves that will return an integer denoting the minimum possible number of moves Yash can do.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A string denoting str
+
+Input Constraints:
+
+The length of str should be at least 1 and at most 75 inclusive.
+Each character of str should be an uppercase English letter.
+
 */
 
 #include <iostream>
@@ -17,7 +46,10 @@ int CalculateR(int o_index, int v_count, int k_count, int x_count, const std::ve
     return o_index - Minimum(count_matrix[o_index][0], v_count) - Minimum(count_matrix[o_index][1], k_count) - Minimum(count_matrix[o_index][2], x_count);
 }
 
-int Solve(int len, const std::string& str) {
+int MinimumMoves(const std::string& str) {
+
+   int len = str.size();
+
     if (len < 1 || len > 75) {
         throw std::invalid_argument("Invalid string length");
     }
