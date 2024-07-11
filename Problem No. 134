@@ -1,3 +1,84 @@
 /*
 Link : https://codeforces.com/contest/607/problem/C
 */
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+bool ProcessStrings(const std::string& path_a, const std::string& path_b) {
+  
+    int path_length = path_a.size();
+
+    if (path_length < 1 || path_length > 999999) {
+        throw std::invalid_argument("Path length out of bounds.");
+    }
+    
+    if (path_length != path_b.size()) {
+        throw std::invalid_argument("The length of strings path_a and path_b should be equal.");
+    }
+  
+   for (char character : path_a) {
+    if (character != 'N' && character != 'E' && character != 'S' && character != 'W') {
+        throw std::invalid_argument("String path_a contains invalid characters.");
+    }
+}
+
+for (char character : path_b) {
+    if (character != 'N' && character != 'E' && character != 'S' && character != 'W') {
+        throw std::invalid_argument("String path_b contains invalid characters.");
+    }
+}
+
+
+    std::string transformed_path_a = path_a;
+
+    for (int index = 0; index < path_length; ++index) {
+        if (transformed_path_a[index] == 'N') {
+            transformed_path_a[index] = 'S';
+        } else if (transformed_path_a[index] == 'W') {
+            transformed_path_a[index] = 'E';
+        } else if (transformed_path_a[index] == 'E') {
+            transformed_path_a[index] = 'W';
+        } else if (transformed_path_a[index] == 'S') {
+            transformed_path_a[index] = 'N';
+        }
+    }
+
+    std::reverse(transformed_path_a.begin(), transformed_path_a.end());
+
+    std::string combined_path = transformed_path_a + path_b;
+    combined_path = ' ' + combined_path; 
+
+    int combined_size = combined_path.size() - 1; 
+    std::vector<int> kmp(combined_size + 1, 0);
+
+    int matching_length = 0;
+    for (int index = 2; index <= combined_size; ++index) {
+        while (matching_length && combined_path[matching_length + 1] != combined_path[index]) {
+            matching_length = kmp[matching_length];
+        }
+        if (combined_path[matching_length + 1] == combined_path[index]) {
+            ++matching_length;
+        }
+        kmp[index] = matching_length;
+    }
+
+    return kmp[combined_size] ? 0 : 1;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+int main()
+{
+  return 0;
+}
