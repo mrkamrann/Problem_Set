@@ -1,3 +1,67 @@
 /*
 Link : https://codeforces.com/contest/1065/problem/G
 */
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+long long CalculateOccurrences(int length, long long limit, const std::string& pattern, std::vector<std::string>& fibonacci_sequences) {
+    long long occurrences[205] = {0};
+    for (int idx_1 = 0; idx_1 <= 15; ++idx_1) {
+        for (std::size_t idx_2 = 0; idx_2 < fibonacci_sequences[idx_1].size(); ++idx_2) {
+            occurrences[idx_1] += fibonacci_sequences[idx_1].substr(idx_2, pattern.size()) == pattern;
+        }
+    }
+    for (int idx = 16; idx <= length; ++idx) {
+        occurrences[idx] = std::min(occurrences[idx - 2] + occurrences[idx - 1] + (idx & 1 ? occurrences[15] - occurrences[13] - occurrences[14] : occurrences[14] - occurrences[12] - occurrences[13]), limit);
+    }
+    return occurrences[length];
+}
+
+std::string FindPattern(int length, long long limit, int max_length) {
+
+    if (length < 0 || length > 200 || limit < 1 || limit > 1000000000000000000LL || max_length < 0 || max_length > 200) {
+        throw std::invalid_argument("Invalid input values");
+    }
+
+    std::string answer;
+    std::vector<std::string> fibonacci_sequences(16);
+    fibonacci_sequences[0] = "0";
+    fibonacci_sequences[1] = "1";
+    for (int idx = 2; idx <= 15; ++idx) {
+        fibonacci_sequences[idx] = fibonacci_sequences[idx - 2] + fibonacci_sequences[idx - 1];
+    }
+
+    while (max_length--) {
+        if (!answer.empty() && fibonacci_sequences[std::min(length, 15)].ends_with(answer) && !--limit) break;
+        long long count = CalculateOccurrences(length, limit, answer + "0", fibonacci_sequences);
+        if (count < limit) {
+            limit -= count;
+            answer += '1';
+        } else {
+            answer += '0';
+        }
+    }
+    return answer;
+}
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+int main() {
+
+
+    return 0;
+}
+
+
+
+
