@@ -1,5 +1,41 @@
 /*
 Link: https://codeforces.com/contest/1394/problem/E
+
+Abraham has issued his currencies, named Bobo Yuan. Bobo Yuan (BBY) is a series of currencies. Abraham gives each of them a positive integer identifier, 
+such as BBY-1, BBY-2, etc.
+
+Abraham has a BBY collection. His collection looks like a sequence. For example:
+
+We can use sequence nums = [1, 2, 3, 3, 2, 1, 4, 4, 1] of length len = 9 to denote it.
+
+Now Abraham wants to fold his collection. You can imagine that Abraham sticks his collection to a long piece of paper and folds it between currencies:
+
+Abraham will only fold the same identifier of currencies together. In other words, if nums[i] is folded over nums[j] (1 ≤ i, j ≤ len), then nums[i] = nums[j] 
+must hold. Abraham doesn't care if you follow this rule in the process of folding. But once it is finished, the rule should be obeyed.
+
+According to the picture above, you can fold nums two times. In fact, you can fold nums = [1, 2, 3, 3, 2, 1, 4, 4, 1] at most two times. So the maximum number of 
+folds of it is 2.
+
+As an international fan of Abraham, you're asked to calculate the maximum number of folds.
+
+You're given a sequence nums of length len, for each i (1 ≤ i ≤ len), you need to calculate the maximum number of folds of [nums[1], nums[2], …, nums[i]].
+
+
+Return len integers. The i-th of them should be equal to the maximum number of folds of [nums[1], nums[2], …, nums[i]].
+
+Create a C++ Function CalculateMaxFolds that will return a vector<int> denoting the maximum number of folds for each prefix of the given sequence.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting nums
+
+Input Constraints
+
+The length of nums should be at least 1 and at most 100,000 inclusive.
+The value of nums[i] should be in the range [1, len] inclusive
+
 */
 
 #include <iostream>
@@ -10,8 +46,10 @@ Link: https://codeforces.com/contest/1394/problem/E
 #include <cassert>
 #include <algorithm>
 
-std::vector<int> Solve(std::vector<int>& nums) {
+std::vector<int> CalculateMaxFolds(std::vector<int>& nums) {
+
     int len = static_cast<int>(nums.size());
+
     if (len < 1 || len > 100000) {
         throw std::invalid_argument("Array size out of valid range.");
     }
