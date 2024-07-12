@@ -1,3 +1,69 @@
 /*
 Link: https://codeforces.com/problemset/problem/1603/F
 */
+
+
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
+int CalculatePower(int base, int exponent, int result = 1) {
+  
+   int modulus = 998244353;
+    for (; exponent; exponent >>= 1, base = 1LL * base * base % modulus) {
+        if (exponent & 1) {
+            result = (1LL * result * base) % modulus;
+        }
+    }
+    return result;
+}
+
+int ComputeResult(int num, int k_val, int x_val) {
+    if (num < 1 || num > 1e9) {
+        throw std::invalid_argument("num must be in the range [1, 1e9].");
+    }
+    if (k_val < 0 || k_val > 1e7) {
+        throw std::invalid_argument("k_val must be in the range [0, 1e7].");
+    }
+    if (x_val < 0 || x_val >= (1 << std::min(20, k_val))) {
+        throw std::invalid_argument("x_val must be in the range [0, 2^min(20, k_val)).");
+    }
+
+    int total_power = CalculatePower(2, num + 1);
+  
+    int modulus = 998244353;
+  
+    if (x_val) {
+        int result = 1, power = 2, answer = 1;
+        for (int index = 2, last_answer = 1; index <= k_val; ++index, power = (2LL * power) % modulus) {
+            result = (1LL * result * total_power) % modulus;
+            answer = (result - 1LL * last_answer * (power - 1) % modulus + modulus) % modulus;
+            last_answer = answer;
+        }
+        return answer;
+    } else {
+        if (num > k_val) {
+            return 0;
+        } else {
+            int answer = 1, result = 1, max_power = CalculatePower(2, k_val);
+            for (int index = 1, power = 1; index <= num; ++index, power = (2LL * power) % modulus) {
+                result = (max_power + modulus - power) % modulus;
+                answer = (1LL * answer * result) % modulus;
+            }
+            return answer;
+        }
+    }
+}
+
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+  
+    return 0;
+}
+
