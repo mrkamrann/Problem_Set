@@ -1,3 +1,78 @@
 /*
 Link: https://codeforces.com/contest/113/problem/E
 */
+
+#include <cstdio>
+#include <stdexcept>
+#include <cassert>
+
+long long Cut(int num, int pos) {
+    while (--pos > 0)
+        num /= 10;
+    return num;
+}
+
+int CountNonZeroDigits(int num) {
+    int count = 0;
+    for (; num > 0; num /= 10) {
+        if (num % 10 != 0)
+            count++;
+    }
+    return count;
+}
+
+long long CalculateTime(int hours, int minutes, int count, int pos) {
+    return Cut(hours, pos - CountNonZeroDigits(count - 1)) +
+           Cut(count - 1, pos) * hours +
+           Cut(minutes, pos);
+}
+
+long long ProcessTime(int hours, int minutes, int count, int hours_1, int minutes_1, int hours_2, int minutes_2) {
+  
+  if (hours < 2 || hours > 1e9) {
+    throw std::invalid_argument("Invalid value for hours: should be between 2 and 10^9");
+}
+
+if (minutes < 2 || minutes > 1e9) {
+    throw std::invalid_argument("Invalid value for minutes: should be between 2 and 10^9");
+}
+
+if (count < 1 || count > 20) {
+    throw std::invalid_argument("Invalid value for count: should be between 1 and 20");
+}
+
+if (hours_1 < 0 || hours_1 >= hours) {
+    throw std::invalid_argument("Invalid value for hours_1: should be between 0 and hours-1");
+}
+
+if (minutes_1 < 0 || minutes_1 >= minutes) {
+    throw std::invalid_argument("Invalid value for minutes_1: should be between 0 and minutes-1");
+}
+
+if (hours_2 < 0 || hours_2 >= hours) {
+    throw std::invalid_argument("Invalid value for hours_2: should be between 0 and hours-1");
+}
+
+if (minutes_2 < 0 || minutes_2 >= minutes) {
+    throw std::invalid_argument("Invalid value for minutes_2: should be between 0 and minutes-1");
+}
+
+  
+    if (hours_1 < hours_2 || (hours_1 == hours_2 && minutes_1 <= minutes_2))
+        return CalculateTime(hours_2, minutes_2, minutes, count) - CalculateTime(hours_1, minutes_1, minutes, count);
+    return CalculateTime(hours - 1, minutes - 1, minutes, count) +
+           (CountNonZeroDigits(hours - 1) + CountNonZeroDigits(minutes - 1) >= count) -
+           CalculateTime(hours_1, minutes_1, minutes, count) +
+           CalculateTime(hours_2, minutes_2, minutes, count);
+}
+
+#include <cstdio>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+   
+    
+    return 0;
+}
+
