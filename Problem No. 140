@@ -1,5 +1,44 @@
 /*
 Link: https://codeforces.com/contest/388/problem/D
+
+Snoop Dog studies number theory.
+
+He thinks a non-empty set S containing non-negative integers is perfect if and only if for any a, b ∈ S a,b ∈ S (a can be equal to b), 𝑎 ⊕ 𝑏 ∈ 𝑆. The operation ⊕ 
+denotes the bitwise exclusive OR (XOR) operation.
+
+Snoop Dog is interested in finding out the number of perfect sets consisting of integers not greater than limit. The answer can be very large, so he needs to
+returb it modulo 1000000007 (10^9 + 7).
+
+To elaborate, a set S is perfect if for every pair of elements a and b in S, the result of  a⊕b is also an element in S. For example, if  S = {1,2,3}, then it should satisfy:
+
+1 ⊕ 1 ∈ S
+
+1 ⊕ 2 ∈ S
+
+1 ⊕ 3 ∈ S
+
+2 ⊕ 2 ∈ S
+
+2 ⊕ 3 ∈ S
+
+3 ⊕ 3 ∈ S
+
+Given the integer limit, determine the number of such perfect sets where every element in the set is less than or equal to limit.
+
+Return a single number — the number of required sets modulo 1000000007 (10^9 + 7).
+
+Create a C++ function CountPerfectSets that will return an integer denoting the number of perfect sets consisting of integers not greater than limit.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting limit
+
+Input Constraints:
+
+The value of limit should be in the range [0, 10^9] inclusive.
+
 */
 
 #include <iostream>
@@ -28,7 +67,7 @@ int DepthFirstSearch(int bit_position, int leading_bits, bool is_max, const std:
     return result;
 }
 
-int Solve(int limit) {
+int CountPerfectSets(int limit) {
   
     if (limit < 0 || limit > 1000000000) {
         throw std::invalid_argument("Limit should lie between 1 and 1000000000");
