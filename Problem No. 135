@@ -92,6 +92,168 @@ long long CountRatedStrings(int len, int module) {
 
 int main() {
 
+//TEST
+
+int len_1 = 1;
+int module_1 = 10;
+long long expected_1 = 1;
+long long result_1 = CountRatedStrings(len_1, module_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+
+int len_2 = 2;
+int module_2 = 100;
+long long expected_2 = 1;
+long long result_2 = CountRatedStrings(len_2, module_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+
+int len_3 = 3;
+int module_3 = 1000;
+long long expected_3 = 2;
+long long result_3 = CountRatedStrings(len_3, module_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+
+int len_4 = 4;
+int module_4 = 10000;
+long long expected_4 = 4;
+long long result_4 = CountRatedStrings(len_4, module_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+
+int len_5 = 5;
+int module_5 = 100000;
+long long expected_5 = 7;
+long long result_5 = CountRatedStrings(len_5, module_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+int len_6 = 1000;
+int module_6 = 1000000;
+long long expected_6 = 602669;
+long long result_6 = CountRatedStrings(len_6, module_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+
+int len_7 = 5000;
+int module_7 = 1000000000;
+long long expected_7 = 832630065;
+long long result_7 = CountRatedStrings(len_7, module_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+int len_8 = 1234;
+int module_8 = 987654321;
+long long expected_8 = 197556551;
+long long result_8 = CountRatedStrings(len_8, module_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+
+int len_9 = 4321;
+int module_9 = 999999937;
+long long expected_9 = 210748417;
+long long result_9 = CountRatedStrings(len_9, module_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+
+int len_10 = 0;
+int module_10 = 100;
+try {
+    CountRatedStrings(len_10, module_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+int len_11 = 5001; 
+int module_11 = 100;
+try {
+    CountRatedStrings(len_11, module_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+int len_12 = 1000;
+int module_12 = 9;
+try {
+    CountRatedStrings(len_12, module_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+int len_13 = 1000;
+int module_13 = 1000000001;
+try {
+    CountRatedStrings(len_13, module_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+int len_14 = -1; 
+int module_14 = 100;
+try {
+    CountRatedStrings(len_14, module_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+int len_15 = 1000;
+int module_15 = -100; 
+try {
+    CountRatedStrings(len_15, module_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
 
     return 0;
 }
