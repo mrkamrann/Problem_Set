@@ -121,5 +121,231 @@ for (char character : path_b) {
 
 int main()
 {
+  //TEST
+std::string path_a_1 = "NNESWW";
+std::string path_b_1 = "SWSWSW";
+bool expected_1 = true;
+bool result_1 = CanReachEnd(path_a_1, path_b_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_2 = "E";
+std::string path_b_2 = "E";
+bool expected_2 = true;
+bool result_2 = CanReachEnd(path_a_2, path_b_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_3 = "EEEE";
+std::string path_b_3 = "WWWW";
+bool expected_3 = false;
+bool result_3 = CanReachEnd(path_a_3, path_b_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_4 = "W";
+std::string path_b_4 = "S";
+bool expected_4 = true;
+bool result_4 = CanReachEnd(path_a_4, path_b_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_5 = "NEEES";
+std::string path_b_5 = "SWWWN";
+bool expected_5 = false;
+bool result_5 = CanReachEnd(path_a_5, path_b_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::string path_a_6 = "WNNWSWWSSSE";
+std::string path_b_6 = "NESWNNNWSSS";
+bool expected_6 = true;
+bool result_6 = CanReachEnd(path_a_6, path_b_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_7 = "N";
+std::string path_b_7 = "W";
+bool expected_7 = true;
+bool result_7 = CanReachEnd(path_a_7, path_b_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_8 = "NSNSNS";
+std::string path_b_8 = "SNSNSN";
+bool expected_8 = false;
+bool result_8 = CanReachEnd(path_a_8, path_b_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+
+std::string path_a_9 = "EWEWEW";
+std::string path_b_9 = "WEWEWE";
+bool expected_9 = false;
+bool result_9 = CanReachEnd(path_a_9, path_b_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+
+
+std::string path_a_10(1000005,'S');
+std::string path_b_10 = "SS"; 
+try {
+    CanReachEnd(path_a_10, path_b_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_11 = "E";
+std::string path_b_11 = ""; 
+try {
+    CanReachEnd(path_a_11, path_b_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  //TEST
+
+
+std::string path_a_12 = "NNNNN";
+std::string path_b_12 = "SSSS"; 
+try {
+    CanReachEnd(path_a_12, path_b_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_13 = "NNN";
+std::string path_b_13 = "SWS12"; 
+try {
+    CanReachEnd(path_a_13, path_b_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_14 = "NENS";
+std::string path_b_14(1000005,'S');
+try {
+    CanReachEnd(path_a_14, path_b_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_15 = "NN";
+std::string path_b_15 = "SW2"; 
+try {
+    CanReachEnd(path_a_15, path_b_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string path_a_16 = "NENS";
+std::string path_b_16 = "S1WE"; 
+try {
+    CanReachEnd(path_a_16, path_b_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string path_a_17 = "NNNN";
+std::string path_b_17 = "SEE*"; 
+try {
+    CanReachEnd(path_a_17, path_b_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_18 = "NNN";
+std::string path_b_18 = ""; 
+try {
+    CanReachEnd(path_a_18, path_b_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_19 = "";
+std::string path_b_19 = "SWW";
+try {
+    CanReachEnd(path_a_19, path_b_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string path_a_20 = "NE";
+std::string path_b_20 = "SWN"; 
+try {
+    CanReachEnd(path_a_20, path_b_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
   return 0;
 }
