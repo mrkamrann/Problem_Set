@@ -32,9 +32,13 @@ All given coordinates[i] will be distinct
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <set>
+#include <cassert>
 
 long long CalculateDistance(const std::vector<std::vector<long long>> &coordinates) {
    
+   int city_count = coordinates.size();
+  
     if (city_count < 3 || city_count > 100000) {
         throw std::invalid_argument("City count must be between 3 and 100000");
     }
@@ -42,11 +46,16 @@ long long CalculateDistance(const std::vector<std::vector<long long>> &coordinat
 
     int mid = (city_count + 1) / 2;
     std::vector<long long> x_coord(city_count), y_coord(city_count);
+    set<pair<long long, long long>> point_set;
 
     for (int i = 0; i < city_count; ++i) {
       
       if (coordinates[i][0] < 0 || coordinates[i][0] < 0 || coordinates[i][0] > 1e9 || coordinates[i][0] > 1e9) {
             throw std::invalid_argument("Coordinates must be non-negative and within [0, 1e9]");
+        }
+        if (!point_set.insert({coordinates[i][0], coordinates[i][1]}).second)
+        {
+            throw invalid_argument("Duplicate point found in coordinates");
         }
         x_coord[i] = coordinates[i][0];
         y_coord[i] = coordinates[i][1];
@@ -58,11 +67,7 @@ long long CalculateDistance(const std::vector<std::vector<long long>> &coordinat
     std::sort(sorted_x.begin(), sorted_x.end());
     std::sort(sorted_y.begin(), sorted_y.end());
   
-    for (int i = 1; i < city_count; ++i) {
-        if (sorted_x[i] == sorted_x[i - 1] && sorted_y[i] == sorted_y[i - 1]) {
-            throw std::invalid_argument("All given points must be distinct");
-        }
-    }
+ 
 
     long long median_x = sorted_x[mid - 1];
     long long median_y = sorted_y[mid - 1];
@@ -105,9 +110,234 @@ long long CalculateDistance(const std::vector<std::vector<long long>> &coordinat
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <set>
+#include <cassert>
+
 
 int main() {
   
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_1 = {{0, 0}, {3, 4}, {6, 8}};
+long long expected_1 = 28;
+long long result_1 = CalculateDistance(coordinates_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_2 = {{1, 1}, {4, 5}, {0,  1}};
+long long expected_2 = 16;
+long long result_2 = CalculateDistance(coordinates_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_3 = {{100, 1000}, {999, 9}, {0, 0}};
+long long expected_3 = 3998;
+long long result_3 = CalculateDistance(coordinates_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_4 = {{0, 0}, {1000, 0}, {0, 1000}};
+long long expected_4 = 4000;
+long long result_4 = CalculateDistance(coordinates_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_5 = {{123, 456}, {789, 1011}, {1213, 1415}};
+long long expected_5 = 4098;
+long long result_5 = CalculateDistance(coordinates_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_6 = {{1, 2}, {3, 4}, {5, 6}};
+long long expected_6 = 16;
+long long result_6 = CalculateDistance(coordinates_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_7 = {{1, 1}, {2, 2}, {3, 3}, {4, 4}};
+long long expected_7 = 16;
+long long result_7 = CalculateDistance(coordinates_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_8 = {{1, 1}, {1, 5}, {1, 10}};
+long long expected_8 = 18;
+long long result_8 = CalculateDistance(coordinates_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_9 = {{0, 0}, {1000000000, 0}, {0, 1000000000}};
+long long expected_9 = 4000000000;
+long long result_9 = CalculateDistance(coordinates_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_10 = {{0, 0}, {1, 1}}; 
+try {
+    CalculateDistance(coordinates_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_11(100001, {0, 0}); 
+try {
+     CalculateDistance(coordinates_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_12 = {{-1, 0}, {1, 1}, {2, 2}}; 
+try {
+   CalculateDistance(coordinates_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_13 = {{0, 0}, {1, 1}, {1000000001, 2}}; 
+try {
+     CalculateDistance(coordinates_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_14 = {{0, 0}, {1, 1}, {0, 0}}; 
+try {
+    CalculateDistance(coordinates_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_15 = {{0, 0}, {1, 1}, {2, 2}, {-3, -3}}; 
+try {
+    CalculateDistance(coordinates_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_16 = {{0, 0}, {1, 1}, {1000000008, 1000000001}};
+try {
+    CalculateDistance(coordinates_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_17 = {{0, 0}, {1, 1}, {2, 2}, {2, 2}};
+try {
+    CalculateDistance(coordinates_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_18 = {{0, 0}, {1, 1}, {2, 2}, {1000000000, 1000000000}, {1000000001, 1000000000}}; 
+try {
+    CalculateDistance(coordinates_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_19 = {{0, 0}, {1, 1}, {2, 2}, {3, 3}, {-1, -1}}; 
+try {
+    CalculateDistance(coordinates_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<std::vector<long long>> coordinates_20 = {{0, 0}, {1, 1}, {2, 2}, {1000000001, 0}}; 
+try {
+    CalculateDistance(coordinates_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_21 = {{0, 0}, {0, 0}, {1, 1}, {2, 2}};
+try {
+    CalculateDistance(coordinates_21);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::vector<std::vector<long long>> coordinates_22 = {}; 
+try {
+    CalculateDistance(coordinates_22);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
 
