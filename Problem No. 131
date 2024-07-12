@@ -107,5 +107,141 @@ int NumberOfPermutations(std::vector<int>& found) {
 
 int main() {
   
+  
+//TEST
+
+std::vector<int> found_1 = {1};
+int expected_1 = 1;
+int result_1 = NumberOfPermutations(found_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_2 = {2, 3};
+int expected_2 = 2;
+int result_2 = NumberOfPermutations(found_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_3 = {4, 5, 6};
+int expected_3 = 6;
+int result_3 = NumberOfPermutations(found_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_4 = {7, 8, 9, 10};
+int expected_4 = 24;
+int result_4 = NumberOfPermutations(found_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_5 = {1, 1, 2, 2, 3};
+int expected_5 = 48;
+int result_5 = NumberOfPermutations(found_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+std::vector<int> found_6 = {9, 9, 9, 9, 9, 9, 9};
+int expected_6 = 0;
+int result_6 = NumberOfPermutations(found_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+std::vector<int> found_7 = {10, 10, 10, 10, 10, 10, 10, 10, 10};
+int expected_7 = 0;
+int result_7 = NumberOfPermutations(found_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_8 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+int expected_8 = 122400;
+int result_8 = NumberOfPermutations(found_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+std::vector<int> found_9 = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+int expected_9 = 2880;
+int result_9 = NumberOfPermutations(found_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_10 = {};
+try {
+    NumberOfPermutations(found_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> found_11(301, 1); 
+try {
+     NumberOfPermutations(found_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::vector<int> found_12 = {0}; 
+try {
+     NumberOfPermutations(found_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> found_13 = {1, 1000000001};
+try {
+     NumberOfPermutations(found_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::vector<int> found_14 = {-999, 5, 6};
+try {
+    NumberOfPermutations(found_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
     return 0;
 }
