@@ -1,3 +1,58 @@
 /*
 Link: https://codeforces.com/contest/1733/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+long long Solve(long long time, int x_coord, int y_coord) {
+  
+
+    const int max_size = 130;
+    std::vector<std::vector<long long>> grid(max_size, std::vector<long long>(max_size, 0));
+    grid[1][1] = std::max(time - x_coord - y_coord + 1, 0ll);
+    x_coord++;
+    y_coord++;
+    for (int i = 1; i <= x_coord; i++) {
+        for (int j = 1; j <= y_coord; j++) {
+            if (i != 1 || j != 1) {
+                grid[i][j] = grid[i - 1][j] / 2 + (grid[i][j - 1] + 1) / 2;
+            }
+        }
+    }
+    return grid[x_coord][y_coord];
+}
+
+bool CheckSolve(long long time, int x_coord, int y_coord) {
+  
+      if (time < 0 || time > 1e18) {
+        throw std::invalid_argument("time must be in the range 0 ≤ time ≤ 10^18");
+    }
+    if (x_coord < 0 || x_coord >= 120) {
+        throw std::invalid_argument("x_coord must be in the range 0 ≤ x_coord < 120");
+    }
+    if (y_coord < 0 || y_coord >= 120) {
+        throw std::invalid_argument("y_coord must be in the range 0 ≤ y_coord < 120");
+    }
+  
+    if (Solve(time, x_coord, y_coord) != Solve(time - 1, x_coord, y_coord)) {
+       return true;
+    } 
+     else {
+        return false;
+    }
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+   
+    return 0;
+}
+
+
