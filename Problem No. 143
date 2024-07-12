@@ -1,3 +1,89 @@
 /*
 Link: https://codeforces.com/contest/406/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdio>
+#include <cmath>
+#include <stdexcept>
+
+long long CalculateCombinations(int x_val, int y_val, int mod) {
+    long long z_val = (y_val - x_val + mod) % mod + 1;
+    if (z_val < 3) return 0;
+    return z_val * (z_val - 1) * (z_val - 2) / 6;
+}
+
+long long Solve(int num_rows, int num_cols, std::vector<std::vector<int>>& coordinates) {
+  
+   if (num_rows < 1 || num_rows > 1000000000) {
+    throw std::invalid_argument("Invalid value of num_rows: out of valid range");
+}
+if (num_cols < 3 || num_cols > 100000) {
+    throw std::invalid_argument("Invalid value of num_cols: out of valid range");
+}
+  
+  for (int i = 0; i < num_cols; ++i) {
+
+    if (coordinates[i][0] < 0 || coordinates[i][0] > 1) {
+        throw std::invalid_argument("Invalid value of coordinates[i][0] in coordinates: must be 0 or 1");
+    }
+    if (coordinates[i][1] < 1 || coordinates[i][1] > num_rows) {
+        throw std::invalid_argument("Invalid value of coordinates[i][1] in coordinates: out of valid range");
+    }
+}
+  
+    std::vector<int> flattened_coords(num_cols + 1);
+    for (int i = 1; i <= num_cols; ++i) {
+        int row = coordinates[i - 1][0];
+        int col = coordinates[i - 1][1];
+        flattened_coords[i] = row * num_rows + col;
+    }
+
+    std::sort(flattened_coords.begin() + 1, flattened_coords.end());
+
+    long long ans = CalculateCombinations(1, num_cols, num_cols);
+    int start_index = 1, end_index = 1;
+    
+    if (flattened_coords[1] < flattened_coords[num_cols]) {
+        for (int i = 1, j = 1; i <= num_cols; ++i) {
+            while ((flattened_coords[j] == flattened_coords[i] || flattened_coords[j % num_cols + 1] != flattened_coords[i]) && 
+                   ((long long)flattened_coords[j % num_cols + 1] - flattened_coords[i] + num_rows + num_rows) % (num_rows + num_rows) < num_rows) {
+                j = j % num_cols + 1;
+            }
+            if ((j - i + num_cols) % num_cols > 1) {
+                ans -= (long long)((j - i + num_cols) % num_cols) * ((j - i - 1 + num_cols) % num_cols) >> 1;
+            }
+            if ((j - i + num_cols) % num_cols > (end_index - start_index + num_cols) % num_cols) {
+                start_index = i;
+                end_index = j;
+            }
+            if (j == i) j++;
+        }
+    }
+
+    if (!ans) {
+        int s_index = start_index;
+        int t_index = end_index;
+        while (flattened_coords[s_index % num_cols + 1] == flattened_coords[s_index]) s_index = s_index % num_cols + 1;
+        while (flattened_coords[(t_index - 2 + num_cols) % num_cols + 1] == flattened_coords[t_index]) t_index = (t_index - 2 + num_cols) % num_cols + 1;
+        ans = CalculateCombinations(start_index, end_index, num_cols) - CalculateCombinations(start_index, t_index - 1, num_cols) - 
+              CalculateCombinations(s_index + 1, end_index, num_cols) + (s_index % num_cols + 1 != t_index ? CalculateCombinations(s_index + 1, t_index - 1, num_cols) : 0);
+    }
+
+    return ans;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdio>
+#include <cmath>
+#include <stdexcept>
+
+int main() {
+   
+
+    return 0;
+}
