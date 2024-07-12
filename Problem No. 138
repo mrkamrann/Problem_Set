@@ -1,5 +1,41 @@
 /*
 Link : https://codeforces.com/problemset/problem/196/D
+
+Alice needs to find a string with certain properties. The problem authors were reluctant to waste time thinking of a name for this string, so they called it good. 
+A string is good if it doesn't have palindrome substrings longer than or equal to count.
+
+Alice is given a string str, consisting only of lowercase English letters. Find a good string t with length |str|, consisting of lowercase English letters,
+which is lexicographically larger than str. Of all such strings, t must be lexicographically minimum.
+
+We will call a non-empty string str[a ... b] = str[a]str[a + 1]... str[b] (1 ≤ a ≤ b ≤ |str|) a substring of string str = str[1]str[2]... str[|str|].
+
+A non-empty string str = str[1]str[2]... str[n] is called a palindrome if for all i from 1 to n the following fulfills: str[i] = str[n - i + 1]. In other words, 
+a palindrome reads the same in both directions.
+
+String x = x[1]x[2]... x[|x|] is lexicographically larger than string y = y[1]y[2]... y[|y|], if either |x| > |y| and x[1] = y[1], x[2] = y[2], ... , x[|y|] = y[|y|], 
+or there exists such number r (r < |x|, r < |y|), that x[1] = y[1], x[2] = y[2], ... , x[r] = y[r] and x[r + 1] > y[r + 1]. Characters in such strings are 
+compared like their ASCII codes.
+
+
+Return the good string that lexicographically follows str, has the same length, and consists of only lowercase English letters. 
+If such a string does not exist, return "Impossible" (without the quotes).
+
+Create a C++ Function FindGoodString that will return a string denoting the lexicographically smallest good string larger than str. If such a string does 
+not exist, return "Impossible"
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An Integer denoting count
+A String denoting str
+
+Input Constraints:
+
+The length of str should be at least 1 and at most 400,000 inclusive.
+The value of count should be in the range [1, |str|] inclusive.
+The string str consists only of lowercase English letters.
+
 */
 
 #include <iostream>
