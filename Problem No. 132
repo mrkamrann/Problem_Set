@@ -101,5 +101,265 @@ int ComputeMinimumCost(const std::string &source, const std::string &target) {
 
 int main() {
 
+  //TEST
+
+std::string source_1 = "a";
+std::string target_1 = "a";
+int expected_1 = 0;
+int result_1 = ComputeMinimumCost(source_1, target_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+
+
+std::string source_2 = "a.";
+std::string target_2 = "a";
+int expected_2 = 1;
+int result_2 = ComputeMinimumCost(source_2, target_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+
+
+std::string source_3 = "ab.";
+std::string target_3 = "ab";
+int expected_3 = 1;
+int result_3 = ComputeMinimumCost(source_3, target_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+
+
+std::string source_4 = "a.c";
+std::string target_4 = "abc";
+int expected_4 = 10000;
+int result_4 = ComputeMinimumCost(source_4, target_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+
+
+std::string source_5 = "abcd.";
+std::string target_5 = "abcd";
+int expected_5 = 1;
+int result_5 = ComputeMinimumCost(source_5, target_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+
+
+std::string source_6 = "a....";
+std::string target_6 = "abcde";
+int expected_6 = 10003;
+int result_6 = ComputeMinimumCost(source_6, target_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+
+
+std::string source_7 = "a.b.c";
+std::string target_7 = "abc";
+int expected_7 = 2;
+int result_7 = ComputeMinimumCost(source_7, target_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+
+
+std::string source_8 = "x.yz";
+std::string target_8 = "xyz";
+int expected_8 = 1;
+int result_8 = ComputeMinimumCost(source_8, target_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+
+
+std::string source_9 = ".ab......";
+std::string target_9 = "abcdefghi";
+int expected_9 = 10005;
+int result_9 = ComputeMinimumCost(source_9, target_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+
+std::string source_10 = "";
+std::string target_10 = "a";
+try {
+    ComputeMinimumCost(source_10, target_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_11 = "a";
+std::string target_11 = "";
+try {
+   ComputeMinimumCost(source_11, target_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_12(10001, 'a');
+std::string target_12 = "a";
+try {
+    ComputeMinimumCost(source_12, target_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string source_13 = "a";
+std::string target_13(10001, 'a'); 
+try {
+    ComputeMinimumCost(source_13, target_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string source_14 = "a";
+std::string target_14 = "aa"; 
+try {
+    ComputeMinimumCost(source_14, target_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  
+std::string source_15 = "abcdef";
+std::string target_15 = "abcdefg"; 
+try {
+    ComputeMinimumCost(source_15, target_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_16 = "..a..";
+std::string target_16 = "a...a"; 
+try {
+    ComputeMinimumCost(source_16, target_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_17 = "abcd";
+std::string target_17 = "abcd.."; 
+try {
+    ComputeMinimumCost(source_17, target_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_18 = "a.c.d";
+std::string target_18 = "abcdabcd"; 
+try {
+   ComputeMinimumCost(source_18, target_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_19 = "a..1.b";
+std::string target_19 = "aaab"; 
+try {
+    ComputeMinimumCost(source_19, target_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_20 = "";
+std::string target_20 = "abcde"; 
+try {
+    ComputeMinimumCost(source_20, target_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+std::string source_21 = ".....";
+std::string target_21 = "";
+try {
+     ComputeMinimumCost(source_21, target_21);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string source_22(1e6,'.');
+std::string target_22 = "aabc"; 
+try {
+     ComputeMinimumCost(source_22, target_22);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+
+
+std::string source_23 = "a.b.c.";
+std::string target_23(1e6,'a');
+try {
+    ComputeMinimumCost(source_23, target_23);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
