@@ -92,5 +92,90 @@ int CountPerfectSets(int limit) {
 
 int main() {
     
+//TEST
+int limit_1 = 0;
+int expected_1 = 1;
+int result_1 = CountPerfectSets(limit_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int limit_2 = 1;
+int expected_2 = 2;
+int result_2 = CountPerfectSets(limit_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int limit_3 = 2;
+int expected_3 = 3;
+int result_3 = CountPerfectSets(limit_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int limit_4 = 10;
+int expected_4 = 22;
+int result_4 = CountPerfectSets(limit_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int limit_5 = 100;
+int expected_5 = 5620;
+int result_5 = CountPerfectSets(limit_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int limit_6 = 1000;
+int expected_6 = 112368428;
+int result_6 = CountPerfectSets(limit_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int limit_7 = 10000;
+int expected_7 = 65915639;
+int result_7 = CountPerfectSets(limit_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int limit_8 = 100000;
+int expected_8 = 768181544;
+int result_8 = CountPerfectSets(limit_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int limit_9 = 1000000;
+int expected_9 = 779656531;
+int result_9 = CountPerfectSets(limit_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int limit_10 = -99999;
+try {
+    CountPerfectSets(limit_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int limit_11 = 1000000001;
+try {
+    CountPerfectSets(limit_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+  
     return 0;
 }
