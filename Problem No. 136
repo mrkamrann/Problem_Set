@@ -64,6 +64,207 @@ long long CountPolynomials(long long t_val, long long a_val, long long b_val) {
 
 int main() {
     
+   // TEST
+    long long t_val_1 = 2;
+    long long a_val_1 = 2;
+    long long b_val_1 = 2;
+    long long expected_1 = 2;
+    long long result_1 = CountPolynomials(t_val_1, a_val_1, b_val_1);
+    assert(result_1 == expected_1);
+    // TEST_END
+
+    // TEST
+    long long t_val_2 = 1;
+    long long a_val_2 = 1;
+    long long b_val_2 = 1;
+    long long expected_2 = -1;
+    long long result_2 = CountPolynomials(t_val_2, a_val_2, b_val_2);
+    assert(result_2 == expected_2);
+    // TEST_END
+
+    // TEST
+    long long t_val_3 = 7;
+    long long a_val_3 = 8;
+    long long b_val_3 = 9;
+    long long expected_3 = 1;
+    long long result_3 = CountPolynomials(t_val_3, a_val_3, b_val_3);
+    assert(result_3 == expected_3);
+    // TEST_END
+
+    // TEST
+    long long t_val_4 = 10;
+    long long a_val_4 = 11;
+    long long b_val_4 = 12;
+    long long expected_4 = 1;
+    long long result_4 = CountPolynomials(t_val_4, a_val_4, b_val_4);
+    assert(result_4 == expected_4);
+    // TEST_END
+
+    // TEST
+    long long t_val_5 = 110;
+    long long a_val_5 = 1000;
+    long long b_val_5 = 998;
+    long long expected_5 = 0;
+    long long result_5 = CountPolynomials(t_val_5, a_val_5, b_val_5);
+    assert(result_5 == expected_5);
+    // TEST_END
+
+    // TEST
+    long long t_val_6 = 16;
+    long long a_val_6 = 17;
+    long long b_val_6 = 18;
+    long long expected_6 = 1;
+    long long result_6 = CountPolynomials(t_val_6, a_val_6, b_val_6);
+    assert(result_6 == expected_6);
+    // TEST_END
+
+    // TEST
+    long long t_val_7 = 19;
+    long long a_val_7 = 20;
+    long long b_val_7 = 21;
+    long long expected_7 = 1;
+    long long result_7 = CountPolynomials(t_val_7, a_val_7, b_val_7);
+    assert(result_7 == expected_7);
+    // TEST_END
+
+    // TEST
+    long long t_val_8 = 22;
+    long long a_val_8 = 23;
+    long long b_val_8 = 24;
+    long long expected_8 = 1;
+    long long result_8 = CountPolynomials(t_val_8, a_val_8, b_val_8);
+    assert(result_8 == expected_8);
+    // TEST_END
+
+    // TEST
+    long long t_val_9 = 25;
+    long long a_val_9 = 26;
+    long long b_val_9 = 27;
+    long long expected_9 = 1;
+    long long result_9 = CountPolynomials(t_val_9, a_val_9, b_val_9);
+    assert(result_9 == expected_9);
+    // TEST_END
+  
+     // TEST
+    long long t_val_10 = -1;
+    long long a_val_10 = 2;
+    long long b_val_10 = 3;
+    try {
+        CountPolynomials(t_val_10, a_val_10, b_val_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_11 = 1;
+    long long a_val_11 = -2;
+    long long b_val_11 = 3;
+    try {
+        CountPolynomials(t_val_11, a_val_11, b_val_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_12 = 1;
+    long long a_val_12 = 2;
+    long long b_val_12 = -3;
+    try {
+        CountPolynomials(t_val_12, a_val_12, b_val_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_13 = -1;
+    long long a_val_13 = -2;
+    long long b_val_13 = -3;
+    try {
+        CountPolynomials(t_val_13, a_val_13, b_val_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+  
+        // TEST
+    long long t_val_14 = -1;
+    long long a_val_14 = 1;
+    long long b_val_14 = 1;
+    try {
+        CountPolynomials(t_val_14, a_val_14, b_val_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_15 = 1;
+    long long a_val_15 = -1;
+    long long b_val_15 = 1;
+    try {
+        CountPolynomials(t_val_15, a_val_15, b_val_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_16 = 1;
+    long long a_val_16 = 1;
+    long long b_val_16 = -1;
+    try {
+        CountPolynomials(t_val_16, a_val_16, b_val_16);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+   
+    // TEST
+    long long t_val_17 = 0;
+    long long a_val_17 = 1;
+    long long b_val_17 = 1;
+    try {
+        CountPolynomials(t_val_17, a_val_17, b_val_17);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_18 = 1;
+    long long a_val_18 = 0;
+    long long b_val_18 = 1;
+    try {
+        CountPolynomials(t_val_18, a_val_18, b_val_18);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    long long t_val_19 = 1;
+    long long a_val_19 = 1;
+    long long b_val_19 = 0;
+    try {
+        CountPolynomials(t_val_19, a_val_19, b_val_19);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
 
     return 0;
 }
