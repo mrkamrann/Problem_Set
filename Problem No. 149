@@ -1,3 +1,57 @@
 /*
 Link: https://codeforces.com/contest/1808/problem/E2
 */
+
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+#include <numeric>
+
+long long Power(long long base, long long exponent, long long mod) {
+    long long result = 1;
+    for (exponent %= (mod - 1); exponent; base = base * base % mod, exponent >>= 1) {
+        if (exponent & 1) result = result * base % mod;
+    }
+    return result;
+}
+
+long long CalculateResult(long long num_digits, long long base_system, long long mod) {
+    if (num_digits < 1 || num_digits > 1000000000000000000L || base_system < 1 || base_system > 100 || mod < 100000000 || mod > 1000000007) {
+        throw std::invalid_argument("Invalid input arguments.");
+    }
+
+    if (num_digits == 1) {
+        return 1;
+    }
+
+    long long gcd_value, result;
+    if (base_system & 1) {
+        gcd_value = std::gcd(num_digits - 2, base_system);
+        result = Power(base_system, num_digits, mod);
+        result = (result - Power(base_system - 1, num_digits, mod) + mod) % mod;
+        if (num_digits & 1) result = (result + gcd_value - 1) % mod;
+        else result = (result - gcd_value + 1 + mod) % mod;
+    } else {
+        gcd_value = std::gcd(num_digits - 2, base_system >> 1);
+        result = Power(base_system, num_digits, mod);
+        result = (result - Power(base_system - 2, num_digits, mod) + mod) % mod;
+        result = (result + Power(mod - 2, num_digits, mod)) % mod;
+        if (result & 1) result = (result + mod) >> 1;
+        else result >>= 1;
+        if (num_digits & 1) result = (result + Power(2, num_digits - 1, mod) * gcd_value % mod) % mod;
+        else result = (result - Power(2, num_digits - 1, mod) * gcd_value % mod + mod) % mod;
+    }
+    return result;
+}
+
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+#include <numeric>
+
+int main() {
+   
+    return 0;
+}
