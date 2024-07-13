@@ -1,3 +1,66 @@
 /*
 Link: https://codeforces.com/contest/1063/problem/D
 */
+
+#include <iostream>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+long long CalculateMaximumSweetTooth(long long num_friends, long long start_friend, long long end_friend, long long num_candies) {
+  
+    if (num_friends < 1 || num_friends > 100000000000) {
+        throw std::invalid_argument("Invalid num_friends. Must be in the range 1 to 100000000000.");
+    }
+    if (start_friend < 1 || start_friend > num_friends) {
+        throw std::invalid_argument("Invalid start_friend. Must be in the range 1 to num_friends.");
+    }
+    if (end_friend < 1 || end_friend > num_friends) {
+        throw std::invalid_argument("Invalid end_friend. Must be in the range 1 to num_friends.");
+    }
+    if (num_candies < 1 || num_candies > 100000000000) {
+        throw std::invalid_argument("Invalid num_candies. Must be in the range 1 to 100000000000.");
+    }
+
+    long long segment_length = (end_friend >= start_friend ? end_friend - start_friend + 1 : end_friend + num_friends - start_friend + 1) % num_friends;
+    long long max_possible_sweet_tooth = -1;
+
+    for (long long i = num_candies, j_ind, r_ind; i; i = j_ind) {
+        j_ind = num_candies / (num_candies / i + 1);
+        r_ind = num_candies / i;
+        long long upper_bound = std::min(2 * num_friends, i);
+        long long lower_bound = std::max(num_friends, j_ind + 1);
+        upper_bound = std::min(upper_bound, std::min((2 * num_friends + num_candies - 2 * segment_length + 1) / (r_ind + 1), (num_candies - segment_length) / r_ind));
+        lower_bound = std::max(lower_bound, (num_candies - 2 * segment_length + r_ind - 1) / r_ind);
+
+        if (upper_bound >= lower_bound) {
+            max_possible_sweet_tooth = std::max(max_possible_sweet_tooth, upper_bound);
+        }
+    }
+
+    if (segment_length <= num_candies && num_candies <= segment_length * 2) {
+        max_possible_sweet_tooth = std::max(max_possible_sweet_tooth, num_friends + std::min(num_candies - segment_length, segment_length - 1) + num_friends - segment_length + 1);
+    }
+
+    if (!segment_length && num_candies == num_friends) {
+        max_possible_sweet_tooth = std::max(max_possible_sweet_tooth, num_friends + 1);
+    }
+
+    if (max_possible_sweet_tooth == -1) {
+        return -1;
+    } else {
+        return max_possible_sweet_tooth - num_friends;
+    }
+}
+
+#include <iostream>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+int main() {
+    
+
+    return 0;
+}
+
