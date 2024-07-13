@@ -8,7 +8,7 @@ Link: https://codeforces.com/problemset/problem/1202/F
 
 int CalculateAnswer(int count_a, int count_b) {
     
-    if (count_a < 1 || count_a > 1000000000 || count_b < 1 || count_b > 1000000000) {
+    if (count_a < 1 || count_a > 1000000000) {
         throw std::invalid_argument("Input value count_a is out of bounds.");
     }
     
