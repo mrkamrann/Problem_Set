@@ -46,7 +46,7 @@ long long CalculateDistance(const std::vector<std::vector<long long>> &coordinat
 
     int mid = (city_count + 1) / 2;
     std::vector<long long> x_coord(city_count), y_coord(city_count);
-    set<pair<long long, long long>> point_set;
+    std::set<std::pair<long long, long long>> point_set;
 
     for (int i = 0; i < city_count; ++i) {
       
@@ -55,7 +55,7 @@ long long CalculateDistance(const std::vector<std::vector<long long>> &coordinat
         }
         if (!point_set.insert({coordinates[i][0], coordinates[i][1]}).second)
         {
-            throw invalid_argument("Duplicate point found in coordinates");
+            throw std::invalid_argument("Duplicate point found in coordinates");
         }
         x_coord[i] = coordinates[i][0];
         y_coord[i] = coordinates[i][1];
@@ -340,4 +340,3 @@ try {
 //TEST_END
     return 0;
 }
-
