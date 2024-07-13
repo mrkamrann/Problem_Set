@@ -1,3 +1,98 @@
 /*
 Link: https://codeforces.com/problemset/problem/109/E
 */
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
+int CalculateNumLucky(int number) {
+    int count = 0;
+    while (number > 0) {
+        if (number % 10 == 4 || number % 10 == 7) {
+            count++;
+        }
+        number /= 10;
+    }
+    return count;
+}
+
+int FindNextLucky(int number) {
+    int last_digit = number % 10;
+    if (last_digit < 3) return number + 1;
+    if (last_digit == 3) return number + 2;
+    if (last_digit == 4) return number + 3;
+    if (last_digit == 5) return number + 1;
+    if (last_digit == 6) return number + 2;
+    if (last_digit == 8) return number + 1;
+
+    int num_lucky_digits = CalculateNumLucky(number);
+    int div_10 = number / 10;
+    int div_10_plus_1 = div_10 + 1;
+    int num_lucky_digits_div_10_plus_1 = CalculateNumLucky(div_10_plus_1);
+
+    if (last_digit == 9) {
+        if (num_lucky_digits_div_10_plus_1 == num_lucky_digits) return number + 1;
+        if (num_lucky_digits_div_10_plus_1 == num_lucky_digits + 1) return FindNextLucky(div_10) * 10;
+        return div_10_plus_1 * 10 + 4;
+    }
+
+    if (last_digit == 7) {
+        if (num_lucky_digits_div_10_plus_1 == num_lucky_digits) return number + 3;
+        if (num_lucky_digits_div_10_plus_1 == num_lucky_digits - 1) return number + 7;
+    }
+
+    return FindNextLucky(div_10) * 10 + 4;
+}
+
+bool IsTramaValid(int start, int length, const std::vector<int>& lucky_counts) {
+    for (int i = 0; i <= length; ++i) {
+        if (CalculateNumLucky(start + i) != lucky_counts[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int CalculateMinimumLucky(int start, int length) {
+  
+    if (length == 0) return FindNextLucky(start);
+
+    int steps = length / 10;
+    if (start % 10 + length % 10 >= 10) {
+        steps++;
+    }
+    int minimum = CalculateMinimumLucky(start / 10, steps) * 10 + start % 10;
+
+    if (length > 20) return minimum;
+
+    std::vector<int> lucky_counts(length + 1);
+    for (int i = 0; i <= length; ++i) {
+        lucky_counts[i] = CalculateNumLucky(start + i);
+    }
+
+    for (int next = FindNextLucky(start); next < minimum; next = FindNextLucky(next)) {
+        if (IsTramaValid(next, length, lucky_counts)) {
+            return next;
+        }
+    }
+
+    return minimum;
+}
+
+int FindMinimumLucky(int start, int length)
+{
+  if (start < 1 || start > 1000000000 || length < 1 || length > 1000000000) {
+        throw std::invalid_argument("Input values are out of bounds.");
+    }
+    length--;
+  
+  return CalculateMinimumLucky(start, length);
+}
+
+int main() {
+   
+    return 0;
+}
