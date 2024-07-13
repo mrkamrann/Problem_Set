@@ -36,6 +36,11 @@ The value of max_length should be at least 1 and at most 200 inclusive.
 #include <cassert>
 #include <algorithm>
 
+bool EndsWith(const std::string& str, const std::string& suffix) {
+    if (str.size() < suffix.size()) return false;
+    return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
+}
+
 long long CalculateOccurrences(int length, long long limit, const std::string& pattern, std::vector<std::string>& fibonacci_sequences) {
     long long occurrences[205] = {0};
     for (int idx_1 = 0; idx_1 <= 15; ++idx_1) {
@@ -64,7 +69,7 @@ std::string GetFibonacciSuffix(int length, long long limit, int max_length) {
     }
 
     while (max_length--) {
-        if (!answer.empty() && fibonacci_sequences[std::min(length, 15)].ends_with(answer) && !--limit) break;
+         if (!answer.empty() && EndsWith(fibonacci_sequences[std::min(length, 15)], answer) && !--limit) break;
         long long count = CalculateOccurrences(length, limit, answer + "0", fibonacci_sequences);
         if (count < limit) {
             limit -= count;
@@ -86,9 +91,195 @@ std::string GetFibonacciSuffix(int length, long long limit, int max_length) {
 int main() {
 
 
+  // TEST
+    int length_1 = 10;
+    long long limit_1 = 100;
+    int max_length_1 = 50;
+    std::string expected_1 = "11111111111111111111111111111111111111111111111111";
+    std::string result_1 = GetFibonacciSuffix(length_1, limit_1, max_length_1);
+    assert(result_1 == expected_1);
+    // TEST_END
+
+    // TEST
+    int length_2 = 1;
+    long long limit_2 = 1;
+    int max_length_2 = 1;
+    std::string expected_2 = "1";
+    std::string result_2 = GetFibonacciSuffix(length_2, limit_2, max_length_2);
+    assert(result_2 == expected_2);
+    // TEST_END
+
+    // TEST
+    int length_3 = 200;
+    long long limit_3 = 1e18;
+    int max_length_3 = 200;
+    std::string expected_3 = "01011010110110101101011011010110110101101011011010110101101101011011010110101101101011011010110101101101011010110110101101101011010110110101101011011010110110101101011011010110110101101011011010110101";
+    std::string result_3 = GetFibonacciSuffix(length_3, limit_3, max_length_3);
+    assert(result_3 == expected_3);
+    // TEST_END
+
+    // TEST
+    int length_4 = 50;
+    long long limit_4 = 1e5;
+    int max_length_4 = 150;
+    std::string expected_4 = "010110101101101011010110110101101101011010110110101101011011010110110101101011011010110110101101011011010110101101101011011010110101101101011010110110";
+    std::string result_4 = GetFibonacciSuffix(length_4, limit_4, max_length_4);
+    assert(result_4 == expected_4);
+    // TEST_END
+
+    // TEST
+    int length_5 = 100;
+    long long limit_5 = 1e10;
+    int max_length_5 = 100;
+    std::string expected_5 = "0101101011011010110101101101011011010110101101101011010110110101101101011010110110101101101011010110";
+    std::string result_5 = GetFibonacciSuffix(length_5, limit_5, max_length_5);
+    assert(result_5 == expected_5);
+    // TEST_END
+
+    // TEST
+    int length_6 = 20;
+    long long limit_6 = 1e8;
+    int max_length_6 = 30;
+    std::string expected_6 = "111111111111111111111111111111";
+    std::string result_6 = GetFibonacciSuffix(length_6, limit_6, max_length_6);
+    assert(result_6 == expected_6);
+    // TEST_END
+
+    // TEST
+    int length_7 = 15;
+    long long limit_7 = 1e12;
+    int max_length_7 = 150;
+    std::string expected_7 = "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+    std::string result_7 = GetFibonacciSuffix(length_7, limit_7, max_length_7);
+    assert(result_7 == expected_7);
+    // TEST_END
+
+    // TEST
+    int length_8 = 199;
+    long long limit_8 = 999999999999999999;
+    int max_length_8 = 199;
+    std::string expected_8 = "0101101011011010110101101101011011010110101101101011010110110101101101011010110110101101101011010110110101101011011010110110101101011011010110101101101011011010110101101101011011010110101101101011010";
+    std::string result_8 = GetFibonacciSuffix(length_8, limit_8, max_length_8);
+    assert(result_8 == expected_8);
+    // TEST_END
+
+    // TEST
+    int length_9 = 75;
+    long long limit_9 = 500;
+    int max_length_9 = 100;
+    std::string expected_9 = "0101101011011010110101101101011011010110101101101011010110110101101101011010110110101101101011010110";
+    std::string result_9 = GetFibonacciSuffix(length_9, limit_9, max_length_9);
+   assert(result_9 == expected_9);
+    // TEST_END
+
+
+    // TEST
+    int length_10 = 201;
+    long long limit_10 = 100;
+    int max_length_10 = 50;
+    try {
+        GetFibonacciSuffix(length_10, limit_10, max_length_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_11 = 10;
+    long long limit_11 = 1000000000000000005;
+    int max_length_11 = 50;
+    try {
+        GetFibonacciSuffix(length_11, limit_11, max_length_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_12 = 10;
+    long long limit_12 = 100;
+    int max_length_12 = 201;
+    try {
+        GetFibonacciSuffix(length_12, limit_12, max_length_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+
+    // TEST
+    int length_13 = -1;
+    long long limit_13 = 100;
+    int max_length_13 = 50;
+    try {
+        GetFibonacciSuffix(length_13, limit_13, max_length_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_14 = 10;
+    long long limit_14 = -100;
+    int max_length_14 = 50;
+    try {
+        GetFibonacciSuffix(length_14, limit_14, max_length_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_15 = 10;
+    long long limit_15 = 100;
+    int max_length_15 = -50;
+    try {
+        GetFibonacciSuffix(length_15, limit_15, max_length_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+  
+   // TEST
+    int length_16 = 0;
+    long long limit_16 = -100;
+    int max_length_16 = 50;
+    try {
+        GetFibonacciSuffix(length_16, limit_16, max_length_16);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_17 = 10;
+    long long limit_17 = 0;
+    int max_length_17 = 50;
+    try {
+        GetFibonacciSuffix(length_17, limit_17, max_length_17);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST
+    int length_18 = 10;
+    long long limit_18 = 100;
+    int max_length_18 = -555;
+    try {
+        GetFibonacciSuffix(length_18, limit_18, max_length_18);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
     return 0;
 }
-
-
-
-
