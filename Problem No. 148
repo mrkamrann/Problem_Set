@@ -1,3 +1,100 @@
 /*
-Link : https://codeforces.com/problemset/problem/109/E
+Link : https://codeforces.com/problemset/problem/747/F
 */
+
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+#include <limits>
+
+
+long long CalculateCombinations(std::vector<std::vector<long long>>& combinations, int n_val, int r_val) {
+    if (r_val == 0 || r_val == n_val) return 1;
+    if (combinations[n_val][r_val] != -1) return combinations[n_val][r_val];
+    return combinations[n_val][r_val] = ((long long)CalculateCombinations(combinations, n_val - 1, r_val) + CalculateCombinations(combinations, n_val - 1, r_val - 1)) % 1000000007;
+}
+
+long long Calculate(std::vector<std::vector<long long>>& combinations, int length, bool is_end, const std::vector<long long>& limits) {
+    std::vector<std::vector<long long>> f_vec(22, std::vector<long long>(250, 0));
+    f_vec[0][length] = 1;
+     int max_n = 205;
+     int max_l = 25;
+     int digits = 16;
+    for (int i = 1; i <= digits; i++) {
+        for (int j = 0; j <= length; j++) {
+            if (f_vec[i - 1][j] != 0) {
+                for (int k = 0; k <= limits[i] && k <= j; k++) {
+                    f_vec[i][j - k] += f_vec[i - 1][j] * combinations[j][k];
+                    if (f_vec[i][j - k] < 0) {
+                        f_vec[i][j - k] = std::numeric_limits<long long>::max();
+                    }
+                }
+            }
+        }
+    }
+    return is_end ? f_vec[digits][0] / digits * 15 : f_vec[digits][0];
+}
+
+std::string ProcessInput(long long count, long long frequency) {
+  
+    if (count < 1 || frequency < 1 || count > 2000000000 || frequency > 10) {
+        throw std::invalid_argument("Input values are out of bounds.");
+    }
+
+     int max_n = 205;
+     int max_l = 25;
+     int digits = 16;
+  
+    std::vector<std::vector<long long>> combinations(max_n, std::vector<long long>(max_n, -1));
+    for (int i = 0; i < max_n; i++) {
+        for (int j = 0; j <= i; j++) {
+            combinations[i][j] = CalculateCombinations(combinations, i, j);
+        }
+    }
+
+    std::vector<long long> limits(max_l);
+    for (int i = 1; i <= digits; i++) {
+        limits[i] = frequency;
+    }
+
+    int length;
+    for (length = 1; length < 100; length++) {
+        long long result = Calculate(combinations, length, true, limits);
+        if (result >= count) break;
+        count -= result;
+    }
+
+    std::string result;
+    for (int i = 1; i <= length; i++) {
+        for (int j = 1; j <= digits; j++) {
+            if (i != 1 || j != 1) {
+                limits[j]--;
+                long long partial_result = Calculate(combinations, length - i, false, limits);
+                if (partial_result >= count) {
+                    result += (j < 11 ? static_cast<char>(j + 47) : static_cast<char>(j + 86));
+                    break;
+                }
+                count -= partial_result;
+                limits[j]++;
+            }
+        }
+    }
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <cassert>
+#include <limits>
+
+int main() {
+    
+    return 0;
+}
+
+
+
