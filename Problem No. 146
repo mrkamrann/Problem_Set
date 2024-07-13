@@ -1,3 +1,56 @@
 /*
 Link: https://codeforces.com/problemset/problem/1202/F
 */
+
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int CalculateAnswer(int count_a, int count_b) {
+    
+    if (count_a < 1 || count_a > 1000000000 || count_b < 1 || count_b > 1000000000) {
+        throw std::invalid_argument("Input value count_a is out of bounds.");
+    }
+    
+      if ( count_b < 1 || count_b > 1000000000) {
+        throw std::invalid_argument("Input value count_b is out of bounds.");
+    }
+    
+    int total_count = count_a + count_b;
+    
+    int answer = 0;
+
+    for (int left = 1, right; left <= total_count; left = right + 1) {
+        
+        right = total_count / (total_count / left);
+        
+        int temp = total_count / left;
+        
+        int denominator = 1 + temp;
+        
+        int left_a = (count_a + temp) / denominator;
+        
+        int right_a = count_a / temp;
+        
+        int left_b = (count_b + temp) / denominator;
+        
+        int right_b = count_b / temp;
+
+        if (left_a <= right_a && left_b <= right_b) {
+            
+            answer += std::max(0, std::min(right, right_a + right_b) - std::max(left, left_a + left_b) + 1);
+        }
+    }
+
+    return answer;
+}
+
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    
+
+    return 0;
+}
