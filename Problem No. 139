@@ -51,12 +51,12 @@ std::vector<int> CalculateMaxFolds(std::vector<int>& nums) {
     int len = static_cast<int>(nums.size());
 
     if (len < 1 || len > 100000) {
-        throw std::invalid_argument("Array size out of valid range.");
+        throw std::invalid_argument("nums size out of valid range.");
     }
     
     for (int i = 0; i < len; ++i) {
         if (nums[i] < 1 || nums[i] > len) {
-            throw std::invalid_argument("Array element out of valid range.");
+            throw std::invalid_argument("nums element out of valid range.");
         }
     }
     
@@ -127,6 +127,130 @@ std::vector<int> CalculateMaxFolds(std::vector<int>& nums) {
 
 int main() {
    
+   //TEST
+std::vector<int> nums_1 = {1};
+std::vector<int> expected_1 = {0};
+std::vector<int> result_1 = CalculateMaxFolds(nums_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> nums_2 = {1, 2, 3, 4, 5};
+std::vector<int> expected_2 = {0, 0, 0, 0, 0};
+std::vector<int> result_2 = CalculateMaxFolds(nums_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> nums_3 = {5, 4, 3, 2, 1};
+std::vector<int> expected_3 = {0, 0, 0, 0, 0};
+std::vector<int> result_3 = CalculateMaxFolds(nums_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> nums_4 = {1, 1, 1, 1, 1};
+std::vector<int> expected_4 = {0, 1, 2, 3, 4};
+std::vector<int> result_4 = CalculateMaxFolds(nums_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> nums_5 = {2, 2, 2, 2, 2};
+std::vector<int> expected_5 = {0, 1, 2, 3, 4};
+std::vector<int> result_5 = CalculateMaxFolds(nums_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> nums_6 = {1, 3, 2, 4, 5};
+std::vector<int> expected_6 = {0, 0, 0, 0, 0};
+std::vector<int> result_6 = CalculateMaxFolds(nums_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> nums_7 = {5, 1, 4, 2, 3};
+std::vector<int> expected_7 = {0, 0, 0, 0, 0};
+std::vector<int> result_7 = CalculateMaxFolds(nums_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> nums_8 = {3, 3, 3, 3, 3};
+std::vector<int> expected_8 = {0, 1, 2, 3, 4};
+std::vector<int> result_8 = CalculateMaxFolds(nums_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> nums_9 = {1, 2, 1, 2, 1};
+std::vector<int> expected_9 = {0, 0, 0, 0, 0};
+std::vector<int> result_9 = CalculateMaxFolds(nums_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> nums_10 = {-99999};
+try {
+    CalculateMaxFolds(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_11 = {-1, -2, -3};
+try {
+    CalculateMaxFolds(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_12(100001, 1);
+try {
+    CalculateMaxFolds(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_13 = {1, 2, 3, 100001};
+try {
+    CalculateMaxFolds(nums_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_14 = {};
+try {
+    CalculateMaxFolds(nums_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> nums_15 = {1, 2, 3, 4, -5};
+try {
+    CalculateMaxFolds(nums_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
     return 0;
 }
+
 
