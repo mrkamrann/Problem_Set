@@ -55,14 +55,14 @@ bool GenerateString(int depth, int flag, int str_len, int count, const std::stri
     }
     for (result[depth] = (flag ? str[depth] : 'a'); result[depth] <= 'z'; result[depth]++) {
         hash_val[depth + 1] = hash_val[depth] + result[depth] * power[depth];
-        rev_hash[depth + 1] = rev_hash[depth] * 1000000007 + result[depth];
+        rev_hash[depth + 1] = rev_hash[depth] * 7 + result[depth];
         if (IsValid(depth, count, power, hash_val, rev_hash) && IsValid(depth, count + 1, power, hash_val, rev_hash) && GenerateString(depth + 1, flag && (result[depth] == str[depth]), str_len, count, str, result, power, hash_val, rev_hash))
             return true;
     }
     return false;
 }
 
-std::string Solve(int count, const std::string& str) {
+std::string FindGoodString(int count, const std::string& str) {
   
     if (count <= 0 || count > static_cast<int>(str.length())) {
         throw std::invalid_argument("Count must be a positive integer less than or equal to the length of the string.");
@@ -93,7 +93,7 @@ std::string Solve(int count, const std::string& str) {
     mutable_str[index]++;
     power[0] = 1;
     for (int i = 1; i <= str_len; i++) 
-        power[i] = power[i - 1] * 1000000007;
+        power[i] =  power[i - 1] * 7;
 
     if (GenerateString(0, 1, str_len, count, mutable_str, result, power, hash_val, rev_hash))
         return std::string(result.begin(), result.begin() + str_len);
@@ -109,5 +109,179 @@ std::string Solve(int count, const std::string& str) {
 
 int main() {
     
+//TEST
+int count_1 = 1;
+std::string str_1 = "a";
+std::string expected_1 = "Impossible";
+std::string result_1 = FindGoodString(count_1, str_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int count_2 = 2;
+std::string str_2 = "ab";
+std::string expected_2 = "ac";
+std::string result_2 = FindGoodString(count_2, str_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int count_3 = 1;
+std::string str_3 = "zxy";
+std::string expected_3 = "Impossible";
+std::string result_3 = FindGoodString(count_3, str_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int count_4 = 4;
+std::string str_4 = "abcdefgh";
+std::string expected_4 = "abcdefgi";
+std::string result_4 = FindGoodString(count_4, str_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int count_5 = 2;
+std::string str_5 = "bac";
+std::string expected_5 = "bad";
+std::string result_5 = FindGoodString(count_5, str_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int count_6 = 5;
+std::string str_6 = "zzzzz";
+std::string expected_6 = "Impossible";
+std::string result_6 = FindGoodString(count_6, str_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int count_7 = 3;
+std::string str_7 = "baaa";
+std::string expected_7 = "baac";
+std::string result_7 = FindGoodString(count_7, str_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int count_8 = 6;
+std::string str_8 = "abcdefabcdef";
+std::string expected_8 = "abcdefabcdeg";
+std::string result_8 = FindGoodString(count_8, str_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int count_9 = 8;
+std::string str_9 = "zzzyyyxx";
+std::string expected_9 = "zzzyyyxy";
+std::string result_9 = FindGoodString(count_9, str_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int count_10 = 0;
+std::string str_10 = "a";
+try {
+    FindGoodString(count_10, str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_11 = 1;
+std::string str_11 = "";
+try {
+    FindGoodString(count_11, str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_12 = 401;
+std::string str_12 = "a";
+try {
+    FindGoodString(count_12, str_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+
+//TEST
+int count_13 = 1;
+std::string str_13 = "";
+try {
+    FindGoodString(count_13, str_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_14 = 401;
+std::string str_14 = "a";
+try {
+    FindGoodString(count_14, str_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_15 = -1;
+std::string str_15 = "a";
+try {
+    FindGoodString(count_15, str_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_16 = 1;
+std::string str_16 = "";
+try {
+    FindGoodString(count_16, str_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_17 = 400001;
+std::string str_17 = "a";
+try {
+    FindGoodString(count_17, str_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int count_18 = -1;
+std::string str_18 = "abcdef";
+try {
+    FindGoodString(count_18, str_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
     return 0;
 }
