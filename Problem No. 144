@@ -1,5 +1,57 @@
 /*
 Link: https://codeforces.com/contest/113/problem/E
+
+Paul was lying in bed watching his electronic clock to fall asleep quicker.
+
+Paul lives in a strange country, where days have hours hours, and every hour has minutes minutes. The clock shows time in the decimal number system, in the format H
+, where the string H always has a fixed length equal to the number of digits in the decimal representation of the number hours - 1. To achieve this, leading zeros 
+are added if necessary. The string M has a similar format, and its length is always equal to the number of digits in the decimal representation of the number 
+minutes - 1. For example, if hours = 17 and minutes = 1000, then the time equal to 13 hours and 75 minutes will be displayed as "13:075".
+
+Paul had been watching the clock from hours_1 hours and minutes_1 minutes to hours_2 hours and minutes_2 minutes inclusive, and then he fell asleep. Now he asks 
+you to count how many times he saw the moment at which at least count digits changed on the clock simultaneously.
+
+For example, when switching from "04:19" to "04:20", two digits change. When switching from "23:59" to "00:00", four digits change.
+
+Consider that Paul has been watching the clock for strictly less than one day. Note that the last time Paul saw on the clock before falling asleep 
+was "hours_2". That is, Paul didn't see the moment at which time "hours_2" switched to the next value.
+
+You are given, 
+
+An integer hours denoting the number of hours in a day.
+An integer minutes denoting the number of minutes in an hour.
+An integer count denoting the minimum number of digits that must change simultaneously.
+An integer hours_1 denoting the starting hour.
+An integer minutes_1 denoting the starting minute.
+An integer hours_2 denoting the ending hour.
+An integer minutes_2 denoting the ending minute.
+
+Return a single number — the number of times Paul saw the moment of changing at least count digits simultaneously.
+
+Create a C++ Function CountDigitChanges that will return a long long  denoting the number of times at least count digits change simultaneously.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting hours 
+An integer denoting minutes 
+An integer denoting count 
+An integer denoting hours_1 
+An integer denoting minutes_1 
+An integer denoting hours_2 
+An integer denoting minutes_2 
+
+Input Constraints
+
+The value of hours should be at least 2 and at most 10^9 inclusive.
+The value of minutes should be at least 2 and at most 10^9 inclusive.
+The value of count should be at least 1 and at most 20 inclusive.
+The value of hours_1 should be in the range [0, hours - 1] inclusive.
+The value of minutes_1 should be in the range [0, minutes] inclusive.
+The value of hours_2 should be in the range [0, hours - 1] inclusive.
+The value of minutes_2 should be in the range [0, minutes] inclusive.
+
 */
 
 #include <cstdio>
@@ -27,7 +79,7 @@ long long CalculateTime(int hours, int minutes, int count, int pos) {
            Cut(minutes, pos);
 }
 
-long long ProcessTime(int hours, int minutes, int count, int hours_1, int minutes_1, int hours_2, int minutes_2) {
+long long CountDigitChanges(int hours, int minutes, int count, int hours_1, int minutes_1, int hours_2, int minutes_2) {
   
   if (hours < 2 || hours > 1e9) {
     throw std::invalid_argument("Invalid value for hours: should be between 2 and 10^9");
