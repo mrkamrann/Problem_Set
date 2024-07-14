@@ -1,5 +1,27 @@
 /*
 Link: https://codeforces.com/problemset/problem/109/E
+
+Franklin loves lucky numbers. We all know that lucky numbers are the positive integers whose decimal representations contain only the lucky digits 4 and 7. 
+For example, numbers 47, 744, and 4 are lucky, while 5, 17, and 467 are not.
+
+One day, Franklin came across an interval of numbers [a, a+l−1]. Let F(x) be the number of lucky digits in the number x. Franklin wants to find the minimum integer
+b (such that a<b) where the number of lucky digits in each number of the interval [a,a+l−1] matches with the number of lucky digits in the interval [b,b+l−1]. 
+In other words, he wants F(a) = F(b), F(a + 1) = F(b + 1), ..., F(a + l - 1) = F(b + l - 1).
+
+Create a C++ function FindNextInterval that will return an integer denoting the minimum integer b that satisfies the condition described.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting start.
+An integer denoting length.
+
+Input Constraints
+
+The value of start should be at least 1 and at most 10^9 inclusive.
+The value of length should be at least 1 and at most 10^9 inclusive.
+
 */
 
 #include <iostream>
@@ -82,7 +104,7 @@ int CalculateMinimumLucky(int start, int length) {
     return minimum;
 }
 
-int FindMinimumLucky(int start, int length)
+int FindNextInterval(int start, int length)
 {
   if (start < 1 || start > 1000000000 || length < 1 || length > 1000000000) {
         throw std::invalid_argument("Input values are out of bounds.");
