@@ -1,5 +1,32 @@
 /*
 Link: https://codeforces.com/contest/1733/problem/E
+
+Hemant has a conveyor with 120 rows and 120 columns. Each row and column is numbered from 0 to 119, and the cell in the i-th row and j-th column is denoted as
+(i, j). The top leftmost cell is (0, 0). Each cell has a belt, and all belts are initially facing to the right.
+
+Initially, a slime ball is on the belt of (0, 0), and other belts are empty. Every second, the state of the conveyor changes as follows:
+
+All slime balls on the conveyor move one cell in the direction of the belt at the same time. If there is no cell in the moved position, the slime gets out of 
+the conveyor, and if two slime balls move to the same cell, they merge into one. All belts with slime ball in the previous second change direction at the same 
+time: belts facing to the right become facing to the down, and vice versa. A new slime ball is placed on cell (0, 0).
+There three integers time, x_coord, and y_coord. You have to find out if there is a slime at the cell (x_coord, y_coord) after time seconds from the start.
+
+Create a C++ Function CheckSlimePosition that will return a boolean true if there is a slime ball in the cell (x_coord, y_coord) after time seconds 
+from the initial state, otherwise return false.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An Integers denoting time
+An Integers denoting x_coord
+An Integers denoting y_coord
+
+Input Constraints
+
+Each value of time should be in the range [0, 10^18] inclusive.
+Each value of x_coord and y_coord should be in the range [0, 119] inclusive.
+
 */
 
 #include <iostream>
@@ -25,9 +52,9 @@ long long Solve(long long time, int x_coord, int y_coord) {
     return grid[x_coord][y_coord];
 }
 
-bool CheckSolve(long long time, int x_coord, int y_coord) {
+bool CheckSlimePosition(long long time, int x_coord, int y_coord) {
   
-      if (time < 0 || time > 1e18) {
+    if (time < 0 || time > 1e18) {
         throw std::invalid_argument("time must be in the range 0 ≤ time ≤ 10^18");
     }
     if (x_coord < 0 || x_coord >= 120) {
