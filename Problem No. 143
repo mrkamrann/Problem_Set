@@ -1,5 +1,48 @@
 /*
 Link: https://codeforces.com/contest/406/problem/E
+
+Johnny is having a nightmare. Even in dreams, all he thinks about is math.
+
+Johnny dreams about num_cols binary vectors of length num_rows, indexed with numbers from 1 to num_cols. The most horrifying part is that the bits of each 
+vector are ordered in either ascending or descending order. For example, Johnny could be dreaming about the following 4 vectors of length 5:
+
+00000
+00001
+11110
+11111
+
+The Hamming distance H(a, b) between two vectors a and b of length num_rows is the number of positions at which the corresponding symbols are different.
+
+Johnny thinks that each three vectors with different indices constitute a single triple. Johnny's delusion is that he will wake up only if he counts the number 
+of such vector triples a, b, c that the sum H(a, b) + H(b, c) + H(c, a) is maximal among all the vector triples constructed from the dreamed vectors.
+
+Help Johnny wake up from this nightmare!
+
+You are given two  integers num_rows and num_cols, the length and the number of vectors.
+You are also given a 2D vector coordinates of size num_cols each coordinates[i] = [x_i, y_i] where integers x_i and y_i ,the description of the vector with index i; 
+that means that the first y_i bits of the i-th vector are equal to x_i, and the remaining num_rows - y_i bits are equal to 1 - x_i. 
+There can be multiple equal vectors in Johnny's dream.
+
+
+Return single number, the number of such vector triples among the given that the sum of the Hamming distances between the vectors of the triple is maximal.
+
+Create a C++ Function FindMaxHammingTriples that will return a long long denoting the number of such vector triples.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting num_rows 
+An integer denoting num_cols
+A vector<vector<int>> denoting coordinates
+
+Input Constraints
+
+The value of num_rows should be at least 1 and at most 10^9 inclusive.
+The value of num_cols should be at least 3 and at most 10^5 inclusive.
+Each value of x_i should be in the range [0, 1] inclusive.
+Each value of y_i should be in the range [1, num_rows] inclusive.
+
 */
 
 #include <iostream>
@@ -15,7 +58,7 @@ long long CalculateCombinations(int x_val, int y_val, int mod) {
     return z_val * (z_val - 1) * (z_val - 2) / 6;
 }
 
-long long Solve(int num_rows, int num_cols, std::vector<std::vector<int>>& coordinates) {
+long long FindMaxHammingTriples(int num_rows, int num_cols, std::vector<std::vector<int>>& coordinates) {
   
    if (num_rows < 1 || num_rows > 1000000000) {
     throw std::invalid_argument("Invalid value of num_rows: out of valid range");
