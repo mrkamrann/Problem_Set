@@ -124,7 +124,395 @@ if (minutes_2 < 0 || minutes_2 >= minutes) {
 
 int main() {
    
+     // TEST
+    int hours_1 = 10;
+    int minutes_1 = 60;
+    int count_1 = 3;
+    int hours_1_1 = 0;
+    int minutes_1_1 = 30;
+    int hours_2_1 = 9;
+    int minutes_2_1 = 45;
+    long long expected_1 = 9;
+    long long result_1 = CountDigitChanges(hours_1, minutes_1, count_1, hours_1_1, minutes_1_1, hours_2_1, minutes_2_1);
+    assert(result_1 == expected_1);
+    // TEST_END
+
+    // TEST
+    int hours_2 = 1000000000;
+    int minutes_2 = 1000000000;
+    int count_2 = 1;
+    int hours_1_2 = 500000000;
+    int minutes_1_2 = 100000;
+    int hours_2_2 = 999999999;
+    int minutes_2_2 = 999999999;
+    long long expected_2 = 499999999999899999;
+    long long result_2 = CountDigitChanges(hours_2, minutes_2, count_2, hours_1_2, minutes_1_2, hours_2_2, minutes_2_2);
+    assert(result_2 == expected_2);
+    // TEST_END
+
+    // TEST
+    int hours_3 = 500;
+    int minutes_3 = 300;
+    int count_3 = 5;
+    int hours_1_3 = 250;
+    int minutes_1_3 = 150;
+    int hours_2_3 = 499;
+    int minutes_2_3 = 299;
+    long long expected_3 = 24;
+    long long result_3 = CountDigitChanges(hours_3, minutes_3, count_3, hours_1_3, minutes_1_3, hours_2_3, minutes_2_3);
+    assert(result_3 == expected_3);
+    // TEST_END
+  
+    // TEST
+    int hours_4 = 20;
+    int minutes_4 = 45;
+    int count_4 = 2;
+    int hours_1_4 = 5;
+    int minutes_1_4 = 15;
+    int hours_2_4 = 15;
+    int minutes_2_4 = 30;
+    long long expected_4 = 52;
+    long long result_4 = CountDigitChanges(hours_4, minutes_4, count_4, hours_1_4, minutes_1_4, hours_2_4, minutes_2_4);
+     assert(result_4 == expected_4);
+    // TEST_END
+
+    // TEST
+    int hours_5 = 1000;
+    int minutes_5 = 720;
+    int count_5 = 10;
+    int hours_1_5 = 0;
+    int minutes_1_5 = 0;
+    int hours_2_5 = 999;
+    int minutes_2_5 = 719;
+    long long expected_5 = 0;
+    long long result_5 = CountDigitChanges(hours_5, minutes_5, count_5, hours_1_5, minutes_1_5, hours_2_5, minutes_2_5);
+    assert(result_5 == expected_5);
+    // TEST_END
+
+    // TEST
+    int hours_6 = 1000000;
+    int minutes_6 = 6000000;
+    int count_6 = 15;
+    int hours_1_6 = 500000;
+    int minutes_1_6 = 3000000;
+    int hours_2_6 = 999999;
+    int minutes_2_6 = 5999999;
+    long long expected_6 = 0;
+    long long result_6 = CountDigitChanges(hours_6, minutes_6, count_6, hours_1_6, minutes_1_6, hours_2_6, minutes_2_6);
+     assert(result_6 == expected_6);
+    // TEST_END
+  
+   // TEST
+    int hours_7 = 107;
+    int minutes_7 = 607;
+    int count_7 = 19;
+    int hours_1_7 = 0;
+    int minutes_1_7 = 307;
+    int hours_2_7 = 97;
+    int minutes_2_7 = 457;
+    long long expected_7 = 0;
+    long long result_7 = CountDigitChanges(hours_7, minutes_7, count_7, hours_1_7, minutes_1_7, hours_2_7, minutes_2_7);
+    assert(result_7 == expected_7);
+    // TEST_END
+
+    // TEST
+    int hours_8 = 320;
+    int minutes_8 = 100;
+    int count_8 = 1;
+    int hours_1_8 = 50;
+    int minutes_1_8 = 98;
+    int hours_2_8 = 299;
+    int minutes_2_8 = 58;
+    long long expected_8 = 24860;
+    long long result_8 = CountDigitChanges(hours_8, minutes_8, count_8, hours_1_8, minutes_1_8, hours_2_8, minutes_2_8);
+    assert(result_8 == expected_8);
+    // TEST_END
+
+    // TEST
+    int hours_9 = 50;
+    int minutes_9 = 30;
+    int count_9 = 5;
+    int hours_1_9 = 25;
+    int minutes_1_9 = 15;
+    int hours_2_9 = 49;
+    int minutes_2_9 = 29;
+    long long expected_9 = 0;
+    long long result_9 = CountDigitChanges(hours_9, minutes_9, count_9, hours_1_9, minutes_1_9, hours_2_9, minutes_2_9);
+    assert(result_9 == expected_9);
+    // TEST_END
+  
+   // TEST
+    int hours_10 = 1;
+    int minutes_10 = 60;
+    int count_10 = 3;
+    int hours_1_10 = 0;
+    int minutes_1_10 = 30;
+    int hours_2_10 = 1;
+    int minutes_2_10 = 45;
     
+    try {
+        CountDigitChanges(hours_10, minutes_10, count_10, hours_1_10, minutes_1_10, hours_2_10, minutes_2_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_11 = 10;
+    int minutes_11 = 1;
+    int count_11 = 3;
+    int hours_1_11 = 0;
+    int minutes_1_11 = 30;
+    int hours_2_11 = 9;
+    int minutes_2_11 = 45;
+    
+    try {
+        CountDigitChanges(hours_11, minutes_11, count_11, hours_1_11, minutes_1_11, hours_2_11, minutes_2_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_12 = 10;
+    int minutes_12 = 60;
+    int count_12 = 0;
+    int hours_1_12 = 0;
+    int minutes_1_12 = 30;
+    int hours_2_12 = 9;
+    int minutes_2_12 = 45;
+    
+    try {
+        CountDigitChanges(hours_12, minutes_12, count_12, hours_1_12, minutes_1_12, hours_2_12, minutes_2_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_13 = 10;
+    int minutes_13 = 60;
+    int count_13 = 21;
+    int hours_1_13 = 0;
+    int minutes_1_13 = 30;
+    int hours_2_13 = 9;
+    int minutes_2_13 = 45;
+    
+    try {
+        CountDigitChanges(hours_13, minutes_13, count_13, hours_1_13, minutes_1_13, hours_2_13, minutes_2_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_14 = 10;
+    int minutes_14 = 60;
+    int count_14 = 3;
+    int hours_1_14 = -1;
+    int minutes_1_14 = 30;
+    int hours_2_14 = 9;
+    int minutes_2_14 = 45;
+    
+    try {
+        CountDigitChanges(hours_14, minutes_14, count_14, hours_1_14, minutes_1_14, hours_2_14, minutes_2_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_15 = 10;
+    int minutes_15 = 60;
+    int count_15 = 3;
+    int hours_1_15 = 10;
+    int minutes_1_15 = 30;
+    int hours_2_15 = 9;
+    int minutes_2_15 = 45;
+    
+    try {
+        CountDigitChanges(hours_15, minutes_15, count_15, hours_1_15, minutes_1_15, hours_2_15, minutes_2_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_16 = 10;
+    int minutes_16 = 60;
+    int count_16 = 3;
+    int hours_1_16 = 0;
+    int minutes_1_16 = -1;
+    int hours_2_16 = 9;
+    int minutes_2_16 = 45;
+    
+    try {
+        CountDigitChanges(hours_16, minutes_16, count_16, hours_1_16, minutes_1_16, hours_2_16, minutes_2_16);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_17 = 10;
+    int minutes_17 = 60;
+    int count_17 = 3;
+    int hours_1_17 = 0;
+    int minutes_1_17 = 61;
+    int hours_2_17 = 9;
+    int minutes_2_17 = 45;
+    
+    try {
+        CountDigitChanges(hours_17, minutes_17, count_17, hours_1_17, minutes_1_17, hours_2_17, minutes_2_17);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+  
+   // TEST 
+    int hours_19 = 10;
+    int minutes_19 = 60;
+    int count_19 = 3;
+    int hours_1_19 = 0;
+    int minutes_1_19 = 30;
+    int hours_2_19 = 10;
+    int minutes_2_19 = -1;
+    
+    try {
+        CountDigitChanges(hours_19, minutes_19, count_19, hours_1_19, minutes_1_19, hours_2_19, minutes_2_19);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_20 = 10;
+    int minutes_20 = 60;
+    int count_20 = 3;
+    int hours_1_20 = -1;
+    int minutes_1_20 = 30;
+    int hours_2_20 = 9;
+    int minutes_2_20 = 61;
+    
+    try {
+        CountDigitChanges(hours_20, minutes_20, count_20, hours_1_20, minutes_1_20, hours_2_20, minutes_2_20);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_21 = 10;
+    int minutes_21 = 60;
+    int count_21 = 0;
+    int hours_1_21 = 0;
+    int minutes_1_21 = 30;
+    int hours_2_21 = -1;
+    int minutes_2_21 = 45;
+    
+    try {
+        CountDigitChanges(hours_21, minutes_21, count_21, hours_1_21, minutes_1_21, hours_2_21, minutes_2_21);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_22 = 10;
+    int minutes_22 = 60;
+    int count_22 = 3;
+    int hours_1_22 = 0;
+    int minutes_1_22 = -1;
+    int hours_2_22 = 10;
+    int minutes_2_22 = 45;
+    
+    try {
+        CountDigitChanges(hours_22, minutes_22, count_22, hours_1_22, minutes_1_22, hours_2_22, minutes_2_22);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_23 = 10;
+    int minutes_23 = 60;
+    int count_23 = 3;
+    int hours_1_23 = 10;
+    int minutes_1_23 = 30;
+    int hours_2_23 = 9;
+    int minutes_2_23 = 61;
+    
+    try {
+        CountDigitChanges(hours_23, minutes_23, count_23, hours_1_23, minutes_1_23, hours_2_23, minutes_2_23);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_24 = 10;
+    int minutes_24 = 60;
+    int count_24 = 3;
+    int hours_1_24 = -1;
+    int minutes_1_24 = -1;
+    int hours_2_24 = 9;
+    int minutes_2_24 = 45;
+    
+    try {
+        CountDigitChanges(hours_24, minutes_24, count_24, hours_1_24, minutes_1_24, hours_2_24, minutes_2_24);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_25 = 10;
+    int minutes_25 = 60;
+    int count_25 = 3;
+    int hours_1_25 = 10;
+    int minutes_1_25 = 61;
+    int hours_2_25 = 9;
+    int minutes_2_25 = 45;
+    
+    try {
+        CountDigitChanges(hours_25, minutes_25, count_25, hours_1_25, minutes_1_25, hours_2_25, minutes_2_25);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    // TEST 
+    int hours_26 = 10;
+    int minutes_26 = 60;
+    int count_26 = 3;
+    int hours_1_26 = 11;
+    int minutes_1_26 = 61;
+    int hours_2_26 = 9;
+    int minutes_2_26 = 45;
+    
+    try {
+        CountDigitChanges(hours_26, minutes_26, count_26, hours_1_26, minutes_1_26, hours_2_26, minutes_2_26);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+  
     return 0;
 }
-
