@@ -1,3 +1,148 @@
 /*
-Link: 
+Link: https://codeforces.com/contest/1016/problem/G
 */
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+void Divide(long long number, std::vector<long long> &primes) {
+
+    for (long long i = 2; i * i <= number; ++i) {
+        if (number % i == 0) {
+            primes.push_back(i);
+            while (number % i == 0) {
+                number /= i;
+            }
+        }
+    }
+    if (number > 1) {
+        primes.push_back(number);
+    }
+}
+
+long long CalculatePairs(int num_candidates, long long x_val, long long y_val, const std::vector<long long> &ranks) {
+
+    if (num_candidates < 1 || num_candidates > 200000) {
+        throw std::invalid_argument("Invalid number of candidates");
+    }
+    if (x_val < 1 || x_val > 1000000000000000000LL) {
+        throw std::invalid_argument("Invalid x value");
+    }
+    if (y_val < 1 || y_val > 1000000000000000000LL) {
+        throw std::invalid_argument("Invalid y value");
+    }
+    if (x_val > y_val) {
+        throw std::invalid_argument("x value must be less than or equal to y value");
+    }
+
+    for (const auto &rank : ranks) {
+        if (rank < 1 || rank > 1000000000000000000LL) {
+            throw std::invalid_argument("Invalid rank value");
+        }
+    }
+
+    if (y_val % x_val != 0) {
+        return 0;
+    }
+
+    std::map<long long, int> gcd_counts_x, gcd_counts_y;
+
+    for (int i = 0; i < num_candidates; ++i) {
+        if (ranks[i] % x_val == 0) {
+            ++gcd_counts_x[std::gcd(y_val / x_val, ranks[i] / x_val)];
+        }
+        if (y_val % ranks[i] == 0) {
+            ++gcd_counts_y[y_val / ranks[i]];
+        }
+    }
+
+    long long result = 0;
+
+    if (gcd_counts_x.size() < 6000000 / gcd_counts_y.size()) {
+        for (const auto &gcd_x : gcd_counts_x) {
+            for (const auto &gcd_y : gcd_counts_y) {
+                if (std::gcd(gcd_x.first, gcd_y.first) == 1) {
+                    result += static_cast<long long>(gcd_x.second) * gcd_y.second;
+                }
+            }
+        }
+        return result;
+    }
+
+    std::vector<long long> primes;
+    Divide(y_val, primes);
+
+    std::vector<int> prime_mask_count(1 << primes.size(), 0);
+
+    for (int i = 0; i < num_candidates; ++i) {
+        if (ranks[i] % x_val != 0) {
+            continue;
+        }
+        long long gcd_value = std::gcd(ranks[i] / x_val, y_val / x_val);
+        int mask = 0;
+        for (std::size_t j = 0; j < primes.size(); ++j) {
+            if (gcd_value % primes[j] == 0) {
+                mask |= 1 << j;
+            }
+        }
+        ++prime_mask_count[mask];
+    }
+
+    for (std::size_t i = 0; i < primes.size(); ++i) {
+        for (int j = 0; j < (1 << primes.size()); ++j) {
+            if (j & (1 << i)) {
+                prime_mask_count[j] += prime_mask_count[j ^ (1 << i)];
+            }
+        }
+    }
+
+    for (int i = 0; i < num_candidates; ++i) {
+        if (y_val % ranks[i] != 0) {
+            continue;
+        }
+        long long quotient = y_val / ranks[i];
+        int mask = 0;
+        for (std::size_t j = 0; j < primes.size(); ++j) {
+            if (quotient % primes[j] != 0) {
+                mask |= 1 << j;
+            }
+        }
+        result += prime_mask_count[mask];
+    }
+
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+int main() {
+    int num_candidates;
+    long long x_val, y_val;
+    std::cin >> num_candidates >> x_val >> y_val;
+
+    std::vector<long long> ranks(num_candidates);
+    for (int i = 0; i < num_candidates; ++i) {
+        std::cin >> ranks[i];
+    }
+
+    try {
+        long long result = CalculatePairs(num_candidates, x_val, y_val, ranks);
+        std::cout << result << std::endl;
+    } catch (const std::invalid_argument &e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    return 0;
+}
+
