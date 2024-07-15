@@ -1,3 +1,100 @@
 /*
 Link: https://codeforces.com/contest/288/problem/E
 */
+
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+long long CalculateF(const std::string& to_str) {
+  
+    const long long modulus = 1000000007LL;
+    long long a_val, old_a_val, b_val, old_b_val, c_val, old_c_val, n_val, len, temp_1, temp_2;
+    len = to_str.size();
+    a_val = 0;
+    b_val = 0;
+    c_val = 0;
+    n_val = 1;
+    temp_1 = 0;
+    temp_2 = 0;
+
+    for (int i = 1; i <= len; i++) {
+        old_a_val = a_val;
+        old_b_val = b_val;
+        old_c_val = c_val;
+
+        a_val = ((200 * a_val) % modulus + (220 * b_val) % modulus + (65 * n_val) % modulus) % modulus;
+        b_val = ((20 * b_val) % modulus + (11 * n_val) % modulus) % modulus;
+        c_val = ((100 * (old_a_val + old_c_val)) % modulus + (110 * old_b_val) % modulus + 70 * (old_b_val + modulus - temp_1) % modulus + 40 * (old_b_val + modulus - temp_2) + (28 * (2 * n_val + modulus - 1)) % modulus) % modulus;
+
+        temp_1 = (10 * temp_1 + 4) % modulus;
+
+        if (to_str[i - 1] == '4') {
+            a_val = (a_val + modulus - (100 * ((temp_2 * temp_2) % modulus) + 140 * temp_2 + 49) % modulus) % modulus;
+            b_val = (b_val + modulus - (10 * temp_2 + 7) % modulus) % modulus;
+            c_val = (c_val + modulus - (100 * ((temp_2 * temp_2) % modulus) + 110 * temp_2 + 28) % modulus) % modulus;
+            temp_2 = (10 * temp_2 + 4) % modulus;
+            n_val = (2 * n_val - 1) % modulus;
+        } else {
+            temp_2 = (10 * temp_2 + 7) % modulus;
+            n_val = (2 * n_val) % modulus;
+        }
+    }
+    return c_val;
+}
+
+
+long long Solve(const std::string& left, const std::string& right) {
+  
+  if (left.empty() || right.empty()) {
+    throw std::invalid_argument("Invalid input: 'left' and 'right' must be non-empty.");
+}
+
+if (left.size() != right.size()) {
+    throw std::invalid_argument("Invalid input: 'left' and 'right' must have the same length.");
+}
+
+if (left.size() > 100000 || right.size() > 100000) {
+    throw std::invalid_argument("Invalid input: Length of 'left' and 'right' must be at most 100000.");
+}
+
+if (left == right) {
+    throw std::invalid_argument("Invalid input: 'left' must be less than 'right'.");
+}
+
+if (!std::all_of(left.begin(), left.end(), [](char character) { return  character == '4' ||  character == '7'; })) {
+    throw std::invalid_argument("Invalid input: 'left' must be a lucky number (contain only '4' or '7').");
+}
+
+if (!std::all_of(right.begin(), right.end(), [](char character) { return  character == '4' ||  character == '7'; })) {
+    throw std::invalid_argument("Invalid input: 'right' must be a lucky number (contain only '4' or '7').");
+}
+
+
+    return (CalculateF(right) + 1000000007LL - CalculateF(left)) % 1000000007LL;
+}
+
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+#include <algorithm>
+
+
+int main() {
+    std::string left, right;
+    std::cin >> left >> right;
+
+    //TEST
+    try {
+        std::cout << Solve(left, right) << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    //TEST_END
+
+    return 0;
+}
+
