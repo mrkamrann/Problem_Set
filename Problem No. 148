@@ -117,8 +117,145 @@ std::string FindCounthHex(long long count, long long frequency) {
 
 int main() {
     
+  //TEST
+long long count_1 = 1;
+long long frequency_1 = 1;
+std::string expected_1 = "1";
+std::string result_1 = FindCounthHex(count_1, frequency_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long count_2 = 5;
+long long frequency_2 = 2;
+std::string expected_2 = "5";
+std::string result_2 = FindCounthHex(count_2, frequency_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long count_3 = 10;
+long long frequency_3 = 3;
+std::string expected_3 = "a";
+std::string result_3 = FindCounthHex(count_3, frequency_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long count_4 = 15;
+long long frequency_4 = 4;
+std::string expected_4 = "f";
+std::string result_4 = FindCounthHex(count_4, frequency_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long count_5 = 20;
+long long frequency_5 = 5;
+std::string expected_5 = "14";
+std::string result_5 = FindCounthHex(count_5, frequency_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long count_6 = 100;
+long long frequency_6 = 6;
+std::string expected_6 = "64";
+std::string result_6 = FindCounthHex(count_6, frequency_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long count_7 = 500;
+long long frequency_7 = 7;
+std::string expected_7 = "1f4";
+std::string result_7 = FindCounthHex(count_7, frequency_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long count_8 = 1000;
+long long frequency_8 = 8;
+std::string expected_8 = "3e8";
+std::string result_8 = FindCounthHex(count_8, frequency_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long count_9 = 2000;
+long long frequency_9 = 9;
+std::string expected_9 = "7d0";
+std::string result_9 = FindCounthHex(count_9, frequency_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+ 
+//TEST
+long long count_10 = 0; 
+long long frequency_10 = 1;
+try {
+    FindCounthHex(count_10, frequency_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long count_11 = 1;
+long long frequency_11 = 0; 
+try {
+    FindCounthHex(count_11, frequency_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long count_12 = 2 * 10000000000 + 1; 
+long long frequency_12 = 1;
+try {
+    FindCounthHex(count_12, frequency_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+  
+long long count_13 = 1;
+long long frequency_13 = 11; 
+try {
+    FindCounthHex(count_13, frequency_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  
+//TEST
+long long count_14 = -999999; 
+long long frequency_14 = 1;
+try {
+    FindCounthHex(count_14, frequency_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long count_15 = 1;
+long long frequency_15 = -9999; 
+try {
+    FindCounthHex(count_15, frequency_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
-
-
-
