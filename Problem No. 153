@@ -1,3 +1,79 @@
 /*
 Link: https://codeforces.com/contest/220/problem/D
 */
+
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+void InitializeGrid(int width, int height, std::vector<std::vector<int>>& grid) {
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (i && j) {
+                grid[i][j] = i > j ? grid[i - j][j] : grid[i][j - i];
+            } else {
+                grid[i][j] = i + j;
+            }
+        }
+    }
+}
+
+long long CalculateZ(long long width, long long height, std::vector<std::vector<int>>& grid) {
+    const int modulus = 1000000007;
+    long long total_cells = width * height % modulus;
+    long long result = total_cells * (total_cells - 1) % modulus * (total_cells - 2) % modulus;
+    long long a_val = (width >> 1) * (height >> 1);
+    long long b_val = ((width + 1) >> 1) * (height >> 1);
+    long long c_val = (width >> 1) * ((height + 1) >> 1);
+    long long d_val = ((width + 1) >> 1) * ((height + 1) >> 1);
+
+    result -= 6 * a_val * b_val % modulus * c_val % modulus;
+    result -= 6 * b_val * c_val % modulus * d_val % modulus;
+    result -= 6 * c_val * d_val % modulus * a_val % modulus;
+    result -= 6 * d_val * a_val % modulus * b_val % modulus;
+    result -= ((width - 1) * (width - 2) + (height - 1) * (height - 2)) % modulus * total_cells % modulus;
+    result %= modulus;
+
+    for (int i = 1; i < width; i++) {
+        for (int j = 1; j < height; j++) {
+            if (i || j) {
+                result = (result - (grid[i][j] - 1) * (width - i) * (height - j) * 12) % modulus;
+            }
+        }
+    }
+
+    return (result + modulus) % modulus;
+}
+
+long long Solve(long long width, long long height) {
+    if (width < 1 || width > 4000 || height < 1 || height > 4000) {
+        throw std::invalid_argument("Invalid input: width and height must be between 1 and 4000.");
+    }
+
+    width++, height++;
+    std::vector<std::vector<int>> grid(width, std::vector<int>(height));
+    InitializeGrid(width, height, grid);
+    return CalculateZ(width, height, grid);
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    long long width, height;
+    std::cin >> width >> height;
+
+    //TEST
+    try {
+        std::cout << Solve(width, height) << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    //TEST_END
+
+    return 0;
+}
