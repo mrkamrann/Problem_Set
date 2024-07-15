@@ -50,17 +50,21 @@ int CountDifferentPeriods(int count_a, int count_b) {
         
         int denominator = 1 + temp;
         
-        int left_a = (count_a + temp) / denominator;
+        int left_a = (0LL+count_a + temp) / denominator;
         
         int right_a = count_a / temp;
         
-        int left_b = (count_b + temp) / denominator;
+        int left_b = (0LL+count_b + temp) / denominator;
         
         int right_b = count_b / temp;
 
         if (left_a <= right_a && left_b <= right_b) {
             
-            answer += std::max(0, std::min(right, right_a + right_b) - std::max(left, left_a + left_b) + 1);
+           int mini_1 = std::min(right, right_a + right_b);
+          
+           int mini_2 = std::max(left, left_a + left_b) - 1;
+          
+          answer += std::max(0, mini_1) - mini_2;
         }
     }
 
@@ -73,6 +77,158 @@ int CountDifferentPeriods(int count_a, int count_b) {
 
 int main() {
     
+    //TEST
+int count_a_1 = 1;
+int count_b_1 = 1;
+int expected_1 = 1;
+int result_1 = CountDifferentPeriods(count_a_1, count_b_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+int count_a_2 = 100;
+int count_b_2 = 200;
+int expected_2 = 278;
+int result_2 = CountDifferentPeriods(count_a_2, count_b_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+int count_a_3 = 1000000;
+int count_b_3 = 5000000;
+int expected_3 = 5995043;
+int result_3 = CountDifferentPeriods(count_a_3, count_b_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+int count_a_4 = 999999999;
+int count_b_4 = 1000000000;
+int expected_4 = 1999936813;
+int result_4 = CountDifferentPeriods(count_a_4, count_b_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+int count_a_5 = 123456789;
+int count_b_5 = 987654321;
+int expected_5 = 1111032695;
+int result_5 = CountDifferentPeriods(count_a_5, count_b_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+int count_a_6 = 98;
+int count_b_6 = 129;
+int expected_6 = 205;
+int result_6 = CountDifferentPeriods(count_a_6, count_b_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+int count_a_7 = 500;
+int count_b_7 = 5;
+int expected_7 = 379;
+int result_7 = CountDifferentPeriods(count_a_7, count_b_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+int count_a_8 = 2;
+int count_b_8 = 750000000;
+int expected_8 = 500000002;
+int result_8 = CountDifferentPeriods(count_a_8, count_b_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+int count_a_9 = 10;
+int count_b_9 = 1;
+int expected_9 = 6;
+int result_9 = CountDifferentPeriods(count_a_9, count_b_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+int count_a_10 = 0;
+int count_b_10 = 1000000000;
+try {
+    CountDifferentPeriods(count_a_10, count_b_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int count_a_11 = 1000000000;
+int count_b_11 = 0;
+try {
+    CountDifferentPeriods(count_a_11, count_b_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int count_a_12 = 1000000001;
+int count_b_12 = 1;
+try {
+    CountDifferentPeriods(count_a_12, count_b_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int count_a_13 = 1;
+int count_b_13 = 1000000001;
+try {
+    CountDifferentPeriods(count_a_13, count_b_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int count_a_14 = -1;
+int count_b_14 = 1000000000;
+try {
+    CountDifferentPeriods(count_a_14, count_b_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int count_a_15 = 1000000000;
+int count_b_15 = -1;
+try {
+    CountDifferentPeriods(count_a_15, count_b_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
     return 0;
 }
