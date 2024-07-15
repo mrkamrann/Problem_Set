@@ -97,6 +97,185 @@ int FindNumberOfSequences(int num, int k_val, int x_val) {
 
 int main() {
   
-    return 0;
+  //TEST
+int num_1 = 1;
+int k_val_1 = 0;
+int x_val_1 = 0;
+int expected_1 = 0;
+int result_1 = FindNumberOfSequences(num_1, k_val_1, x_val_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+int num_2 = 100;
+int k_val_2 = 5;
+int x_val_2 = 3;
+int expected_2 = 427866670;
+int result_2 = FindNumberOfSequences(num_2, k_val_2, x_val_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+int num_3 = 10002;
+int k_val_3 = 10;
+int x_val_3 = 1023;
+int expected_3 = 455834501;
+int result_3 = FindNumberOfSequences(num_3, k_val_3, x_val_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+int num_4 = 999;
+int k_val_4 = 20;
+int x_val_4 = 105;
+int expected_4 = 122458765;
+int result_4 = FindNumberOfSequences(num_4, k_val_4, x_val_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+int num_5 = 123;
+int k_val_5 = 15;
+int x_val_5 = 3;
+int expected_5 = 498689152;
+int result_5 = FindNumberOfSequences(num_5, k_val_5, x_val_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+int num_6 = 987654321;
+int k_val_6 = 18;
+int x_val_6 = 262143;
+int expected_6 = 619978558;
+int result_6 = FindNumberOfSequences(num_6, k_val_6, x_val_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+int num_7 = 500000000;
+int k_val_7 = 7;
+int x_val_7 = 127;
+int expected_7 = 402135863;
+int result_7 = FindNumberOfSequences(num_7, k_val_7, x_val_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+int num_8 = 250000000;
+int k_val_8 = 12;
+int x_val_8 = 4095;
+int expected_8 = 60556723;
+int result_8 = FindNumberOfSequences(num_8, k_val_8, x_val_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+int num_9 = 1000000000;
+int k_val_9 = 8;
+int x_val_9 = 255;
+int expected_9 = 563803788;
+int result_9 = FindNumberOfSequences(num_9, k_val_9, x_val_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+int num_10 = 1;
+int k_val_10 = 0;
+int x_val_10 = -99999;
+try {
+    FindNumberOfSequences(num_10, k_val_10, x_val_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
 }
 
+//TEST_END
+
+//TEST
+int num_11 = 1000000001;
+int k_val_11 = 0;
+int x_val_11 = 0;
+try {
+    FindNumberOfSequences(num_11, k_val_11, x_val_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_12 = 1;
+int k_val_12 = 10000001;
+int x_val_12 = 0;
+try {
+    FindNumberOfSequences(num_12, k_val_12, x_val_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_13 = 1;
+int k_val_13 = 20;
+int x_val_13 = 1048576;
+try {
+    FindNumberOfSequences(num_13, k_val_13, x_val_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_14 = -1;
+int k_val_14 = 0;
+int x_val_14 = 0;
+try {
+    FindNumberOfSequences(num_14, k_val_14, x_val_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_15 = 1;
+int k_val_15 = -1;
+int x_val_15 = 0;
+try {
+    FindNumberOfSequences(num_15, k_val_15, x_val_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_16 = 1;
+int k_val_16 = 0;
+int x_val_16 = -1;
+try {
+    FindNumberOfSequences(num_16, k_val_16, x_val_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+    return 0;
+}
