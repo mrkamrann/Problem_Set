@@ -51,6 +51,7 @@ Each value of y_i should be in the range [1, num_rows] inclusive.
 #include <cstdio>
 #include <cmath>
 #include <stdexcept>
+#include <cassert>
 
 long long CalculateCombinations(int x_val, int y_val, int mod) {
     long long z_val = (y_val - x_val + mod) % mod + 1;
@@ -124,6 +125,7 @@ if (num_cols < 3 || num_cols > 100000 || num_cols != coordinates.size()) {
 #include <cstdio>
 #include <cmath>
 #include <stdexcept>
+#include <cassert>
 
 int main() {
    
