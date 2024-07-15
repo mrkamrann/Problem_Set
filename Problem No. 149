@@ -43,6 +43,8 @@ The value of mod should be at least 999990011 and at most 10^9+7 inclusive, and 
 #include <cassert>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
+#include <vector>
 #include <set>
 
 std::vector<long long> SimpleSieve(long long limit) {
@@ -66,7 +68,7 @@ std::vector<long long> SimpleSieve(long long limit) {
 
 
 std::set<long long> SegmentedSieve(long long low, long long high) {
-    long long limit = std::sqrt(high) + 1;
+    long long limit = sqrt(high) + 1;
     std::vector<long long> primes = SimpleSieve(limit);
     long long len = high - low + 1;
     std::vector<bool> is_prime(len, true);
@@ -138,6 +140,9 @@ long long NumberOfTickets(long long num_digits, long long base_system, long long
 #include <cassert>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
+#include <vector>
+#include <set>
 
 int main() {
   
