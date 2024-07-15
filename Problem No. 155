@@ -1,3 +1,133 @@
 /*
 Link: https://codeforces.com/problemset/problem/60/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+void Add(std::vector<long long>& result, const std::vector<std::vector<long long>>& matrix, long long modulus) {
+    long long temp[2] = {0, 0};
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            temp[j] = (temp[j] + result[i] * matrix[i][j] % modulus) % modulus;
+        }
+    }
+    result[0] = temp[0];
+    result[1] = temp[1];
+}
+
+void Multiply(std::vector<std::vector<long long>>& matrix, long long modulus) {
+    long long temp[2][2] = {0};
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            for (int k = 0; k < 2; k++) {
+                temp[i][k] = (temp[i][k] + matrix[i][j] * matrix[j][k] % modulus) % modulus;
+            }
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            matrix[i][j] = temp[i][j];
+        }
+    }
+}
+
+void Calculate(long long val_n, std::vector<long long>& result, std::vector<std::vector<long long>>& matrix, long long modulus) {
+    while (val_n) {
+        if (val_n & 1) {
+            Add(result, matrix, modulus);
+        }
+        Multiply(matrix, modulus);
+        val_n >>= 1;
+    }
+}
+
+long long ProcessMushrooms(int count, long long minutes_1, long long minutes_2, long long modulus, std::vector<long long>& weights) {
+  
+   if (count < 1 || count > 1000000) {
+    throw std::invalid_argument("count must be between 1 and 10^6");
+}
+
+if (minutes_1 < 0 || minutes_1 > 1000000000000000000LL) {
+    throw std::invalid_argument("minutes_1 must be between 0 and 10^18");
+}
+
+if (minutes_2 < 0 || minutes_2 > 1000000000000000000LL) {
+    throw std::invalid_argument("minutes_2 must be between 0 and 10^18");
+}
+
+if (modulus < 2 || modulus > 1000000000) {
+    throw std::invalid_argument("modulus must be between 2 and 10^9");
+}
+
+if (weights.size() != static_cast<size_t>(count)) {
+    throw std::invalid_argument("weights size must match the count");
+}
+
+if (minutes_1 + minutes_2 <= 0) {
+    throw std::invalid_argument("sum of minutes_1 and minutes_2 must be greater than 0");
+}
+
+for (const long long& weight : weights) {
+    if (weight < 0 || weight > 1000000000) {
+        throw std::invalid_argument("each weight must be between 0 and 10^9");
+    }
+}
+
+  
+    if (count == 1) {
+        return weights[0] % modulus;
+    }
+
+    std::vector<std::vector<long long>> matrix = {{3, 1}, {0, 1}};
+    std::vector<long long> result = {1, 0};
+
+    Calculate(minutes_1, result, matrix, modulus);
+
+    long long sum = 0;
+    for (int i = 0; i < count; i++) {
+        sum = (sum + weights[i]) % modulus;
+    }
+
+    sum = (sum * result[0] % modulus - ((weights[0] + weights[count - 1]) % modulus * result[1]) % modulus + modulus) % modulus;
+
+    matrix = {{0, 1}, {1, 1}};
+    result = {0, 1};
+    Calculate(minutes_1, result, matrix, modulus);
+    weights[count - 1] = (result[0] * weights[count - 2] % modulus + result[1] * weights[count - 1] % modulus) % modulus;
+
+    matrix = {{3, 1}, {0, 1}};
+    result = {1, 0};
+    Calculate(minutes_2, result, matrix, modulus);
+
+    sum = (sum * result[0] % modulus - ((weights[0] + weights[count - 1]) % modulus * result[1]) % modulus + modulus) % modulus;
+
+    return sum;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int n;
+    long long x, y, p;
+    scanf("%d%lld%lld%lld", &n, &x, &y, &p);
+
+    std::vector<long long> a(n);
+    for (int i = 0; i < n; i++) {
+        scanf("%lld", &a[i]);
+    }
+
+    long long result = ProcessMushrooms(n, x, y, p, a);
+    printf("%lld\n", result);
+
+
+    return 0;
+}
+
