@@ -1,5 +1,29 @@
 /*
 Link : https://codeforces.com/problemset/problem/747/F
+
+Dave likes hexadecimal notation and considers a positive integer in hexadecimal notation interesting if each digit and each letter in it appears no more than frequency times. For example, if frequency = 3, then integers 13a13322, aaa, abcdef0123456789 are interesting, but numbers aaaa, abababab, and 1000000 are not interesting.
+
+Your task is to find the count-th smallest interesting integer for Dave in hexadecimal notation. The integer should not contain leading zeros.
+
+You are given two integers count and frequency  — the number of the required integer and the maximum number of times some integer or letter can appear 
+in an interesting integer.
+
+Return in the hexadecimal notation the only string that is the count-th smallest interesting integer for Dave.
+
+Create a C++ Function FindCounthHex that will return a string denoting the count-th smallest interesting integer for Dave.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting count
+An integer denoting frequency
+
+Input Constraints
+
+The value of count should be at least 1 and at most 2*10^9 inclusive.
+The value of frequency should be at least 1 and at most 10 inclusive.
+
 */
 
 #include <iostream>
@@ -37,7 +61,7 @@ long long Calculate(std::vector<std::vector<long long>>& combinations, int lengt
     return is_end ? f_vec[digits][0] / digits * 15 : f_vec[digits][0];
 }
 
-std::string ProcessInput(long long count, long long frequency) {
+std::string FindCounthHex(long long count, long long frequency) {
   
     if (count < 1 || frequency < 1 || count > 2000000000 || frequency > 10) {
         throw std::invalid_argument("Input values are out of bounds.");
