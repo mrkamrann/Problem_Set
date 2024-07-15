@@ -1,3 +1,4 @@
+
 /*
 Link: https://codeforces.com/contest/1808/problem/E2
 
@@ -33,7 +34,7 @@ Input Constraints
 
 The value of num_digits should be at least 1 and at most 10^18 inclusive.
 The value of base_system should be at least 1 and at most 100 inclusive.
-The value of mod should be at least 10^8 and at most 10^9+7 inclusive, and it should be a prime number.
+The value of mod should be at least 999990011 and at most 10^9+7 inclusive, and it should be a prime number.
 
 */
 
@@ -42,6 +43,50 @@ The value of mod should be at least 10^8 and at most 10^9+7 inclusive, and it sh
 #include <cassert>
 #include <algorithm>
 #include <numeric>
+#include <set>
+
+std::vector<long long> SimpleSieve(long long limit) {
+    std::vector<bool> is_prime(limit + 1, true);
+    std::vector<long long> primes;
+    is_prime[0] = is_prime[1] = false;
+    for (long long p = 2; p * p <= limit; ++p) {
+        if (is_prime[p]) {
+            for (long long i = p * p; i <= limit; i += p) {
+                is_prime[i] = false;
+            }
+        }
+    }
+    for (long long p = 2; p <= limit; ++p) {
+        if (is_prime[p]) {
+            primes.push_back(p);
+        }
+    }
+    return primes;
+}
+
+
+std::set<long long> SegmentedSieve(long long low, long long high) {
+    long long limit = std::sqrt(high) + 1;
+    std::vector<long long> primes = SimpleSieve(limit);
+    long long len = high - low + 1;
+    std::vector<bool> is_prime(len, true);
+
+    for (long long prime : primes) {
+        long long start = std::max(prime * prime, (low + prime - 1) / prime * prime);
+        for (long long j = start; j <= high; j += prime) {
+            is_prime[j - low] = false;
+        }
+    }
+
+    std::set<long long> result;
+    for (long long i = 0; i < len; ++i) {
+        if (is_prime[i]) {
+            result.insert(i + low);
+        }
+    }
+    return result;
+}
+
 
 long long Power(long long base, long long exponent, long long mod) {
     long long result = 1;
@@ -53,9 +98,16 @@ long long Power(long long base, long long exponent, long long mod) {
 
 long long NumberOfTickets(long long num_digits, long long base_system, long long mod) {
 
-    if (num_digits < 1 || num_digits > 1000000000000000000L || base_system < 1 || base_system > 100 || mod < 100000000 || mod > 1000000007) {
+    if (num_digits < 1 || num_digits > 1000000000000000000LL || base_system < 1 || base_system > 100 || mod < 999990011 || mod > 1000000007) {
         throw std::invalid_argument("Invalid input arguments.");
     }
+  
+   std::set<long long> checker = SegmentedSieve(999990011, 1000000007);
+  
+   if(!checker.count(mod))
+   {
+     throw std::invalid_argument("mod should be a prime number");
+   }
 
     if (num_digits == 1) {
         return 1;
@@ -88,6 +140,206 @@ long long NumberOfTickets(long long num_digits, long long base_system, long long
 #include <numeric>
 
 int main() {
-   
+  
+//TEST
+long long num_digits_1 = 1;
+long long base_system_1 = 1;
+long long mod_1 = 1000000007;
+long long expected_1 = 1;
+long long result_1 = NumberOfTickets(num_digits_1, base_system_1, mod_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long num_digits_2 = 10;
+long long base_system_2 = 10;
+long long mod_2 = 999990289;
+long long expected_2 = 463167932;
+long long result_2 = NumberOfTickets(num_digits_2, base_system_2, mod_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long num_digits_3 = 100;
+long long base_system_3 = 2;
+long long mod_3 = 1000000007;
+long long expected_3 = 988185646;
+long long result_3 = NumberOfTickets(num_digits_3, base_system_3, mod_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long num_digits_4 = 1000;
+long long base_system_4 = 16;
+long long mod_4 = 999991327;
+long long expected_4 = 890389098; 
+long long result_4 = NumberOfTickets(num_digits_4, base_system_4, mod_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long num_digits_5 = 10000;
+long long base_system_5 = 5;
+long long mod_5 = 1000000007;
+long long expected_5 = 763892216; 
+long long result_5 = NumberOfTickets(num_digits_5, base_system_5, mod_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long num_digits_6 = 100000;
+long long base_system_6 = 3;
+long long mod_6 = 999992057;
+long long expected_6 = 125966337; 
+long long result_6 = NumberOfTickets(num_digits_6, base_system_6, mod_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long num_digits_7 = 1000000;
+long long base_system_7 = 8;
+long long mod_7 = 1000000007;
+long long expected_7 = 633588152; 
+long long result_7 = NumberOfTickets(num_digits_7, base_system_7, mod_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long num_digits_8 = 10000000;
+long long base_system_8 = 6;
+long long mod_8 = 999993061;
+long long expected_8 = 816659751; 
+long long result_8 = NumberOfTickets(num_digits_8, base_system_8, mod_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long num_digits_9 = 100000000;
+long long base_system_9 = 4;
+long long mod_9 = 1000000007;
+long long expected_9 = 935645725; 
+long long result_9 = NumberOfTickets(num_digits_9, base_system_9, mod_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+long long num_digits_10 = 0; 
+long long base_system_10 = 1;
+long long mod_10 = 1000000007;
+try {
+    NumberOfTickets(num_digits_10, base_system_10, mod_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_11 = 1;
+long long base_system_11 = 0; 
+long long mod_11 = 1000000007;
+try {
+    NumberOfTickets(num_digits_11, base_system_11, mod_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_12 = 1;
+long long base_system_12 = 1;
+long long mod_12 = 100000000; 
+try {
+    NumberOfTickets(num_digits_12, base_system_12, mod_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_13 = 1000000000000000008LL; 
+long long base_system_13 = 1;
+long long mod_13 = 1000000007;
+try {
+     NumberOfTickets(num_digits_13, base_system_13, mod_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_14 = 1;
+long long base_system_14 = 101; 
+long long mod_14 = 1000000007;
+try {
+     NumberOfTickets(num_digits_14, base_system_14, mod_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_15 = 1;
+long long base_system_15 = 1;
+long long mod_15 = 10000000008; 
+try {
+     NumberOfTickets(num_digits_15, base_system_15, mod_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_16 = -4546518; 
+long long base_system_16 = 1;
+long long mod_16 = 1000000007;
+try {
+    long long result_16 = NumberOfTickets(num_digits_16, base_system_16, mod_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_17 = 1;
+long long base_system_17 = -999999; 
+long long mod_17 = 1000000007;
+try {
+    NumberOfTickets(num_digits_17, base_system_17, mod_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_digits_18 = 1;
+long long base_system_18 = 1;
+long long mod_18 = -89465; 
+try {
+    NumberOfTickets(num_digits_18, base_system_18, mod_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+long long num_digits_19 = 1;
+long long base_system_19 = 1;
+long long mod_19 = 999993062; 
+try {
+    NumberOfTickets(num_digits_19, base_system_19, mod_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
