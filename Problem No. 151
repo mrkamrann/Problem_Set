@@ -1,3 +1,84 @@
 /*
 Link: https://codeforces.com/contest/1063/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <bitset>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <string>
+
+int FindMaxJ(const std::string &str) {
+
+    int len = str.size();
+
+    if (len < 1 || len > 500000) {
+        throw std::invalid_argument("len must be between 1 and 500000.");
+    }
+    if (str.size() != static_cast<std::size_t>(len)) {
+        throw std::invalid_argument("String length does not match the provided len.");
+    }
+
+    for (char character : str) {
+        if (character < 'a' || character > 'z') {
+            throw std::invalid_argument("String must contain only lowercase Latin letters.");
+        }
+    }
+
+    int max_moves = static_cast<int>(std::ceil(std::sqrt(2 * len) + 0.001));
+    int result = 1;
+
+    std::vector<std::vector<bool>> feasible(len + 1, std::vector<bool>(max_moves + 1, false));
+    std::vector<int> hash_values(len + 1, 0);
+    std::bitset<9114515> visited;
+
+    for (int i = 0; i < len; ++i) {
+        feasible[i][1] = true;
+        hash_values[i] = str[i];
+    }
+
+    for (int j = 2, k = 2; j <= max_moves; ++j, k += j) {
+        for (int i = len - k; i >= 0; --i) {
+            if (feasible[i + j][j - 1]) {
+                visited[hash_values[i + j]] = true;
+            }
+            if (visited[hash_values[i]] || visited[hash_values[i + 1]]) {
+                feasible[i][j] = true;
+                result = j;
+            }
+        }
+        visited.reset();
+        for (int i = 0; i <= len - k - 1; ++i) {
+            hash_values[i] = (131 * hash_values[i] + str[i + j - 1]) % 9114514;
+        }
+        if (result < j) {
+            break;
+        }
+    }
+
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <bitset>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <string>
+
+int main() {
+    int len;
+    std::cin >> len;
+
+    std::string str;
+    std::cin >> str;
+
+    int result = FindMaxJ(str);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
