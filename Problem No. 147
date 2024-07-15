@@ -116,5 +116,157 @@ int FindNextInterval(int start, int length)
 
 int main() {
    
+  //TEST
+int start_1 = 1;
+int length_1 = 1;
+int expected_1 = 2;
+int result_1 = FindNextInterval(start_1, length_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST
+int start_2 = 100;
+int length_2 = 200;
+int expected_2 = 200;
+int result_2 = FindNextInterval(start_2, length_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+int start_3 = 1000000;
+int length_3 = 5000000;
+int expected_3 = 11000000;
+int result_3 = FindNextInterval(start_3, length_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+int start_4 = 999999999;
+int length_4 = 1000000000;
+int expected_4 = 1999999999;
+int result_4 = FindNextInterval(start_4, length_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+int start_5 = 123;
+int length_5 = 98;
+int expected_5 = 223;
+int result_5 = FindNextInterval(start_5, length_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+int start_6 = 98761;
+int length_6 = 1289;
+int expected_6 = 99761;
+int result_6 = FindNextInterval(start_6, length_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+int start_7 = 500;
+int length_7 = 500;
+int expected_7 = 1200;
+int result_7 = FindNextInterval(start_7, length_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+int start_8 = 20;
+int length_8 = 7;
+int expected_8 = 30;
+int result_8 = FindNextInterval(start_8, length_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+int start_9 = 1000000000;
+int length_9 = 1;
+int expected_9 = 1000000001;
+int result_9 = FindNextInterval(start_9, length_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+int start_10 = 0;
+int length_10 = 1000000000;
+try {
+    FindNextInterval(start_10, length_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int start_11 = 1000000000;
+int length_11 = 0;
+try {
+    FindNextInterval(start_11, length_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int start_12 = 1000000001;
+int length_12 = 1;
+try {
+    FindNextInterval(start_12, length_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int start_13 = 1;
+int length_13 = 1000000001;
+try {
+    FindNextInterval(start_13, length_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int start_14 = -1;
+int length_14 = 1000000000;
+try {
+    FindNextInterval(start_14, length_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int start_15 = 1000000000;
+int length_15 = -1;
+try {
+    FindNextInterval(start_15, length_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
     return 0;
 }
