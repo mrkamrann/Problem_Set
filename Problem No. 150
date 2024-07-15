@@ -1,5 +1,46 @@
 /*
 Link: https://codeforces.com/contest/1063/problem/D
+
+At the children's festival, children were dancing in a circle. When music stopped playing, the children were still standing in a circle. Then Steve remembered
+that his parents gave him a candy box with exactly num_candies candies "Wilky May". Steve is not a greedy person, so he decided to present all his candies to his
+friends in the circle. Steve knows that some of his friends have a sweet tooth and others do not. A friend with a sweet tooth takes out of the box two candies 
+if the box has at least two candies, and otherwise takes one. The rest of Steve's friends always take exactly one candy from the box.
+
+Before starting to give candies, Steve stepped out of the circle, and there were exactly num_friends people remaining there. Steve numbered his friends in a 
+clockwise order with positive integers starting with 1 in such a way that index 1 was assigned to his best friend Roma.
+
+Initially, Steve gave the box to the friend with number start_friend, and after that, each friend (starting from friend number start_friend) took candies 
+from the box and passed the box to the next friend in clockwise order. The process ended with the friend number end_friend taking the last candy 
+(or two, who knows) and the empty box. Please note that it is possible that some of Steve's friends took candy from the box several times, that is, the 
+box could have gone several full circles before becoming empty.
+
+Steve does not know which of his friends have a sweet tooth, but he is interested in the maximum possible number of friends that can have a sweet tooth. If the 
+situation could not happen, and Steve has been proved wrong in his observations, please tell him about this.
+
+You are given four integers num_friends, start_friend, end_friend, and num_candies  — the number of children in the circle, the number of 
+the friend who was given a box with candies, the number of the friend who has taken the last candy, and the initial number of candies in the box respectively.
+
+Return exactly one long long integer — the maximum possible number of sweet tooth among Steve's friends or "-1" if Steve is wrong.
+
+Create a C++ Function CalculateMaximumSweetTooth that will return a long long denoting the maximum possible number of sweet tooth among Steve's 
+friends or "-1" if Steve is wrong.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A long long integer denoting num_friends
+A long long integer denoting start_friend
+A long long integer denoting end_friend
+A long long integer denoting num_candies
+
+Input Constraints
+
+The value of num_friends should be at least 1 and at most 10^11 inclusive.
+The value of start_friend should be at least 1 and at most num_friends inclusive.
+The value of end_friend should be at least 1 and at most num_friends inclusive.
+The value of num_candies should be at least 1 and at most 10^11 inclusive.
+
 */
 
 #include <iostream>
