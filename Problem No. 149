@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/contest/1808/problem/E2
+
+Roger is a minibus driver on Venus.
+
+To ride on Roger's minibus, you need a ticket. Each ticket has a number consisting of num_digits digits. However, as we know, the residents of Venus use a numeral 
+system with base_system, rather than the decimal system. Therefore, the ticket number can be considered as a sequence of num_digits integers from 0 to 
+base_system-1, inclusive.
+
+The residents of Venus consider a ticket to be lucky if there is a digit on it that is equal to the sum of the remaining digits, modulo base_system. 
+For example, if base_system=10, then the ticket 7135 is lucky because 7+1+5≡3(mod10). On the other hand, the ticket 7136 is not lucky because no digit is equal to the sum of the others modulo 10.
+
+Once, while on a trip, Roger wondered: how many lucky tickets exist? At the same time, Roger understands that this number can be very large, so he is interested 
+only in the answer modulo some prime number mod.
+
+
+You are given three integers num_digits, base_system, and mod  — the number of digits on the ticket, the base of the numeral system on Venus, and the module 
+for answer calculation.
+
+Return one long long number — the number of lucky tickets modulo mod, i.e., the remainder after dividing the answer by mod.
+
+Create a C++ Function NumberOfTickets that will return a long long denoting the number of lucky tickets modulo mod.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A long long integer denoting num_digits
+A long long integer denoting base_system
+A long long integer denoting mod
+
+Input Constraints
+
+The value of num_digits should be at least 1 and at most 10^18 inclusive.
+The value of base_system should be at least 1 and at most 100 inclusive.
+The value of mod should be at least 10^8 and at most 10^9+7 inclusive, and it should be a prime number.
+
 */
 
 #include <iostream>
@@ -16,7 +51,8 @@ long long Power(long long base, long long exponent, long long mod) {
     return result;
 }
 
-long long CalculateResult(long long num_digits, long long base_system, long long mod) {
+long long NumberOfTickets(long long num_digits, long long base_system, long long mod) {
+
     if (num_digits < 1 || num_digits > 1000000000000000000L || base_system < 1 || base_system > 100 || mod < 100000000 || mod > 1000000007) {
         throw std::invalid_argument("Invalid input arguments.");
     }
