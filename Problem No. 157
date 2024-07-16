@@ -2,67 +2,85 @@
 Link: https://codeforces.com/contest/461/problem/D
 */
 
-#include <cstdio>
+#include <iostream>
 #include <vector>
-#include <algorithm>
-#include <cstring>
+#include <stdexcept>
+#include <cmath>
+#include <cassert>
 
-void dfs(int x, int y, std::vector<std::vector<std::pair<int, int>>>& adj, std::vector<int>& visited, int& result) {
-    if (visited[x]) {
-        if (visited[x] != y) result = 0;
+void DepthFirstSearch(int node, int color, std::vector<std::vector<std::pair<int, int>>>& adjacency_list, std::vector<int>& visited, int& result) {
+    if (visited[node]) {
+        if (visited[node] != color) result = 0;
         return;
     }
-    visited[x] = y;
-    for (const auto& p : adj[x]) {
-        if (p.second) dfs(p.first, 3 - y, adj, visited, result);
-        else dfs(p.first, y, adj, visited, result);
+    visited[node] = color;
+    for (const auto& neighbor : adjacency_list[node]) {
+        if (neighbor.second) {
+            DepthFirstSearch(neighbor.first, 3 - color, adjacency_list, visited, result);
+        } else {
+            DepthFirstSearch(neighbor.first, color, adjacency_list, visited, result);
+        }
     }
 }
 
-int solve(int n, int m, const std::vector<std::vector<int>>& pairs, const std::vector<char>& chars) {
-    std::vector<std::vector<std::pair<int, int>>> adj(n + 3);
-    std::vector<int> visited(n + 3, 0);
+int Solve(int size, int num_cells, const std::vector<std::vector<int>>& cells, const std::vector<char>& characters) {
+    if (size < 1 || size > 100000 || num_cells < 1 || num_cells > 100000) {
+        throw std::invalid_argument("size or num_cells out of range");
+    }
+    std::vector<std::vector<std::pair<int, int>>> adjacency_list(size + 3);
+    std::vector<int> visited(size + 3, 0);
     int result = 1;
 
-    for (int k = 0; k < m; ++k) {
-        int i = pairs[k][0];
-        int j = pairs[k][1];
-        char s = chars[k];
-        int x = std::abs(j - i) + 1;
-        int y = n - std::abs(i + j - n - 1);
-        adj[x].emplace_back(y + 2, s == 'o');
-        adj[y + 2].emplace_back(x, s == 'o');
+    for (int i = 0; i < num_cells; ++i) {
+        int row = cells[i][0];
+        int column = cells[i][1];
+        char character = characters[i];
+        if (row < 1 || row > size || column < 1 || column > size || (character != 'o' && character != 'x')) {
+            throw std::invalid_argument("Invalid cell data");
+        }
+        int x = std::abs(column - row) + 1;
+        int y = size - std::abs(row + column - size - 1);
+        adjacency_list[x].emplace_back(y + 2, character == 'o');
+        adjacency_list[y + 2].emplace_back(x, character == 'o');
     }
 
-    dfs(1, 1, adj, visited, result);
-    dfs(2, 1, adj, visited, result);
+    DepthFirstSearch(1, 1, adjacency_list, visited, result);
+    DepthFirstSearch(2, 1, adjacency_list, visited, result);
 
-    for (int i = 3; i <= n + 2; ++i) {
+    for (int i = 3; i <= size + 2; ++i) {
         if (!visited[i]) {
             result = 2LL * result % 1000000007;
-            dfs(i, 1, adj, visited, result);
+            DepthFirstSearch(i, 1, adjacency_list, visited, result);
         }
     }
 
     return result;
 }
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cmath>
+#include <cassert>
+
 int main() {
-    int n, m;
-    scanf("%d%d", &n, &m);
-    std::vector<std::vector<int>> pairs(m, std::vector<int>(2));
-    std::vector<char> chars(m);
-    for (int k = 0; k < m; ++k) {
-        int i, j;
-        char s[4];
-        scanf("%d%d%s", &i, &j, s);
-        pairs[k][0] = i;
-        pairs[k][1] = j;
-        chars[k] = s[0];
+    int size, num_cells;
+    std::cin >> size >> num_cells;
+
+    std::vector<std::vector<int>> cells(num_cells, std::vector<int>(2));
+    std::vector<char> characters(num_cells);
+    for (int i = 0; i < num_cells; ++i) {
+        int row, column;
+        std::string character;
+        std::cin >> row >> column >> character;
+        cells[i][0] = row;
+        cells[i][1] = column;
+        characters[i] = character[0];
     }
 
-    int result = solve(n, m, pairs, chars);
-    printf("%d\n", result);
+    int result = Solve(size, num_cells, cells, characters);
+    std::cout << result << std::endl;
 
     return 0;
 }
+
