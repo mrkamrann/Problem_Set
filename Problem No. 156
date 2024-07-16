@@ -2,73 +2,114 @@
 Link: https://codeforces.com/contest/883/problem/D
 */
 
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
 
-bool none(int l, int r, const vector<int>& sum) {
-    return l > r || sum[l-1] == sum[r];
+bool None(int left, int right, const std::vector<int>& sum) {
+    return left > right || sum[left - 1] == sum[right];
 }
 
-void update(int &a, int b) {
-    if (a < b) a = b;
-}
-
-bool check(int t, int n, int cnt, const vector<int>& x, const vector<int>& sum) {
-    vector<int> dp(cnt + 1, 0);
-    for (int i = 0; i < cnt; i++) {
-        if (none(dp[i] + 1, x[i] - t - 1, sum)) update(dp[i + 1], x[i]);
-        if (none(dp[i] + 1, x[i] - 1, sum)) update(dp[i + 1], x[i] + t);
-        if (i && none(dp[i - 1] + 1, x[i] - t - 1, sum)) update(dp[i + 1], x[i - 1] + t);
+void Update(int& current_max, int value) {
+    if (current_max < value) {
+        current_max = value;
     }
-    return none(dp[cnt] + 1, n, sum);
 }
 
-pair<int, int> solve(int n, const string& s) {
-    vector<int> x(n + 1), sum(n + 1, 0);
-    int cnt = 0;
-    int pos = -1;
-    for (int i = 0; i < n; i++) {
-        if (s[i] == 'P') pos = x[cnt++] = i + 1;
-    }
-        
-    if (cnt == 1) {
-        int L = 0, R = 0, lpos = -1, rpos = -1;
-        for (int i = pos - 1; i > 0; i--) {
-            if (s[i - 1] == '*') L++, lpos = i;
+bool Check(int time, int cells, int packman_count, const std::vector<int>& packman_positions, const std::vector<int>& asterisk_sum) {
+    std::vector<int> dp_table(packman_count + 1, 0);
+    for (int i = 0; i < packman_count; i++) {
+        if (None(dp_table[i] + 1, packman_positions[i] - time - 1, asterisk_sum)) {
+            Update(dp_table[i + 1], packman_positions[i]);
         }
-        for (int i = pos; i < n; i++) {
-            if (s[i] == '*') R++, rpos = i + 1;
+        if (None(dp_table[i] + 1, packman_positions[i] - 1, asterisk_sum)) {
+            Update(dp_table[i + 1], packman_positions[i] + time);
         }
-        if (L != R) return {max(L, R), L > R ? pos - lpos : rpos - pos};
-        else return {L, min(pos - lpos, rpos - pos)};
+        if (i > 0 && None(dp_table[i - 1] + 1, packman_positions[i] - time - 1, asterisk_sum)) {
+            Update(dp_table[i + 1], packman_positions[i - 1] + time);
+        }
     }
-    
-    for (int i = 1; i <= n; i++) {
-        sum[i] = sum[i - 1] + (s[i - 1] == '*');
+    return None(dp_table[packman_count] + 1, cells, asterisk_sum);
+}
+
+std::pair<int, int> Solve(int cells, const std::string& field) {
+    if (cells < 2 || cells > 1000000) {
+        throw std::invalid_argument("Cells out of range");
     }
-    
-    int l = 0, r = n, ans = n;
-    while (l <= r) {
-        int m = (l + r) / 2;
-        if (check(m, n, cnt, x, sum)) {
-            r = m - 1;
-            ans = m;
+    for (char character : field) {
+        if (character != '*' && character != '.' && character != 'p') {
+            throw std::invalid_argument("Field contains invalid characters");
+        }
+    }
+    if (field.find('*') == std::string::npos || field.find('p') == std::string::npos) {
+        throw std::invalid_argument("Field must contain at least one asterisk and one packman");
+    }
+
+    std::vector<int> packman_positions(cells + 1), asterisk_sum(cells + 1, 0);
+    int packman_count = 0;
+    int packman_position = -1;
+
+    for (int i = 0; i < cells; i++) {
+        if (field[i] == 'P') {
+            packman_position = packman_positions[packman_count++] = i + 1;
+        }
+    }
+
+    if (packman_count == 1) {
+        int left_asterisks = 0, right_asterisks = 0;
+        int left_position = -1, right_position = -1;
+        for (int i = packman_position - 1; i > 0; i--) {
+            if (field[i - 1] == '*') {
+                left_asterisks++;
+                left_position = i;
+            }
+        }
+        for (int i = packman_position; i < cells; i++) {
+            if (field[i] == '*') {
+                right_asterisks++;
+                right_position = i + 1;
+            }
+        }
+        if (left_asterisks != right_asterisks) {
+            return {std::max(left_asterisks, right_asterisks), left_asterisks > right_asterisks ? packman_position - left_position : right_position - packman_position};
         } else {
-            l = m + 1;
+            return {left_asterisks, std::min(packman_position - left_position, right_position - packman_position)};
         }
     }
-    
-    return {sum[n], ans};
+
+    for (int i = 1; i <= cells; i++) {
+        asterisk_sum[i] = asterisk_sum[i - 1] + (field[i - 1] == '*');
+    }
+
+    int left = 0, right = cells, answer = cells;
+    while (left <= right) {
+        int middle = (left + right) / 2;
+        if (Check(middle, cells, packman_count, packman_positions, asterisk_sum)) {
+            right = middle - 1;
+            answer = middle;
+        } else {
+            left = middle + 1;
+        }
+    }
+
+    return {asterisk_sum[cells], answer};
 }
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
 
 int main() {
-    int n;
-    scanf("%d", &n);
-    string s;
-    cin >> s;
-    
-    pair<int, int> result = solve(n, s);
-    printf("%d %d\n", result.first, result.second);
+    int cells;
+    std::cin >> cells;
+    std::string field;
+    std::cin >> field;
+
+    std::pair<int, int> result = Solve(cells, field);
+    std::cout << result.first << " " << result.second << std::endl;
     return 0;
 }
 
