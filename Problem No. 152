@@ -1,5 +1,39 @@
 /*
 Link: https://codeforces.com/contest/1016/problem/G
+
+Nikhil would like to form a team from two or three participants for the next season. There are num_candidates candidates, and the i-th candidate has rank a_i. 
+However, Nikhil has some specific requirements for his teammates: if Nikhil has rank v and has chosen the i-th and j-th candidate, then GCD(v, a_i) = x_val and 
+LCM(v, a_j) = y_val must be met.
+
+Nikhil can change his rank to any non-negative integer, but x_val and y_val are tied to his birthdate and are fixed.
+
+Nikhil wants to know how many pairs (i, j) exist such that there is an integer v meeting the following constraints: GCD(v, a_i) = x_val and LCM(v, a_j) = y_val. 
+It is possible that i = j and Nikhil forms a team of two.
+
+GCD is the greatest common divisor of two numbers, and LCM is the least common multiple.
+
+You are given three integers num_candidates, x_val, and y_val  — the number of candidates and corresponding constants.
+Also you are provided num_candidates integers a_1, a_2, ..., a_n  — ranks of candidates denoted by ranks
+
+Return the only number — the number of pairs (i, j) such that there exists an integer v meeting the following constraints: 
+GCD(v, a_i) = x_val and LCM(v, a_j) = y_val. It is possible that i = j.
+
+Create a C++ function CountValidPairs that will return a long long denoting the number of valid pairs (i, j). 
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting num_candidates
+A long long denoting x_val
+A long long denoting y_val
+vector<long long> &ranks
+
+Input Constraints:
+
+The length of ranks should be at least 1 and at most 2⋅10^5 inclusive.
+Each value of ranks[i] should be in the range [1, 10^18] inclusive.
+The values for x_val and y_val should be in the range [1, 10^18] inclusive.
+
 */
 
 #include <iostream>
@@ -25,7 +59,7 @@ void Divide(long long number, std::vector<long long> &primes) {
     }
 }
 
-long long CalculatePairs(int num_candidates, long long x_val, long long y_val, const std::vector<long long> &ranks) {
+long long CountValidPairs(int num_candidates, long long x_val, long long y_val, const std::vector<long long> &ranks) {
 
     if (num_candidates < 1 || num_candidates > 200000) {
         throw std::invalid_argument("Invalid number of candidates");
@@ -127,6 +161,8 @@ long long CalculatePairs(int num_candidates, long long x_val, long long y_val, c
 #include <numeric>
 
 int main() {
+
+  //remove auto keywords
     int num_candidates;
     long long x_val, y_val;
     std::cin >> num_candidates >> x_val >> y_val;
