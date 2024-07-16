@@ -1,3 +1,69 @@
 /*
 Link:  https://codeforces.com/contest/542/problem/D
 */
+
+#include <stdio.h>
+#include <stdexcept>
+#include <cassert>
+#include <vector>
+
+bool IsPrime(long long number, const std::vector<int>& primes) {
+    for (std::size_t j = 0;;) {
+        long long current_prime = primes[j++];
+        if ((current_prime * current_prime) > number) return true;
+        if (!(number % current_prime)) return false;
+    }
+}
+
+int CalculateFactorizations(int index, long long number, const std::vector<int>& primes) {
+    if (number == 1) return 1;
+    long long current_prime = primes[index];
+    if ((current_prime + 1) > number) return 0;
+    if (((current_prime * current_prime) + 1) > number) return IsPrime(--number, primes) ? 1 : 0;
+    int result = CalculateFactorizations(index + 1, number, primes);
+    for (;;) {
+        if (++current_prime > number) return result;
+        if (!(number % current_prime)) result += CalculateFactorizations(index + 1, number / current_prime, primes);
+        current_prime = (current_prime - 1) * primes[index];
+    }
+}
+
+std::vector<int> InitializePrimes() {
+    std::vector<int> primes;
+    primes.push_back(2);
+    for (int i = 3; i < 1000010; i += 2) {
+        if (IsPrime(i, primes)) {
+            primes.push_back(i);
+        }
+    }
+    return primes;
+}
+
+long long CalculatePrimeFactorizations(long long num) {
+
+    if (num < 1 || num > 1000000000000LL) {
+        throw std::invalid_argument("Invalid input: num must be between 1 and 1,000,000,000,000.");
+    }
+
+    std::vector<int> primes = InitializePrimes();
+    return CalculateFactorizations(0, num, primes);
+}
+
+#include <stdio.h>
+#include <stdexcept>
+#include <cassert>
+#include <vector>
+
+int main() {
+    long long number;
+    scanf("%lld", &number);
+    
+    try {
+        printf("%lld\n", CalculatePrimeFactorizations(number));
+    } catch (const std::invalid_argument& e) {
+        printf("Error: %s\n", e.what());
+    }
+
+    return 0;
+}
+
