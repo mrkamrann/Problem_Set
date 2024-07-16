@@ -1,3 +1,68 @@
 /*
-Link: 
+Link: https://codeforces.com/contest/461/problem/D
 */
+
+#include <cstdio>
+#include <vector>
+#include <algorithm>
+#include <cstring>
+
+void dfs(int x, int y, std::vector<std::vector<std::pair<int, int>>>& adj, std::vector<int>& visited, int& result) {
+    if (visited[x]) {
+        if (visited[x] != y) result = 0;
+        return;
+    }
+    visited[x] = y;
+    for (const auto& p : adj[x]) {
+        if (p.second) dfs(p.first, 3 - y, adj, visited, result);
+        else dfs(p.first, y, adj, visited, result);
+    }
+}
+
+int solve(int n, int m, const std::vector<std::vector<int>>& pairs, const std::vector<char>& chars) {
+    std::vector<std::vector<std::pair<int, int>>> adj(n + 3);
+    std::vector<int> visited(n + 3, 0);
+    int result = 1;
+
+    for (int k = 0; k < m; ++k) {
+        int i = pairs[k][0];
+        int j = pairs[k][1];
+        char s = chars[k];
+        int x = std::abs(j - i) + 1;
+        int y = n - std::abs(i + j - n - 1);
+        adj[x].emplace_back(y + 2, s == 'o');
+        adj[y + 2].emplace_back(x, s == 'o');
+    }
+
+    dfs(1, 1, adj, visited, result);
+    dfs(2, 1, adj, visited, result);
+
+    for (int i = 3; i <= n + 2; ++i) {
+        if (!visited[i]) {
+            result = 2LL * result % 1000000007;
+            dfs(i, 1, adj, visited, result);
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int n, m;
+    scanf("%d%d", &n, &m);
+    std::vector<std::vector<int>> pairs(m, std::vector<int>(2));
+    std::vector<char> chars(m);
+    for (int k = 0; k < m; ++k) {
+        int i, j;
+        char s[4];
+        scanf("%d%d%s", &i, &j, s);
+        pairs[k][0] = i;
+        pairs[k][1] = j;
+        chars[k] = s[0];
+    }
+
+    int result = solve(n, m, pairs, chars);
+    printf("%d\n", result);
+
+    return 0;
+}
