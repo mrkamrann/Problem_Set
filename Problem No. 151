@@ -1,7 +1,37 @@
 /*
 Link: https://codeforces.com/contest/1063/problem/F
-reduce constraints
+
+Rahul is given a sequence of strings t_1, t_2, ..., t_k, which he calls a journey of length k. For each i > 1, t_i is a substring of t_{i-1}, and the length 
+of t_i is strictly less than the length of t_{i-1}. For example, {ab, b} is a journey, but {ab, c} and {a, a} are not.
+
+Rahul defines a journey on a string str as a journey t_1, t_2, ..., t_k such that all its parts can be nested inside str in such a way that there exists a 
+sequence of strings u_1, u_2, ..., u_{k+1} (each of these strings can be empty) and str = u_1 t_1 u_2 t_2 ... u_k t_k u_{k+1}. For example, {ab, b} is a journey 
+on the string abb, but not on bab, because the journey strings t_i should appear from left to right.
+
+The length of a journey on a string is the number of strings in it. Rahul needs to determine the maximum possible length of a journey on the given string str.
+
+You are given a single string str of length len, consisting of len lowercase Latin letters.
+
+Return one number — the maximum possible length of a string journey on str.
+
+Create a C++ function FindMaxJourneyLength that will return an integer denoting the maximum possible length of a journey on the given string str.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string denoting str
+
+Input Constraints:
+
+The length of str should be at least 1 and at most 50000 inclusive.
+The string str should consist only of lowercase Latin letters.
+
+
+
 */
+
+//reduce constraints
 
 #include <iostream>
 #include <vector>
@@ -11,15 +41,12 @@ reduce constraints
 #include <cassert>
 #include <string>
 
-int FindMaxJ(const std::string &str) {
+int FindMaxJourneyLength(const std::string &str) {
 
     int len = str.size();
 
-    if (len < 1 || len > 500000) {
-        throw std::invalid_argument("len must be between 1 and 500000.");
-    }
-    if (str.size() != static_cast<std::size_t>(len)) {
-        throw std::invalid_argument("String length does not match the provided len.");
+    if (len < 1 || len > 50000) {
+        throw std::invalid_argument("len must be between 1 and 50000.");
     }
 
     for (char character : str) {
