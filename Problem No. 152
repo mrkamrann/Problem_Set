@@ -26,7 +26,7 @@ Input Type:
 An integer denoting num_candidates
 A long long denoting x_val
 A long long denoting y_val
-vector<long long> &ranks
+vector<long long> denoting ranks
 
 Input Constraints:
 
