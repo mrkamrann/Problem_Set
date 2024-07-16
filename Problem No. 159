@@ -124,22 +124,19 @@ int ComputeAnswer(int len, int duration, int num_swimmers, const std::vector<int
 
     for (int i = 1; i < max_index * 2; ++i) {
         if (valid_speed[i]) {
-            dp_table[i] += static_cast<int>((static_cast<long long>(duration) * i / len) % modulus);
-            dp_table[i] %= modulus;
+            if ((dp_table[i] += static_cast<int>((static_cast<long long>(duration) * i / (len * 2) % 1000000007))) >= 1000000007)
+                dp_table[i] -= 1000000007;
             for (int j = i + i; j < max_index * 2; j += i) {
-                dp_table[j] -= dp_table[i];
-                if (dp_table[j] < 0) {
-                    dp_table[j] += modulus;
-                }
+                if ((dp_table[j] -= dp_table[i]) < 0)
+                    dp_table[j] += 1000000007;
             }
-            answer += dp_table[i];
-            answer %= modulus;
+            if ((answer += dp_table[i]) >= 1000000007)
+                answer -= 1000000007;
         }
     }
 
     return answer;
 }
-
 
 #include <iostream>
 #include <vector>
@@ -160,3 +157,4 @@ int main() {
 
     return 0;
 }
+
