@@ -4,6 +4,7 @@ Link: https://codeforces.com/contest/1845/problem/F
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <stdexcept>
 #include <cassert>
 
@@ -61,15 +62,31 @@ void NumberTheoreticTransform(std::vector<int>& vec, int transform_type) {
 }
 
 int ComputeAnswer(int len, int duration, int num_swimmers, const std::vector<int>& speeds) {
-    if (len < 1 || duration < 1 || num_swimmers < 2 || num_swimmers > 200000) {
-        throw std::invalid_argument("Invalid input values");
-    }
 
-    for (int speed : speeds) {
-        if (speed < 1 || speed > 200000) {
-            throw std::invalid_argument("Invalid speed value");
-        }
+if (len < 1 || len > 1000000000) {
+    throw std::invalid_argument("Invalid length of the pool: must be between 1 and 1,000,000,000.");
+}
+
+if (duration < 1 || duration > 1000000000) {
+    throw std::invalid_argument("Invalid duration: must be between 1 and 1,000,000,000 seconds.");
+}
+
+if (num_swimmers < 2 || num_swimmers > 200000) {
+    throw std::invalid_argument("Invalid number of swimmers: must be between 2 and 200,000.");
+}
+
+for (int speed : speeds) {
+    if (speed < 1 || speed > 200000) {
+        throw std::invalid_argument("Invalid speed value: must be between 1 and 200,000.");
     }
+}
+
+std::set<int> unique_speeds(speeds.begin(), speeds.end());
+
+if (unique_speeds.size() != speeds.size()) {
+    throw std::invalid_argument("Speed values are not pairwise distinct.");
+}
+
 
     const int modulus = 998244353;
     const int max_index = 200000;
@@ -140,6 +157,7 @@ int ComputeAnswer(int len, int duration, int num_swimmers, const std::vector<int
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <stdexcept>
 #include <cassert>
 
