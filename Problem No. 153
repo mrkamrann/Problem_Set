@@ -1,5 +1,33 @@
 /*
 Link: https://codeforces.com/contest/220/problem/D
+
+Naman is playing with the Cartesian coordinate system and integer points. An integer point is defined as a pair of integers (x, y) such that 0 ≤ x ≤ width and 
+0 ≤ y ≤ height. Thus, Naman knows only (width + 1)·(height + 1) distinct integer points.
+
+Naman wants to paint a triangle with vertices at integer points, and the triangle's area must be a positive integer. He needs to find the number of groups of 
+three points that form such a triangle. The order of points in a group matters; that is, the group of three points (0, 0), (0, 2), (2, 2) is not equal to the 
+group (0, 2), (0, 0), (2, 2).
+
+Help Naman find the number of groups of three integer points that form a non-degenerate triangle with an integer area.
+
+You are given two long long integers width and height.
+
+Return a long long — the remainder of dividing the answer to the problem by 1000000007 (10^9 + 7).
+
+Create a C++ function CountIntegerTriangles that will return a long long denoting the number of valid groups of three integer points that form a non-degenerate 
+triangle with an integer area. 
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A long long denoting width
+A long long denoting height
+
+Input Constraints:
+
+The values for width and height should be in the range [1, 4000] inclusive.
+
 */
 
 
@@ -47,7 +75,7 @@ long long CalculateZ(long long width, long long height, std::vector<std::vector<
     return (result + modulus) % modulus;
 }
 
-long long Solve(long long width, long long height) {
+long long CountIntegerTriangles(long long width, long long height) {
     if (width < 1 || width > 4000 || height < 1 || height > 4000) {
         throw std::invalid_argument("Invalid input: width and height must be between 1 and 4000.");
     }
