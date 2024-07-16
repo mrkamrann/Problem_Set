@@ -1,3 +1,162 @@
 /*
 Link: https://codeforces.com/contest/1845/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int ModularExponentiation(int base, int exponent, int modulus) {
+    int result = 1;
+    while (exponent > 0) {
+        if (exponent % 2 == 1) {
+            result = static_cast<int>(static_cast<long long>(result) * base % modulus);
+        }
+        base = static_cast<int>(static_cast<long long>(base) * base % modulus);
+        exponent /= 2;
+    }
+    return result;
+}
+
+void NumberTheoreticTransform(std::vector<int>& vec, int transform_type) {
+    const int modulus = 998244353;
+    const int generator = 3;
+    const int inverse_generator = 332748118;
+
+    int size = static_cast<int>(vec.size());
+    std::vector<int> reverse_indices(size);
+
+    for (int i = 0; i < size; ++i) {
+        reverse_indices[i] = (reverse_indices[i >> 1] >> 1) + ((i & 1) * (size >> 1));
+    }
+
+    for (int i = 0; i < size; ++i) {
+        if (i < reverse_indices[i]) {
+            std::swap(vec[i], vec[reverse_indices[i]]);
+        }
+    }
+
+    for (int t = 0; t < 19; ++t) {
+        int root = ModularExponentiation(transform_type == 1 ? generator : inverse_generator, (modulus - 1) >> (t + 1), modulus);
+        int segment_length = 1 << t;
+
+        for (int i = 0; i < size; i += segment_length * 2) {
+            for (int j = 0, w_val = 1; j < segment_length; ++j, w_val = static_cast<int>(static_cast<long long>(w_val) * root % modulus)) {
+                int x_val = vec[i + j];
+                int y_val = static_cast<int>(static_cast<long long>(vec[i + segment_length + j]) * w_val % modulus);
+
+                vec[i + j] = x_val + y_val < modulus ? x_val + y_val : x_val + y_val - modulus;
+                vec[i + segment_length + j] = x_val - y_val >= 0 ? x_val - y_val : x_val - y_val + modulus;
+            }
+        }
+    }
+
+    if (transform_type == -1) {
+        int inverse_size = ModularExponentiation(size, modulus - 2, modulus);
+        for (int i = 0; i < size; ++i) {
+            vec[i] = static_cast<int>(static_cast<long long>(vec[i]) * inverse_size % modulus);
+        }
+    }
+}
+
+int ComputeAnswer(int len, int duration, int num_swimmers, const std::vector<int>& speeds) {
+    if (len < 1 || duration < 1 || num_swimmers < 2 || num_swimmers > 200000) {
+        throw std::invalid_argument("Invalid input values");
+    }
+
+    for (int speed : speeds) {
+        if (speed < 1 || speed > 200000) {
+            throw std::invalid_argument("Invalid speed value");
+        }
+    }
+
+    const int modulus = 998244353;
+    const int max_index = 200000;
+    const int ntt_size = 1 << 19;
+
+    std::vector<int> a_vec(ntt_size, 0);
+    std::vector<int> b_vec(ntt_size, 0);
+
+    for (int speed : speeds) {
+        a_vec[speed]++;
+        b_vec[max_index - speed]++;
+    }
+
+    NumberTheoreticTransform(a_vec, 1);
+    NumberTheoreticTransform(b_vec, 1);
+
+    for (int i = 0; i < ntt_size; ++i) {
+        b_vec[i] = static_cast<int>(static_cast<long long>(b_vec[i]) * a_vec[i] % modulus);
+        a_vec[i] = static_cast<int>(static_cast<long long>(a_vec[i]) * a_vec[i] % modulus);
+    }
+
+    NumberTheoreticTransform(a_vec, -1);
+    NumberTheoreticTransform(b_vec, -1);
+
+    for (int speed : speeds) {
+        a_vec[speed * 2]--;
+    }
+
+    std::vector<bool> valid_speed(max_index * 2, false);
+    std::vector<int> dp_table(max_index * 2, 0);
+    int answer = 0;
+
+    for (int i = 1; i < max_index * 2; ++i) {
+        if (a_vec[i]) {
+            valid_speed[i] = true;
+        }
+    }
+
+    for (int i = 1; i < max_index; ++i) {
+        if (b_vec[max_index + i]) {
+            valid_speed[i] = true;
+        }
+    }
+
+    for (int i = 1; i < max_index * 2; ++i) {
+        for (int j = i + i; j < max_index * 2; j += i) {
+            if (valid_speed[j]) {
+                valid_speed[i] = true;
+            }
+        }
+    }
+
+    for (int i = 1; i < max_index * 2; ++i) {
+        if (valid_speed[i]) {
+            dp_table[i] += static_cast<int>((static_cast<long long>(duration) * i / len) % modulus);
+            dp_table[i] %= modulus;
+            for (int j = i + i; j < max_index * 2; j += i) {
+                dp_table[j] -= dp_table[i];
+                if (dp_table[j] < 0) {
+                    dp_table[j] += modulus;
+                }
+            }
+            answer += dp_table[i];
+            answer %= modulus;
+        }
+    }
+
+    return answer;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int len, duration, num_swimmers;
+    std::cin >> len >> duration >> num_swimmers;
+
+    std::vector<int> speeds(num_swimmers);
+    for (int i = 0; i < num_swimmers; ++i) {
+        std::cin >> speeds[i];
+    }
+
+    int answer = ComputeAnswer(len, duration, num_swimmers, speeds);
+    std::cout << answer << std::endl;
+
+    return 0;
+}
