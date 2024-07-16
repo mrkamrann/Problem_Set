@@ -1,3 +1,74 @@
 /*
-Link: 
+Link: https://codeforces.com/contest/883/problem/D
 */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool none(int l, int r, const vector<int>& sum) {
+    return l > r || sum[l-1] == sum[r];
+}
+
+void update(int &a, int b) {
+    if (a < b) a = b;
+}
+
+bool check(int t, int n, int cnt, const vector<int>& x, const vector<int>& sum) {
+    vector<int> dp(cnt + 1, 0);
+    for (int i = 0; i < cnt; i++) {
+        if (none(dp[i] + 1, x[i] - t - 1, sum)) update(dp[i + 1], x[i]);
+        if (none(dp[i] + 1, x[i] - 1, sum)) update(dp[i + 1], x[i] + t);
+        if (i && none(dp[i - 1] + 1, x[i] - t - 1, sum)) update(dp[i + 1], x[i - 1] + t);
+    }
+    return none(dp[cnt] + 1, n, sum);
+}
+
+pair<int, int> solve(int n, const string& s) {
+    vector<int> x(n + 1), sum(n + 1, 0);
+    int cnt = 0;
+    int pos = -1;
+    for (int i = 0; i < n; i++) {
+        if (s[i] == 'P') pos = x[cnt++] = i + 1;
+    }
+        
+    if (cnt == 1) {
+        int L = 0, R = 0, lpos = -1, rpos = -1;
+        for (int i = pos - 1; i > 0; i--) {
+            if (s[i - 1] == '*') L++, lpos = i;
+        }
+        for (int i = pos; i < n; i++) {
+            if (s[i] == '*') R++, rpos = i + 1;
+        }
+        if (L != R) return {max(L, R), L > R ? pos - lpos : rpos - pos};
+        else return {L, min(pos - lpos, rpos - pos)};
+    }
+    
+    for (int i = 1; i <= n; i++) {
+        sum[i] = sum[i - 1] + (s[i - 1] == '*');
+    }
+    
+    int l = 0, r = n, ans = n;
+    while (l <= r) {
+        int m = (l + r) / 2;
+        if (check(m, n, cnt, x, sum)) {
+            r = m - 1;
+            ans = m;
+        } else {
+            l = m + 1;
+        }
+    }
+    
+    return {sum[n], ans};
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    string s;
+    cin >> s;
+    
+    pair<int, int> result = solve(n, s);
+    printf("%d %d\n", result.first, result.second);
+    return 0;
+}
+
