@@ -1,3 +1,113 @@
 /*
-Link: 
+Link: https://codeforces.com/contest/380/problem/D
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <set>
+
+
+
+long long Combination(int x_val, int y_val, const std::vector<long long>& factorial, const std::vector<long long>& inv_factorial) {
+   long long modulus = 1000000007LL;
+    return factorial[x_val + y_val] * inv_factorial[x_val] % modulus * inv_factorial[y_val] % modulus;
+}
+
+long long Compute(int left, int right, const std::vector<int>& seats, const std::vector<int>& prefix_sum, const std::vector<long long>& factorial, const std::vector<long long>& inv_factorial) {
+  
+    long long modulus = 1000000007LL;
+  
+    if (prefix_sum[left] == prefix_sum[right]) {
+        long long power_of_two = 1;
+        for (int i = 0; i < right - left - 1; i++) {
+            power_of_two = power_of_two * 2 % modulus;
+        }
+        return power_of_two;
+    }
+
+    int p_val = left, q_val = right - 1;
+    while (p_val < right && seats[p_val] == 0) {
+        p_val++;
+    }
+    while (q_val >= left && seats[q_val] == 0) {
+        q_val--;
+    }
+
+    long long result = 0;
+
+    if (p_val == q_val && seats[p_val] == 1) {
+        return Combination(p_val - left, right - p_val - 1, factorial, inv_factorial);
+    }
+
+    if (seats[p_val] >= seats[q_val]) {
+        int left_2 = p_val, right_2 = left_2 + seats[p_val];
+        if (right_2 > q_val && right_2 <= right) {
+            result += Compute(left_2 + 1, right_2, seats, prefix_sum, factorial, inv_factorial) * Combination(left_2 - left, right - right_2, factorial, inv_factorial);
+        }
+    }
+
+    if (seats[p_val] <= seats[q_val]) {
+        int right_2 = q_val + 1, left_2 = right_2 - seats[q_val];
+        if (left_2 >= left && left_2 <= p_val) {
+            result += Compute(left_2, right_2 - 1, seats, prefix_sum, factorial, inv_factorial) * Combination(left_2 - left, right - right_2, factorial, inv_factorial);
+        }
+    }
+
+    return result % modulus;
+}
+
+int CalculateSeats(int num_seats, const std::vector<int>& seats) {
+    if (num_seats < 1 || num_seats > 1e5) {
+        throw std::invalid_argument("Number of seats out of bounds");
+    }
+    
+    std::set<int> unique_values;
+    for (int seat : seats) {
+        if (seat < 0 || seat > num_seats) {
+            throw std::invalid_argument("Invalid seat number");
+        }
+        if (seat != 0) {
+            if (unique_values.count(seat)){
+                throw std::invalid_argument("Duplicate seat number");
+            }
+            unique_values.insert(seat);
+        }
+    }
+    long long modulus = 1000000007LL;
+    std::vector<int> prefix_sum(num_seats + 1, 0);
+    for (int i = 0; i < num_seats; i++) {
+        prefix_sum[i + 1] = prefix_sum[i] + (seats[i] == 0 ? 0 : 1);
+    }
+
+    std::vector<long long> factorial(100010), inv(100010), inv_factorial(100010);
+    inv[1] = factorial[0] = inv_factorial[0] = 1;
+    for (int i = 2; i < 100010; i++) {
+        inv[i] = (modulus - modulus / i) * inv[modulus % i] % modulus;
+    }
+    for (int i = 1; i < 100010; i++) {
+        factorial[i] = factorial[i - 1] * i % modulus;
+        inv_factorial[i] = inv_factorial[i - 1] * inv[i] % modulus;
+    }
+
+    return Compute(0, num_seats, seats, prefix_sum, factorial, inv_factorial);
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <set>
+
+int main() {
+    int num_seats;
+    std::cin >> num_seats;
+    std::vector<int> seats(num_seats);
+    for (int i = 0; i < num_seats; i++) {
+        std::cin >> seats[i];
+    }
+    
+    std::cout << CalculateSeats(num_seats, seats) << std::endl;
+    return 0;
+}
