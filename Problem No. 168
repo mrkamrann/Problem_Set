@@ -1,3 +1,112 @@
 /*
 Link: https://codeforces.com/contest/1651/problem/E
 */
+
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int FindParent(int type, int x_coord, std::vector<int> parent[2]) {
+    if (parent[type][x_coord] == x_coord) {
+        return x_coord;
+    } else {
+        return parent[type][x_coord] = FindParent(type, parent[type][x_coord], parent);
+    }
+}
+
+void ValidatePairs(const std::vector<std::vector<int>>& pairs, int num_elements) {
+    std::vector<int> degree(num_elements * 2 + 1, 0);
+
+    for (int i = 0; i < pairs.size(); ++i) {
+        int x_coord = pairs[i][0];
+        int y_coord  = pairs[i][1];
+
+        if (x_coord  < 1 || x_coord  > num_elements || y_coord  < num_elements + 1 || y_coord  > num_elements * 2) {
+            throw std::invalid_argument("Invalid pair values");
+        }
+
+        degree[x_coord]++;
+        degree[y_coord]++;
+
+        if (degree[x_coord] > 2 || degree[y_coord] > 2) {
+            throw std::invalid_argument("Each vertex must have exactly two incident edges");
+        }
+    }
+}
+
+std::vector<long long> ProcessPairs(int num_elements, const std::vector<std::vector<int>>& pairs) {
+    if (num_elements < 2 || num_elements > 1500) {
+        throw std::invalid_argument("Invalid number of elements");
+    }
+
+    ValidatePairs(pairs, num_elements);
+
+    int element_count = num_elements;
+    long long answer = 0;
+    std::vector<int> parent[2];
+    std::vector<long long> result;
+    std::vector<std::vector<int>> matches(element_count + 1);
+
+    parent[0].resize(element_count + 1);
+    parent[1].resize(element_count + 1);
+
+    for (int i = 0; i < pairs.size(); ++i) {
+        matches[pairs[i][0]].push_back(pairs[i][1] - element_count);
+    }
+
+    for (int i = 1; i <= element_count; ++i) {
+        for (int j = 1; j <= element_count; ++j) {
+            parent[0][j] = j;
+            parent[1][j] = j;
+        }
+        long long res = 0;
+
+        for (int j = i; j <= element_count; ++j) {
+            int left_a = FindParent(0, matches[j][0], parent);
+            int right_a = FindParent(1, matches[j][0], parent);
+            int left_b = FindParent(0, matches[j][1], parent);
+            int right_b = FindParent(1, matches[j][1], parent);
+
+            res += static_cast<long long>(left_a) * (element_count + 1 - right_a) + static_cast<long long>(left_b) * (element_count + 1 - right_b);
+
+            if (left_a > left_b) std::swap(left_a, left_b);
+            if (right_a < right_b) std::swap(right_a, right_b);
+
+            parent[0][left_b] = left_a;
+            parent[1][right_b] = right_a;
+            res -= static_cast<long long>(left_a) * (element_count - right_a + 1);
+            answer += res;
+        }
+    }
+
+    result.push_back(answer);
+    return result;
+}
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    //TEST
+    int num_elements;
+    std::cin >> num_elements;
+    std::vector<std::vector<int>> pairs(num_elements * 2, std::vector<int>(2));
+
+    for (int i = 0; i < num_elements * 2; ++i) {
+        int x, y;
+        std::cin >> x >> y;
+        pairs[i][0] = x;
+        pairs[i][1] = y;
+    }
+
+    std::vector<long long> result = ProcessPairs(num_elements, pairs);
+
+    std::cout << result[0] << std::endl;
+    //TEST_END
+
+    return 0;
+}
