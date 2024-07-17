@@ -1,3 +1,161 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1725/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+
+
+
+void Preprocess(int max_size, std::vector<int>& is_visited, std::vector<int>& primes, int& num_primes) {
+    for (int i = 2; i < max_size; ++i) {
+        if (!is_visited[i]) {
+            is_visited[i] = i;
+            primes[++num_primes] = i;
+        }
+        for (int j = 1; j <= num_primes && 1LL * primes[j] * i < max_size; ++j) {
+            is_visited[i * primes[j]] = primes[j];
+            if (i % primes[j] == 0) break;
+        }
+    }
+}
+
+int Calculate(int x_val, int y_val) {
+    y_val -= x_val;
+   int modulus = 998244353, max_len = 200009;
+  
+    return (1LL * x_val * (x_val - 1) / 2 % modulus * y_val % modulus + 1LL * y_val * (y_val - 1) / 2 % modulus * x_val % modulus) % modulus;
+}
+
+void DepthFirstSearch(int node, int parent, std::vector<int>& dp_table, std::vector<std::vector<int>>& graph, std::vector<std::map<int, int>>& factors_map, std::vector<int>& prime_factors_count, int& result) {
+   
+  int modulus = 998244353, max_len = 200009;
+  
+  for (std::map<int, int>::const_iterator it = factors_map[node].begin(); it != factors_map[node].end(); ++it) {
+        const int& factor = it->first;
+        const int& count = it->second;
+        dp_table[node] = (dp_table[node] + Calculate(count, prime_factors_count[factor])) % modulus;
+    }
+  
+    for (int neighbor : graph[node]) {
+        if (neighbor != parent) {
+            DepthFirstSearch(neighbor, node, dp_table, graph, factors_map, prime_factors_count, result);
+            if (factors_map[node].size() < factors_map[neighbor].size()) {
+                std::swap(factors_map[node], factors_map[neighbor]);
+                dp_table[node] = dp_table[neighbor];
+            }
+            for (std::map<int, int>::const_iterator it = factors_map[neighbor].begin(); it != factors_map[neighbor].end(); ++it) {
+                const int& factor = it->first;
+                const int& count = it->second;
+                dp_table[node] = (dp_table[node] + modulus - Calculate(factors_map[node][factor], prime_factors_count[factor])) % modulus;
+                factors_map[node][factor] += count;
+                dp_table[node] = (dp_table[node] + Calculate(factors_map[node][factor], prime_factors_count[factor])) % modulus;
+            }
+        }
+    }
+    if (node > 0) result = (result + dp_table[node]) % modulus;
+}
+
+
+void Initialize(int factory_count, std::vector<int>& electrical_coefficients, std::vector<std::vector<int>>& connections, std::vector<int>& dp_table, std::vector<int>& is_visited, std::vector<int>& primes, std::vector<int>& prime_factors_count, std::vector<std::vector<int>>& graph, std::vector<std::map<int, int>>& factors_map) {
+  
+   int modulus = 998244353, max_len = 200009;
+  
+    dp_table.resize(factory_count, 0);
+    is_visited.resize(max_len, 0);
+    primes.resize(max_len, 0);
+    prime_factors_count.resize(max_len, 0);
+    graph.resize(factory_count);
+    factors_map.resize(factory_count);
+    
+    
+  
+    int num_primes = 0;
+    Preprocess(max_len, is_visited, primes, num_primes);
+
+    for (int i = 0; i < factory_count; ++i) {
+        int coefficient = electrical_coefficients[i];
+        while (coefficient > 1) {
+            int factor = is_visited[coefficient];
+            prime_factors_count[factor]++;
+            factors_map[i][factor] = 1;
+            while (coefficient % factor == 0) coefficient /= factor;
+        }
+    }
+
+    for (const std::vector<int>& connection : connections) {
+        int u_val = connection[0], v_val = connection[1];
+        graph[u_val].push_back(v_val);
+        graph[v_val].push_back(u_val);
+    }
+}
+
+int CalculateResult(std::vector<int>& electrical_coefficients, std::vector<std::vector<int>>& connections) {
+    if (electrical_coefficients.size() < 1 || electrical_coefficients.size() > 200000 || connections.size() != electrical_coefficients.size() - 1) {
+        throw std::invalid_argument("Invalid input size");
+    }
+  
+    int factory_count = electrical_coefficients.size();
+  
+   for (int i = 0; i < factory_count; ++i) {
+        if (electrical_coefficients[i] < 1 || electrical_coefficients[i] > 200000) {
+            throw std::invalid_argument("Electrical coefficients must be between 1 and 200000");
+        }
+    }
+  
+   for (int i = 0; i < factory_count - 1; ++i) {
+     
+        int u_val = connections[i][0], v_val = connections[i][1];
+     
+        if (u_val < 1 || u_val > factory_count || v_val < 1 || v_val > factory_count) {
+            throw std::invalid_argument("Connections indices out of range");
+        }
+     
+        connections[i][0]--;
+        connections[i][1]--;
+    }
+
+
+    std::vector<int> dp_table, is_visited, primes, prime_factors_count;
+    std::vector<std::vector<int>> graph;
+    std::vector<std::map<int, int>> factors_map;
+
+    Initialize(factory_count, electrical_coefficients, connections, dp_table, is_visited, primes, prime_factors_count, graph, factors_map);
+
+    int result = 0;
+    DepthFirstSearch(0, -1, dp_table, graph, factors_map, prime_factors_count, result);
+    return result;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int factory_count;
+    std::cin >> factory_count;
+    std::vector<int> electrical_coefficients(factory_count);
+    for (int i = 0; i < factory_count; ++i) {
+        std::cin >> electrical_coefficients[i];
+    }
+
+    std::vector<std::vector<int>> connections(factory_count - 1, std::vector<int>(2));
+    for (int i = 0; i < factory_count - 1; ++i) {
+        std::cin >> connections[i][0] >> connections[i][1];
+    }
+
+    try {
+        std::cout << CalculateResult(electrical_coefficients, connections) << "\n";
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << "\n";
+    }
+
+    return 0;
+}
