@@ -1,3 +1,84 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1067/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+
+void DepthFirstSearch(int node, int parent, const std::vector<std::vector<int>> &adjacency_list, std::vector<int> &function_values, long long &result) {
+  
+    int multiplier = 1;
+    int modulo = 998244353;
+  
+    int inverse_modulo = (modulo + 1) >> 1;
+  
+    for (size_t i = 0; i < adjacency_list[node].size(); ++i) {
+        int neighbor = adjacency_list[node][i];
+        if (neighbor != parent) {
+            DepthFirstSearch(neighbor, node, adjacency_list, function_values, result);
+            multiplier = static_cast<long long>(multiplier) * inverse_modulo % modulo * (modulo + 2 - function_values[neighbor]) % modulo;
+        }
+    }
+    result += modulo + 1 - multiplier;
+    function_values[node] = multiplier;
+}
+
+long long CalculateMaxFlow(int num_nodes, const std::vector<std::vector<int>> &edges) {
+    if (num_nodes < 1 || num_nodes > 500000) {
+        throw std::invalid_argument("Invalid number of nodes");
+    }
+    for (size_t i = 0; i < edges.size(); ++i) {
+
+        int u_val = edges[i][0];
+        int v_val = edges[i][1];
+        if (u_val < 1 || u_val > num_nodes || v_val < 1 || v_val > num_nodes || u_val == v_val) {
+            throw std::invalid_argument("Invalid edge");
+        }
+    }
+  
+    int modulo = 998244353;
+    int inverse_modulo = (modulo + 1) >> 1;
+  
+    std::vector<std::vector<int>> adjacency_list(num_nodes + 1);
+    std::vector<int> function_values(num_nodes + 1, 0);
+    long long result = 0;
+
+   for (const std::vector<int> &edge : edges) {
+     
+        adjacency_list[edge[0]].push_back(edge[1]);
+        adjacency_list[edge[1]].push_back(edge[0]);
+    }
+
+    DepthFirstSearch(1, 0, adjacency_list, function_values, result);
+
+    for (int i = 0; i < num_nodes; ++i) {
+        result = result * 2 % modulo;
+    }
+
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_nodes;
+    std::cin >> num_nodes;
+
+    std::vector<std::vector<int>> edges(num_nodes - 1);
+    for (int i = 0; i < num_nodes - 1; ++i) {
+        int u_val, v_val;
+        std::cin >> u_val >> v_val;
+        edges[i] = {u_val, v_val};
+    }
+
+    long long result = CalculateMaxFlow(num_nodes, edges);
+    std::cout << result;
+    return 0;
+}
