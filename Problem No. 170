@@ -1,3 +1,83 @@
 /*
 Link: https://codeforces.com/contest/1916/problem/H2
 */
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+long long QuickPower(long long base, long long exp, int modulus) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = result * base % modulus;
+        }
+        base = base * base % modulus;
+        exp /= 2;
+    }
+    return result;
+}
+
+std::vector<long long> ComputeValues(long long num, int base, int exponent) {
+   
+    if (num < 1 || num > 1000000000000000000LL) {
+        throw std::invalid_argument("Invalid value for num");
+    }
+    if (base < 2 || base >= 998244353) {
+        throw std::invalid_argument("Invalid value for base");
+    }
+    if (exponent < 0 || exponent > 500000) {
+        throw std::invalid_argument("Invalid value for exponent");
+    }
+
+    int modulus = 998244353;
+    std::vector<long long> power_values(exponent + 1);
+    std::vector<long long> inverse_1(exponent + 1);
+    std::vector<long long> inverse_2(exponent + 2);
+    std::vector<long long> results(exponent + 1);
+
+    power_values[0] = 1;
+    inverse_1[0] = 1;
+    for (int i = 1; i <= exponent; i++) {
+        power_values[i] = power_values[i - 1] * base % modulus;
+        inverse_1[i] = QuickPower(power_values[i], modulus - 2, modulus);
+        inverse_2[i] = QuickPower(power_values[i] - 1, modulus - 2, modulus);
+    }
+    inverse_2[exponent + 1] = QuickPower(power_values[exponent] - 1, modulus - 2, modulus);
+
+    long long value = QuickPower(base, num, modulus);
+    long long answer = 1;
+    for (int i = 0; i <= exponent; i++) {
+        results[i] = (answer + modulus) % modulus;
+        answer = answer * (value - power_values[i]) % modulus * (value - power_values[i]) % modulus * inverse_1[i] % modulus * inverse_2[i + 1] % modulus;
+    }
+
+    return results;
+}
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    long long num;
+    int base, exponent;
+
+    std::cin >> num >> base >> exponent;
+
+    //TEST
+    try {
+        std::vector<long long> results = ComputeValues(num, base, exponent);
+        for (const auto& result : results) {
+            std::cout << result << ' ';
+        }
+        std::cout << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << '\n';
+    }
+    //TEST_END
+
+    return 0;
+}
