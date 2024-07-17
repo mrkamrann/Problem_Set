@@ -1,3 +1,102 @@
 /*
-Link:
+Link: https://codeforces.com/contest/736/problem/D
 */
+
+
+#include <cstdio>
+#include <bitset>
+#include <vector>
+#include <set>
+#include <stdexcept>
+#include <cassert>
+
+std::vector<std::string> Solve(int node_count, int edge_count, std::vector<std::vector<int>>& edges) {
+    if (node_count < 1 || node_count > 2000) {
+        throw std::invalid_argument("Node count must be between 1 and 2000.");
+    }
+    if (edge_count < node_count || edge_count > std::min(node_count * node_count, 500000)) {
+        throw std::invalid_argument("Edge count must be between node_count and min(node_count^2, 500000).");
+    }
+    for (const std::vector<int>& edge : edges) {
+        if (edge.size() != 2 || edge[0] < 1 || edge[0] > node_count || edge[1] < 1 || edge[1] > node_count) {
+            throw std::invalid_argument("Edges must be valid pairs within the node count.");
+        }
+    }
+  
+  
+   
+std::set<std::pair<int, int>> unique_edges;
+
+for (const std::vector<int>& edge : edges) {
+    unique_edges.insert({edge[0], edge[1]});
+}
+if (unique_edges.size() != edges.size()) {
+    throw std::invalid_argument("Duplicate edges are not allowed.");
+}
+
+    std::vector<std::bitset<4005>> bitset_matrix(node_count + 1);
+
+    for (std::vector<int>& edge : edges) {
+        edge[0]--; 
+        edge[1]--; 
+    }
+
+    for (const std::vector<int>& edge : edges) {
+        bitset_matrix[edge[0] + 1][edge[1] + 1] = 1;
+    }
+    for (int index = 1; index <= node_count; index++) {
+        bitset_matrix[index][index + node_count] = 1;
+    }
+
+    for (int index = 1; index <= node_count; index++) {
+        int swap_index = 0;
+        for (int x_index = index; x_index <= node_count; x_index++) {
+            if (bitset_matrix[x_index][index]) {
+                swap_index = x_index;
+                break;
+            }
+        }
+        std::swap(bitset_matrix[index], bitset_matrix[swap_index]);
+        for (int x_index = 1; x_index <= node_count; x_index++) {
+            if (x_index != index && bitset_matrix[x_index][index]) {
+                bitset_matrix[x_index] = bitset_matrix[x_index] ^ bitset_matrix[index];
+            }
+        }
+    }
+
+    std::vector<std::string> results;
+    for (const std::vector<int>& edge : edges) {
+        if (bitset_matrix[edge[1] + 1][edge[0] + 1 + node_count]) {
+            results.push_back("NO");
+        } else {
+            results.push_back("YES");
+        }
+    }
+
+    return results;
+}
+
+#include <cstdio>
+#include <bitset>
+#include <vector>
+#include <set>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int node_count, edge_count;
+    scanf("%d%d", &node_count, &edge_count);
+
+    std::vector<std::vector<int>> edges(edge_count, std::vector<int>(2));
+    for (int index = 0; index < edge_count; index++) {
+        scanf("%d%d", &edges[index][0], &edges[index][1]);
+    }
+
+    std::vector<std::string> results = Solve(node_count, edge_count, edges);
+
+    for (const std::string& result : results) {
+        printf("%s\n", result.c_str());
+    }
+
+    return 0;
+}
