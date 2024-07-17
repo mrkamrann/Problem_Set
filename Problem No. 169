@@ -1,3 +1,88 @@
 /*
 Link: https://codeforces.com/contest/1436/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+long long FastPower(long long base, long long exponent) {
+    long long result = 1;
+    
+    int modulus = 998244353, max_len = 100000 + 5;
+  
+    if (exponent < 0) return 0;
+    while (exponent) {
+        if (exponent & 1) {
+            result = result * base % modulus;
+        }
+        base = base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+std::vector<long long> ProcessFrequencies(int num_elements, const std::vector<std::vector<int>>& frequencies) {
+    if (num_elements <= 0 || num_elements > max_len) {
+        throw std::invalid_argument("Invalid number of elements");
+    }
+
+    std::vector<int> freq(max_len, 0);
+    for (int i = 0; i < num_elements; ++i) {
+        int element = frequencies[i][0];
+        int frequency = frequencies[i][1];
+        if (element < 1 || element > max_len || frequency < 1 || frequency > 1000000000) {
+            throw std::invalid_argument("Invalid frequency pair values");
+        }
+        freq[element] = frequency;
+    }
+
+    std::vector<long long> result_freq(max_len, 0);
+    for (int i = max_len - 1; i >= 1; --i) {
+        long long count = 0;
+        long long sum = 0;
+        for (int j = i; j < max_len; j += i) {
+            count += freq[j];
+            sum = (sum + 1LL * freq[j] * j) % modulus;
+        }
+        for (int j = i; j < max_len; j += i) {
+            if (freq[j]) {
+                if (count >= 2) {
+                    result_freq[i] = (result_freq[i] + 1LL * freq[j] * j % modulus * (sum - j) % modulus * (FastPower(2, count - 2) + (count - 2) % modulus * FastPower(2, count - 3) % modulus) % modulus) % modulus;
+                    result_freq[i] = (result_freq[i] + (count - 1) % modulus * freq[j] % modulus * j % modulus * j % modulus * FastPower(2, count - 2) % modulus) % modulus;
+                }
+            }
+            if (j > i) {
+                result_freq[i] = (result_freq[i] - result_freq[j] + modulus) % modulus;
+            }
+        }
+    }
+
+    return result_freq;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_elements;
+    std::cin >> num_elements;
+    std::vector<std::vector<int>> frequencies(num_elements, std::vector<int>(2));
+
+    for (int i = 0; i < num_elements; ++i) {
+        int element, frequency;
+        std::cin >> element >> frequency;
+        frequencies[i][0] = element;
+        frequencies[i][1] = frequency;
+    }
+
+    std::vector<long long> result = ProcessFrequencies(num_elements, frequencies);
+
+    std::cout << (result[1] + modulus) % modulus << std::endl;
+
+    return 0;
+}
+
