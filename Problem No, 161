@@ -1,3 +1,129 @@
 /*
-Link : 
+Link : https://codeforces.com/contest/1473/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+void AddEdge(int source, int destination, int capacity, int& edge_index, std::vector<long long>& capacities, std::vector<std::vector<std::pair<int, int>>>& adjacency_list) {
+    edge_index++;
+    capacities[edge_index * 2] = capacity;
+    adjacency_list[source].push_back({destination, edge_index + edge_index});
+    adjacency_list[destination].push_back({source, edge_index + edge_index + 1});
+}
+
+long long DepthFirstSearch(int node, long long flow, int end, std::vector<long long>& capacities, std::vector<std::vector<std::pair<int, int>>>& adjacency_list, std::vector<int>& depths) {
+    if (node == end) {
+        return flow;
+    }
+    long long total_flow = 0, partial_flow = 0;
+    for (size_t i = 0; i < adjacency_list[node].size(); i++) {
+        int neighbor = adjacency_list[node][i].first;
+        int edge = adjacency_list[node][i].second;
+        if (!capacities[edge] || depths[neighbor] != depths[node] + 1) {
+            continue;
+        }
+        partial_flow = DepthFirstSearch(neighbor, std::min(flow, capacities[edge]), end, capacities, adjacency_list, depths);
+        capacities[edge] -= partial_flow;
+        capacities[edge ^ 1] += partial_flow;
+        flow -= partial_flow;
+        total_flow += partial_flow;
+    }
+    if (!total_flow) {
+        depths[node] = 0;
+    }
+    return total_flow;
+}
+
+bool BreadthFirstSearch(int start, int end, int num_nodes, std::vector<int>& depths, std::vector<long long>& capacities, std::vector<std::vector<std::pair<int, int>>>& adjacency_list) {
+    std::fill(depths.begin(), depths.end(), 0);
+    std::queue<int> queue;
+    queue.push(start);
+    depths[start] = 1;
+    while (!queue.empty()) {
+        int node = queue.front();
+        queue.pop();
+        for (size_t i = 0; i < adjacency_list[node].size(); i++) {
+            int neighbor = adjacency_list[node][i].first;
+            int edge = adjacency_list[node][i].second;
+            if (!capacities[edge] || depths[neighbor]) {
+                continue;
+            }
+            queue.push(neighbor);
+            depths[neighbor] = depths[node] + 1;
+        }
+    }
+    return depths[end];
+}
+
+long long FindMaxFlow(int num_nodes, const std::vector<int>& node_values, const std::vector<int>& node_capacities) {
+    if (num_nodes < 1 || num_nodes > 3000) {
+        throw std::invalid_argument("Invalid number of nodes");
+    }
+    for (int value : node_values) {
+        if (value < 1 || value > 100) {
+            throw std::invalid_argument("Invalid node value");
+        }
+    }
+    for (int capacity : node_capacities) {
+        if (capacity < -100000 || capacity > 100000) {
+            throw std::invalid_argument("Invalid node capacity");
+        }
+    }
+
+    int start = num_nodes;
+    int end = num_nodes + 1;
+    int edge_index = 0;
+    std::vector<std::vector<std::pair<int, int>>> adjacency_list(num_nodes + 2);
+    std::vector<long long> capacities(600500, 0);
+    std::vector<int> depths(num_nodes + 2, 0), last_node(101, -1);
+    long long result = 0;
+
+    for (int i = 0; i < num_nodes; i++) {
+        if (node_capacities[i] > 0) {
+            AddEdge(start, i, node_capacities[i], edge_index, capacities, adjacency_list);
+            result += node_capacities[i];
+        } else {
+            AddEdge(i, end, -node_capacities[i], edge_index, capacities, adjacency_list);
+        }
+        for (int j = 1; j <= 100; j++) {
+            if (!(node_values[i] % j) && last_node[j] != -1) {
+                AddEdge(i, last_node[j], 1000000000, edge_index, capacities, adjacency_list);
+            }
+        }
+        last_node[node_values[i]] = i;
+    }
+
+    while (BreadthFirstSearch(start, end, num_nodes, depths, capacities, adjacency_list)) {
+        result -= DepthFirstSearch(start, 1000000000000000000LL, end, capacities, adjacency_list, depths);
+    }
+
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_nodes;
+    std::cin >> num_nodes;
+    std::vector<int> node_values(num_nodes);
+    std::vector<int> node_capacities(num_nodes);
+    for (int i = 0; i < num_nodes; i++) {
+        std::cin >> node_values[i];
+    }
+    for (int i = 0; i < num_nodes; i++) {
+        std::cin >> node_capacities[i];
+    }
+
+    long long result = FindMaxFlow(num_nodes, node_values, node_capacities);
+    std::cout << result;
+    return 0;
+}
+
