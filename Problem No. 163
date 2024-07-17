@@ -10,8 +10,9 @@ Link: https://codeforces.com/contest/736/problem/D
 #include <stdexcept>
 #include <cassert>
 
-std::vector<std::string> Solve(int node_count, int edge_count, std::vector<std::vector<int>>& edges) {
-    if (node_count < 1 || node_count > 2000) {
+std::vector<bool> Solve(int node_count, int edge_count, std::vector<std::vector<int>>& edges) {
+    
+  if (node_count < 1 || node_count > 2000) {
         throw std::invalid_argument("Node count must be between 1 and 2000.");
     }
     if (edge_count < node_count || edge_count > std::min(node_count * node_count, 500000)) {
@@ -64,12 +65,12 @@ if (unique_edges.size() != edges.size()) {
         }
     }
 
-    std::vector<std::string> results;
+    std::vector<bool> results;
     for (const std::vector<int>& edge : edges) {
         if (bitset_matrix[edge[1] + 1][edge[0] + 1 + node_count]) {
-            results.push_back("NO");
+            results.push_back(0);
         } else {
-            results.push_back("YES");
+            results.push_back(1);
         }
     }
 
@@ -92,10 +93,11 @@ int main() {
         scanf("%d%d", &edges[index][0], &edges[index][1]);
     }
 
-    std::vector<std::string> results = Solve(node_count, edge_count, edges);
+    std::vector<bool> results = Solve(node_count, edge_count, edges);
 
-    for (const std::string& result : results) {
-        printf("%s\n", result.c_str());
+    for (const bool& result : results) {
+       if(result==1) printf("%s\n", "YES");
+       else printf("%s\n", "NO");
     }
 
     return 0;
