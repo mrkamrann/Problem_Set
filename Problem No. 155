@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/problemset/problem/60/E
+
+Once upon a time in the thicket of the mushroom forest lived mushroom gnomes. They were famous among their neighbors for their magic mushrooms. 
+Their magic nature made it possible that between every two neighboring mushrooms every minute grew another mushroom with the weight equal to the sum of weights 
+of two neighboring ones.
+
+The mushroom gnomes loved it when everything was in order, that's why they always planted the mushrooms in one line in the order of their weights' increasing. 
+Well... The gnomes planted the mushrooms and went to eat. After minutes_1 minutes they returned and saw that new mushrooms had grown up, so that the increasing 
+order had been violated. The gnomes replanted all the mushrooms in the correct order, that is, they sorted the mushrooms in the order of the weights' increasing.
+And went to eat again (those gnomes were quite big eaters). What total weights modulo modulus will the mushrooms have in another minutes_2 minutes?
+
+You are given four integers: count, minutes_1, minutes_2, modulus which represent the number of mushrooms, the number of minutes after the first replanting, the 
+number of minutes after the second replanting, and the module.
+You are also given count integers denoted by vector weights which represent the mushrooms' weight in non-decreasing order.
+
+The answer should contain a single number which is the total weights of the mushrooms modulo modulus in the end after minutes_1 + minutes_2 minutes.
+
+Create a C++ function CalculateTotalWeight that will return an integer denoting the total weights of the mushrooms modulo modulus after the specified minutes.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A long long integer denoting minutes_1
+A long long integer denoting minutes_2
+A long long integer denoting modulus
+A std::vector<long long>& denoting weights
+
+Input Constraints:
+
+count should be at least 1 and at most 10^6 inclusive.
+minutes_1 and minutes_2 should be at least 0 and at most 10^18 inclusive.
+minutes_1 + minutes_2 should be greater than 0.
+modulus should be at least 2 and at most 10^9 inclusive.
+Each value in weights should be at least 0 and at most 10^9 inclusive.
+
 */
 
 #include <iostream>
@@ -45,8 +80,10 @@ void Calculate(long long val_n, std::vector<long long>& result, std::vector<std:
     }
 }
 
-long long ProcessMushrooms(int count, long long minutes_1, long long minutes_2, long long modulus, std::vector<long long>& weights) {
-  
+long long CalculateTotalWeight(long long minutes_1, long long minutes_2, long long modulus, std::vector<long long>& weights) {
+
+int count = weights.size();
+
    if (count < 1 || count > 1000000) {
     throw std::invalid_argument("count must be between 1 and 10^6");
 }
@@ -63,9 +100,6 @@ if (modulus < 2 || modulus > 1000000000) {
     throw std::invalid_argument("modulus must be between 2 and 10^9");
 }
 
-if (weights.size() != static_cast<size_t>(count)) {
-    throw std::invalid_argument("weights size must match the count");
-}
 
 if (minutes_1 + minutes_2 <= 0) {
     throw std::invalid_argument("sum of minutes_1 and minutes_2 must be greater than 0");
@@ -115,17 +149,7 @@ for (const long long& weight : weights) {
 
 
 int main() {
-    int n;
-    long long x, y, p;
-    scanf("%d%lld%lld%lld", &n, &x, &y, &p);
-
-    std::vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        scanf("%lld", &a[i]);
-    }
-
-    long long result = ProcessMushrooms(n, x, y, p, a);
-    printf("%lld\n", result);
+  
 
 
     return 0;
