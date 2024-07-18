@@ -1,5 +1,38 @@
 /*
 Link: https://codeforces.com/contest/461/problem/D
+
+Harshit came up with a very complicated task. He gives it to Appleman, but Appleman doesn't know how to solve it. Can you help him?
+
+Given an size × size checkerboard, each cell of the board has either character 'x', or character 'o', or is empty. How many ways are there to fill all the emptycells 
+with 'x' or 'o' (each cell must contain only one character in the end) such that for each cell, the number of adjacent cells with 'o' will be even? 
+Find the number of ways modulo 1000000007 (10^9 + 7). Two cells of the board are adjacent if they share a side.
+
+You are given two integers size, num_cells  — the size of the board and the number of cells that have characters initially.
+You are also given a 2D vector cells each contain two integers and a character: row, column
+Your also given a vector character (character[i] is either 'o' or 'x'). 
+This line means: there is a character character[i] in the cell that is located at the intersection of the row-th row and column-th column. All the given cells are 
+distinct. Consider that the rows are numbered from 1 to size from top to bottom. Similarly, the columns are numbered from 1 to size from left to right.
+
+Return  a single integer — the answer to the problem.
+
+Create a C++ function CalculateWays that will return an integer denoting the number of ways to fill the checkerboard according to the rules.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer denoting size
+vector<vector<int> denoting 2D vector cells
+vector<char> denoting character
+
+Input Constraints:
+
+size should be at least 1 and at most 10^5 inclusive.
+num_cells should be at least 1 and at most 10^5 inclusive.
+Each value in cells[i] should be at least 1 and at most size.
+Each character[i] should be either 'o' or 'x'.
+All the given cells are distinct.
+
 */
 
 #include <iostream>
@@ -23,7 +56,10 @@ void DepthFirstSearch(int node, int color, std::vector<std::vector<std::pair<int
     }
 }
 
-int Solve(int size, int num_cells, const std::vector<std::vector<int>>& cells, const std::vector<char>& characters) {
+int CalculateWays(int size, const std::vector<std::vector<int>>& cells, const std::vector<char>& characters) {
+
+    int num_cells = cells.size();
+
     if (size < 1 || size > 100000 || num_cells < 1 || num_cells > 100000) {
         throw std::invalid_argument("size or num_cells out of range");
     }
@@ -38,10 +74,10 @@ int Solve(int size, int num_cells, const std::vector<std::vector<int>>& cells, c
         if (row < 1 || row > size || column < 1 || column > size || (character != 'o' && character != 'x')) {
             throw std::invalid_argument("Invalid cell data");
         }
-        int x = std::abs(column - row) + 1;
-        int y = size - std::abs(row + column - size - 1);
-        adjacency_list[x].emplace_back(y + 2, character == 'o');
-        adjacency_list[y + 2].emplace_back(x, character == 'o');
+        int x_val = std::abs(column - row) + 1;
+        int y_val = size - std::abs(row + column - size - 1);
+        adjacency_list[x_val].emplace_back(y_val + 2, character == 'o');
+        adjacency_list[y_val + 2].emplace_back(x_val, character == 'o');
     }
 
     DepthFirstSearch(1, 1, adjacency_list, visited, result);
