@@ -1,5 +1,33 @@
 /*
 Link: https://codeforces.com/contest/288/problem/E
+
+Shyam the Penguin knows that lucky numbers are positive integers that contain only lucky digits 4 and 7 in their decimal representation. For example,
+numbers 47, 744, and 4 are lucky, while 5, 17, and 467 are not.
+
+Shyam has two positive integers, left and right (left < right), both of which are lucky numbers. Moreover, their lengths (the number of digits in their decimal 
+representation without leading zeroes) are equal.
+
+Let's assume that n is the number of distinct lucky numbers, each of which cannot be greater than right or less than left, and a_i is the i-th (in increasing order) 
+number of them. Find a_1 * a_2 + a_2 * a_3 + ... + a_(n-1) * a_n. Since the answer can be rather large, print the remainder after dividing it by 1000000007 (10^9 + 7).
+
+Return a single number — the answer to the problem modulo 1000000007 (10^9 + 7).
+
+Create a C++ function CalculateLuckyProductSum that will return a long long denoting the calculated sum of products of consecutive lucky numbers within the given 
+range.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type (For Illustration):
+
+A string denoting left
+A string denoting right
+
+Input Constraints: 
+
+The length of left and right should be equal and at least 1 and at most 100000 inclusive.
+left and right must be lucky numbers containing only the digits 4 and 7.
+It is guaranteed that 1 ≤ left < right ≤ 10^100000.
+
 */
 
 #include <iostream>
@@ -46,7 +74,7 @@ long long CalculateF(const std::string& to_str) {
 }
 
 
-long long Solve(const std::string& left, const std::string& right) {
+long long CalculateLuckyProductSum(const std::string& left, const std::string& right) {
   
   if (left.empty() || right.empty()) {
     throw std::invalid_argument("Invalid input: 'left' and 'right' must be non-empty.");
@@ -60,7 +88,7 @@ if (left.size() > 100000 || right.size() > 100000) {
     throw std::invalid_argument("Invalid input: Length of 'left' and 'right' must be at most 100000.");
 }
 
-if (left == right) {
+if (left >= right) {
     throw std::invalid_argument("Invalid input: 'left' must be less than 'right'.");
 }
 
@@ -84,16 +112,7 @@ if (!std::all_of(right.begin(), right.end(), [](char character) { return  charac
 
 
 int main() {
-    std::string left, right;
-    std::cin >> left >> right;
-
-    //TEST
-    try {
-        std::cout << Solve(left, right) << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-    }
-    //TEST_END
+   
 
     return 0;
 }
