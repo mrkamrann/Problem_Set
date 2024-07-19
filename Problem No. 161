@@ -1,5 +1,31 @@
 /*
 Link : https://codeforces.com/contest/1473/problem/F
+
+You are given an integer num_nodes and two sequences node_values and node_capacities.
+
+Let's call a set of integers S such that S⊆{1,2,3,…,num_nodes} strange, if, for every element i of S, the following condition is met: for every j∈[1,i−1], 
+if node_values[j] divides node_values[i], then j is also included in S. An empty set is always strange.
+
+The cost of the set S is ∑i∈S node_capacities[i]. You have to calculate the maximum possible cost of a strange set.
+
+Return one number — the maximum cost of a strange set.
+
+Create a C++ Function FindMaxFlow that will return a long long denoting the maximum cost of a strange set.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<int> node_values
+A vector<int> node_capacities
+
+Input Constraints:
+
+The value of num_nodes should be at least 1 and at most 3000 inclusive.
+Both node_values and node_capacities should be of size num_nodes.
+Each value of node_values[i] should be at least 1 and at most 100 inclusive.
+Each value of node_capacities[i] should be at least -10^5 and at most 10^5 inclusive.
+
 */
 
 #include <iostream>
@@ -59,10 +85,19 @@ bool BreadthFirstSearch(int start, int end, int num_nodes, std::vector<int>& dep
     return depths[end];
 }
 
-long long FindMaxFlow(int num_nodes, const std::vector<int>& node_values, const std::vector<int>& node_capacities) {
+long long FindMaxFlow(const std::vector<int>& node_values, const std::vector<int>& node_capacities) {
+
+    int num_nodes = node_values.size();
+
     if (num_nodes < 1 || num_nodes > 3000) {
         throw std::invalid_argument("Invalid number of nodes");
     }
+
+     if (num_nodes != node_capacities.size()) {
+
+        throw std::invalid_argument("Invalid size of node_capacities");
+    }
+
     for (int value : node_values) {
         if (value < 1 || value > 100) {
             throw std::invalid_argument("Invalid node value");
