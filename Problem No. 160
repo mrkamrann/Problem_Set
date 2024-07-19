@@ -1,5 +1,31 @@
 /*
 Link:  https://codeforces.com/contest/542/problem/D
+
+It's tough to be a superhero. And it's twice as tough to resist the supervillain who is cool at math. Suppose that you're an ordinary Batman in an ordinary city 
+of Gotham. Your enemy Joker mined the building of the city administration and you only have several minutes to neutralize the charge. To do that, you should enter
+the cancel code on the bomb control panel.
+
+However, that mad man decided to give you a hint. This morning the mayor found a playing card under his pillow. There was a line written on the card:
+
+The bomb has a note saying "J(x) = num", where num is some positive integer. You suspect that the cancel code is some integer x that meets the equation J(x) = num.
+Now in order to decide whether you should neutralize the bomb or run for your life, you've got to count how many distinct positive integers x meet this equation.
+
+You are given a single integer num.
+
+Return the number of solutions of the equation J(x) = num.
+
+Create a C++ Function CalculatePrimeFactorizations that will return an integer denoting the number of solutions of the equation J(x) = num.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+An integer num
+
+Input Constraints:
+
+The value of num should be at least 1 and at most 10^12 inclusive.
+
 */
 
 #include <stdio.h>
