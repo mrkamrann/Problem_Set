@@ -15,7 +15,7 @@ There will be three rounds of voting between each pair of candidates: Alice and 
 to 1 if the i-th citizen prefers the first candidate to the second candidate in that round, and 0 otherwise. After this, y = f(x1, x2, ..., xn) will be calculated. If y = 1, the first candidate wins the round. If y = 0, the second candidate wins the round.
 
 Define the probability that one candidate wins two of the three rounds as p. The value p·6^len is always an integer. 
-Print this integer value modulo 1,000,000,007.
+Print this integer value modulo 1000000007.
 
 You are given a string of length 2^len of zeros and ones, representing function f. Let bk(x) be the k-th bit in the binary representation of x. 
 The i-th (0-based) digit of this string shows the return value of f(b1(i), b2(i), ..., bn(i)).
