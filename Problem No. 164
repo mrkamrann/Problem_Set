@@ -1,5 +1,37 @@
 /*
 Link: https://codeforces.com/contest/1725/problem/E
+
+John lives in the country of Dengkleknesia, where there are factory_count factories numbered from 1 to factory_count. Factory i has an electrical coefficient of 
+electrical_coefficients[i]. There are also factory_count - 1 power lines with the j-th power line connecting factory connections[j][0] and 
+factory connections[j][1]. It is guaranteed that each factory in Dengkleknesia is connected to all other factories in Dengkleknesia through one or more power lines.
+In other words, the collection of factories forms a tree. Each pair of different factories in Dengkleknesia can use one or more existing power lines to transfer 
+electricity to each other. However, each power line needs to be turned on first so that electricity can pass through it.
+
+Define f(x, y, z) as the minimum number of power lines that need to be turned on so that factory x can make electrical transfers to factory y and factory z.
+Also define g(x, y, z) as the number of distinct prime factors of GCD(electrical_coefficients[x], electrical_coefficients[y], electrical_coefficients[z]).
+
+To measure the electrical efficiency, you must find the sum of f(x, y, z) × g(x, y, z) for all combinations of (x, y, z) such that 1 ≤ x < y < z ≤ factory_count. 
+Because the answer can be very large, you just need to output the answer modulo 998244353.
+
+Note: GCD(k1, k2, k3) is the greatest common divisor of k1, k2, and k3, which is the biggest integer that simultaneously divides k1, k2, and k3.
+
+Return an integer representing the sum of f(x, y, z) × g(x, y, z) for all combinations of (x, y, z) such that 1 ≤ x < y < z ≤ factory_count, modulo 998244353.
+
+Create a C++ Function CalculateElectricalEfficiency that will return an integer representing the sum of f(x, y, z) × g(x, y, z) for all valid combinations. Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting electrical_coefficients
+A vector<vector<int>> denoting connections
+
+Input Constraints
+
+The value of factory_count should be at least 1 and at most 200000 inclusive.
+The length of connections should be equal to factory_count - 1. 
+Each value of electrical_coefficients[i] should be in the range [1, 200000] inclusive.
+Each value of connections[i][0] and connections[i][1] should be in the range [l, factory_count] both inclusive.
+
+
 */
 
 #include <iostream>
@@ -93,7 +125,7 @@ void Initialize(int factory_count, std::vector<int>& electrical_coefficients, st
     }
 }
 
-int CalculateResult(std::vector<int>& electrical_coefficients, std::vector<std::vector<int>>& connections) {
+int CalculateElectricalEfficiency(std::vector<int>& electrical_coefficients, std::vector<std::vector<int>>& connections) {
     if (electrical_coefficients.size() < 1 || electrical_coefficients.size() > 200000 || connections.size() != electrical_coefficients.size() - 1) {
         throw std::invalid_argument("Invalid input size");
     }
