@@ -1,5 +1,32 @@
 /*
 Link: https://codeforces.com/contest/736/problem/D
+
+Ashley is concerned that people are forgetting she is the Great Combinator. To demonstrate her combinatorial prowess, she studies permutations of length node_count.
+She has a list of edge_count valid pairs, where pair edges[i][0] and edges[i][1] means that she is allowed to place integer edges[i][1] at position edges[i][0].
+
+She knows that the number of permutations that use only valid pairs is odd. For each pair, she wants to determine if the number of valid permutations will remain 
+odd if she removes this pair (and only this pair) from the list.
+
+Return a true or false for each valid pair. Return a vector<bool> The i-th line should contain "true" if after Ashley removes the i-th pair (and only it), 
+the remaining number of valid permutations is odd. Otherwise, return "false".
+
+Create a C++ Function FindOddPermutations that will return a vector of boolean, each boolean being either "true" or "false" for each pair.
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<vector<int>> denoting edges
+An integer node_count
+
+
+Input Constraints
+
+The length of edges should be at least 1 and at most 500000 inclusive.
+Each value of edges[i][0] should be in the range [1, node_count] inclusive.
+Each value of edges[i][1] should be in the range [1, node_count] inclusive.
+The values for node_count and edge_count should be in the range [1, 2000] inclusive.
+
 */
 
 
@@ -15,6 +42,8 @@ std::vector<bool> Solve(int node_count, int edge_count, std::vector<std::vector<
   if (node_count < 1 || node_count > 2000) {
         throw std::invalid_argument("Node count must be between 1 and 2000.");
     }
+   int edge_count = edges.size();
+
     if (edge_count < node_count || edge_count > std::min(node_count * node_count, 500000)) {
         throw std::invalid_argument("Edge count must be between node_count and min(node_count^2, 500000).");
     }
