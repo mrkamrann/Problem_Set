@@ -37,7 +37,7 @@ The values for node_count and edge_count should be in the range [1, 2000] inclus
 #include <stdexcept>
 #include <cassert>
 
-std::vector<bool> Solve(int node_count, int edge_count, std::vector<std::vector<int>>& edges) {
+std::vector<bool> FindOddPermutations(int node_count, int edge_count, std::vector<std::vector<int>>& edges) {
     
   if (node_count < 1 || node_count > 2000) {
         throw std::invalid_argument("Node count must be between 1 and 2000.");
