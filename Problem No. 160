@@ -7,6 +7,8 @@ the cancel code on the bomb control panel.
 
 However, that mad man decided to give you a hint. This morning the mayor found a playing card under his pillow. There was a line written on the card:
 
+J(x) = Summation of k from (1 <= k <= x), where gcd(k, x/k) = 1.
+
 The bomb has a note saying "J(x) = num", where num is some positive integer. You suspect that the cancel code is some integer x that meets the equation J(x) = num.
 Now in order to decide whether you should neutralize the bomb or run for your life, you've got to count how many distinct positive integers x meet this equation.
 
