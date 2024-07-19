@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/contest/380/problem/D
+
+Harry Potter is interested in the seating arrangement in a cinema theater hall in Sereja's city. The hall has num_seats seats denoted by vector seats 
+the i-th integer shows either the index of the person (index in the entering queue) with the ticket for the i-th seat or a 0 if the index is not known, lined up 
+in front of one large screen. Each seat has slots for personal possessions to the left and to the right of it. Any two adjacent seats share exactly one slot. The figure below shows the 
+arrangement of seats and slots for num_seats = 4.
+
+Today it's the premiere of a movie called "Dry Hard". All the tickets for the seats have been sold. There is a very strict controller at the entrance to the 
+theater, so all num_seats people will come into the hall one by one. As soon as a person enters the hall, he immediately (momentarily) takes his seat and occupies 
+all empty slots to the left and right of him. If there are no empty slots, the person gets upset and leaves.
+
+Since people are not very constant, it's hard to predict the order in which viewers will enter the hall. For some seats, Harry Potter knows the number of the 
+viewer (his number in the entering queue of the viewers) who will take the seat. For others, it can be any order.
+
+Being a programmer and mathematician, Harry Potter wonders how many ways there are for the people to enter the hall such that nobody gets upset. As the number 
+can be quite large, print it modulo 1000000007 (10^9 + 7).
+
+You can assume that the index of the person who enters the cinema hall is a unique integer from 1 to num_seats. 
+The person with index 1 comes first, the person with index 2 comes second, and so on.
+
+Return the remainder after dividing the number of ways people can enter the hall without anyone getting upset by 1000000007 (10^9 + 7).
+
+Create a C++ Function CountSeatingArrangements that will return an integer representing the number of valid seating arrangements modulo 1000000007. 
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting seats
+
+Input Constraints
+
+The length of seats should be at least 1 and at most 100000 inclusive.
+Each value of seats should be in the range [0, num_seats] inclusive.
+All positive values in seats are unique integers from 1 to num_seats.
+
 */
 
 #include <iostream>
@@ -58,7 +93,9 @@ long long Compute(int left, int right, const std::vector<int>& seats, const std:
     return result % modulus;
 }
 
-int CalculateSeats(int num_seats, const std::vector<int>& seats) {
+int CountSeatingArrangements(const std::vector<int>& seats) {
+  int num_seats = seats.size();
+
     if (num_seats < 1 || num_seats > 1e5) {
         throw std::invalid_argument("Number of seats out of bounds");
     }
