@@ -1,5 +1,42 @@
 /*
 Link: https://codeforces.com/contest/850/problem/E
+
+
+The presidential election is approaching in Bearland next year, and the excitement is palpable! Currently, there are three candidates: Alice, Bob, and Charlie.
+
+Bearland has a population of len citizens. The election outcome is crucial as it will shape the future of Bearland's citizens for many years. Consequently, each
+of the len citizens will randomly and independently choose one of six orders of preference among Alice, Bob, and Charlie with equal probability.
+
+The government of Bearland has devised a function to help determine the election outcome based on voter preferences. Specifically, this function takes len boolean 
+numbers as input and returns a boolean number. The function also follows this property: f(1 - x1, 1 - x2, ..., 1 - xn) = 1 - f(x1, x2, ..., xn).
+
+There will be three rounds of voting between each pair of candidates: Alice and Bob, Bob and Charlie, and Charlie and Alice. In each round, x_i will be equal 
+to 1 if the i-th citizen prefers the first candidate to the second candidate in that round, and 0 otherwise. After this, y = f(x1, x2, ..., xn) will be calculated. If y = 1, the first candidate wins the round. If y = 0, the second candidate wins the round.
+
+Define the probability that one candidate wins two of the three rounds as p. The value p·6^len is always an integer. 
+Print this integer value modulo 1,000,000,007.
+
+You are given a string of length 2^len of zeros and ones, representing function f. Let bk(x) be the k-th bit in the binary representation of x. 
+The i-th (0-based) digit of this string shows the return value of f(b1(i), b2(i), ..., bn(i)).
+
+It is guaranteed that f(1 - x1, 1 - x2, ..., 1 - xn) = 1 - f(x1, x2, ..., xn) for any values of x1, x2, ..., xn.
+
+Return one number — the answer to the problem.
+
+Create a C++ Function DetermineElectionOutcome that will return a long long denoting the probability integer value modulo 1000000007.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A string denoting str
+
+Input Constraints:
+
+The value of len should be at least 1 and at most 20 inclusive.
+The length of the string should be 2^len.
+The string should only contain zeros and ones.
+
 */
 
 #include <iostream>
@@ -8,7 +45,10 @@ Link: https://codeforces.com/contest/850/problem/E
 #include <cassert>
 
 
-long long Solve(int len, const std::string& str) {
+long long DetermineElectionOutcome( const std::string& str) {
+
+    int len = str.size();
+
     if (len < 1 || len > 20) {
         throw std::invalid_argument("len out of range");
     }
