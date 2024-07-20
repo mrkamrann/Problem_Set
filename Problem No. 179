@@ -1,3 +1,95 @@
 /*
 Link: https://codeforces.com/contest/1767/problem/E
 */
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+void AddConnection(std::vector<long long>& color_connections, int platform_a, int platform_b) {
+    if (platform_a >= 0 && platform_a < static_cast<int>(color_connections.size()) &&
+        platform_b >= 0 && platform_b < static_cast<int>(color_connections.size())) {
+        color_connections[platform_a] |= (1ll << (platform_b - 1));
+        color_connections[platform_b] |= (1ll << (platform_a - 1));
+    }
+}
+
+int CalculateMaximumValue(long long state, const std::vector<long long>& color_connections, const std::vector<int>& activation_costs, std::map<long long, int>& memo) {
+    if (!state) return 0;
+    if (memo.count(state)) return memo[state];
+    int active_bit = static_cast<int>(std::log2(state & -state) + 1);
+    int result = CalculateMaximumValue(state ^ (1ll << (active_bit - 1)), color_connections, activation_costs, memo);
+    if (active_bit < static_cast<int>(color_connections.size()) && !((color_connections[active_bit] >> (active_bit - 1)) & 1)) {
+        result = std::max(result, CalculateMaximumValue(state ^ (1ll << (active_bit - 1)) ^ (state & color_connections[active_bit]), color_connections, activation_costs, memo) + activation_costs[active_bit - 1]);
+    }
+    return memo[state] = result;
+}
+
+long long ComputeResult(int num_platforms, int num_colors, const std::vector<int>& platform_colors, const std::vector<int>& activation_costs) {
+    if (num_platforms < 2 || num_platforms > 300000 || num_colors < 1 || num_colors > 40) {
+        throw std::invalid_argument("num_platforms must be between 2 and 300000; num_colors must be between 1 and 40");
+    }
+
+    for (int color : platform_colors) {
+        if (color < 1 || color > num_colors) {
+            throw std::invalid_argument("platform_colors must be between 1 and num_colors");
+        }
+    }
+
+    for (int cost : activation_costs) {
+        if (cost < 1 || cost > 10000000) {
+            throw std::invalid_argument("activation_costs must be between 1 and 10000000");
+        }
+    }
+
+    std::vector<long long> color_connections(num_colors + 1, 0);
+    std::map<long long, int> memo;
+    int total_cost = std::accumulate(activation_costs.begin(), activation_costs.end(), 0);
+
+    AddConnection(color_connections, platform_colors[0], platform_colors[0]);
+    AddConnection(color_connections, platform_colors[num_platforms - 1], platform_colors[num_platforms - 1]);
+
+    for (int i = 0; i < num_platforms - 1; ++i) {
+        AddConnection(color_connections, platform_colors[i], platform_colors[i + 1]);
+    }
+
+    return total_cost - CalculateMaximumValue((1ll << num_colors) - 1, color_connections, activation_costs, memo);
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    int num_platforms, num_colors;
+    std::cin >> num_platforms >> num_colors;
+
+    if (num_platforms < 2 || num_platforms > 300000 || num_colors < 1 || num_colors > 40) {
+        throw std::invalid_argument("Invalid number of platforms or colors");
+    }
+
+    std::vector<int> platform_colors(num_platforms);
+    std::vector<int> activation_costs(num_colors);
+
+    for (int i = 0; i < num_platforms; ++i) {
+        std::cin >> platform_colors[i];
+        if (platform_colors[i] < 1 || platform_colors[i] > num_colors) {
+            throw std::invalid_argument("Platform color out of range");
+        }
+    }
+
+    for (int i = 0; i < num_colors; ++i) {
+        std::cin >> activation_costs[i];
+        if (activation_costs[i] < 1 || activation_costs[i] > 10000000) {
+            throw std::invalid_argument("Activation cost out of range");
+        }
+    }
+
+    long long result = ComputeResult(num_platforms, num_colors, platform_colors, activation_costs);
+    std::cout << result << std::endl;
+
+    return 0;
+}
