@@ -1,3 +1,134 @@
 /*
 Link : https://codeforces.com/contest/698/problem/D
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <set>
+
+std::pair<long long, long long> SubtractPair(const std::pair<long long, long long>& first_pair, const std::pair<long long, long long>& second_pair) {
+    return {first_pair.first - second_pair.first, first_pair.second - second_pair.second};
+}
+
+long long DotProduct(const std::pair<long long, long long>& first_pair, const std::pair<long long, long long>& second_pair) {
+    return first_pair.first * second_pair.first + first_pair.second * second_pair.second;
+}
+
+long long CrossProduct(const std::pair<long long, long long>& first_pair, const std::pair<long long, long long>& second_pair) {
+    return first_pair.first * second_pair.second - first_pair.second * second_pair.first;
+}
+
+bool DepthFirstSearch(long long remaining_depth, long long stack_top, std::vector<long long>& stack, std::vector<std::vector<std::vector<long long>>>& paths, std::vector<long long>& tags, long long current_time, std::vector<bool>& visited, long long stone_count) {
+    if (stack_top == 0) return true;
+    long long current_node = stack[stack_top];
+    for (long long stone_index = 1; stone_index <= stone_count; stone_index++) {
+        if (visited[stone_index]) continue;
+        visited[stone_index] = true;
+        long long last_top = stack_top;
+        stack_top--;
+        for (long long path_index = 1; path_index <= paths[stone_index][current_node][0]; path_index++) {
+            if (tags[paths[stone_index][current_node][path_index]] != current_time) {
+                stack[++stack_top] = paths[stone_index][current_node][path_index];
+                tags[stack[stack_top]] = current_time;
+            }
+        }
+        if (stack_top < remaining_depth && DepthFirstSearch(remaining_depth - 1, stack_top, stack, paths, tags, current_time, visited, stone_count)) return true;
+        while (stack_top >= last_top) tags[stack[stack_top--]] = 0;
+        stack[++stack_top] = current_node;
+        visited[stone_index] = false;
+    }
+    return false;
+}
+
+long long CalculateResult(std::vector<std::vector<long long>>& stones, std::vector<std::vector<long long>>& monsters) {
+    int stone_count = stones.size();
+    int monster_count = monsters.size();
+
+    if (stone_count < 1 || stone_count > 7 || monster_count < 1 || monster_count > 1000) {
+        throw std::invalid_argument("Invalid input size: Number of stones (stone_count) must be between 1 and 7, and number of monsters (monster_count) must be between 1 and 1000.");
+    }
+
+    std::vector<std::pair<long long, long long>> coordinates(monster_count + stone_count + 1);
+    std::set<std::pair<long long, long long>> unique_points;
+
+    for (int stone_index = 1; stone_index <= stone_count; stone_index++) {
+        long long x_val = stones[stone_index - 1][0];
+        long long y_val = stones[stone_index - 1][1];
+        if (x_val < -1e9 || x_val > 1e9 || y_val < -1e9 || y_val > 1e9) {
+            throw std::invalid_argument("Invalid coordinates: Stone coordinates must be between -10^9 and 10^9.");
+        }
+        coordinates[monster_count + stone_index] = {x, y};
+        if (!unique_points.insert({x_val, y_val}).second) {
+            throw std::invalid_argument("Invalid input: Points must be pairwise distinct.");
+        }
+    }
+
+    for (int monster_index = 1; monster_index <= monster_count; monster_index++) {
+        long long x_val = monsters[monster_index - 1][0];
+        long long y_val = monsters[monster_index - 1][1];
+        if (x_val < -1e9 || x_val > 1e9 || y_val < -1e9 || y_val > 1e9) {
+            throw std::invalid_argument("Invalid coordinates: Monster coordinates must be between -10^9 and 10^9.");
+        }
+        coordinates[monster_index] = {x_val, y_val};
+        if (!unique_points.insert({x_val, y_val}).second) {
+            throw std::invalid_argument("Invalid input: Points must be pairwise distinct.");
+        }
+    }
+
+    std::vector<std::vector<std::vector<long long>>> paths(stone_count + 1, std::vector<std::vector<long long>>(monster_count + 1, std::vector<long long>(monster_count + 1)));
+    for (int stone_index = 1; stone_index <= stone_count; stone_index++) {
+        for (int start_index = 1; start_index <= monster_count; start_index++) {
+            for (int end_index = 1; end_index <= monster_count; end_index++) {
+                if (CrossProduct(SubtractPair(coordinates[end_index], coordinates[monster_count + stone_index]), SubtractPair(coordinates[start_index], coordinates[monster_count + stone_index])) == 0 &&
+                    DotProduct(SubtractPair(coordinates[end_index], coordinates[monster_count + stone_index]), SubtractPair(coordinates[end_index], coordinates[start_index])) < 0) {
+                    paths[stone_index][start_index][++paths[stone_index][start_index][0]] = end_index;
+                }
+            }
+        }
+    }
+
+    long long result = 0;
+    std::vector<long long> stack(monster_count + 1), tags(monster_count + 1);
+    std::vector<bool> visited(stone_count + 1);
+    for (int monster_index = 1; monster_index <= monster_count; monster_index++) {
+        long long current_time = monster_index + 1;
+        tags[monster_index] = current_time;
+        long long stack_top = 1;
+        stack[1] = monster_index;
+        std::fill(visited.begin(), visited.end(), false);
+        if (DepthFirstSearch(stone_count, stack_top, stack, paths, tags, current_time, visited, stone_count)) {
+            result++;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    long long stone_count, monster_count;
+    std::cin >> stone_count >> monster_count;
+
+    
+    std::vector<std::vector<long long>> stones(stone_count, std::vector<long long>(2));
+    std::vector<std::vector<long long>> monsters(monster_count, std::vector<long long>(2));
+   
+
+    for (int i = 0; i < stone_count; ++i) {
+        std::cin >> stones[i][0] >> stones[i][1];
+        
+    }
+
+    for (int i = 0; i < monster_count; ++i) {
+        std::cin >> monsters[i][0] >> monsters[i][1];
+        
+    }
+
+    std::cout << CalculateResult(stones, monsters) << std::endl;
+
+    return 0;
+}
+
+//TEST
+//TEST_END
+
