@@ -1,5 +1,37 @@
 /*
 Link: https://codeforces.com/contest/1436/problem/F
+
+In the kingdom of Multisetland, Ronaldo, a great mathematician, was given a multiset s. Ronaldo needs to find the sum of the product of elements of all pairs 
+of subsets a and b such that:
+
+b is a proper subset of a.
+The size of b is one less than the size of a.
+The greatest common divisor (GCD) of all elements in a is equal to one.
+Your task is to help Ronaldo by calculating the sum of ∑x∈a x * ∑x∈b x for all such pairs a and b, modulo 998244353.
+
+Given an  integer num_elements : the number of different values in the multiset s.
+And, a 2D vector frequencies of length num_elements next each of frequencies[i] contains two integers value and frequency. 
+Element value appears in the multiset s frequency times. All value are different.
+
+Output:
+
+Return the required sum, modulo 998244353.
+
+Create a C++ Function CalculateSubsetSum that will return a long long denoting the sum of products for the given conditions.
+
+Use appropriate error handling using the std::invalid_argument library for invalid test cases.
+
+Input Type:
+
+A vector<vector<int>> denoting frequencies
+
+Input Constraints:
+
+num_elements should be in the range [1, 10^5] inclusive.
+The length of frequencies should be exactly num_elements.
+Each value of frequencies[i][0] should be in the range [1, 10^5] inclusive.
+Each value of frequencies[i][1] should be in the range [1, 10^9] inclusive.
+
 */
 
 #include <iostream>
@@ -23,7 +55,10 @@ long long FastPower(long long base, long long exponent) {
     return result;
 }
 
-std::vector<long long> ProcessFrequencies(int num_elements, const std::vector<std::vector<int>>& frequencies) {
+long long CalculateSubsetSum(const std::vector<std::vector<int>>& frequencies) {
+
+   int num_elements = frequencies.size();
+
     if (num_elements <= 0 || num_elements > 100000) {
         throw std::invalid_argument("Invalid number of elements");
     }
@@ -67,7 +102,7 @@ std::vector<long long> ProcessFrequencies(int num_elements, const std::vector<st
         }
     }
 
-    return result_freq;
+    return (result_freq[1] + modulus) % modulus;
 }
 
 #include <iostream>
@@ -89,7 +124,7 @@ int main() {
 
     std::vector<long long> result = ProcessFrequencies(num_elements, frequencies);
 
-    std::cout << (result[1] + modulus) % modulus << std::endl;
+    std::cout <<  << std::endl;
 
     return 0;
 }
