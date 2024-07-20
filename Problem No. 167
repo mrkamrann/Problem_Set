@@ -1,5 +1,36 @@
 /*
 Link: https://codeforces.com/contest/251/problem/D
+
+Shaun likes numbers a lot. Recently his mother has presented him a collection of num_elements non-negative integers. There's only one thing Shaun likes more than 
+numbers: playing with little Masha. He immediately decided to give a part of his new collection to her. To make the game even more interesting, Shaun decided to 
+give Masha such a collection of numbers for which the following conditions fulfill:
+
+Let's introduce x1 to denote the xor of all numbers Shaun has got left; and let's introduce x2 to denote the xor of all numbers he gave to Masha. Value (x1 + x2) 
+must be as large as possible. If there are multiple ways to divide the collection so that the previous condition is fulfilled, then Shaun minimizes the value x1. 
+The xor operation is a bitwise excluding "OR", that is denoted as "xor" in the Pascal language and "^" in C/C++/Java.
+
+Help Shaun divide the collection as described above. If there are multiple suitable ways to divide it, find any of them. Please note that after Shaun gives a 
+part of his numbers to Masha, he may have no numbers left. The reverse situation is also possible, when Shaun gives nothing to Masha. In both cases, we must 
+assume that the xor of an empty set of numbers equals 0.
+
+Given a vector<long long> values of length num_elements. They are all integers, non-negative and do not exceed 10^18.
+
+Return a vector result of size num_elements. The i-th of them should equal either 1 if Shaun keeps the number that follows the i-th in his collection, or 
+it should equal 2 if Shaun gives the corresponding number to Masha. The numbers are indexed in the order in which they are given in the input.
+
+Create a C++ Function DivideCollection that will return a vector<int> result representing the division of numbers between Shaun and Masha. 
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type:
+
+A vector<int> denoting values
+
+Input Constraints:
+
+The length of values should be at least 1 and at most 100000 inclusive.
+Each value of values should be in the range [0, 10^18] inclusive.
+
 */
 
 #include <iostream>
@@ -8,7 +39,10 @@ Link: https://codeforces.com/contest/251/problem/D
 #include <stdexcept>
 #include <cassert>
 
-std::vector<int> ProcessVectors(int num_elements, std::vector<long long>& values) {
+std::vector<int> DivideCollection(std::vector<long long>& values) {
+
+    int num_elements = values.size();
+
     if (num_elements < 1 || num_elements > 100000) {
         throw std::invalid_argument("Invalid number of elements");
     }
