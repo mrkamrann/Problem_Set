@@ -1,3 +1,118 @@
 /*
 Link: https://codeforces.com/contest/1634/problem/F
 */
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+void UpdateValue(long long index, long long factor, std::vector<long long>& vec, long long size, long long mod, long long sign, long long& zero_count) {
+    if (index <= size) {
+        zero_count -= !vec[index];
+        (vec[index] += sign * factor + mod) %= mod;
+        zero_count += !vec[index];
+    }
+}
+
+std::vector<bool> ProcessOperations(long long vec_size, long long num_operations, long long mod_value, std::vector<long long>& vec_a, std::vector<long long>& vec_b, std::vector<std::tuple<char, long long, long long>>& operations) {
+  
+    if (vec_size < 1 || vec_size > 300000 || num_operations < 1 || num_operations > 300000 || mod_value < 1 || mod_value > 1000000007) {
+        throw std::invalid_argument("Invalid input constraints.");
+    }
+
+    for (long long i = 0; i < vec_size; i++) {
+        if (vec_a[i] < 0 || vec_a[i] >= mod_value) {
+            throw std::invalid_argument("Vector A element out of bounds.");
+        }
+        if (vec_b[i] < 0 || vec_b[i] >= mod_value) {
+            throw std::invalid_argument("Vector B element out of bounds.");
+        }
+    }
+    
+    for (const auto& op : operations) {
+        char operation_type;
+        long long start_index, end_index;
+        std::tie(operation_type, start_index, end_index) = op;
+        if (operation_type != 'A' && operation_type != 'B') {
+            throw std::invalid_argument("Invalid operation type.");
+        }
+        if (start_index < 1 || start_index > end_index || end_index > vec_size) {
+            throw std::invalid_argument("Invalid operation indices.");
+        }
+    }
+
+    std::vector<long long> vec(vec_size + 1), fibonacci(vec_size + 1);
+    long long zero_count = 0;
+
+    for (long long i = 1; i <= vec_size; i++) {
+        vec[i] = vec_a[i-1];
+        fibonacci[i] = (i == 1) ? 1 : (fibonacci[i - 1] + fibonacci[i - 2]) % mod_value;
+    }
+
+    for (long long i = 1; i <= vec_size; i++) {
+        (vec[i] -= vec_b[i - 1] - mod_value) %= mod_value;
+    }
+
+    for (long long i = vec_size; i > 1; i--) {
+        (vec[i] -= vec[i - 1] + vec[i - 2] - mod_value - mod_value) %= mod_value;
+    }
+
+    for (long long i = 1; i <= vec_size; i++) {
+        zero_count += !vec[i];
+    }
+
+    std::vector<bool> results;
+  
+    for (long long i = 0; i < num_operations; i++) {
+        char operation_type;
+        long long start_index, end_index;
+        std::tie(operation_type, start_index, end_index) = operations[i];
+        long long sign = (operation_type == 'A') ? 1 : -1;
+        UpdateValue(start_index, 1, vec, vec_size, mod_value, sign, zero_count);
+        UpdateValue(end_index + 1, -fibonacci[end_index - start_index + 2], vec, vec_size, mod_value, sign, zero_count);
+        UpdateValue(end_index + 2, -fibonacci[end_index - start_index + 1], vec, vec_size, mod_value, sign, zero_count);
+        results.push_back(zero_count == vec_size ? 1 : 0);
+    }
+
+    return results;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    long long vec_size, num_operations, mod_value;
+    std::cin >> vec_size >> num_operations >> mod_value;
+
+    std::vector<long long> vec_a(vec_size);
+    std::vector<long long> vec_b(vec_size);
+    
+    for (long long i = 0; i < vec_size; i++) {
+        std::cin >> vec_a[i];
+    }
+    
+    for (long long i = 0; i < vec_size; i++) {
+        std::cin >> vec_b[i];
+    }
+    
+    std::vector<std::tuple<char, long long, long long>> operations(num_operations);
+    for (long long i = 0; i < num_operations; i++) {
+        char operation_type;
+        long long start_index, end_index;
+        std::cin >> operation_type >> start_index >> end_index;
+        operations[i] = std::make_tuple(operation_type, start_index, end_index);
+    }
+
+    std::vector<std::string> results;
+    try {
+        results = ProcessOperations(vec_size, num_operations, mod_value, vec_a, vec_b, operations);
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+    
+    for (const std::string& result : results) {
+        std::cout << result << std::endl;
+    }
+
+    return 0;
+}
