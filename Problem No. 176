@@ -1,3 +1,164 @@
 /*
 Link: https://codeforces.com/contest/1709/problem/F
 */
+
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+
+long long QuickPow(long long base, long long exponent) {
+    long long result = 1;
+     long long root = 3;
+long long modulus = 998244353;
+    while (exponent) {
+        if (exponent & 1) {
+            result = result * base % modulus;
+        }
+        base = base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+std::vector<long long> NttTransform(std::vector<long long> values, int operation, const std::vector<long long>& bit_reversal) {
+    int total_size = static_cast<int>(values.size());
+    long long root = 3;
+long long modulus = 998244353;
+    for (int i = 0; i < total_size; i++) {
+        if (i < bit_reversal[i]) {
+            std::swap(values[i], values[bit_reversal[i]]);
+        }
+    }
+    for (int mid = 1; mid < total_size; mid <<= 1) {
+        long long w_val = QuickPow((operation == 1 ? root : QuickPow(root, modulus - 2)), (modulus - 1) / (mid << 1));
+        for (int i = 0; i < total_size; i += (mid << 1)) {
+            long long wk_val = 1;
+            for (int j = 0; j < mid; j++, wk_val = wk_val * w_val % modulus) {
+                long long x_val  = values[i + j], y_val  = wk_val * values[i + j + mid] % modulus;
+                values[i + j] = (x_val  + y_val ) % modulus;
+                values[i + j + mid] = (x_val  - y_val  + modulus) % modulus;
+            }
+        }
+    }
+    if (operation == -1) {
+        long long inv = QuickPow(total_size, modulus - 2);
+        for (int i = 0; i < total_size; i++) {
+            values[i] = values[i] * inv % modulus;
+        }
+    }
+    return values;
+}
+
+std::vector<long long> MultiplyPolynomials(std::vector<long long> polynomial_a, std::vector<long long> polynomial_b, const std::vector<long long>& bit_reversal) {
+  
+    long long root = 3;
+long long modulus = 998244353;
+  
+    polynomial_a = NttTransform(polynomial_a, 1, bit_reversal);
+    polynomial_b = NttTransform(polynomial_b, 1, bit_reversal);
+    int length = static_cast<int>(polynomial_a.size());
+    for (int i = 0; i < length; i++) {
+        polynomial_a[i] = polynomial_a[i] * polynomial_b[i] % modulus;
+    }
+    polynomial_a = NttTransform(polynomial_a, -1, bit_reversal);
+    return polynomial_a;
+}
+
+std::vector<long long> PolynomialMultiply(std::vector<long long> polynomial_a, std::vector<long long> polynomial_b) {
+    int size_a = static_cast<int>(polynomial_a.size()) - 1;
+    int size_b = static_cast<int>(polynomial_b.size()) - 1;
+    long long root = 3;
+long long modulus = 998244353;
+    int limit = 0;
+    while ((1 << limit) <= (size_a + size_b + 1)) {
+        limit++;
+    }
+    std::vector<long long> bit_reversal(1 << limit);
+    for (int i = 1; i < (1 << limit); i++) {
+        bit_reversal[i] = (bit_reversal[i >> 1] >> 1) | ((i & 1) << (limit - 1));
+    }
+    std::vector<long long> extended_a(1 << limit), extended_b(1 << limit);
+    for (int i = 0; i <= size_a; i++) {
+        extended_a[i] = polynomial_a[i];
+    }
+    for (int i = 0; i <= size_b; i++) {
+        extended_b[i] = polynomial_b[i];
+    }
+    std::vector<long long> result = MultiplyPolynomials(extended_a, extended_b, bit_reversal);
+    result.resize(size_a + size_b + 1);
+    return result;
+}
+
+long long Solve(int num_terms, int max_value, int result_index) {
+  
+    if (num_terms < 1 || num_terms > 15) {
+        throw std::invalid_argument("num_terms out of range");
+    }
+    if (max_value < 1 || max_value > 200000) {
+        throw std::invalid_argument("max_value out of range");
+    }
+    if (result_index < 1 || result_index > 200000) {
+        throw std::invalid_argument("result_index out of range");
+    }
+
+    long long root = 3;
+long long modulus = 998244353;
+  
+    std::vector<std::vector<long long>> dp_table(num_terms + 1, std::vector<long long>(max_value + 1, 0));
+    for (int i = 0; i <= max_value; i++) {
+        dp_table[1][i] = 1;
+    }
+    for (int term = 2; term <= num_terms; term++) {
+        std::vector<long long> polynomial(max_value + 1);
+        for (int val = 0; val <= max_value; val++) {
+            polynomial[val] = dp_table[term - 1][val];
+        }
+        polynomial = PolynomialMultiply(polynomial, polynomial);
+        long long cumulative_sum = 0;
+        for (int val = 2 * max_value; val >= 0; val--) {
+            cumulative_sum = (cumulative_sum + polynomial[val]) % modulus;
+            if (val <= max_value) {
+                dp_table[term][val] = (cumulative_sum + (max_value - val) * polynomial[val] % modulus) % modulus;
+            }
+        }
+    }
+    std::vector<long long> final_polynomial(max_value + 1);
+    for (int i = 0; i <= max_value; i++) {
+        final_polynomial[i] = dp_table[num_terms][i];
+    }
+    final_polynomial = PolynomialMultiply(final_polynomial, final_polynomial);
+
+    return ((result_index >= static_cast<int>(final_polynomial.size())) ? 0 : final_polynomial[result_index]);
+}
+
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    int num_terms, max_value, result_index;
+    std::cin >> num_terms >> max_value >> result_index;
+
+    long long result = Solve(num_terms, max_value, result_index);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
