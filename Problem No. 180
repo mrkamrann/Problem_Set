@@ -1,3 +1,136 @@
 /*
 Link: https://codeforces.com/contest/1400/problem/G
 */
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+#include <cmath>
+#include <numeric>
+#include <cstdint> // Include cstdint for int64_t
+
+int Power(int base, int exponent) {
+    int result = 1;
+    int modulo = 998244353;
+    while (exponent) {
+        if (exponent & 1) {
+            result = static_cast<int64_t>(result) * base % modulo;
+        }
+        base = static_cast<int64_t>(base) * base % modulo;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+int BinomialCoefficient(int total, int choose, const std::vector<int>& factorial, const std::vector<int>& inverse_factorial) {
+    int modulo = 998244353;
+    return static_cast<int64_t>(factorial[total]) * inverse_factorial[choose] % modulo * inverse_factorial[total - choose] % modulo;
+}
+
+int ComputeResult(int num_intervals, int num_pairs, const std::vector<std::vector<int>>& interval_bounds, const std::vector<std::vector<int>>& pair_relationships) {
+    if (num_intervals < 1 || num_intervals > 300000 || num_pairs < 0 || num_pairs > std::min(20, static_cast<int>(static_cast<int64_t>(num_intervals) * (num_intervals - 1) / 2))) {
+        throw std::invalid_argument("Invalid input values for num_intervals or num_pairs");
+    }
+
+    int modulo = 998244353;
+
+    for (int i = 0; i < num_intervals; ++i) {
+        if (interval_bounds[i][0] < 1 || interval_bounds[i][0] > num_intervals || interval_bounds[i][1] < interval_bounds[i][0] || interval_bounds[i][1] > num_intervals) {
+            throw std::invalid_argument("Invalid interval bounds");
+        }
+    }
+
+    for (int i = 0; i < num_pairs; ++i) {
+        if (pair_relationships[i][0] < 1 || pair_relationships[i][0] >= pair_relationships[i][1] || pair_relationships[i][1] > num_intervals) {
+            throw std::invalid_argument("Invalid pair relationships");
+        }
+    }
+
+    std::vector<int> left_bound(num_intervals + 1);
+    std::vector<int> right_bound(num_intervals + 1);
+    std::vector<int> color_count(num_intervals + 2);
+    std::vector<int> factorial(num_intervals + 1);
+    std::vector<int> inverse_factorial(num_intervals + 1);
+    std::vector<std::vector<int>> prefix_sum(num_pairs * 2 + 1, std::vector<int>(num_intervals + 1));
+    std::vector<int> start_positions(num_pairs);
+    std::vector<int> end_positions(num_pairs);
+
+    for (int i = 1; i <= num_intervals; ++i) {
+        left_bound[i] = interval_bounds[i - 1][0];
+        right_bound[i] = interval_bounds[i - 1][1];
+        color_count[left_bound[i]]++;
+        color_count[right_bound[i] + 1]--;
+    }
+
+    for (int i = 1; i <= num_intervals; ++i) {
+        color_count[i] += color_count[i - 1];
+    }
+
+    for (int i = 0; i < num_pairs; ++i) {
+        start_positions[i] = pair_relationships[i][0];
+        end_positions[i] = pair_relationships[i][1];
+    }
+
+    factorial[0] = 1;
+    for (int i = 1; i <= num_intervals; ++i) {
+        factorial[i] = static_cast<int64_t>(factorial[i - 1]) * i % modulo;
+    }
+    inverse_factorial[num_intervals] = Power(factorial[num_intervals], modulo - 2);
+    for (int i = num_intervals - 1; i >= 0; --i) {
+        inverse_factorial[i] = static_cast<int64_t>(inverse_factorial[i + 1]) * (i + 1) % modulo;
+    }
+
+    for (int i = 0; i <= num_pairs * 2; ++i) {
+        for (int j = i; j <= num_intervals; ++j) {
+            prefix_sum[i][j] = (prefix_sum[i][j - 1] + (color_count[j] >= j ? BinomialCoefficient(color_count[j] - i, j - i, factorial, inverse_factorial) : 0)) % modulo;
+        }
+    }
+
+    int result = 0;
+    for (int i = 0; i < (1 << num_pairs); ++i) {
+        int lower_bound = 1;
+        int upper_bound = num_intervals;
+        std::set<int> unique_positions;
+
+        for (int j = 0; j < num_pairs; ++j) {
+            if (i >> j & 1) {
+                lower_bound = std::max(lower_bound, std::max(left_bound[start_positions[j]], left_bound[end_positions[j]]));
+                upper_bound = std::min(upper_bound, std::min(right_bound[start_positions[j]], right_bound[end_positions[j]]));
+                unique_positions.insert(start_positions[j]);
+                unique_positions.insert(end_positions[j]);
+            }
+        }
+
+        if (lower_bound <= upper_bound) {
+            result = (result + static_cast<int64_t>((__builtin_popcount(i) & 1) ? modulo - 1 : 1) * (prefix_sum[unique_positions.size()][upper_bound] - prefix_sum[unique_positions.size()][lower_bound - 1] + modulo)) % modulo;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int num_intervals;
+    int num_pairs;
+
+    std::cin >> num_intervals >> num_pairs;
+
+    std::vector<std::vector<int>> interval_bounds(num_intervals, std::vector<int>(2));
+    std::vector<std::vector<int>> pair_relationships(num_pairs, std::vector<int>(2));
+
+    for (int i = 0; i < num_intervals; ++i) {
+        std::cin >> interval_bounds[i][0] >> interval_bounds[i][1];
+    }
+
+    for (int i = 0; i < num_pairs; ++i) {
+        std::cin >> pair_relationships[i][0] >> pair_relationships[i][1];
+    }
+
+    int result = ComputeResult(num_intervals, num_pairs, interval_bounds, pair_relationships);
+    std::cout << result << '\n';
+
+    return 0;
+}
