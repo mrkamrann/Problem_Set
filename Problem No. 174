@@ -1,3 +1,86 @@
 /*
 Link: https://codeforces.com/contest/652/problem/F
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+struct Ant {
+    int start_pos;
+    int direction;
+    int id_val;
+};
+
+std::vector<int> Solve(int num_ants, int track_length, long long time, std::vector<int>& positions, std::vector<char>& directions) {
+  
+    if (num_ants < 2 || num_ants > 300000) {
+        throw std::invalid_argument("Invalid number of ants");
+    }
+    if (track_length < 2 || track_length > 1000000000) {
+        throw std::invalid_argument("Invalid track length");
+    }
+    if (time < 0 || time > 1000000000000000000LL) {
+        throw std::invalid_argument("Invalid time value");
+    }
+    if (positions.size() != num_ants || directions.size() != num_ants) {
+        throw std::invalid_argument("Mismatch in number of ants");
+    }
+    std::unordered_set<int> unique_positions;
+    for (int &pos : positions) {
+        if (pos < 1 || pos > track_length) {
+            throw std::invalid_argument("Ant position out of bounds");
+        }
+        if (!unique_positions.insert(pos).second) {
+            throw std::invalid_argument("Duplicate ant positions found");
+        }
+        pos--;
+    }
+    for (char &dir : directions) {
+        if (dir != 'L' && dir != 'R') {
+            throw std::invalid_argument("Invalid direction (must be 'L' or 'R')");
+        }
+    }
+    
+    std::vector<Ant> ants(num_ants);
+    std::vector<int> result_positions(num_ants), current_positions(num_ants);
+    
+    for (int i = 0; i < num_ants; i++) {
+        ants[i].start_pos = positions[i];
+        ants[i].direction = directions[i] == 'L' ? -1 : 1;
+        ants[i].id_val = i;
+    }
+
+    std::sort(ants.begin(), ants.end(), [](Ant a_val, Ant b_val) {
+        return a_val.start_pos < b_val.start_pos;
+    });
+
+    int position_offset = 0;
+    for (int i = 0; i < num_ants; i++) {
+        current_positions[i] = (ants[i].direction * time % track_length + track_length + ants[i].start_pos) % track_length;
+        position_offset = (position_offset - (ants[i].direction * time + ants[i].start_pos - current_positions[i]) / track_length % num_ants + num_ants) % num_ants;
+    }
+
+    std::sort(current_positions.begin(), current_positions.end());
+    for (int i = 0; i < num_ants; i++) {
+        result_positions[ants[(i + position_offset) % num_ants].id_val] = current_positions[i] + 1;
+    }
+
+    return result_positions;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    int num_ants, track_length;
+    long long time;
+    std::cin >> num_ants >> track_length >> time;
+    std::vector<int> positions(num_ants);
+    std::vector<char> directions(num_ants);
+    for (int i = 0; i < num_ants; i++) {
+        std::cin >> positions[i];
+        std::cin >> directions[i];
+    }
+
+    Solve(num_ants, track_length, time, positions, directions);
+    return 0;
+}
