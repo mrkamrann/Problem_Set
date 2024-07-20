@@ -1,3 +1,69 @@
 /*
 Link: https://codeforces.com/contest/1017/problem/F
 */
+
+#include <iostream>
+#include <bitset>
+#include <stdexcept>
+#include <cassert>
+
+int CalculateValue(int number) {
+    if (!(number % 2) || !(number % 3)) {
+        return 0;
+    } else {
+        return number - number / 2 - number / 3 + number / 6 - 1;
+    }
+}
+
+unsigned int PolynomialFunction(int x_val, int coefficient_a, int coefficient_b, int coefficient_c, int coefficient_d) {
+    return static_cast<unsigned int>(coefficient_a) * x_val * x_val * x_val + 
+           static_cast<unsigned int>(coefficient_b) * x_val * x_val + 
+           static_cast<unsigned int>(coefficient_c) * x_val + 
+           static_cast<unsigned int>(coefficient_d);
+}
+
+unsigned int ComputeAnswer(int max_value, int coefficient_a, int coefficient_b, int coefficient_c, int coefficient_d) {
+    if (max_value < 1 || max_value > 300000000) {
+        throw std::invalid_argument("max_value must be between 1 and 300,000,000");
+    }
+    if (coefficient_a < 0 || coefficient_a > 1000000 || 
+        coefficient_b < 0 || coefficient_b > 1000000 || 
+        coefficient_c < 0 || coefficient_c > 1000000 || 
+        coefficient_d < 0 || coefficient_d > 1000000) {
+        throw std::invalid_argument("Coefficients must be between 0 and 1,000,000");
+    }
+
+    unsigned int answer = 0;
+    std::bitset<100000005> bitset_values;
+
+    for (int i = 2; i <= max_value; i++) {
+        int calculated_value = CalculateValue(i);
+        if (!bitset_values[calculated_value] || i == 2 || i == 3) {
+            for (int j = 2 * i; j <= max_value; j += i) {
+                bitset_values[CalculateValue(j)] = 1;
+            }
+            unsigned int sum_values = 0;
+            int temp_value = max_value / i;
+            while (temp_value) {
+                sum_values += temp_value;
+                temp_value /= i;
+            }
+            answer += sum_values * PolynomialFunction(i, coefficient_a, coefficient_b, coefficient_c, coefficient_d);
+        }
+    }
+    return answer;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    int max_value, coefficient_a, coefficient_b, coefficient_c, coefficient_d;
+    std::cin >> max_value >> coefficient_a >> coefficient_b >> coefficient_c >> coefficient_d;
+
+    unsigned int answer = ComputeAnswer(max_value, coefficient_a, coefficient_b, coefficient_c, coefficient_d);
+    std::cout << answer << std::endl;
+
+    return 0;
+}
