@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/contest/1651/problem/E
+
+Andrew is studying a bipartite graph where the vertices of the first part are numbered from 1 to num_elements, and the vertices of the second part are numbered 
+from num_elements+1 to 2*num_elements. Each vertex has exactly two incident edges.
+
+For a tuple of four integers (l, r, L, R), where 1 ≤ l ≤ r ≤ num_elements and num_elements+1 ≤ L ≤ R ≤ 2*num_elements, let's define G'(l, r, L, R) as the
+graph which consists of all vertices of the given graph that are included in the segment [l, r] or in the segment [L, R], and all edges of the given graph such 
+that each of their endpoints belongs to one of these segments. In other words, to obtain G'(l, r, L, R) from the original graph, you have to remove all 
+vertices i such that i∉[l, r] and i∉[L, R], and all edges incident to these vertices.
+
+Calculate the sum of MM(G'(l, r, L, R)) over all tuples of integers (l, r, L, R) having 1 ≤ l ≤ r ≤ num_elements and num_elements+1 ≤ L ≤ R ≤ 2*num_elements.
+Here, MM(G) denotes the size of the maximum matching in a graph G.
+
+Given one integer num_elements  — the number of vertices in each part.
+And, a 2d vector pairs of size 2*num_elements where each pairs[i] denoting an edge of the graph; 
+
+There are no multiple edges in the given graph, and each vertex has exactly two incident edges.
+
+Reurn one number — the sum of MM(G'(l, r, L, R)) over all tuples of integers (l, r, L, R) having 1 ≤ l ≤ r ≤ num_elements and num_elements+1 ≤ L ≤ R ≤ 2*num_elements.
+
+Create a C++ Function CalculateSumOfMaxMatchings that will return a long long denoting the sum of MM(G'(l, r, L, R)). 
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer num_elements
+A vector<vector<long long>> denoting pairs
+
+Input Constraints:
+
+The value of num_elements should be in the range [2, 1500] inclusive.
+The length of pairs should be 2*num_elements.
+Each value of pairs[i][0] should be in the range [1, num_elements] inclusive.
+Each value of pairs[i][1] should be in the range [num_elements+1, 2*num_elements] inclusive.
+
 */
 
 
@@ -36,7 +71,8 @@ void ValidatePairs(const std::vector<std::vector<int>>& pairs, int num_elements)
     }
 }
 
-std::vector<long long> ProcessPairs(int num_elements, const std::vector<std::vector<int>>& pairs) {
+long long CalculateSumOfMaxMatchings(int num_elements, const std::vector<std::vector<int>>& pairs) {
+
     if (num_elements < 2 || num_elements > 1500) {
         throw std::invalid_argument("Invalid number of elements");
     }
@@ -81,8 +117,7 @@ std::vector<long long> ProcessPairs(int num_elements, const std::vector<std::vec
         }
     }
 
-    result.push_back(answer);
-    return result;
+   return answer;
 }
 
 #include <vector>
@@ -103,9 +138,9 @@ int main() {
         pairs[i][1] = y;
     }
 
-    std::vector<long long> result = ProcessPairs(num_elements, pairs);
+    long long result = ProcessPairs(num_elements, pairs);
 
-    std::cout << result[0] << std::endl;
+    std::cout << result << std::endl;
     //TEST_END
 
     return 0;
