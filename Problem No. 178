@@ -1,3 +1,81 @@
 /*
 Link: https://codeforces.com/problemset/problem/963/C
 */
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
+long long CalculateGcd(long long a_val, long long b_val) {
+    while (b_val) {
+        long long temp = b_val;
+        b_val = a_val % b_val;
+        a_val = temp;
+    }
+    return a_val;
+}
+
+long long ComputeAnswer(const std::vector<long long>& widths, const std::vector<long long>& heights, const std::vector<long long>& counts, long long num_rectangles) {
+  
+    if (num_rectangles < 1 || num_rectangles > 200000) {
+        throw std::invalid_argument("num_rectangles must be between 1 and 200000");
+    }
+    
+    for (long long i = 0; i < num_rectangles; ++i) {
+        if (widths[i] < 1 || widths[i] > 1000000000000 || 
+            heights[i] < 1 || heights[i] > 1000000000000 || 
+            counts[i] < 1 || counts[i] > 1000000000000) {
+            throw std::invalid_argument("widths, heights, and counts must be between 1 and 1000000000000");
+        }
+    }
+
+    std::map<long long, long long> width_map, height_map;
+  
+    long long total_counts = 0, gcd_value = 0, answer = 0;
+
+    for (long long i = 0; i < num_rectangles; ++i) {
+        width_map[widths[i]] += counts[i];
+        height_map[heights[i]] += counts[i];
+        total_counts += counts[i];
+        gcd_value = CalculateGcd(gcd_value, counts[i]);
+    }
+
+    for (long long i = 0; i < num_rectangles; ++i) {
+        if (std::fabs(static_cast<long double>(width_map[widths[i]]) / static_cast<long double>(total_counts) - 
+                      static_cast<long double>(counts[i]) / static_cast<long double>(height_map[heights[i]])) > 1e-16) {
+            return 0;
+        }
+    }
+
+    for (long long i = 1; i * i <= gcd_value; ++i) {
+        if (gcd_value % i == 0) {
+            answer += 1 + (i * i != gcd_value);
+        }
+    }
+
+    return answer;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+
+    long long num_rectangles;
+    std::cin >> num_rectangles;
+    
+    std::vector<long long> widths(num_rectangles), heights(num_rectangles), counts(num_rectangles);
+
+    for (long long i = 0; i < num_rectangles; ++i) {
+        std::cin >> widths[i] >> heights[i] >> counts[i];
+    }
+
+    long long result = ComputeAnswer(widths, heights, counts, num_rectangles);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
