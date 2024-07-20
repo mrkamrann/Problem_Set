@@ -1,3 +1,115 @@
 /*
 Link: https://codeforces.com/contest/1679/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <set>
+
+
+void AddModulo(int& target, int value) {
+    target += value;
+    int modulo = 998244353;
+    if (target >= modulo) {
+        target -= modulo;
+    }
+}
+
+int SolveDigitPairs(int digit_count, std::vector<std::vector<int>>& digit_pairs) {
+   
+   int pair_count = digit_pairs.size();
+  
+     if (digit_count < 1 || digit_count > 50000 || pair_count < 0 || pair_count > 45) {
+        throw std::invalid_argument("Invalid input size: Number of digits (digit_count) must be between 1 and 50000, and number of pairs (pair_count) must be between 0 and 45.");
+    }
+
+  
+   int modulo = 998244353;
+   int max_digits = 10;
+   int max_states = 1 << max_digits; 
+  
+    std::vector<std::vector<int>> adjacency_matrix(max_digits, std::vector<int>(max_digits, 0));
+    std::set<std::pair<int, int>> distinct_pairs;
+  
+    
+  
+    for (std::vector<int>& pair : digit_pairs) {
+        int first_digit = pair[0], second_digit = pair[1];
+        if (first_digit < 0 || first_digit >= 10 || second_digit < 0 || second_digit >= 10 || first_digit >= second_digit) {
+            throw std::invalid_argument("Invalid digit pair: Digits must be between 0 and 9, and first digit must be less than second digit.");
+        }
+        if (!distinct_pairs.insert({first_digit, second_digit}).second) {
+            throw std::invalid_argument("Pairs are not distinct.");
+        }
+        adjacency_matrix[first_digit][second_digit] = adjacency_matrix[second_digit][first_digit] = 1;
+    }
+
+    std::vector<std::vector<int>> transition(max_states, std::vector<int>(max_digits, 0));
+    for (int state = 0; state < max_states; ++state) {
+        for (int digit = 0; digit < max_digits; ++digit) {
+            if (state >> digit & 1) {
+                transition[state][digit] = -1;
+                continue;
+            }
+            for (int neighbor_digit = 0; neighbor_digit < max_digits; ++neighbor_digit) {
+                if (adjacency_matrix[digit][neighbor_digit]) {
+                    if (neighbor_digit > digit || (state & (1 << neighbor_digit))) {
+                        transition[state][digit] |= 1 << neighbor_digit;
+                    }
+                }
+            }
+        }
+    }
+
+    std::vector<std::vector<int>> dp_table(2, std::vector<int>(max_states, 0));
+    dp_table[0][0] = 1;
+    int toggle = 0;
+    while (digit_count--) {
+        for (int state = 0; state < max_states; ++state) {
+            if (dp_table[toggle][state]) {
+                for (int digit = 0; digit < max_digits; ++digit) {
+                    int next_state = transition[state][digit];
+                    if (next_state != -1) {
+                        AddModulo(dp_table[toggle ^ 1][next_state], dp_table[toggle][state]);
+                    }
+                }
+                dp_table[toggle][state] = 0;
+            }
+        }
+        toggle ^= 1;
+    }
+
+    int result = 0;
+    for (int state = 0; state < max_states; ++state) {
+        AddModulo(result, dp_table[toggle][state]);
+    }
+    return result;
+}
+
+int main() {
+    int digit_count, pair_count;
+    std::cin >> digit_count >> pair_count;
+
+    if (digit_count < 1 || digit_count > 50000 || pair_count < 0 || pair_count > 45) {
+        throw std::invalid_argument("Invalid input size: Number of digits (n) must be between 1 and 50000, and number of pairs (m) must be between 0 and 45.");
+    }
+
+    std::vector<std::vector<int>> digit_pairs(pair_count, std::vector<int>(2));
+    for (int i = 0; i < pair_count; ++i) {
+        std::cin >> digit_pairs[i][0] >> digit_pairs[i][1];
+        if (digit_pairs[i][0] < 0 || digit_pairs[i][0] >= 10 || digit_pairs[i][1] < 0 || digit_pairs[i][1] >= 10 || digit_pairs[i][0] >= digit_pairs[i][1]) {
+            throw std::invalid_argument("Invalid digit pair: Digits must be between 0 and 9, and first digit must be less than second digit.");
+        }
+    }
+
+    int result = SolveDigitPairs(digit_count, digit_pairs);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
+//TEST
+//TEST_END
+
