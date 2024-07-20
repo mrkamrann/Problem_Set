@@ -1,5 +1,27 @@
 /*
 Link: https://codeforces.com/contest/1916/problem/H2
+
+In the kingdom of Matrixland, Rock is given three integers: num, base, and exponent. The integer base is guaranteed to be a prime number.
+
+For each r from 0 to exponent, Rock needs to find the number of num × num matrices a over the field of integers modulo base such that the rank of a is exactly r. 
+Since these values are large, Rock only requires the results modulo 998244353.
+
+Create a C++ Function CalculateMatrices that will return a vector of integers denoting the answers for each r from 0 to exponent.
+
+Use appropriate error handling using the std::invalid_argument library for invalid test cases.
+
+Input Type:
+
+A long long integer num
+An integer base
+An integer exponent
+
+Input Constraints:
+
+The value of num should be at least 1 and at most 10^18 inclusive.
+The value of base should be in the range [2, 998244353) inclusive.
+The value of exponent should be at least 0 and at most 5 × 10^5 inclusive.
+
 */
 
 #include <vector>
@@ -19,7 +41,7 @@ long long QuickPower(long long base, long long exp, int modulus) {
     return result;
 }
 
-std::vector<long long> ComputeValues(long long num, int base, int exponent) {
+std::vector<long long> CalculateMatrices(long long num, int base, int exponent) {
    
     if (num < 1 || num > 1000000000000000000LL) {
         throw std::invalid_argument("Invalid value for num");
