@@ -204,16 +204,207 @@ if (unique_speeds.size() != speeds.size()) {
 #include <cassert>
 
 int main() {
-    int len, duration, num_swimmers;
-    std::cin >> len >> duration >> num_swimmers;
+  
+//TEST
+int len_1 = 100;
+int duration_1 = 10;
+std::vector<int> speeds_1 = {2, 3, 5};
+int expected_1 = 0;
+int result_1 = CalculateMeetingMoments(len_1, duration_1, speeds_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<int> speeds(num_swimmers);
-    for (int i = 0; i < num_swimmers; ++i) {
-        std::cin >> speeds[i];
-    }
+//TEST
+int len_2 = 50;
+int duration_2 = 25;
+std::vector<int> speeds_2 = {1, 4, 7, 10};
+int expected_2 = 15;
+int result_2 = CalculateMeetingMoments(len_2, duration_2, speeds_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    int answer = ComputeAnswer(len, duration, num_swimmers, speeds);
-    std::cout << answer << std::endl;
+//TEST
+int len_3 = 1000;
+int duration_3 = 500;
+std::vector<int> speeds_3 = {10, 20, 30, 40, 50};
+int expected_3 = 70;
+int result_3 = CalculateMeetingMoments(len_3, duration_3, speeds_3);
+ assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int len_4 = 200;
+int duration_4 = 100;
+std::vector<int> speeds_4 = {15, 25, 35, 45};
+int expected_4 = 55;
+int result_4 = CalculateMeetingMoments(len_4, duration_4, speeds_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int len_5 = 300;
+int duration_5 = 150;
+std::vector<int> speeds_5 = {12, 24, 36};
+int expected_5 = 30;
+int result_5 = CalculateMeetingMoments(len_5, duration_5, speeds_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int len_6 = 400;
+int duration_6 = 200;
+std::vector<int> speeds_6 = {9, 18, 27, 36};
+int expected_6 = 40;
+int result_6 = CalculateMeetingMoments(len_6, duration_6, speeds_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int len_7 = 500;
+int duration_7 = 250;
+std::vector<int> speeds_7 = {5, 10, 15, 20, 25};
+int expected_7 = 35;
+int result_7 = CalculateMeetingMoments(len_7, duration_7, speeds_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int len_8 = 600;
+int duration_8 = 300;
+std::vector<int> speeds_8 = {8, 16, 24, 32};
+int expected_8 = 36;
+int result_8 = CalculateMeetingMoments(len_8, duration_8, speeds_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int len_9 = 700;
+int duration_9 = 350;
+std::vector<int> speeds_9 = {7, 14, 21, 28};
+int expected_9 = 32;
+int result_9 = CalculateMeetingMoments(len_9, duration_9, speeds_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int len_10 = 0;
+int duration_10 = 10;
+std::vector<int> speeds_10 = {2, 3, 5};
+try {
+    CalculateMeetingMoments(len_10, duration_10, speeds_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_11 = 100;
+int duration_11 = 0; 
+std::vector<int> speeds_11 = {2, 3, 5};
+try {
+    CalculateMeetingMoments(len_11, duration_11, speeds_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_12 = 100;
+int duration_12 = 10;
+std::vector<int> speeds_12 = {2};
+try {
+    CalculateMeetingMoments(len_12, duration_12, speeds_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_13 = 100;
+int duration_13 = 10;
+std::vector<int> speeds_13 = {200001, 3, 5}; 
+try {
+    CalculateMeetingMoments(len_13, duration_13, speeds_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_14 = 100;
+int duration_14 = 10;
+std::vector<int> speeds_14 = {2, 3, 3}; 
+try {
+    CalculateMeetingMoments(len_14, duration_14, speeds_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_15 = 100;
+int duration_15 = 10;
+std::vector<int> speeds_15 = {}; 
+try {
+    CalculateMeetingMoments(len_15, duration_15, speeds_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_16 = 100;
+int duration_16 = -10; 
+std::vector<int> speeds_16 = {2, 3, 5};
+try {
+    CalculateMeetingMoments(len_16, duration_16, speeds_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_17 = -100; 
+int duration_17 = 10;
+std::vector<int> speeds_17 = {2, 3, 5};
+try {
+    CalculateMeetingMoments(len_17, duration_17, speeds_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_18 = 100;
+int duration_18 = 10;
+std::vector<int> speeds_18 = {-2, 3, 5}; 
+try {
+    CalculateMeetingMoments(len_18, duration_18, speeds_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_19 = 100;
+int duration_19 = 10;
+std::vector<int> speeds_19(1e6 , 1);
+try {
+    CalculateMeetingMoments(len_19, duration_19, speeds_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
