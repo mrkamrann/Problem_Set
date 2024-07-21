@@ -16,11 +16,13 @@ Use appropriate error handling using the stdexcept library for invalid test case
 
 Input Type:
 
+An Integer denoting num_nodes
 A vector<vector<int>> edges
 
 Input Constraints:
 
-The value of num_nodes should be at least 1 and at most 5 × 10^5 inclusive.
+The value of num_nodes should be at least 1 and at most 5 * 10^5 inclusive.
+The length of edges should be equal to num_nodes - 1
 Each edge should connect distinct nodes within the range [1, num_nodes].
 
 */
@@ -48,13 +50,17 @@ void DepthFirstSearch(int node, int parent, const std::vector<std::vector<int>> 
     function_values[node] = multiplier;
 }
 
-long long CalculateExpectedRank(const std::vector<std::vector<int>> &edges) {
+long long CalculateExpectedRank(int num_nodes, const std::vector<std::vector<int>> &edges) {
 
-    int num_nodes = edges.size();
-
+ 
     if (num_nodes < 1 || num_nodes > 500000) {
         throw std::invalid_argument("Invalid number of nodes");
     }
+  
+    if (num_nodes -  1 != edges.size()) {
+        throw std::invalid_argument("The length of edges should be equal to num_nodes - 1");
+    }
+  
     for (size_t i = 0; i < edges.size(); ++i) {
 
         int u_val = edges[i][0];
@@ -92,17 +98,144 @@ long long CalculateExpectedRank(const std::vector<std::vector<int>> &edges) {
 #include <cassert>
 
 int main() {
-    int num_nodes;
-    std::cin >> num_nodes;
+    
+  //TEST
+int num_nodes_1 = 3;
+std::vector<std::vector<int>> edges_1 = {{1, 2}, {2, 3}};
+long long expected_1 = 6;
+long long result_1 = CalculateExpectedRank(num_nodes_1, edges_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<std::vector<int>> edges(num_nodes - 1);
-    for (int i = 0; i < num_nodes - 1; ++i) {
-        int u_val, v_val;
-        std::cin >> u_val >> v_val;
-        edges[i] = {u_val, v_val};
-    }
+//TEST
+int num_nodes_2 = 1;
+std::vector<std::vector<int>> edges_2 = {};
+long long expected_2 = 0;
+long long result_2 = CalculateExpectedRank(num_nodes_2, edges_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    long long result = CalculateMaxFlow(num_nodes, edges);
-    std::cout << result;
+//TEST
+int num_nodes_3 = 4;
+std::vector<std::vector<int>> edges_3 = {{1, 2}, {2, 3}, {3, 4}};
+long long expected_3 = 18;
+long long result_3 = CalculateExpectedRank(num_nodes_3, edges_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_nodes_4 = 5;
+std::vector<std::vector<int>> edges_4 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+long long expected_4 = 46;
+long long result_4 = CalculateExpectedRank(num_nodes_4, edges_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_nodes_5 = 2;
+std::vector<std::vector<int>> edges_5 = {{1, 2}};
+long long expected_5 = 2;
+long long result_5 = CalculateExpectedRank(num_nodes_5, edges_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_nodes_6 = 6;
+std::vector<std::vector<int>> edges_6 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6}};
+long long expected_6 = 62;
+long long result_6 = CalculateExpectedRank(num_nodes_6, edges_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_nodes_7 = 7;
+std::vector<std::vector<int>> edges_7 = {{1, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}, {3, 7}};
+long long expected_7 = 246;
+long long result_7 = CalculateExpectedRank(num_nodes_7, edges_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_nodes_8 = 8;
+std::vector<std::vector<int>> edges_8 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}};
+long long expected_8 = 626;
+long long result_8 = CalculateExpectedRank(num_nodes_8, edges_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_nodes_9 = 10;
+std::vector<std::vector<int>> edges_9 = {{1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6}, {1, 7}, {1, 8}, {1, 9}, {1, 10}};
+long long expected_9 = 1022;
+long long result_9 = CalculateExpectedRank(num_nodes_9, edges_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int num_nodes_10 = 0;
+std::vector<std::vector<int>> edges_10 = {};
+try {
+    CalculateExpectedRank(num_nodes_10, edges_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_nodes_11 = 3;
+std::vector<std::vector<int>> edges_11 = {{1, 1}, {2, 2}};
+try {
+    CalculateExpectedRank(num_nodes_11, edges_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_nodes_12 = 4;
+std::vector<std::vector<int>> edges_12 = {{-9999, 2}, {2, 3}, {4, 5}};
+try {
+    CalculateExpectedRank(num_nodes_12, edges_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_nodes_13 = 3;
+std::vector<std::vector<int>> edges_13 = {{1, 4}, {2, 5}};
+try {
+    CalculateExpectedRank(num_nodes_13, edges_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_nodes_14 = -999;
+std::vector<std::vector<int>> edges_14 = {{1,4}};
+try {
+    CalculateExpectedRank(num_nodes_14, edges_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+int num_nodes_15 = 1e6;
+std::vector<std::vector<int>> edges_15 = {{1,4}};
+try {
+    CalculateExpectedRank(num_nodes_15, edges_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
     return 0;
 }
