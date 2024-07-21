@@ -83,14 +83,100 @@ long long CalculatePrimeFactorizations(long long num) {
 #include <vector>
 
 int main() {
-    long long number;
-    scanf("%lld", &number);
-    
-    try {
-        printf("%lld\n", CalculatePrimeFactorizations(number));
-    } catch (const std::invalid_argument& e) {
-        printf("Error: %s\n", e.what());
-    }
+  
+  //TEST
+long long num_1 = 2;
+long long expected_1 = 0;
+long long result_1 = CalculatePrimeFactorizations(num_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long num_2 = 3;
+long long expected_2 = 1;
+long long result_2 = CalculatePrimeFactorizations(num_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long num_3 = 4;
+long long expected_3 = 1;
+long long result_3 = CalculatePrimeFactorizations(num_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long num_4 = 6;
+long long expected_4 = 1;
+long long result_4 = CalculatePrimeFactorizations(num_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long num_5 = 12;
+long long expected_5 = 2;
+long long result_5 = CalculatePrimeFactorizations(num_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long num_6 = 15;
+long long expected_6 = 0;
+long long result_6 = CalculatePrimeFactorizations(num_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long num_7 = 28;
+long long expected_7 = 1;
+long long result_7 = CalculatePrimeFactorizations(num_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long num_8 = 100;
+long long expected_8 = 1;
+long long result_8 = CalculatePrimeFactorizations(num_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long num_9 = 1000000000000;
+long long expected_9 = 227;
+long long result_9 = CalculatePrimeFactorizations(num_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+long long num_10 = 1000000000001; 
+try {
+    CalculatePrimeFactorizations(num_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_11 = -99999999999; 
+try {
+    CalculatePrimeFactorizations(num_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+long long num_12 = 0; 
+try {
+    CalculatePrimeFactorizations(num_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
