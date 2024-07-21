@@ -30,6 +30,7 @@ Use appropriate error handling using the stdexcept library for invalid test case
 
 Input Type:
 
+An Integer denoting len
 A string denoting str
 
 Input Constraints:
@@ -46,9 +47,8 @@ The string should only contain zeros and ones.
 #include <cassert>
 
 
-long long DetermineElectionOutcome( const std::string& str) {
+long long DetermineElectionOutcome(int len, const std::string& str) {
 
-    int len = str.size();
 
     if (len < 1 || len > 20) {
         throw std::invalid_argument("len out of range");
@@ -100,13 +100,190 @@ long long DetermineElectionOutcome( const std::string& str) {
 #include <cassert>
 
 int main() {
-    int len;
-    std::cin >> len;
-    std::string str;
-    std::cin >> str;
+   
+//TEST
+int len_1 = 1;
+std::string str_1 = "01";
+long long expected_1 = 6;
+long long result_1 = DetermineElectionOutcome(len_1, str_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    long long result = Solve(len, str);
-    std::cout << result << std::endl;
+//TEST
+int len_2 = 2;
+std::string str_2 = "0011";
+long long expected_2 = 36;
+long long result_2 = DetermineElectionOutcome(len_2, str_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int len_3 = 3;
+std::string str_3 = "00001111";
+long long expected_3 = 216;
+long long result_3 = DetermineElectionOutcome(len_3, str_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int len_4 = 4;
+std::string str_4 = "0101010101010101";
+long long expected_4 = 1296;
+long long result_4 = DetermineElectionOutcome(len_4, str_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int len_5 = 5;
+std::string str_5 = "01010101010101010101010101010101";
+long long expected_5 = 7776;
+long long result_5 = DetermineElectionOutcome(len_5, str_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int len_6 = 6;
+std::string str_6 = "0101010101010101010101010101010101010101010101010101010101010101";
+long long expected_6 = 46656;
+long long result_6 = DetermineElectionOutcome(len_6, str_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int len_7 = 7;
+std::string str_7 = "01010101010101010101010101010101010010101010101010101010101010101011010101010101010101010101010101010101010101010101010101010101";
+long long expected_7 = 222012;
+long long result_7 = DetermineElectionOutcome(len_7, str_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int len_8 = 2;
+std::string str_8 = "0000";
+long long expected_8 = 0;
+long long result_8 = DetermineElectionOutcome(len_8, str_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int len_9 = 1;
+std::string str_9 = "11";
+long long expected_9 = 0;
+long long result_9 = DetermineElectionOutcome(len_9, str_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int len_10 = 0; 
+std::string str_10 = "0";
+try {
+    DetermineElectionOutcome(len_10, str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_11 = 21;
+std::string str_11 = "0";
+try {
+    DetermineElectionOutcome(len_11, str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_12 = 3; 
+std::string str_12 = "000111"; 
+try {
+    DetermineElectionOutcome(len_12, str_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_13 = 4; 
+std::string str_13 = "0101A10101010101";
+try {
+    DetermineElectionOutcome(len_13, str_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_14 = 2; 
+std::string str_14 = "01010";
+try {
+    DetermineElectionOutcome(len_14, str_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_15 = 3;
+std::string str_15 = "00-0111";
+try {
+    DetermineElectionOutcome(len_15, str_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_16 = 2;
+std::string str_16 = "101";
+try {
+    DetermineElectionOutcome(len_16, str_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_17 = 1; 
+std::string str_17 = "02";
+try {
+    DetermineElectionOutcome(len_17, str_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_18 = 2; 
+std::string str_18(1e6,'0');
+try {
+    DetermineElectionOutcome(len_18, str_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int len_19 = -1; 
+std::string str_19 = "01";
+try {
+    DetermineElectionOutcome(len_19, str_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
 
     return 0;
 }
