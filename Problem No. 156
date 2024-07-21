@@ -31,8 +31,7 @@ A string denoting field
 
 Input Constraints:
 
-cells should be at least 2 and at most 1,000,000 inclusive.
-The string field should have a length equal to cells.
+The value of cells should be at least 2 and at most 1,000,000 inclusive.
 The string should contain at least one 'P' and at least one '*'.
 The string can contain '.', '*', and 'P' only.
 
@@ -69,16 +68,19 @@ bool Check(int time, int cells, int packman_count, const std::vector<int>& packm
     return None(dp_table[packman_count] + 1, cells, asterisk_sum);
 }
 
-std::pair<int, int> MaxAsterisksAndTime(int cells, const std::string& field) {
+std::pair<int, int> MaxAsterisksAndTime(const std::string& field) {
+  
+   int cells = field.size();
+     
     if (cells < 2 || cells > 1000000) {
         throw std::invalid_argument("Cells out of range");
     }
     for (char character : field) {
-        if (character != '*' && character != '.' && character != 'p') {
+        if (character != '*' && character != '.' && character != 'P') {
             throw std::invalid_argument("Field contains invalid characters");
         }
     }
-    if (field.find('*') == std::string::npos || field.find('p') == std::string::npos) {
+    if (field.find('*') == std::string::npos || field.find('P') == std::string::npos) {
         throw std::invalid_argument("Field must contain at least one asterisk and one packman");
     }
 
@@ -139,13 +141,161 @@ std::pair<int, int> MaxAsterisksAndTime(int cells, const std::string& field) {
 
 
 int main() {
-    int cells;
-    std::cin >> cells;
-    std::string field;
-    std::cin >> field;
+    
+//TEST
+std::string field_1 = "P.*P*";
+std::pair<int, int> expected_1 = {2, 2};
+std::pair<int, int> result_1 = MaxAsterisksAndTime(field_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::pair<int, int> result = Solve(cells, field);
-    std::cout << result.first << " " << result.second << std::endl;
+//TEST
+std::string field_2 = "P*.*.*.*P";
+std::pair<int, int> expected_2 = {4, 3};
+std::pair<int, int> result_2 = MaxAsterisksAndTime(field_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::string field_3 = "*P*P*";
+std::pair<int, int> expected_3 = {3, 3};
+std::pair<int, int> result_3 = MaxAsterisksAndTime(field_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::string field_4 = "P*.*P";
+std::pair<int, int> expected_4 = {2, 1};
+std::pair<int, int> result_4 = MaxAsterisksAndTime(field_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::string field_5 = "P*.*P*.*";
+std::pair<int, int> expected_5 = {4, 3};
+std::pair<int, int> result_5 = MaxAsterisksAndTime(field_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::string field_6 = "P.*P*P";
+std::pair<int, int> expected_6 = {2, 1};
+std::pair<int, int> result_6 = MaxAsterisksAndTime(field_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::string field_7 = "*P*.*P*";
+std::pair<int, int> expected_7 = {4, 5};
+std::pair<int, int> result_7 = MaxAsterisksAndTime(field_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::string field_8 = "P.*.*P*P*";
+std::pair<int, int> expected_8 = {4, 3};
+std::pair<int, int> result_8 = MaxAsterisksAndTime(field_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::string field_9 = "P**P*.*P";
+std::pair<int, int> expected_9 = {4, 2};
+std::pair<int, int> result_9 = MaxAsterisksAndTime(field_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::string field_10 = "p*";
+try {
+    MaxAsterisksAndTime(field_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_11 = "*";
+try {
+    MaxAsterisksAndTime(field_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_12 = "";
+try {
+    MaxAsterisksAndTime(field_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_13 = "**";
+try {
+    MaxAsterisksAndTime(field_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_14 = "PP";
+try {
+    MaxAsterisksAndTime(field_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_15 = "....";
+try {
+    MaxAsterisksAndTime(field_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_16 = "123*";
+try {
+    MaxAsterisksAndTime(field_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_17(1000008, 'P');
+try {
+    MaxAsterisksAndTime(field_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string field_18 = "P*P*abc";
+try {
+    MaxAsterisksAndTime(field_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+  
     return 0;
 }
 
