@@ -146,19 +146,178 @@ long long FindMaxFlow(const std::vector<int>& node_values, const std::vector<int
 #include <cassert>
 
 int main() {
-    int num_nodes;
-    std::cin >> num_nodes;
-    std::vector<int> node_values(num_nodes);
-    std::vector<int> node_capacities(num_nodes);
-    for (int i = 0; i < num_nodes; i++) {
-        std::cin >> node_values[i];
-    }
-    for (int i = 0; i < num_nodes; i++) {
-        std::cin >> node_capacities[i];
-    }
+  
+  //TEST
+std::vector<int> node_values_1 = {1, 2, 3};
+std::vector<int> node_capacities_1 = {10, 20, 30};
+long long expected_1 = 60;
+long long result_1 = FindMaxFlow(node_values_1, node_capacities_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    long long result = FindMaxFlow(num_nodes, node_values, node_capacities);
-    std::cout << result;
+//TEST
+std::vector<int> node_values_2 = {1};
+std::vector<int> node_capacities_2 = {100};
+long long expected_2 = 100;
+long long result_2 = FindMaxFlow(node_values_2, node_capacities_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_3 = {5, 10, 15, 20};
+std::vector<int> node_capacities_3 = {1, 2, 3, 4};
+long long expected_3 = 10;
+long long result_3 = FindMaxFlow(node_values_3, node_capacities_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_4 = {100, 100, 100};
+std::vector<int> node_capacities_4 = {100, 100, 100};
+long long expected_4 = 300;
+long long result_4 = FindMaxFlow(node_values_4, node_capacities_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_5 = {1, 1, 1};
+std::vector<int> node_capacities_5 = {-100000, 0, 100000};
+long long expected_5 = 0;
+long long result_5 = FindMaxFlow(node_values_5, node_capacities_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_6 = {10, 20, 30, 40};
+std::vector<int> node_capacities_6 = {5, -5, 15, 10};
+long long expected_6 = 25;
+long long result_6 = FindMaxFlow(node_values_6, node_capacities_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_7 = {10, 10, 10, 10};
+std::vector<int> node_capacities_7 = {10, 10, 10, 10};
+long long expected_7 = 40;
+long long result_7 = FindMaxFlow(node_values_7, node_capacities_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_8 = {100, 99, 98, 97};
+std::vector<int> node_capacities_8 = {1, 2, 3, 4};
+long long expected_8 = 10;
+long long result_8 = FindMaxFlow(node_values_8, node_capacities_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_9 = {50, 50, 50, 50, 50};
+std::vector<int> node_capacities_9 = {100, 200, 300, 400, 500};
+long long expected_9 = 1500;
+long long result_9 = FindMaxFlow(node_values_9, node_capacities_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> node_values_10 = {};
+std::vector<int> node_capacities_10 = {};
+try {
+    FindMaxFlow(node_values_10, node_capacities_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_11 = {1, 2, 3};
+std::vector<int> node_capacities_11 = {10, 20};
+try {
+    FindMaxFlow(node_values_11, node_capacities_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_12 = {1, 2};
+std::vector<int> node_capacities_12 = {10, 20, 30};
+try {
+    FindMaxFlow(node_values_12, node_capacities_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_13 = {0};
+std::vector<int> node_capacities_13 = {10};
+try {
+    FindMaxFlow(node_values_13, node_capacities_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_14 = {-1};
+std::vector<int> node_capacities_14 = {10};
+try {
+    FindMaxFlow(node_values_14, node_capacities_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_15 = {1, 2, 3};
+std::vector<int> node_capacities_15 = {10, 20, 300000};
+try {
+    FindMaxFlow(node_values_15, node_capacities_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_16 = {1, 2, 101};
+std::vector<int> node_capacities_16 = {10, 20, 30};
+try {
+    FindMaxFlow(node_values_16, node_capacities_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_17 = {1};
+std::vector<int> node_capacities_17 = {-1000001};
+try {
+    FindMaxFlow(node_values_17, node_capacities_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> node_values_18 = {1, 2, 3, 4, 5};
+std::vector<int> node_capacities_18 = {10, 20, 30, 40, 500000};
+try {
+    FindMaxFlow(node_values_18, node_capacities_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
     return 0;
 }
 
