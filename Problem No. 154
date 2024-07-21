@@ -17,7 +17,7 @@ range.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
-Input Type (For Illustration):
+Input Type:
 
 A string denoting left
 A string denoting right
@@ -113,6 +113,177 @@ if (!std::all_of(right.begin(), right.end(), [](char character) { return  charac
 
 int main() {
    
+   //TEST
+std::string left_1 = "4";
+std::string right_1 = "7";
+long long expected_1 = 28;
+long long result_1 = CalculateLuckyProductSum(left_1, right_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::string left_2 = "44";
+std::string right_2 = "77";
+long long expected_2 = 11244;
+long long result_2 = CalculateLuckyProductSum(left_2, right_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::string left_3 = "444";
+std::string right_3 = "777";
+long long expected_3 = 2726676;
+long long result_3 = CalculateLuckyProductSum(left_3, right_3);
+ assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::string left_4 = "4444";
+std::string right_4 = "7777";
+long long expected_4 = 590030340;
+long long result_4 = CalculateLuckyProductSum(left_4, right_4);
+ assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::string left_5 = "4477";
+std::string right_5 = "7744";
+long long expected_5 = 349665552;
+long long result_5 = CalculateLuckyProductSum(left_5, right_5);
+ assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::string left_6 = "44444";
+std::string right_6 = "77777";
+long long expected_6 = 401420814;
+long long result_6 = CalculateLuckyProductSum(left_6, right_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::string left_7 = "474747";
+std::string right_7 = "747474";
+long long expected_7 = 114315943;
+long long result_7 = CalculateLuckyProductSum(left_7, right_7);
+ assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::string left_8 = "4444444";
+std::string right_8 = "7777777";
+long long expected_8 = 445457815;
+long long result_8 = CalculateLuckyProductSum(left_8, right_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::string left_9 = "4444444444";
+std::string right_9 = "7777777777";
+long long expected_9 = 792254774;
+long long result_9 = CalculateLuckyProductSum(left_9, right_9);
+ assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::string left_10 = "";
+std::string right_10 = "4";
+try {
+    CalculateLuckyProductSum(left_10, right_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_11 = "4";
+std::string right_11 = "";
+try {
+    CalculateLuckyProductSum(left_11, right_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_12 = "447";
+std::string right_12 = "47";
+try {
+    CalculateLuckyProductSum(left_12, right_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_13 = "444";
+std::string right_13 = "4444";
+try {
+    CalculateLuckyProductSum(left_13, right_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_14 = "4";
+std::string right_14 = "8";
+try {
+    CalculateLuckyProductSum(left_14, right_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_15 = "4a";
+std::string right_15 = "77";
+try {
+    CalculateLuckyProductSum(left_15, right_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_16 = "444444";
+std::string right_16 = "777777777777";
+try {
+    CalculateLuckyProductSum(left_16, right_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_17 = "777";
+std::string right_17 = "444";
+try {
+    CalculateLuckyProductSum(left_17, right_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::string left_18 = "447744774477";
+std::string right_18 = "744774478447";
+try {
+    CalculateLuckyProductSum(left_18, right_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
