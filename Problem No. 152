@@ -12,8 +12,8 @@ It is possible that i = j and Nikhil forms a team of two.
 
 GCD is the greatest common divisor of two numbers, and LCM is the least common multiple.
 
-You are given three integers num_candidates, x_val, and y_val  — the number of candidates and corresponding constants.
-Also you are provided num_candidates integers a_1, a_2, ..., a_n  — ranks of candidates denoted by ranks
+You are given three integers x_val, and y_val  — the number of candidates and corresponding constants.
+Also you are provided num_candidates integers a_1, a_2, ..., a_n  — ranks of candidates denoted by vector ranks
 
 Return the only number — the number of pairs (i, j) such that there exists an integer v meeting the following constraints: 
 GCD(v, a_i) = x_val and LCM(v, a_j) = y_val. It is possible that i = j.
@@ -23,7 +23,6 @@ Use appropriate error handling using the stdexcept library for invalid test case
 
 Input Type:
 
-An integer denoting num_candidates
 A long long denoting x_val
 A long long denoting y_val
 vector<long long> denoting ranks
@@ -59,8 +58,10 @@ void Divide(long long number, std::vector<long long> &primes) {
     }
 }
 
-long long CountValidPairs(int num_candidates, long long x_val, long long y_val, const std::vector<long long> &ranks) {
+long long CountValidPairs(long long x_val, long long y_val, const std::vector<long long> &ranks) {
 
+    int num_candidates = ranks.size();
+  
     if (num_candidates < 1 || num_candidates > 200000) {
         throw std::invalid_argument("Invalid number of candidates");
     }
@@ -84,29 +85,30 @@ long long CountValidPairs(int num_candidates, long long x_val, long long y_val, 
         return 0;
     }
 
-    std::map<long long, int> gcd_counts_x, gcd_counts_y;
+ std::map<long long, int> gcd_counts_x, gcd_counts_y;
 
-    for (int i = 0; i < num_candidates; ++i) {
-        if (ranks[i] % x_val == 0) {
-            ++gcd_counts_x[std::gcd(y_val / x_val, ranks[i] / x_val)];
-        }
-        if (y_val % ranks[i] == 0) {
-            ++gcd_counts_y[y_val / ranks[i]];
-        }
+for (int i = 0; i < num_candidates; ++i) {
+    if (ranks[i] % x_val == 0) {
+        ++gcd_counts_x[std::gcd(y_val / x_val, ranks[i] / x_val)];
     }
+    if (y_val % ranks[i] == 0) {
+        ++gcd_counts_y[y_val / ranks[i]];
+    }
+}
 
-    long long result = 0;
+long long result = 0;
 
-    if (gcd_counts_x.size() < 6000000 / gcd_counts_y.size()) {
-        for (const auto &gcd_x : gcd_counts_x) {
-            for (const auto &gcd_y : gcd_counts_y) {
-                if (std::gcd(gcd_x.first, gcd_y.first) == 1) {
-                    result += static_cast<long long>(gcd_x.second) * gcd_y.second;
-                }
+if (gcd_counts_x.size() < 6000000 / gcd_counts_y.size()) {
+    for (const std::pair<const long long, int> &gcd_x : gcd_counts_x) {
+        for (const std::pair<const long long, int> &gcd_y : gcd_counts_y) {
+            if (std::gcd(gcd_x.first, gcd_y.first) == 1) {
+                result += static_cast<long long>(gcd_x.second) * gcd_y.second;
             }
         }
-        return result;
     }
+    return result;
+}
+
 
     std::vector<long long> primes;
     Divide(y_val, primes);
@@ -162,23 +164,183 @@ long long CountValidPairs(int num_candidates, long long x_val, long long y_val, 
 
 int main() {
 
-  //remove auto keywords
-    int num_candidates;
-    long long x_val, y_val;
-    std::cin >> num_candidates >> x_val >> y_val;
+  //TEST
+std::vector<long long> ranks_1 = {1};
+long long x_val_1 = 1;
+long long y_val_1 = 1;
+long long expected_1 = 1;
+long long result_1 = CountValidPairs(x_val_1, y_val_1, ranks_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<long long> ranks(num_candidates);
-    for (int i = 0; i < num_candidates; ++i) {
-        std::cin >> ranks[i];
-    }
+//TEST
+std::vector<long long> ranks_2 = {2, 4, 8, 16};
+long long x_val_2 = 2;
+long long y_val_2 = 8;
+long long expected_2 = 6;
+long long result_2 = CountValidPairs(x_val_2, y_val_2, ranks_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    try {
-        long long result = CalculatePairs(num_candidates, x_val, y_val, ranks);
-        std::cout << result << std::endl;
-    } catch (const std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-    }
+//TEST
+std::vector<long long> ranks_3 = {3, 9, 27, 81};
+long long x_val_3 = 3;
+long long y_val_3 = 27;
+long long expected_3 = 6;
+long long result_3 = CountValidPairs(x_val_3, y_val_3, ranks_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_4 = {5, 10, 15, 20, 25};
+long long x_val_4 = 5;
+long long y_val_4 = 25;
+long long expected_4 = 9;
+long long result_4 = CountValidPairs(x_val_4, y_val_4, ranks_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_5 = {6, 12, 18, 24, 30};
+long long x_val_5 = 6;
+long long y_val_5 = 24;
+long long expected_5 = 11;
+long long result_5 = CountValidPairs(x_val_5, y_val_5, ranks_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_6 = {7, 14, 21, 28, 35};
+long long x_val_6 = 7;
+long long y_val_6 = 28;
+long long expected_6 = 11;
+long long result_6 = CountValidPairs(x_val_6, y_val_6, ranks_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_7 = {8, 16, 32, 64, 128};
+long long x_val_7 = 8;
+long long y_val_7 = 64;
+long long expected_7 = 8;
+long long result_7 = CountValidPairs(x_val_7, y_val_7, ranks_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_8 = {9, 18, 27, 36, 45};
+long long x_val_8 = 9;
+long long y_val_8 = 36;
+long long expected_8 = 11;
+long long result_8 = CountValidPairs(x_val_8, y_val_8, ranks_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_9 = {10, 20, 30, 40, 50};
+long long x_val_9 = 10;
+long long y_val_9 = 50;
+long long expected_9 = 9;
+long long result_9 = CountValidPairs(x_val_9, y_val_9, ranks_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+std::vector<long long> ranks_10 = {};
+long long x_val_10 = 1;
+long long y_val_10 = 1;
+try {
+    CountValidPairs(x_val_10, y_val_10, ranks_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_11 = std::vector<long long>(200001, 1);
+long long x_val_11 = 1;
+long long y_val_11 = 1;
+try {
+    CountValidPairs(x_val_11, y_val_11, ranks_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_12 = {1, 2, 3, -4, 5};
+long long x_val_12 = 1;
+long long y_val_12 = 1;
+try {
+    CountValidPairs(x_val_12, y_val_12, ranks_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_13 = {1, 2, 3, 4, 5};
+long long x_val_13 = 1000000000000000008LL;
+long long y_val_13 = 1;
+try {
+    CountValidPairs(x_val_13, y_val_13, ranks_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_14 = {1, 2, 3, 4, 5};
+long long x_val_14 = 1;
+long long y_val_14 = 1000000000000000008LL;
+try {
+    CountValidPairs(x_val_14, y_val_14, ranks_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_15 = {1, 2, 3, 4, 5};
+long long x_val_15 = -999;
+long long y_val_15 = 1;
+try {
+    CountValidPairs(x_val_15, y_val_15, ranks_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> ranks_16 = {1, 2, 3, 4, 5};
+long long x_val_16 = 1;
+long long y_val_16 = -999;
+try {
+    CountValidPairs(x_val_16, y_val_16, ranks_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+std::vector<long long> ranks_17 = {1, 2, 3, 4, 1000000000000000008LL};
+long long x_val_17 = 1;
+long long y_val_17 = 999;
+try {
+    CountValidPairs(x_val_17, y_val_17, ranks_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
-
