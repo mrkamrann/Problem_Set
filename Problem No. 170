@@ -6,7 +6,7 @@ In the kingdom of Matrixland, Rock is given three integers: num, base, and expon
 For each r from 0 to exponent, Rock needs to find the number of num × num matrices a over the field of integers modulo base such that the rank of a is exactly r. 
 Since these values are large, Rock only requires the results modulo 998244353.
 
-Create a C++ Function CalculateMatrices that will return a vector of integers denoting the answers for each r from 0 to exponent.
+Create a C++ Function CalculateMatrices that will return a vector of long long denoting the answers for each r from 0 to exponent.
 
 Use appropriate error handling using the std::invalid_argument library for invalid test cases.
 
@@ -84,22 +84,196 @@ std::vector<long long> CalculateMatrices(long long num, int base, int exponent) 
 #include <cassert>
 
 int main() {
-    long long num;
-    int base, exponent;
 
-    std::cin >> num >> base >> exponent;
+
+//TEST
+    long long num_1 = 1;
+    int base_1 = 2;
+    int exponent_1 = 0;
+    std::vector<long long> expected_1 = {1}; 
+    std::vector<long long> result_1 = CalculateMatrices(num_1, base_1, exponent_1);
+   assert(result_1 == expected_1);
+    //TEST_END
 
     //TEST
-    try {
-        std::vector<long long> results = ComputeValues(num, base, exponent);
-        for (const auto& result : results) {
-            std::cout << result << ' ';
-        }
-        std::cout << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << '\n';
-    }
+    long long num_2 = 10;
+    int base_2 = 9;
+    int exponent_2 = 5;
+    std::vector<long long> expected_2 = {1,49366415,564021118,916224586,897026049,124020079};  
+    std::vector<long long> result_2 = CalculateMatrices(num_2, base_2, exponent_2);
+   assert(result_2 == expected_2);
     //TEST_END
+
+    //TEST
+    long long num_3 = 12;
+    int base_3 = 10;
+    int exponent_3 = 10;
+    std::vector<long long> expected_3 = {1,749712449,182768919,593398383,545904103,309422812,819031108,597664677,409315329,499371421,404960028}; 
+    std::vector<long long> result_3 = CalculateMatrices(num_3, base_3, exponent_3);
+  assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    long long num_4 = 9;
+    int base_4 = 16;
+    int exponent_4 = 2;
+    std::vector<long long> expected_4 = {1,888055495,283187722};  
+    std::vector<long long> result_4 = CalculateMatrices(num_4, base_4, exponent_4);
+   assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    long long num_5 = 5;
+    int base_5 = 12;
+    int exponent_5 = 11;
+    std::vector<long long> expected_5 = {1,637584286,467481412,481792723,883215682,700429212,0,0,0,0,0,0}; 
+    std::vector<long long> result_5 = CalculateMatrices(num_5, base_5, exponent_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    long long num_6 = 7;
+    int base_6 = 9;
+    int exponent_6 = 3;
+    std::vector<long long> expected_6 = {1,626034136,828608136,398396017}; 
+    std::vector<long long> result_6 = CalculateMatrices(num_6, base_6, exponent_6);
+   assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    long long num_7 = 8;
+    int base_7 = 5;
+    int exponent_7 = 4;
+    std::vector<long long> expected_7 = {1,213491930,85613678,9869333,229236594};
+    std::vector<long long> result_7 = CalculateMatrices(num_7, base_7, exponent_7);
+assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    long long num_8 = 9;
+    int base_8 = 15;
+    int exponent_8 = 2;
+    std::vector<long long> expected_8 = {1,446159589,392368222}; 
+    std::vector<long long> result_8 = CalculateMatrices(num_8, base_8, exponent_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    long long num_9 = 1;
+    int base_9 = 6;
+    int exponent_9 = 10;
+    std::vector<long long> expected_9 = {1,5,0,0,0,0,0,0,0,0,0};  
+    std::vector<long long> result_9 = CalculateMatrices(num_9, base_9, exponent_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+  
+//TEST
+long long num_10 = 0;
+int base_10 = 2;
+int exponent_10 = 100;
+try {
+    CalculateMatrices(num_10, base_10, exponent_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_11 = -1;  
+int base_11 = 2;
+int exponent_11 = 100;
+try {
+    CalculateMatrices(num_11, base_11, exponent_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_12 = 1000000000000000000LL;
+int base_12 = 1;  
+int exponent_12 = 100;
+try {
+    CalculateMatrices(num_12, base_12, exponent_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_13 = 1000000000000000000LL;
+int base_13 = 998244353;  
+int exponent_13 = 100;
+try {
+    CalculateMatrices(num_13, base_13, exponent_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_14 = 1000000000000000000LL;
+int base_14 = 500;
+int exponent_14 = -1; 
+try {
+    CalculateMatrices(num_14, base_14, exponent_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_15 = 1000000000000000000LL;
+int base_15 = 500;
+int exponent_15 = 500001; 
+try {
+    CalculateMatrices(num_15, base_15, exponent_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_16 = -1000000000000000000LL;  
+int base_16 = 500;
+int exponent_16 = 100;
+try {
+    CalculateMatrices(num_16, base_16, exponent_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_17 = 1000000000000000000LL;
+int base_17 = -2;  
+int exponent_17 = 100;
+try {
+    CalculateMatrices(num_17, base_17, exponent_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_18 = 1000000000000000000LL;
+int base_18 = 500;
+int exponent_18 = -100;  
+try {
+    CalculateMatrices(num_18, base_18, exponent_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
