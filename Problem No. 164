@@ -29,7 +29,7 @@ Input Constraints
 The value of factory_count should be at least 1 and at most 200000 inclusive.
 The length of connections should be equal to factory_count - 1. 
 Each value of electrical_coefficients[i] should be in the range [1, 200000] inclusive.
-Each value of connections[i][0] and connections[i][1] should be in the range [l, factory_count] both inclusive.
+Each value of connections[i][0] and connections[i][1] should be in the range [1, factory_count] both inclusive.
 
 
 */
@@ -171,23 +171,211 @@ int CalculateElectricalEfficiency(std::vector<int>& electrical_coefficients, std
 
 
 int main() {
-    int factory_count;
-    std::cin >> factory_count;
-    std::vector<int> electrical_coefficients(factory_count);
-    for (int i = 0; i < factory_count; ++i) {
-        std::cin >> electrical_coefficients[i];
-    }
+  
+  //TEST
+std::vector<int> electrical_coefficients_1 = {5, 10, 15, 20};
+std::vector<std::vector<int>> connections_1 = {{1, 2}, {2, 3}, {3, 4}};
+int expected_1 = 10; 
+int result_1 = CalculateElectricalEfficiency(electrical_coefficients_1, connections_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<std::vector<int>> connections(factory_count - 1, std::vector<int>(2));
-    for (int i = 0; i < factory_count - 1; ++i) {
-        std::cin >> connections[i][0] >> connections[i][1];
-    }
+//TEST
+std::vector<int> electrical_coefficients_2 = {1, 2, 3, 4, 5};
+std::vector<std::vector<int>> connections_2 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+int expected_2 = 0;
+int result_2 = CalculateElectricalEfficiency(electrical_coefficients_2, connections_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    try {
-        std::cout << CalculateResult(electrical_coefficients, connections) << "\n";
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << "\n";
-    }
+//TEST
+std::vector<int> electrical_coefficients_3 = {200000, 199999, 199998};
+std::vector<std::vector<int>> connections_3 = {{1, 2}, {2, 3}};
+int expected_3 = 0; 
+int result_3 = CalculateElectricalEfficiency(electrical_coefficients_3, connections_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_4 = {100, 200, 300, 400, 500, 600};
+std::vector<std::vector<int>> connections_4 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}};
+int expected_4 = 140; 
+int result_4 = CalculateElectricalEfficiency(electrical_coefficients_4, connections_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_5 = {1, 1, 1, 1, 1, 1, 1};
+std::vector<std::vector<int>> connections_5 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}};
+int expected_5 = 0;
+int result_5 = CalculateElectricalEfficiency(electrical_coefficients_5, connections_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_6 = {3, 6, 9, 12};
+std::vector<std::vector<int>> connections_6 = {{1, 2}, {2, 3}, {3, 4}};
+int expected_6 = 10; 
+int result_6 = CalculateElectricalEfficiency(electrical_coefficients_6, connections_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_7 = {5, 5, 5, 5, 5, 5};
+std::vector<std::vector<int>> connections_7 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}};
+int expected_7 = 70; 
+int result_7 = CalculateElectricalEfficiency(electrical_coefficients_7, connections_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_8 = {7, 14, 21, 28};
+std::vector<std::vector<int>> connections_8 = {{1, 2}, {2, 3}, {3, 4}};
+int expected_8 = 10; 
+int result_8 = CalculateElectricalEfficiency(electrical_coefficients_8, connections_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_9 = {200, 300, 400};
+std::vector<std::vector<int>> connections_9 = {{1, 2}, {2, 3}};
+int expected_9 = 4; 
+int result_9 = CalculateElectricalEfficiency(electrical_coefficients_9, connections_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_10 = {5, 10, 15};
+std::vector<std::vector<int>> connections_10 = {{1, 2}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_10, connections_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_11 = {5, 10, 15};
+std::vector<std::vector<int>> connections_11 = {{1, 2}, {2, 3}, {3, 4}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_11, connections_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_12 = {5, 10, 15};
+std::vector<std::vector<int>> connections_12 = {{1, 2}, {2, 3}, {3, -1}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_12, connections_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_13 = {5, 10, 15};
+std::vector<std::vector<int>> connections_13 = {{1, 2}, {2, 3}, {4, 3}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_13, connections_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_14 = {5, 10, 15};
+std::vector<std::vector<int>> connections_14 = {{1, 2}, {2, 3}, {0, 3}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_14, connections_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_15 = {5, 10, 15};
+std::vector<std::vector<int>> connections_15 = {{1, 2}, {2, 3}, {3, 3}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_15, connections_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+std::vector<int> electrical_coefficients_16 = {};
+std::vector<std::vector<int>> connections_16 = {};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_16, connections_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_17 = {5, 2};
+std::vector<std::vector<int>> connections_17 = {};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_17, connections_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_18 = {5, 10, 15, 20};
+std::vector<std::vector<int>> connections_18 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_18, connections_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_19 = {5, 10, 15,-9999999};
+std::vector<std::vector<int>> connections_19 = {{1, 2}, {2, 3}, {3, 4}, {2, 2}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_19, connections_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_20 = {5, 10, 15, 20};
+std::vector<std::vector<int>> connections_20 = {{1, 2}, {-99999, 3}, {3, 4}, {4, 6}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_20, connections_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> electrical_coefficients_21 = {5, 10, 15, 20, 25};
+std::vector<std::vector<int>> connections_21 = {{1, 2}, {2, 3}, {3, 4}};
+try {
+    CalculateElectricalEfficiency(electrical_coefficients_21, connections_21);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
