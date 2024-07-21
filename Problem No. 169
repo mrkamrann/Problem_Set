@@ -31,6 +31,7 @@ num_elements should be in the range [1, 10^5] inclusive.
 The length of frequencies should be exactly num_elements.
 Each value of frequencies[i][0] should be in the range [1, 10^5] inclusive.
 Each value of frequencies[i][1] should be in the range [1, 10^9] inclusive.
+All frequencies[i][0] are distinct
 
 */
 
@@ -63,10 +64,12 @@ long long CalculateSubsetSum(const std::vector<std::vector<int>>& frequencies) {
         throw std::invalid_argument("Invalid number of elements");
     }
   
+    int modulus = 998244353, max_len = 100000;
+  
     std::vector<int> freq(max_len, 0);
     std::vector<bool> visited(max_len, false);
   
-     int modulus = 998244353, max_len = 100000;
+     
   
     for (int i = 0; i < num_elements; ++i) {
         int element = frequencies[i][0];
@@ -111,22 +114,225 @@ long long CalculateSubsetSum(const std::vector<std::vector<int>>& frequencies) {
 #include <cassert>
 
 int main() {
-    int num_elements;
-    std::cin >> num_elements;
-    std::vector<std::vector<int>> frequencies(num_elements, std::vector<int>(2));
+   
+//TEST
+    std::vector<std::vector<int>> frequencies_1 = {{1, 1}, {2, 2}, {4, 3}};
+    long long expected_1 = 9904;
+    long long result_1 = CalculateSubsetSum(frequencies_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-    for (int i = 0; i < num_elements; ++i) {
-        int element, frequency;
-        std::cin >> element >> frequency;
-        frequencies[i][0] = element;
-        frequencies[i][1] = frequency;
+    //TEST
+    std::vector<std::vector<int>> frequencies_2 = {{10, 100}, {9, 999}, {500, 500}};
+    long long expected_2 = 845554317;
+    long long result_2 = CalculateSubsetSum(frequencies_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_3 = {{1, 1}, {4, 1}, {100, 1}};
+    long long expected_3 = 32276;
+    long long result_3 = CalculateSubsetSum(frequencies_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_4 = {{2, 5}, {3, 10}, {4, 15}};
+    long long expected_4 = 297558360;
+    long long result_4 = CalculateSubsetSum(frequencies_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_5 = {{1, 1000000000}, {2, 999999999}, {3, 500000000}};
+    long long expected_5 = 808761941;
+    long long result_5 = CalculateSubsetSum(frequencies_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_6 = {{1, 1}};
+    long long expected_6 = 0;
+    long long result_6 = CalculateSubsetSum(frequencies_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_7 = {{10, 10}, {20, 20}, {30, 30}};
+    long long expected_7 = 0;
+    long long result_7 = CalculateSubsetSum(frequencies_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_8 = {{5, 5}, {6, 6}, {7, 7}};
+    long long expected_8 = 507393449;
+    long long result_8 = CalculateSubsetSum(frequencies_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_9 = {{1000, 1000}, {2000, 2000}, {3000, 3000}};
+    long long expected_9 = 0;
+    long long result_9 = CalculateSubsetSum(frequencies_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_10 = {{-5, 1}, {2, 2}, {1, 3}, {1, 2}};
+    long long expected_10 = 0;
+    try {
+        CalculateSubsetSum(frequencies_10);
+        assert(false); 
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
 
-    std::vector<long long> result = ProcessFrequencies(num_elements, frequencies);
+    //TEST
+    std::vector<std::vector<int>> frequencies_11 = {{1, -1}, {2, 2}, {1, 3}};
+    long long expected_11 = 0;
+    try {
+        CalculateSubsetSum(frequencies_11);
+        assert(false); 
+    } catch(const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
 
-    std::cout <<  << std::endl;
+    //TEST
+    std::vector<std::vector<int>> frequencies_12 = {{1, 1}, {2, 2}, {1, 3}};
+    long long expected_12 = 0;
+    try {
+        CalculateSubsetSum(frequencies_12);
+        assert(false); 
+    } catch(const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
 
-    return 0;
+    //TEST
+    std::vector<std::vector<int>> frequencies_13 = {{0, 1}, {2, 2}, {1, 3}};
+    long long expected_13 = 0;
+    try {
+        CalculateSubsetSum(frequencies_13);
+        assert(false); 
+    } catch(const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_14 = {{1, 1}, {2, 2}, {1, 3}};
+    long long expected_14 = 0;
+    try {
+        CalculateSubsetSum(frequencies_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<std::vector<int>> frequencies_15 = {{-1, -1}, {2, 2}, {1, 3}};
+    long long expected_15 = 0;
+    try {
+        CalculateSubsetSum(frequencies_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_16 = {{1, 1}, {-2, -2}, {1, 3}};
+long long expected_16 = 0;
+try {
+    CalculateSubsetSum(frequencies_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_17 = {{1, 1}, {2, 2}, {-1, -3}};
+long long expected_17 = 0;
+try {
+    CalculateSubsetSum(frequencies_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_18 = {{1, 1}, {2, 2}, {0, 3}};
+long long expected_18 = 0;
+try {
+    CalculateSubsetSum(frequencies_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_19 = {{1, 1}, {2, 2}, {1, 1000000001}};
+long long expected_19 = 0;
+try {
+    CalculateSubsetSum(frequencies_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_20(1e6, std::vector<int>(2, 1));
+long long expected_20 = 0;
+try {
+    CalculateSubsetSum(frequencies_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_21 = {{1, 1}, {-66666, 2}, {1, 3}};
+long long expected_21 = 0;
+try {
+    CalculateSubsetSum(frequencies_21);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_22 = {{1, 1}, {2, 2}, {100001, 3}};
+long long expected_22 = 0;
+try {
+    CalculateSubsetSum(frequencies_22);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> frequencies_23 = {{1, -999999}, {2, 2}};
+long long expected_23 = 0;
+try {
+    CalculateSubsetSum(frequencies_23);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+   return 0;
 }
 
 
