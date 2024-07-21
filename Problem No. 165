@@ -138,13 +138,170 @@ int CountSeatingArrangements(const std::vector<int>& seats) {
 #include <set>
 
 int main() {
-    int num_seats;
-    std::cin >> num_seats;
-    std::vector<int> seats(num_seats);
-    for (int i = 0; i < num_seats; i++) {
-        std::cin >> seats[i];
-    }
-    
-    std::cout << CalculateSeats(num_seats, seats) << std::endl;
+ 
+//TEST
+std::vector<int> seats_1 = {0, 2, 3, 0, 5};
+int expected_1 = 1;
+int result_1 = CountSeatingArrangements(seats_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> seats_2 = {0,0,1, 0, 2, 4, 0,0,0};
+int expected_2 = 0;
+int result_2 = CountSeatingArrangements(seats_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> seats_3 = {0, 0, 0, 0, 0};
+int expected_3 = 16;
+int result_3 = CountSeatingArrangements(seats_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> seats_4 = {0, 1, 2, 3, 4, 5};
+int expected_4 = 1;
+int result_4 = CountSeatingArrangements(seats_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> seats_5 = {0};
+int expected_5 = 1;
+int result_5 = CountSeatingArrangements(seats_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> seats_6 = {1};
+int expected_6 = 1;
+int result_6 = CountSeatingArrangements(seats_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> seats_7 = {0, 0, 2, 0, 0};
+int expected_7 = 6;
+int result_7 = CountSeatingArrangements(seats_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> seats_8 = {0, 1, 0, 0, 5, 0, 0, 3, 0};
+int expected_8 = 0;
+int result_8 = CountSeatingArrangements(seats_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> seats_9 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int expected_9 = 1;
+int result_9 = CountSeatingArrangements(seats_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+std::vector<int> seats_10 = {};
+try {
+    CountSeatingArrangements(seats_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_11 = {0, 0, 0, -1};
+try {
+    CountSeatingArrangements(seats_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_12 = {0, 0, 100001};
+try {
+    CountSeatingArrangements(seats_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_13(1e6, 0);
+try {
+    CountSeatingArrangements(seats_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_14 = {0, 0, 2, 0, -3};
+try {
+    CountSeatingArrangements(seats_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_15 = {0, 1, 0, 0, 200001};
+try {
+    CountSeatingArrangements(seats_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_16 = {0, 0, 0, 0, -100};
+try {
+    CountSeatingArrangements(seats_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_17 = {0, 1, 2, 3, 0, 4, 0, 4};
+try {
+    CountSeatingArrangements(seats_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_18 = {0, 0, 0, 0, 0, 1000001};
+try {
+    CountSeatingArrangements(seats_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> seats_19 = {0, -1, -2, -3, 4, 5};
+try {
+    CountSeatingArrangements(seats_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
     return 0;
 }
