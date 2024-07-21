@@ -49,6 +49,7 @@ void InitializeGrid(int width, int height, std::vector<std::vector<int>>& grid) 
 }
 
 long long CalculateZ(long long width, long long height, std::vector<std::vector<int>>& grid) {
+  
     const int modulus = 1000000007;
     long long total_cells = width * height % modulus;
     long long result = total_cells * (total_cells - 1) % modulus * (total_cells - 2) % modulus;
@@ -76,6 +77,7 @@ long long CalculateZ(long long width, long long height, std::vector<std::vector<
 }
 
 long long CountIntegerTriangles(long long width, long long height) {
+  
     if (width < 1 || width > 4000 || height < 1 || height > 4000) {
         throw std::invalid_argument("Invalid input: width and height must be between 1 and 4000.");
     }
@@ -92,16 +94,178 @@ long long CountIntegerTriangles(long long width, long long height) {
 #include <cassert>
 
 int main() {
-    long long width, height;
-    std::cin >> width >> height;
+   
+   //TEST
+long long width_1 = 1;
+long long height_1 = 1;
+long long expected_1 = 0;
+long long result_1 = CountIntegerTriangles(width_1, height_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    //TEST
-    try {
-        std::cout << Solve(width, height) << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-    }
-    //TEST_END
+//TEST
+long long width_2 = 2;
+long long height_2 = 2;
+long long expected_2 = 240;
+long long result_2 = CountIntegerTriangles(width_2, height_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long width_3 = 3;
+long long height_3 = 3;
+long long expected_3 = 1560;
+long long result_3 = CountIntegerTriangles(width_3, height_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long width_4 = 4;
+long long height_4 = 4;
+long long expected_4 = 7488;
+long long result_4 = CountIntegerTriangles(width_4, height_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long width_5 = 10;
+long long height_5 = 10;
+long long expected_5 = 1032528;
+long long result_5 = CountIntegerTriangles(width_5, height_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long width_6 = 100;
+long long height_6 = 100;
+long long expected_6 = 498862022;
+long long result_6 = CountIntegerTriangles(width_6, height_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long width_7 = 500;
+long long height_7 = 500;
+long long expected_7 = 68812912;
+long long result_7 = CountIntegerTriangles(width_7, height_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long width_8 = 1000;
+long long height_8 = 1000;
+long long expected_8 = 569772966;
+long long result_8 = CountIntegerTriangles(width_8, height_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long width_9 = 4000;
+long long height_9 = 4000;
+long long expected_9 = 255288322;
+long long result_9 = CountIntegerTriangles(width_9, height_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+long long width_10 = 0;
+long long height_10 = 1;
+try {
+    CountIntegerTriangles(width_10, height_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_11 = 1;
+long long height_11 = 0;
+try {
+    CountIntegerTriangles(width_11, height_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_12 = 0;
+long long height_12 = 0;
+try {
+    CountIntegerTriangles(width_12, height_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_13 = -1;
+long long height_13 = 1;
+try {
+    CountIntegerTriangles(width_13, height_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_14 = 1;
+long long height_14 = -9999999;
+try {
+    CountIntegerTriangles(width_14, height_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_15 = -99999;
+long long height_15 = 1;
+try {
+    CountIntegerTriangles(width_15, height_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_16 = 4001;
+long long height_16 = 4000;
+try {
+    CountIntegerTriangles(width_16, height_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_17 = 4000;
+long long height_17 = 4001;
+try {
+    CountIntegerTriangles(width_17, height_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long width_18 = 4001;
+long long height_18 = 4001;
+try {
+    CountIntegerTriangles(width_18, height_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
