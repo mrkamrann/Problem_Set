@@ -28,10 +28,7 @@ The length of str should be at least 1 and at most 50000 inclusive.
 The string str should consist only of lowercase Latin letters.
 
 
-
 */
-
-//reduce constraints
 
 #include <iostream>
 #include <vector>
@@ -98,15 +95,132 @@ int FindMaxJourneyLength(const std::string &str) {
 #include <string>
 
 int main() {
-    int len;
-    std::cin >> len;
+    
+  
+//TEST 
+std::string str_1 = "a";
+int expected_1 = 1;
+int result_1 = FindMaxJourneyLength(str_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::string str;
-    std::cin >> str;
+//TEST 
+std::string str_2 = "abcabcbb";
+int expected_2 = 3;
+int result_2 = FindMaxJourneyLength(str_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    int result = FindMaxJ(str);
-    std::cout << result << std::endl;
+//TEST 
+std::string str_3 = "bbbbb";
+int expected_3 = 2;
+int result_3 = FindMaxJourneyLength(str_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST 
+std::string str_4 = "pwwkew";
+int expected_4 = 2;
+int result_4 = FindMaxJourneyLength(str_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST 
+std::string str_5 = "abcdefghijklmnopqrstuvwxyz";
+int expected_5 = 1;
+int result_5 = FindMaxJourneyLength(str_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST 
+std::string str_6 = "abcabcbbabcdef";
+int expected_6 = 3;
+int result_6 = FindMaxJourneyLength(str_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST 
+std::string str_7 = "abba";
+int expected_7 = 2;
+int result_7 = FindMaxJourneyLength(str_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST 
+std::string str_8 = "dvdf";
+int expected_8 = 2;
+int result_8 = FindMaxJourneyLength(str_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST 
+std::string str_9 = std::string(50000, 'a');
+int expected_9 = 315;
+int result_9 = FindMaxJourneyLength(str_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST 
+std::string str_10 = "";
+try {
+    FindMaxJourneyLength(str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST 
+std::string str_11 = std::string(50001, 'a');
+try {
+    FindMaxJourneyLength(str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST 
+std::string str_12 = "abc123";
+try {
+    FindMaxJourneyLength(str_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST 
+std::string str_13 = "abcABC";
+try {
+    FindMaxJourneyLength(str_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST 
+std::string str_14 = "ab c";
+try {
+    FindMaxJourneyLength(str_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST 
+std::string str_15 = "\tabc";
+try {
+    FindMaxJourneyLength(str_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
 
     return 0;
 }
-
