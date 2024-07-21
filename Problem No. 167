@@ -117,7 +117,11 @@ std::vector<int> DivideCollection(std::vector<long long>& values) {
     for (int i = 0; i <= 60; ++i) {
         permutation[index_vector[i]] ^= answer_bitset[i];
     }
-
+  
+     for (int i = 0; i < num_elements; ++i) {
+        permutation[i]++;
+    }
+  
     return permutation;
 }
 
@@ -128,23 +132,120 @@ std::vector<int> DivideCollection(std::vector<long long>& values) {
 #include <cassert>
 
 int main() {
-    //TEST
-    int num_elements;
-    std::cin >> num_elements;
-    std::vector<long long> values(num_elements);
+   
+//TEST
+std::vector<long long> values_1 = {1, 2, 3, 4, 5};
+std::vector<int> expected_1 = {2,2,1,2,1};
+std::vector<int> result_1 = DivideCollection(values_1);
+assert(result_1 == expected_1);
 
-    for (int i = 0; i < num_elements; ++i) {
-        std::cin >> values[i];
-    }
+//TEST_END
 
-    std::vector<int> result = ProcessVectors(num_elements, values);
+//TEST
+std::vector<long long> values_2 = {10, 20, 30, 40, 50};
+std::vector<int> expected_2 = {1,2,1,2,1};
+std::vector<int> result_2 = DivideCollection(values_2);
+assert(result_2 == expected_2);
 
-    for (int i = 0; i < num_elements; ++i) {
-        std::cout << result[i] + 1 << " ";
-    }
-    std::cout << std::endl;
-    //TEST_END
+//TEST_END
 
+//TEST
+std::vector<long long> values_3 = {1000000000000000000, 999999999999999999};
+std::vector<int> expected_3 = {2, 1};
+std::vector<int> result_3 = DivideCollection(values_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+std::vector<long long> values_4 = {123456789012345678, 987654321098765432};
+std::vector<int> expected_4 = {1, 2};
+std::vector<int> result_4 = DivideCollection(values_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+std::vector<long long> values_5 = {1};
+std::vector<int> expected_5 = {2};
+std::vector<int> result_5 = DivideCollection(values_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+std::vector<long long> values_6 = {0, 0, 0, 0, 0};
+std::vector<int> expected_6 = {1,1,1,1,1};
+std::vector<int> result_6 = DivideCollection(values_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+std::vector<long long> values_7 = {999999999999999999, 999999999999999999};
+std::vector<int> expected_7 = {2,1};
+std::vector<int> result_7 = DivideCollection(values_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+std::vector<long long> values_8 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+std::vector<int> expected_8 = {2,1,1,1,1,1,1,1,1,1};
+std::vector<int> result_8 = DivideCollection(values_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+  
+//TEST
+std::vector<long long> values_9 = {1000000000000000000, 1};
+std::vector<int> expected_9 = {2,2};
+std::vector<int> result_9 = DivideCollection(values_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+
+//TEST
+std::vector<long long> values_10(1e6, 5);
+try {
+    DivideCollection(values_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> values_11 = {10, 20, 30, -999};
+try {
+    DivideCollection(values_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> values_12 = {1000000000000000001};
+try {
+    DivideCollection(values_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> values_13 = {};
+try {
+    DivideCollection(values_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
 
