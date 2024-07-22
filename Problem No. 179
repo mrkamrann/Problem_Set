@@ -1,5 +1,35 @@
 /*
 Link: https://codeforces.com/contest/1767/problem/E
+
+Alice is playing a new gamemode called "Colored Platforms". In this game, there are num_platforms platforms, numbered from 1 to num_platforms, placed one after 
+another. There are num_colors colors available in the game, numbered from 1 to num_colors. The i-th platform is colored platform_colors[i].
+
+Alice starts on platform 1 and wants to reach platform num_platforms. In one move, she can jump from some platform i to platforms i+1 or i+2.
+
+All platforms are initially deactivated (including platforms 1 and num_platforms). For each color j, Alice can pay activation_costs[j] coins to activate all 
+platforms of that color.
+
+Alice wants to activate some platforms so that she could start on an activated platform 1, jump through some activated platforms and reach an activated platform num_platforms.
+
+What's the smallest amount of coins Alice can spend to achieve that?
+
+Create a C++ Function CalculateMinActivationCost that will return a long long denoting the minimum amount of coins required. 
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector of integers platform_colors denoting the colors of each platform.
+A vector of integers activation_costs denoting the cost of activating all platforms of each color.
+
+Input Constraints:
+
+The value of num_platforms should be at least 2 and at most 300,000 inclusive.
+The value of num_colors should be at least 1 and at most 40 inclusive.
+Each value in platform_colors should be at least 1 and at most num_colors inclusive.
+Each value in activation_costs should be at least 1 and at most 10^7 inclusive.
+
+
 */
 #include <iostream>
 #include <vector>
@@ -28,7 +58,9 @@ int CalculateMaximumValue(long long state, const std::vector<long long>& color_c
     return memo[state] = result;
 }
 
-long long ComputeResult(int num_platforms, int num_colors, const std::vector<int>& platform_colors, const std::vector<int>& activation_costs) {
+long long CalculateMinActivationCost(const std::vector<int>& platform_colors, const std::vector<int>& activation_costs) {
+
+     int num_platforms = platform_colors.size(),  num_colors = activation_costs.size();
     if (num_platforms < 2 || num_platforms > 300000 || num_colors < 1 || num_colors > 40) {
         throw std::invalid_argument("num_platforms must be between 2 and 300000; num_colors must be between 1 and 40");
     }
