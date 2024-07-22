@@ -17,7 +17,8 @@ Create a C++ function CountAfraidMonsters that will return an integer denoting t
 
 Use appropriate error handling using the stdexcept library for the invalid test cases.
 
-Input Type
+Input Type:
+
 std::vector<std::vector<long long>> denoting stones
 std::vector<std::vector<long long>> denoting monsters
 
@@ -34,6 +35,7 @@ The given stones and monsters points are pairwise distinct.
 #include <vector>
 #include <stdexcept>
 #include <set>
+#include <cassert>
 
 std::pair<long long, long long> SubtractPair(const std::pair<long long, long long>& first_pair, const std::pair<long long, long long>& second_pair) {
     return {first_pair.first - second_pair.first, first_pair.second - second_pair.second};
@@ -86,7 +88,7 @@ long long CountAfraidMonsters(std::vector<std::vector<long long>>& stones, std::
         if (x_val < -1e9 || x_val > 1e9 || y_val < -1e9 || y_val > 1e9) {
             throw std::invalid_argument("Invalid coordinates: Stone coordinates must be between -10^9 and 10^9.");
         }
-        coordinates[monster_count + stone_index] = {x, y};
+        coordinates[monster_count + stone_index] = {x_val, y_val};
         if (!unique_points.insert({x_val, y_val}).second) {
             throw std::invalid_argument("Invalid input: Points must be pairwise distinct.");
         }
@@ -133,30 +135,169 @@ long long CountAfraidMonsters(std::vector<std::vector<long long>>& stones, std::
     return result;
 }
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <set>
+#include <cassert>
+
 int main() {
-    long long stone_count, monster_count;
-    std::cin >> stone_count >> monster_count;
-
-    
-    std::vector<std::vector<long long>> stones(stone_count, std::vector<long long>(2));
-    std::vector<std::vector<long long>> monsters(monster_count, std::vector<long long>(2));
    
+   // TEST
+    std::vector<std::vector<long long>> stones_1 = {{1, 1}, {2, 2}, {3, 3}};
+    std::vector<std::vector<long long>> monsters_1 = {{4, 4}, {5, 5}, {6, 6}};
+    long long expected_1 = 3;
+    long long result_1 = CountAfraidMonsters(stones_1, monsters_1);
+    assert(result_1 == expected_1);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_2 = {{-1000000000, 1000000000}};
+    std::vector<std::vector<long long>> monsters_2 = {{0, 0}};
+    long long expected_2 = 1;
+    long long result_2 = CountAfraidMonsters(stones_2, monsters_2);
+    assert(result_2 == expected_2);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_3 = {{0, 0}, {1, 2}, {0, 99}};
+    std::vector<std::vector<long long>> monsters_3 = {{1, 3}, {2, 5}, {3, 3}};
+    long long expected_3 = 3;
+    long long result_3 = CountAfraidMonsters(stones_3, monsters_3);
+    assert(result_3 == expected_3);
 
-    for (int i = 0; i < stone_count; ++i) {
-        std::cin >> stones[i][0] >> stones[i][1];
-        
+  //TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_4 = {{7, 8}, {8, 7}, {9, 9}, {-100, 100}, {100, 100}, {0, 0},  {0, 2}};
+    std::vector<std::vector<long long>> monsters_4 = {{10, 10}, {11, 11}, {12, 12}, {5, 6}, {6, 7},{1, 6}, {2, 0}};
+    long long expected_4 = 7;
+    long long result_4 = CountAfraidMonsters(stones_4, monsters_4);
+    assert(result_4 == expected_4);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_5 = {{-1, -1}, {-2, -2}, {-3, -3}};
+    std::vector<std::vector<long long>> monsters_5 = {{-4, -4}, {-5, -5}, {-6, -6}};
+    long long expected_5 = 3;
+    long long result_5 = CountAfraidMonsters(stones_5, monsters_5);
+    assert(result_5 == expected_5);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_6 = {{-100, 100}, {100, 100}, {0, 0},  {0, 2}};
+    std::vector<std::vector<long long>> monsters_6 = {{50, 50}, {-50, -50}, {100, -100},  {0, 1}};
+    long long expected_6 = 4;
+    long long result_6 = CountAfraidMonsters(stones_6, monsters_6);
+    assert(result_6 == expected_6);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_7 = {{3, 3}};
+    std::vector<std::vector<long long>> monsters_7 = {{12, 12}};
+    long long expected_7 = 1;
+    long long result_7 = CountAfraidMonsters(stones_7, monsters_7);
+    assert(result_7 == expected_7);
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_8 = {{1, 2}, {2, 3}, {3, 4},{1, 777}, {2, 5}, {3, 44}};
+    std::vector<std::vector<long long>> monsters_8 = {{4, 5}, {5, 6}, {6, 7},{1, 6}, {2, 0}, {3, 555}};
+    long long expected_8 = 6;
+    long long result_8 = CountAfraidMonsters(stones_8, monsters_8);
+    assert(result_8 == expected_8);
+
+  //TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_9 = {{0, 1}, {1, 0}};
+    std::vector<std::vector<long long>> monsters_9 = {{2, 2}, {2, 3}};
+    long long expected_9 = 2;
+    long long result_9 = CountAfraidMonsters(stones_9, monsters_9);
+    assert(result_9 == expected_9);
+
+    //TEST_END
+  
+
+    // TEST
+    std::vector<std::vector<long long>> stones_10 = {{-1000000001, 0}, {0, 1000000001}};
+    std::vector<std::vector<long long>> monsters_10 = {{1000000001, 0}, {0, 1000000001}};
+    try {
+        CountAfraidMonsters(stones_10, monsters_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_11 = {{1, 2}, {3, 4}};
+    std::vector<std::vector<long long>> monsters_11 = {{5, 6}, {-7, -1000000008}};
+    try {
+        CountAfraidMonsters(stones_11, monsters_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_12 = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    std::vector<std::vector<long long>> monsters_12 = {{1000000008, 10}};
+    try {
+        CountAfraidMonsters(stones_12, monsters_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+  
+    // TEST
+    std::vector<std::vector<long long>> stones_13 = {{1, 2}, {3, 4}};
+    std::vector<std::vector<long long>> monsters_13 = {};
+    try {
+        CountAfraidMonsters(stones_13, monsters_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+//TEST_END
+
+    // TEST
+    std::vector<std::vector<long long>> stones_14 = {};
+    std::vector<std::vector<long long>> monsters_14 = {{7, 8}, {9, 10}};
+    try {
+        CountAfraidMonsters(stones_14, monsters_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  //TEST_END
+  
+     // TEST
+    std::vector<std::vector<long long>> stones_15 = {{1,1000000008}};
+    std::vector<std::vector<long long>> monsters_15 = {{1, 1}};
+    try {
+        CountAfraidMonsters(stones_15, monsters_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+  
+    //TEST_END
+
+    // TEST
+    std::vector<std::vector<long long>> stones_16 = {{1, 1}, {2, -10000000008}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}};
+    std::vector<std::vector<long long>> monsters_16 = {{1, 1}};
+    try {
+        CountAfraidMonsters(stones_16, monsters_16);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
     }
 
-    for (int i = 0; i < monster_count; ++i) {
-        std::cin >> monsters[i][0] >> monsters[i][1];
-        
-    }
-
-    std::cout << CalculateResult(stones, monsters) << std::endl;
-
+//TEST_END
     return 0;
 }
 
-//TEST
-//TEST_END
 
