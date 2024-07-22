@@ -1,5 +1,50 @@
 /*
 Link: https://codeforces.com/contest/1634/problem/F
+
+Romario is fascinated with the Fibonacci sequence and its applications. He is working with two vectors, vec_a and vec_b, of the same length. 
+
+Fibonacci addition is an operation on an vector vec_x of integers, parametrized by indices start_idx and end_idx. Fibonacci addition increases vec_x[start_idx] 
+by F1, increases vec_x[start_idx + 1] by F2, and so on up to vec_x[end_idx] which is increased by F(end_idx - start_idx + 1).
+
+Here, Fi denotes the i-th Fibonacci number (F1 = 1, F2 = 1, Fi = Fi-1 + Fi-2 for i > 2), and all operations are performed modulo mod_value.
+He needs to perform several Fibonacci addition operations on these vectors with different  parameters and, after each operation, report whether vectors vec_a and 
+vec_b are equal modulo mod_value.
+
+Given, 
+
+An integer vec_size - the length of the vectors.
+An integer num_operations - the number of operations.
+An integer mod_value - the number modulo which all operations are performed.
+An vector vec_a of length vec_size containing integers (0 ≤ vec_a[i] < mod_value).
+An vector vec_b of length vec_size containing integers (0 ≤ vec_b[i] < mod_value).
+A list of num_operations operations, where each operation consists of:
+
+A character c ('A' or 'B'), indicating which array to perform the operation on (vec_a or vec_b).
+Two integers start_idx and end_idx (1 ≤ start_idx ≤ end_idx ≤ vec_size), indicating the range of indices for the Fibonacci addition.
+
+Return a vector<bool> denoring for each operation, return true if the vectors vec_a and vec_b are equal modulo mod_value, otherwise return "false. 
+
+
+Create a C++ Function   FibonacciAdditions that will return a vector<bool> denoting the vector result.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A long long integer mod_value.
+A std::vector<long long>& vec_a.
+A std::vector<long long>& vec_b.
+A std::vector<std::tuple<char, long long, long long>>& operations.
+
+Input Constraints:
+
+The length of vec_a and vec_b should be equal and  at least 1 and at most 3×10^5 inclusive.
+The number of operations should be at least 1 and at most 3×10^5 inclusive.
+The value of mod_value should be at least 1 and at most 10^9 + 7 inclusive.
+Each value of vec_a[i] and vec_b[i] should be in the range [0, mod_value) inclusive.
+The value of char in operations should be either 'A' or 'B'
+1 ≤ start_idx ≤ end_idx ≤ vec_size
+
 */
 #include <bits/stdc++.h>
 #include <stdexcept>
@@ -13,10 +58,18 @@ void UpdateValue(long long index, long long factor, std::vector<long long>& vec,
     }
 }
 
-std::vector<bool> ProcessOperations(long long vec_size, long long num_operations, long long mod_value, std::vector<long long>& vec_a, std::vector<long long>& vec_b, std::vector<std::tuple<char, long long, long long>>& operations) {
-  
+std::vector<bool> FibonacciAdditions(long long mod_value, std::vector<long long>& vec_a, std::vector<long long>& vec_b, std::vector<std::tuple<char, long long, long long>>& operations) {
+
+
+   long long vec_size = vec_a.size();
+   long long num_operations = operations.size();
+
     if (vec_size < 1 || vec_size > 300000 || num_operations < 1 || num_operations > 300000 || mod_value < 1 || mod_value > 1000000007) {
         throw std::invalid_argument("Invalid input constraints.");
+    }
+
+     if (vec_size != vec_b.size()) {
+        throw std::invalid_argument("Both given vectors should be equal sized");
     }
 
     for (long long i = 0; i < vec_size; i++) {
