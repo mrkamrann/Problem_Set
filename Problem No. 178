@@ -1,5 +1,31 @@
 /*
 Link: https://codeforces.com/problemset/problem/963/C
+
+Anjali has a rectangle with sides a and b which she cuts into smaller rectangles using cuts parallel to its sides. For example, if p horizontal and q vertical 
+cuts are made, then (p+1)*(q+1) smaller rectangles are obtained. After the cutting, these smaller rectangles belong to num_rectangles different types. 
+Two rectangles are different if at least one side of one rectangle isn't equal to the corresponding side of the other. Note that the rectangles cannot be rotated,
+meaning that rectangles of dimensions a×b and b×a are considered different if a≠b.
+
+For each type of rectangle, the lengths of the sides and the number of rectangles of this type that were left after cutting the initial rectangle are given.
+
+Calculate the number of pairs (a, b) such that the given smaller rectangles could be created by cutting a rectangle with sides of lengths a and b. Note that 
+pairs (a, b) and (b, a) are considered different when a≠b.
+
+Create a C++ Function CalculateRectanglePairs that will return a long long denoting the number of valid pairs (a, b). 
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector of long long widths denoting the widths of each type of rectangle.
+A vector of long long heights denoting the heights of each type of rectangle.
+A vector of long long counts denoting the counts of each type of rectangle.
+
+Input Constraints:
+
+The value of num_rectangles should be at least 1 and at most 200,000 inclusive.
+Each value in widths, heights, and counts should be at least 1 and at most 10^12 inclusive.
+
 */
 
 #include <iostream>
@@ -18,7 +44,7 @@ long long CalculateGcd(long long a_val, long long b_val) {
     return a_val;
 }
 
-long long ComputeAnswer(const std::vector<long long>& widths, const std::vector<long long>& heights, const std::vector<long long>& counts, long long num_rectangles) {
+long long CalculateRectanglePairs(const std::vector<long long>& widths, const std::vector<long long>& heights, const std::vector<long long>& counts, long long num_rectangles) {
   
     if (num_rectangles < 1 || num_rectangles > 200000) {
         throw std::invalid_argument("num_rectangles must be between 1 and 200000");
