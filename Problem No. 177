@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/contest/1017/problem/F
+
+Lester is a student in the neutral zone where education has evolved post-war. Lester's math teacher gave a challenging homework assignment involving a new math concept.
+
+As we all know, the logarithm function can be described as:
+log(p1^a1 p2^a2 ... pk^ak) = a1 log(p1) + a2 log(p2) + ... + ak log(pk)
+where p1^a1 p2^a2 ... pk^ak is the prime factorization of an integer. However, this function uses itself in the definition, making it hard to calculate.
+
+To simplify, mathematicians from the neutral zone invented this:
+exlogf(p1^a1 p2^a2 ... pk^ak) = a1 f(p1) + a2 f(p2) + ... + ak f(pk)
+Notice that exlogf(1) is always equal to 0.
+
+This concept for any function f was too hard for children. So teachers told them that f can only be a polynomial of degree no more than 3 in daily uses
+(i.e., f(x) = Ax^3 + Bx^2 + Cx + D).
+
+"Class is over! Don't forget to do your homework!" Here it is: ∑i=1 to n exlogf(i)
+
+Help children to do their homework. Since the value can be very big, you need to find the answer modulo 2^32.
+
+Create a C++ Function ComputeExlogSum that will return an unsigned integer denoting the result of the summation.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting max_value
+An integer denoting coefficient_a
+An integer denoting coefficient_b
+An integer denoting coefficient_c
+An integer denoting coefficient_d
+
+Input Constraints
+
+The value of max_value should be at least 1 and at most 3×10^8 inclusive.
+The values of coefficient_a, coefficient_b, coefficient_c, and coefficient_d should be in the range [0, 10^6] inclusive.
+
 */
 
 #include <iostream>
@@ -22,7 +57,7 @@ unsigned int PolynomialFunction(int x_val, int coefficient_a, int coefficient_b,
            static_cast<unsigned int>(coefficient_d);
 }
 
-unsigned int ComputeAnswer(int max_value, int coefficient_a, int coefficient_b, int coefficient_c, int coefficient_d) {
+unsigned int ComputeExlogSum(int max_value, int coefficient_a, int coefficient_b, int coefficient_c, int coefficient_d) {
     if (max_value < 1 || max_value > 300000000) {
         throw std::invalid_argument("max_value must be between 1 and 300,000,000");
     }
