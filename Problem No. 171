@@ -1,5 +1,33 @@
 /*
 Link : https://codeforces.com/contest/698/problem/D
+
+Jason is in a dangerous place called Bearland and can’t travel on foot. Instead, he has stone_count magic teleportation stones. Each stone can be used at most once.
+which is denoted by a 2D vector monsters, where the i-th stone allows him to teleport to a point (axi, ayi). Jason can use the stones in any order.
+
+There are monster_count monsters in Bearland, which is denoted by a 2D vector monsters, where the i-th monster stands at (mxi, myi).
+
+The given points are pairwise distinct.
+
+After each teleportation, Jason can shoot an arrow in some direction. An arrow will hit the first monster in the chosen direction. Then, both the arrow and the 
+monster disappear. It’s dangerous to stay in one place for long, so Jason can shoot only one arrow from one place.
+
+A monster should be afraid if it’s possible that Jason will hit it. How many monsters should be afraid of Jason?
+
+Create a C++ function CountAfraidMonsters that will return an integer denoting the number of monsters that should be afraid.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+std::vector<std::vector<long long>> denoting stones
+std::vector<std::vector<long long>> denoting monsters
+
+Input Constraints:
+
+The size of stones should be at least 1 and at most 7 inclusive.
+The size of monsters should be at least 1 and at most 1000 inclusive.
+Each value of stones[i][0] and stones[i][1] should be in the range [-10^9, 10^9] inclusive.
+Each value of monsters[i][0] and monsters[i][1] should be in the range [-10^9, 10^9] inclusive.
+The given stones and monsters points are pairwise distinct.
 */
 
 #include <iostream>
@@ -41,7 +69,7 @@ bool DepthFirstSearch(long long remaining_depth, long long stack_top, std::vecto
     return false;
 }
 
-long long CalculateResult(std::vector<std::vector<long long>>& stones, std::vector<std::vector<long long>>& monsters) {
+long long CountAfraidMonsters(std::vector<std::vector<long long>>& stones, std::vector<std::vector<long long>>& monsters) {
     int stone_count = stones.size();
     int monster_count = monsters.size();
 
