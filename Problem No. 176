@@ -1,5 +1,42 @@
 /*
 Link: https://codeforces.com/contest/1709/problem/F
+
+Aryan is fascinated by combinatorial problems and recently encountered an intriguing one involving binary strings.
+
+Consider all binary strings (i.e., strings consisting of characters '0' and/or '1') of length from 1 to num_terms. For every such string s, you need to choose 
+an integer c_s from 0 to max_value.
+
+A multiset of binary strings of length exactly num_terms is considered beautiful if for every binary string s with length from 1 to num_terms, the number of 
+strings in the multiset such that s is their prefix does not exceed c_s.
+
+For example, let num_terms = 2, c_0 = 3, c_00 = 1, c_01 = 2, c_1 = 1, c_10 = 2, and c_11 = 3. The multiset of strings {11, 01, 00, 01} is beautiful, since:
+
+For the string "0", there are 3 strings in the multiset such that "0" is their prefix, and 3 ≤ c_0.
+For the string "00", there is one string in the multiset such that "00" is its prefix, and 1 ≤ c_00.
+For the string "01", there are 2 strings in the multiset such that "01" is their prefix, and 2 ≤ c_01.
+For the string "1", there is one string in the multiset such that "1" is its prefix, and 1 ≤ c_1.
+For the string "10", there are 0 strings in the multiset such that "10" is their prefix, and 0 ≤ c_10.
+For the string "11", there is one string in the multiset such that "11" is its prefix, and 1 ≤ c_11.
+
+The problem itself is: Calculate the number of ways to choose the integer c_s for every binary string s of length from 1 to num_terms such that the maximum
+possible size of a beautiful multiset is exactly result_index. Since it can be huge, print it modulo 998244353.
+
+Create a C++ Function CalculateBeautifulMultisets that will return an long long denoting the number of ways to choose the integers c_s such that the maximum
+possible size of a beautiful multiset is exactly result_index.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting num_terms
+An integer denoting max_value
+An integer denoting result_index
+
+Input Constraints
+
+The value of num_terms should be at least 1 and at most 15 inclusive.
+The value of max_value should be at least 1 and at most 200,000 inclusive.
+The value of result_index should be at least 1 and at most 200,000 inclusive.
 */
 
 #include <cmath>
@@ -96,7 +133,7 @@ long long modulus = 998244353;
     return result;
 }
 
-long long Solve(int num_terms, int max_value, int result_index) {
+long long CalculateBeautifulMultisets(int num_terms, int max_value, int result_index) {
   
     if (num_terms < 1 || num_terms > 15) {
         throw std::invalid_argument("num_terms out of range");
