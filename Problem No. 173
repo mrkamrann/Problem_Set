@@ -1,5 +1,37 @@
 /*
 Link: https://codeforces.com/contest/1510/problem/J
+Binod really likes the culture of Japan. Last year he learned Japanese traditional clothes and visual arts, and now he is trying to find out the secret of the 
+Japanese game called Nonogram.
+
+In the one-dimensional version of the game, there is a row of length empty cells, some of which are to be filled with a pen. There is a description of a solution 
+called a profile — a sequence of positive integers denoting the lengths of consecutive sets of filled cells. For example, the profile of [4,3,1] means that there 
+are sets of four, three, and one filled cells, in that order, with at least one empty cell between successive sets.
+
+Binod found out that for some numbers length and profiles profile there are lots of ways to fill the cells to satisfy the profile. Now he is in the process of 
+solving a nonogram consisting of length cells and a profile profile. He has already created a mask of profile — he has filled all the cells that must be filled 
+in every solution of the nonogram.
+
+After a break, he lost the source profile profile. He only has length and the mask str. Help Binod find any profile profile with the mask str or say that there 
+is no such profile and Binod has made a mistake.
+
+Given a string str — the mask of the source profile profile. The length of str is length. The string str consists of symbols # and _ — denoting filled and e
+mpty cells respectively.
+
+If there is no profile with the mask str, return the number -1. Otherwise, k integers of the profile.
+
+Create a C++ function FindProfile that will return the profile of the nonogram with the given mask or return -1 if no such profile exists.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A string str denoting the mask
+
+Input Constraints
+
+The length of str should be at least 1 and at most 100000 inclusive.
+The string str consists of symbols # and _
+
 */
 
 #include <iostream>
@@ -28,7 +60,7 @@ bool ProcessSubString(int x_val, int top, std::vector<int>& stack, std::vector<i
     return true;
 }
 
-std::vector<int> ProcessString(const std::string& str) {
+std::vector<int> FindProfile(const std::string& str) {
 
     int length = str.length();
   
