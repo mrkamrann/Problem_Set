@@ -1,5 +1,44 @@
 /*
 Link: https://codeforces.com/contest/652/problem/F
+
+
+Mike has a fascination with ants and their movement patterns. He decided to conduct an experiment with num_ants ants on a circular track of length track_length. 
+Each ant travels one unit of distance per one unit of time. Initially, ant number i is located at the position positions[i] and is facing in the direction 
+directions[i] (which is either 'L' for left or 'R' for right). The positions are numbered in a counterclockwise order starting from some point. 
+Positions of all ants are distinct.
+
+All the ants move simultaneously, and whenever two ants touch, they will both switch their directions. Note that it is possible for an ant to move in some 
+direction for half a unit of time and in the opposite direction for another half unit of time.
+
+You need to determine the positions of the ants after time time units.
+
+You are given three integers num_ants, track_length, and time  — the number of ants, the length of the track, and the number of time units.
+And 2 vectors of size num_ants lines contains an integer positions[i] and a character directions[i]  — the position and the direction of the i-th ant at the start.
+The directions 'L' and 'R' correspond to the clockwise and counterclockwise directions, respectively.
+
+It is guaranteed that all positions positions[i] are distinct.
+
+Return num_ants integers final_positions[j] — the position of the j-th ant after time units of time. The ants are numbered from 1 to num_ants in the order of 
+their appearance in the input.
+
+Create a C++ Function ComputeFinalPositions that will return a vector of integers denoting the final positions of the ants after the given time.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An Integer denoting track_length
+A long long denoting time
+std::vector<int> denoting positions
+std::vector<char> denoting directions
+
+Input Constraints:
+
+The number of ants should be at least 2 and at most 3×10^5 inclusive.
+The length of the track should be at least 2 and at most 10^9 inclusive.
+The number of time units should be in the range [0, 10^18] inclusive.
+Each value of positions[i] should be in the range [1, track_length] inclusive.
+The directions should be either 'L' or 'R'.
 */
 
 #include <bits/stdc++.h>
@@ -12,8 +51,10 @@ struct Ant {
     int id_val;
 };
 
-std::vector<int> Solve(int num_ants, int track_length, long long time, std::vector<int>& positions, std::vector<char>& directions) {
-  
+std::vector<int> ComputeFinalPositions(int track_length, long long time, std::vector<int>& positions, std::vector<char>& directions) {
+
+    int num_ants = positions.size();
+
     if (num_ants < 2 || num_ants > 300000) {
         throw std::invalid_argument("Invalid number of ants");
     }
