@@ -1,5 +1,42 @@
 /*
 Link: https://codeforces.com/contest/1679/problem/F
+
+Peterson is a mathematician, and his cognition of the world is so absolute as if he has been solving formal problems for hundreds of trillions of billions of years.
+This problem is just like that!
+
+Consider all non-negative integers from the interval [0, 10^digit_count). For convenience, we complement all numbers with leading zeros in such a way that each 
+number from the given interval consists of exactly digit_count decimal digits.
+
+You are given a set of pairs (ui, vi), where ui and vi are distinct decimal digits from 0 to 9.
+
+Consider a number x consisting of digit_count digits. We will enumerate all digits from left to right and denote them as d1, d2, ..., dn. In one operation, you 
+can swap digits di and di+1 if and only if there is a pair (uj, vj) in the set such that at least one of the following conditions is satisfied:
+
+di = uj and di+1 = vj
+di = vj and di+1 = uj
+
+We will call the numbers x and y, consisting of digit_count digits, equivalent if the number x can be transformed into the number y using some number of operations 
+described above. In particular, every number is considered equivalent to itself.
+
+You are given an integer digit_count and a set of pair_count pairs of digits (ui, vi). You have to find the maximum integer k such that there exists a set of 
+integers x1, x2, ..., xk (0 ≤ xi < 10^digit_count) such that for each 1 ≤ i < j ≤ k the number xi is not equivalent to the number xj.
+
+Create a C++ function CountNonEquivalentNumbers that will return an integer denoting the maximum value k.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type: 
+
+An integer denoting digit_count
+A vector<vector<int>> denoting digit_pairs
+
+Input Constraints:
+
+The value of digit_count should be at least 1 and at most 50000 inclusive.
+The value of pair_count should be at least 0 and at most 45 inclusive.
+Each pair in digit_pairs consists of two digits (ui, vi) such that 0 ≤ ui < vi ≤ 9.
+All described pairs in digit_pairs are pairwise distinct.
+
 */
 
 #include <iostream>
@@ -17,7 +54,7 @@ void AddModulo(int& target, int value) {
     }
 }
 
-int SolveDigitPairs(int digit_count, std::vector<std::vector<int>>& digit_pairs) {
+int CountNonEquivalentNumbers(int digit_count, std::vector<std::vector<int>>& digit_pairs) {
    
    int pair_count = digit_pairs.size();
   
