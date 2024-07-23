@@ -1,5 +1,38 @@
 /*
-Link: https://codeforces.com/contest/1634/problem/F
+Link: https://codeforces.com/contest/908/problem/E
+
+
+James is given an integer matrix_size.
+
+Let max_value = 2^matrix_size - 1.
+
+James is also given a set of vector_size integers denoted as the set values. The integers will be provided in base 2 as vector_size binary_strings of length matrix_size.
+
+A set of integers S is called "good" if the following hold:
+
+1. If a, is in S, then a XOR max_value is in S.
+2. If a, b are in S, then a AND b is in S.
+3. T is a subset of S
+
+All elements of S are less than or equal to max_value. Here, xor and and refer to the bitwise XOR and bitwise AND operators, respectively.
+
+Count the number of good sets S, modulo 10^9 + 7.
+
+Create a C++ Function CountGoodSets that will return a long long denoting the number of good sets.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<string> denoting binary_strings
+
+Input Constraints:
+
+The value of matrix_size should be at least 1 and at most 1000 inclusive.
+The value of vector_size should be at least 1 and at most min(2^matrix_size, 50) inclusive.
+The length of each binary_string should be exactly matrix_size.
+All binary_strings should be distinct.
+*/
 
 
 #include <iostream>
@@ -33,7 +66,7 @@ std::vector<long long> ComputeFactorials(int max_value, const std::vector<std::v
     return factorials;
 }
 
-long long Solve(const std::vector<std::string>& binary_strings) {
+long long CountGoodSets(const std::vector<std::string>& binary_strings) {
   
     int matrix_size = binary_strings[0].size(); 
     int vector_size = binary_strings.size();
