@@ -61,10 +61,7 @@ unsigned int ComputeExlogSum(int max_value, int coefficient_a, int coefficient_b
     if (max_value < 1 || max_value > 300000000) {
         throw std::invalid_argument("max_value must be between 1 and 300,000,000");
     }
-    if (coefficient_a < 0 || coefficient_a > 1000000 || 
-        coefficient_b < 0 || coefficient_b > 1000000 || 
-        coefficient_c < 0 || coefficient_c > 1000000 || 
-        coefficient_d < 0 || coefficient_d > 1000000) {
+    if (coefficient_a < 0 || coefficient_a > 1000000 ||  coefficient_b < 0 || coefficient_b > 1000000 || coefficient_c < 0 || coefficient_c > 1000000 ||  coefficient_d < 0 || coefficient_d > 1000000) {
         throw std::invalid_argument("Coefficients must be between 0 and 1,000,000");
     }
 
@@ -89,16 +86,210 @@ unsigned int ComputeExlogSum(int max_value, int coefficient_a, int coefficient_b
     return answer;
 }
 
+#include <iostream>
+#include <bitset>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
+    
+//TEST
+int x_val_1 = 10;
+int coefficient_a_1 = 1;
+int coefficient_b_1 = 2;
+int coefficient_c_1 = 3;
+int coefficient_d_1 = 4;
+unsigned int expected_1 = 1294;  
+unsigned int result_1 = ComputeExlogSum(x_val_1, coefficient_a_1, coefficient_b_1, coefficient_c_1, coefficient_d_1);
+assert(result_1 == expected_1);
 
-    int max_value, coefficient_a, coefficient_b, coefficient_c, coefficient_d;
-    std::cin >> max_value >> coefficient_a >> coefficient_b >> coefficient_c >> coefficient_d;
+//TEST_END
 
-    unsigned int answer = ComputeAnswer(max_value, coefficient_a, coefficient_b, coefficient_c, coefficient_d);
-    std::cout << answer << std::endl;
+//TEST
+int x_val_2 = 100;
+int coefficient_a_2 = 10;
+int coefficient_b_2 = 20;
+int coefficient_c_2 = 30;
+int coefficient_d_2 = 40;
+unsigned int expected_2 = 54025740;  
+unsigned int result_2 = ComputeExlogSum(x_val_2, coefficient_a_2, coefficient_b_2, coefficient_c_2, coefficient_d_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+int x_val_3 = 10;
+int coefficient_a_3 = 5;
+int coefficient_b_3 = 10;
+int coefficient_c_3 = 15;
+int coefficient_d_3 = 20;
+unsigned int expected_3 = 6470;  
+unsigned int result_3 = ComputeExlogSum(x_val_3, coefficient_a_3, coefficient_b_3, coefficient_c_3, coefficient_d_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+int x_val_4 = 200;
+int coefficient_a_4 = 500;
+int coefficient_b_4 = 1000;
+int coefficient_c_4 = 1500;
+int coefficient_d_4 = 2000;
+unsigned int expected_4 = 4178003040; 
+unsigned int result_4 = ComputeExlogSum(x_val_4, coefficient_a_4, coefficient_b_4, coefficient_c_4, coefficient_d_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+int x_val_5 = 1238;
+int coefficient_a_5 = 234;
+int coefficient_b_5 = 567;
+int coefficient_c_5 = 890;
+int coefficient_d_5 = 123;
+unsigned int expected_5 = 3862542508;
+unsigned int result_5 = ComputeExlogSum(x_val_5, coefficient_a_5, coefficient_b_5, coefficient_c_5, coefficient_d_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+int x_val_6 = 982;
+int coefficient_a_6 = 111;
+int coefficient_b_6 = 222;
+int coefficient_c_6 = 333;
+int coefficient_d_6 = 444;
+unsigned int expected_6 = 2603269870;  
+unsigned int result_6 = ComputeExlogSum(x_val_6, coefficient_a_6, coefficient_b_6, coefficient_c_6, coefficient_d_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+int x_val_7 = 33333;
+int coefficient_a_7 = 123456;
+int coefficient_b_7 = 654321;
+int coefficient_c_7 = 999999;
+int coefficient_d_7 = 888888;
+unsigned int expected_7 = 1035468330;  
+unsigned int result_7 = ComputeExlogSum(x_val_7, coefficient_a_7, coefficient_b_7, coefficient_c_7, coefficient_d_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+int x_val_8 = 214;
+int coefficient_a_8 = 1000000;
+int coefficient_b_8 = 500000;
+int coefficient_c_8 = 250000;
+int coefficient_d_8 = 125000;
+unsigned int expected_8 = 743448784;
+unsigned int result_8 = ComputeExlogSum(x_val_8, coefficient_a_8, coefficient_b_8, coefficient_c_8, coefficient_d_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+int x_val_9 = 300000;
+int coefficient_a_9 = 1000000;
+int coefficient_b_9 = 1000000;
+int coefficient_c_9 = 1000000;
+int coefficient_d_9 = 1000000;
+unsigned int expected_9 = 2534312704; 
+unsigned int result_9 = ComputeExlogSum(x_val_9, coefficient_a_9, coefficient_b_9, coefficient_c_9, coefficient_d_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+int x_val_10 = 300000022;
+int coefficient_a_10 = 1000000;
+int coefficient_b_10 = 1000000;
+int coefficient_c_10 = 1000000;
+int coefficient_d_10 = 1000000;
+try {
+    ComputeExlogSum(x_val_10, coefficient_a_10, coefficient_b_10, coefficient_c_10, coefficient_d_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int x_val_11 = -99999;
+int coefficient_a_11 = 1000000;
+int coefficient_b_11 = 1000000;
+int coefficient_c_11 = 1000000;
+int coefficient_d_11 = 1000000;
+try {
+    ComputeExlogSum(x_val_11, coefficient_a_11, coefficient_b_11, coefficient_c_11, coefficient_d_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int x_val_12 = 300000000;
+int coefficient_a_12 = -1;
+int coefficient_b_12 = 1000000;
+int coefficient_c_12 = -1000000;
+int coefficient_d_12 = 1000000;
+try {
+    ComputeExlogSum(x_val_12, coefficient_a_12, coefficient_b_12, coefficient_c_12, coefficient_d_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int x_val_13 = 300000000;
+int coefficient_a_13 = 1000000;
+int coefficient_b_13 = -1;
+int coefficient_c_13 = 1000000;
+int coefficient_d_13 = -1000000;
+try {
+    ComputeExlogSum(x_val_13, coefficient_a_13, coefficient_b_13, coefficient_c_13, coefficient_d_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int x_val_14 = 300000000;
+int coefficient_a_14 = 1000000;
+int coefficient_b_14 = 1000000;
+int coefficient_c_14 = -1;
+int coefficient_d_14 = 1000000;
+try {
+    ComputeExlogSum(x_val_14, coefficient_a_14, coefficient_b_14, coefficient_c_14, coefficient_d_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int x_val_15 = 300000000;
+int coefficient_a_15 = 1000000;
+int coefficient_b_15 = 1000000;
+int coefficient_c_15 = 1000000;
+int coefficient_d_15 = -1;
+try {
+    ComputeExlogSum(x_val_15, coefficient_a_15, coefficient_b_15, coefficient_c_15, coefficient_d_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
     return 0;
 }
