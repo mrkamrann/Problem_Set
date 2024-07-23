@@ -32,15 +32,17 @@ The value of matrix_size should be at least 1 and at most 1000 inclusive.
 The value of vector_size should be at least 1 and at most min(2^matrix_size, 50) inclusive.
 The length of each binary_string should be exactly matrix_size.
 All binary_strings should be distinct.
+binary_string should only contain '0' and '1'
 */
 
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <map>
+#include <unordered_set>
 #include <stdexcept>
 #include <cassert>
-
 
 
 std::vector<std::vector<long long>> ComputeCombinations(int max_value) {
@@ -68,18 +70,20 @@ std::vector<long long> ComputeFactorials(int max_value, const std::vector<std::v
 
 long long CountGoodSets(const std::vector<std::string>& binary_strings) {
   
-    int matrix_size = binary_strings[0].size(); 
-    int vector_size = binary_strings.size();
   
+    int matrix_size = binary_strings[0].size();
     if (matrix_size < 1 || matrix_size > 1000) {
         throw std::invalid_argument("Matrix size must be between 1 and 1000 inclusive");
     }
+     
+    int vector_size = binary_strings.size();
+    
     if (vector_size < 1 || vector_size > std::min(2 * matrix_size, 50)) {
         throw std::invalid_argument("Vector size must be between 1 and min(2 * matrix_size, 50) inclusive");
     }
-    if (binary_strings.size() != static_cast<size_t>(vector_size)) {
-        throw std::invalid_argument("Binary strings vector size does not match the vector size");
-    }
+  
+
+    std::unordered_set<std::string> unique_check;
     for (const std::string& str : binary_strings) {
         if (str.size() != static_cast<size_t>(matrix_size)) {
             throw std::invalid_argument("Each binary string must have length equal to matrix size");
@@ -91,6 +95,10 @@ long long CountGoodSets(const std::vector<std::string>& binary_strings) {
         }
        }
         
+        if (unique_check.count(str)) {
+            throw std::invalid_argument("All binary_strings must be distinct");
+        }
+        unique_check.insert(str);
     }
 
    int modulus =  1000000007;
@@ -112,28 +120,186 @@ long long CountGoodSets(const std::vector<std::string>& binary_strings) {
     std::vector<long long> factorials = ComputeFactorials(matrix_size, combinations);
     
     long long answer = 1;
-    for (std::map<long long, long long>::iterator it = frequency_map.begin(); it != frequency_map.end(); ++it) {
-        answer = (answer * factorials[it->second]) % modulus;
+    for (std::map<long long, long long>::iterator ite = frequency_map.begin(); ite != frequency_map.end(); ++ite) {
+        answer = (answer * factorials[ite->second]) % modulus;
     }
     return answer;
 }
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <unordered_set>
 #include <map>
 #include <stdexcept>
 #include <cassert>
 
 
 int main() {
-    int matrix_size, vector_size;
-    std::cin >> matrix_size >> vector_size;
-    std::vector<std::string> binary_strings(vector_size);
-    for (int i = 0; i < vector_size; ++i) {
-        std::cin >> binary_strings[i];
-    }
-   
-     std::cout << Solve(binary_strings) << std::endl;
+  
+//TEST 
+std::vector<std::string> binary_strings_1 = {"0"};
+long long expected_1 = 1;
+long long result_1 = CountGoodSets(binary_strings_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_2 = {"01", "10"};
+long long expected_2 = 1;
+long long result_2 = CountGoodSets(binary_strings_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_3 = {"11010", "00101", "11000"};
+long long expected_3 = 4;
+long long result_3 = CountGoodSets(binary_strings_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_4 = {"0000", "0001", "0010", "0100"};
+long long expected_4 = 1;
+long long result_4 = CountGoodSets(binary_strings_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_5 = {"11111", "11110", "11101", "11011"};
+long long expected_5 = 2;
+long long result_5 = CountGoodSets(binary_strings_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_6 = {"0", "1"};
+long long expected_6 = 1;
+long long result_6 = CountGoodSets(binary_strings_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_7 = {"101", "011", "110"};
+long long expected_7 = 1;
+long long result_7 = CountGoodSets(binary_strings_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_8 = {"1100", "1010", "1001", "0110", "0101", "0011"};
+long long expected_8 = 1;
+long long result_8 = CountGoodSets(binary_strings_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_9 = {"110110110110110011011011011011", "010101010101010010101010101010"};
+long long expected_9 = 860616440;
+long long result_9 = CountGoodSets(binary_strings_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_10 = {"-1"};
+try {
+    CountGoodSets(binary_strings_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_11 = std::vector<std::string>(1, std::string(1001, '0'));
+try {
+    CountGoodSets(binary_strings_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_12 = {""};
+try {
     
+    CountGoodSets(binary_strings_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_13(51, "0");
+try {
+    CountGoodSets(binary_strings_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+std::vector<std::string> binary_strings_14 = {"0", "01"};
+try {
+    
+    CountGoodSets(binary_strings_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_15 = {"0", "0"};
+try {
+    
+    CountGoodSets(binary_strings_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+  
+std::vector<std::string> binary_strings_16 = {"01", "02"};
+try {
+
+    CountGoodSets(binary_strings_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_17 = {"-1", "01"};
+try {
+    CountGoodSets(binary_strings_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
     return 0;
 }
