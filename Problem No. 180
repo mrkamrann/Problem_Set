@@ -113,22 +113,301 @@ int CalculateFirstAttackOptions(long long length, long long x_value, long long y
     return result;
 }
 
-int main() {
-    std::ios::sync_with_stdio(0);
-    std::cin.tie(0);
-    std::cout.tie(0);
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <stdexcept>
+#include <cassert>
 
-    long long test_cases;
-    std::cin >> test_cases;
-    while (test_cases--) {
-        long long length, x_value, y_value, z_value;
-        std::cin >> length >> x_value >> y_value >> z_value;
-        std::vector<long long> values(length);
-        for (int i = 0; i < length; i++) {
-            std::cin >> values[i];
-        }
-        std::cout << CalculateResult(length, x_value, y_value, z_value, values) << "\n";
-    }
+int main() {
+    
+//TEST 
+long long length_1 = 1;
+long long x_value_1 = 1;
+long long y_value_1 = 1;
+long long z_value_1 = 1;
+std::vector<long long> values_1 = {1};
+int expected_1 = 3;
+int result_1 = CalculateFirstAttackOptions(length_1, x_value_1, y_value_1, z_value_1, values_1);
+assert(result_1 == expected_1);
+
+//TEST_END
+
+//TEST 
+long long length_2 = 2;
+long long x_value_2 = 2;
+long long y_value_2 = 2;
+long long z_value_2 = 2;
+std::vector<long long> values_2 = {1, 2};
+int expected_2 = 0;
+int result_2 = CalculateFirstAttackOptions(length_2, x_value_2, y_value_2, z_value_2, values_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST 
+long long length_3 = 3;
+long long x_value_3 = 3;
+long long y_value_3 = 3;
+long long z_value_3 = 3;
+std::vector<long long> values_3 = {1, 2, 3};
+int expected_3 = 9;
+int result_3 = CalculateFirstAttackOptions(length_3, x_value_3, y_value_3, z_value_3, values_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST 
+long long length_4 = 4;
+long long x_value_4 = 4;
+long long y_value_4 = 4;
+long long z_value_4 = 4;
+std::vector<long long> values_4 = {1, 2, 3, 4};
+int expected_4 = 0;
+int result_4 = CalculateFirstAttackOptions(length_4, x_value_4, y_value_4, z_value_4, values_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST 
+long long length_5 = 5;
+long long x_value_5 = 5;
+long long y_value_5 = 5;
+long long z_value_5 = 5;
+std::vector<long long> values_5 = {1, 2, 3, 4, 5};
+int expected_5 = 15;
+int result_5 = CalculateFirstAttackOptions(length_5, x_value_5, y_value_5, z_value_5, values_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST 
+long long length_6 = 6;
+long long x_value_6 = 1;
+long long y_value_6 = 2;
+long long z_value_6 = 3;
+std::vector<long long> values_6 = {1, 2, 3, 4, 5, 6};
+int expected_6 = 6;
+int result_6 = CalculateFirstAttackOptions(length_6, x_value_6, y_value_6, z_value_6, values_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST 
+long long length_7 = 3;
+long long x_value_7 = 2;
+long long y_value_7 = 1;
+long long z_value_7 = 2;
+std::vector<long long> values_7 = {10, 20, 30};
+int expected_7 = 2;
+int result_7 = CalculateFirstAttackOptions(length_7, x_value_7, y_value_7, z_value_7, values_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST 
+long long length_8 = 5;
+long long x_value_8 = 1;
+long long y_value_8 = 3;
+long long z_value_8 = 2;
+std::vector<long long> values_8 = {100, 200, 300, 400, 500};
+int expected_8 = 0;
+int result_8 = CalculateFirstAttackOptions(length_8, x_value_8, y_value_8, z_value_8, values_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST 
+long long length_9 = 10;
+long long x_value_9 = 2;
+long long y_value_9 = 2;
+long long z_value_9 = 2;
+std::vector<long long> values_9 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int expected_9 = 0;
+int result_9 = CalculateFirstAttackOptions(length_9, x_value_9, y_value_9, z_value_9, values_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST 
+long long length_10 = 0;
+long long x_value_10 = 1;
+long long y_value_10 = 1;
+long long z_value_10 = 1;
+std::vector<long long> values_10 = {1};
+try {
+    CalculateFirstAttackOptions(length_10, x_value_10, y_value_10, z_value_10, values_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_11 = 300001;
+long long x_value_11 = 1;
+long long y_value_11 = 1;
+long long z_value_11 = 1;
+std::vector<long long> values_11(300001, 1);
+try {
+    CalculateFirstAttackOptions(length_11, x_value_11, y_value_11, z_value_11, values_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_12 = 1;
+long long x_value_12 = 0;
+long long y_value_12 = 1;
+long long z_value_12 = 1;
+std::vector<long long> values_12 = {1};
+try {
+    CalculateFirstAttackOptions(length_12, x_value_12, y_value_12, z_value_12, values_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_13 = 1;
+long long x_value_13 = 6;
+long long y_value_13 = 1;
+long long z_value_13 = 1;
+std::vector<long long> values_13 = {1};
+try {
+    CalculateFirstAttackOptions(length_13, x_value_13, y_value_13, z_value_13, values_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_14 = 1;
+long long x_value_14 = 1;
+long long y_value_14 = 0;
+long long z_value_14 = 1;
+std::vector<long long> values_14 = {1};
+try {
+    CalculateFirstAttackOptions(length_14, x_value_14, y_value_14, z_value_14, values_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_15 = 1;
+long long x_value_15 = 1;
+long long y_value_15 = 6;
+long long z_value_15 = 1;
+std::vector<long long> values_15 = {1};
+try {
+    CalculateFirstAttackOptions(length_15, x_value_15, y_value_15, z_value_15, values_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_16 = 1;
+long long x_value_16 = 1;
+long long y_value_16 = 1;
+long long z_value_16 = 0;
+std::vector<long long> values_16 = {1};
+try {
+    CalculateFirstAttackOptions(length_16, x_value_16, y_value_16, z_value_16, values_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+  
+//TEST 
+long long length_17 = 1;
+long long x_value_17 = 1;
+long long y_value_17 = 1;
+long long z_value_17 = 6;
+std::vector<long long> values_17 = {1};
+try {
+    CalculateFirstAttackOptions(length_17, x_value_17, y_value_17, z_value_17, values_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_18 = 1;
+long long x_value_18 = 1;
+long long y_value_18 = 1;
+long long z_value_18 = 1;
+std::vector<long long> values_18 = {0};
+try {
+    CalculateFirstAttackOptions(length_18, x_value_18, y_value_18, z_value_18, values_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_19 = 1;
+long long x_value_19 = 1;
+long long y_value_19 = 1;
+long long z_value_19 = 1;
+std::vector<long long> values_19 = {1000000000000000001};
+try {
+    CalculateFirstAttackOptions(length_19, x_value_19, y_value_19, z_value_19, values_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_20 = 2;
+long long x_value_20 = 1;
+long long y_value_20 = 1;
+long long z_value_20 = 1;
+std::vector<long long> values_20 = {1, -1};
+try {
+    CalculateFirstAttackOptions(length_20, x_value_20, y_value_20, z_value_20, values_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST 
+long long length_21 = 3;
+long long x_value_21 = 1;
+long long y_value_21 = 1;
+long long z_value_21 = 1;
+std::vector<long long> values_21 = {-1, 1, 1};
+try {
+    CalculateFirstAttackOptions(length_21, x_value_21, y_value_21, z_value_21, values_21);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
     return 0;
 }
