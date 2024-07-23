@@ -92,36 +92,182 @@ long long CalculateMinActivationCost(const std::vector<int>& platform_colors, co
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
+    
+  //TEST
+std::vector<int> platform_colors_1 = {1, 2, 1};
+std::vector<int> activation_costs_1 = {100000, 200000, 300000};
+long long expected_1 = 100000; 
+long long result_1 = CalculateMinActivationCost(platform_colors_1, activation_costs_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    int num_platforms, num_colors;
-    std::cin >> num_platforms >> num_colors;
+//TEST
+std::vector<int> platform_colors_2 = {1, 2, 3, 1, 2};
+std::vector<int> activation_costs_2 = {500000, 1000000, 1500000, 2000000, 2500000};
+long long expected_2 = 1500000; 
+long long result_2 = CalculateMinActivationCost(platform_colors_2, activation_costs_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    if (num_platforms < 2 || num_platforms > 300000 || num_colors < 1 || num_colors > 40) {
-        throw std::invalid_argument("Invalid number of platforms or colors");
-    }
+//TEST
+std::vector<int> platform_colors_3 = {1, 1, 1, 1, 1};
+std::vector<int> activation_costs_3 = {100000, 100000, 100000, 100000, 100000};
+long long expected_3 = 100000; 
+long long result_3 = CalculateMinActivationCost(platform_colors_3, activation_costs_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-    std::vector<int> platform_colors(num_platforms);
-    std::vector<int> activation_costs(num_colors);
+//TEST
+std::vector<int> platform_colors_4 = {2, 2, 2, 2};
+std::vector<int> activation_costs_4 = {500000, 500000, 500000, 500000};
+long long expected_4 = 500000; 
+long long result_4 = CalculateMinActivationCost(platform_colors_4, activation_costs_4);
+assert(result_4 == expected_4);
+//TEST_END
 
-    for (int i = 0; i < num_platforms; ++i) {
-        std::cin >> platform_colors[i];
-        if (platform_colors[i] < 1 || platform_colors[i] > num_colors) {
-            throw std::invalid_argument("Platform color out of range");
-        }
-    }
+//TEST
+std::vector<int> platform_colors_5 = {1, 2, 3, 4, 5};
+std::vector<int> activation_costs_5 = {100000, 200000, 300000, 400000, 500000};
+long long expected_5 = 900000; 
+long long result_5 = CalculateMinActivationCost(platform_colors_5, activation_costs_5);
+assert(result_5 == expected_5);
+//TEST_END
 
-    for (int i = 0; i < num_colors; ++i) {
-        std::cin >> activation_costs[i];
-        if (activation_costs[i] < 1 || activation_costs[i] > 10000000) {
-            throw std::invalid_argument("Activation cost out of range");
-        }
-    }
+//TEST
+std::vector<int> platform_colors_6 = {1, 2};
+std::vector<int> activation_costs_6 = {100000, 200000};
+long long expected_6 = 300000; 
+long long result_6 = CalculateMinActivationCost(platform_colors_6, activation_costs_6);
+assert(result_6 == expected_6);
+//TEST_END
 
-    long long result = ComputeResult(num_platforms, num_colors, platform_colors, activation_costs);
-    std::cout << result << std::endl;
+//TEST
+std::vector<int> platform_colors_7 = {1, 2, 2, 1};
+std::vector<int> activation_costs_7 = {150000, 250000, 250000, 150000};
+long long expected_7 = 400000; 
+long long result_7 = CalculateMinActivationCost(platform_colors_7, activation_costs_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_8 = {1, 1};
+std::vector<int> activation_costs_8 = {1000000, 1000000};
+long long expected_8 = 1000000; 
+long long result_8 = CalculateMinActivationCost(platform_colors_8, activation_costs_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_9 = {1, 3, 1, 3, 2};
+std::vector<int> activation_costs_9 = {500000, 700000, 500000, 700000, 900000};
+long long expected_9 = 1200000;
+long long result_9 = CalculateMinActivationCost(platform_colors_9, activation_costs_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+
+//TEST
+std::vector<int> platform_colors_10 = {1, 2, 1};
+std::vector<int> activation_costs_10 = {100000}; 
+try {
+   CalculateMinActivationCost(platform_colors_10, activation_costs_10); 
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_11 = {1};
+std::vector<int> activation_costs_11(1e6, 1); 
+try {
+    CalculateMinActivationCost(platform_colors_11, activation_costs_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_12 = {1, 2};
+std::vector<int> activation_costs_12 = {1000000000, 200000};
+try {
+    CalculateMinActivationCost(platform_colors_12, activation_costs_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_13 = {1, 41000000}; 
+std::vector<int> activation_costs_13 = {100000, 200000};
+try {
+CalculateMinActivationCost(platform_colors_13, activation_costs_13);
+ 
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_14 = {};
+std::vector<int> activation_costs_14 = {100000, 200000};
+try {
+    CalculateMinActivationCost(platform_colors_14, activation_costs_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_15 = {1, 2};
+std::vector<int> activation_costs_15 = {};
+try {
+    CalculateMinActivationCost(platform_colors_15, activation_costs_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_16 = {1, 2, 3};
+std::vector<int> activation_costs_16 = {100000, 200000, -9999}; 
+try {
+    CalculateMinActivationCost(platform_colors_16, activation_costs_16);  
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_17 = {1, -999999}; 
+std::vector<int> activation_costs_17 = {100000, 200000};
+try {
+    CalculateMinActivationCost(platform_colors_17, activation_costs_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> platform_colors_18(1e6, 1);
+std::vector<int> activation_costs_18 = {100000, 20000000}; 
+try {
+    CalculateMinActivationCost(platform_colors_18, activation_costs_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
 
     return 0;
 }
