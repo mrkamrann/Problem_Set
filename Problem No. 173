@@ -18,9 +18,9 @@ is no such profile and Binod has made a mistake.
 Given a string str — the mask of the source profile profile. The length of str is length. The string str consists of symbols # and _ — denoting filled and e
 mpty cells respectively.
 
-If there is no profile with the mask str, return the number -1. Otherwise, k integers of the profile.
+If there is no profile with the mask str, return the number -1. Otherwise, k integers of the profile,  k can also be 0.
 
-Create a C++ function FindProfile that will return the profile of the nonogram with the given mask or return -1 if no such profile exists.
+Create a C++ function FindProfile that will return a vector<int> denoting the profile of the nonogram with the given mask or return {-1} if no such profile exists.
 
 Use appropriate error handling using the stdexcept library for the invalid test cases.
 
@@ -104,21 +104,103 @@ std::vector<int> FindProfile(const std::string& str) {
 }
 
 int main() {
-    std::string input_string;
-    std::cin >> input_string;
+   
+  // TEST
+std::string str_1 = "#_#_#";
+std::vector<int> expected_1 = {1,1,1};
+std::vector<int> result_1 = FindProfile(str_1);
+ assert(result_1 == expected_1);
+// TEST_END
 
-    auto result = ProcessString(input_string);
+// TEST
+std::string str_2 = "#####";
+std::vector<int> expected_2 = {5};
+std::vector<int> result_2 = FindProfile(str_2);
+assert(result_2 == expected_2);
+// TEST_END
 
-    if (result.empty()) {
-        std::cout << 0 << std::endl;
-    } else if (result[0] == -1) {
-        std::cout << -1 << std::endl;
-    } else {
-        std::cout << result.size() << std::endl;
-        for (int value : result) {
-            std::cout << value << " ";
-        }
-    }
+// TEST
+std::string str_3 = "_____";
+std::vector<int> expected_3 = {};
+std::vector<int> result_3 = FindProfile(str_3);
+assert(result_3 == expected_3);
+// TEST_END
 
+// TEST
+std::string str_4 = "_#_#_";
+std::vector<int> expected_4 = {-1};
+std::vector<int> result_4 = FindProfile(str_4);
+assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::string str_5 = "#";
+std::vector<int> expected_5 = {1};
+std::vector<int> result_5 = FindProfile(str_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::string str_6 = "_";
+std::vector<int> expected_6 = {};
+std::vector<int> result_6 = FindProfile(str_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::string str_7 = "##_#__";
+std::vector<int> expected_7 = {-1};
+std::vector<int> result_7 = FindProfile(str_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::string str_8 = "#__##";
+std::vector<int> expected_8 = {-1};
+std::vector<int> result_8 = FindProfile(str_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::string str_9 = "##_#_#";
+std::vector<int> expected_9 = {2,1,1};
+std::vector<int> result_9 = FindProfile(str_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+
+
+// TEST
+std::string str_10 = ""; 
+try {
+    FindProfile(str_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::string str_11 = std::string(100001, '#');
+try {
+    FindProfile(str_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+
+// TEST
+std::string str_12 = "#_#_#"; 
+try {
+    
+    FindProfile(str_12);
+    assert(true);
+} catch(const std::invalid_argument& e) {
+    assert(false);
+}
+// TEST_END
     return 0;
 }
