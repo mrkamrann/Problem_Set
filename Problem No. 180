@@ -1,168 +1,134 @@
 /*
-Link: https://codeforces.com/contest/1400/problem/G
+Link: https://codeforces.com/contest/1312/problem/F
 
-Gian plays a strategic computer game. In this game, he leads an army of mercenaries.
+Avy is responsible for defending the Red Kingdom, which is under attack by the White King and the Black King. The Kingdom is guarded by length castles, with each 
+castle i defended by values[i] soldiers. To conquer the Red Kingdom, the Kings must eliminate all defenders.
 
-Gian wants to gather his army for a quest. There are num_intervals mercenaries for hire, and the army should consist of some subset of them.
+Each day, the White King launches an attack on one of the castles. Then, at night, the Black King attacks a castle (possibly the same one). The attacks alternate
+between the White King and the Black King, starting with the White King.
 
-The i-th mercenary can be chosen if the resulting number of chosen mercenaries is not less than interval_bounds[i][0] (otherwise he deems the quest to be doomed) 
-and not greater than interval_bounds[i][1] (he doesn't want to share the trophies with too many other mercenaries). Furthermore, num_pairs pairs of mercenaries 
-hate each other and cannot be chosen for the same quest.
+Each attack must target a castle with at least one soldier. There are three types of attacks:
 
-How many non-empty subsets does Gian need to consider? In other words, calculate the number of non-empty subsets of mercenaries such that the size of this subset
-belongs to [interval_bounds[i][0], interval_bounds[i][1]] for each chosen mercenary, and there are no two mercenaries in the subset that hate each other.
+A mixed attack decreases the number of defenders in the targeted castle by x_value (or sets it to 0 if there are already fewer than x_value defenders).
+An infantry attack decreases the number of defenders in the targeted castle by y_value (or sets it to 0 if there are already fewer than y_value defenders).
+A cavalry attack decreases the number of defenders in the targeted castle by z_value (or sets it to 0 if there are already fewer than z_value defenders).
+The mixed attack can target any valid castle (with at least one soldier). However, the infantry and cavalry attacks cannot be launched on a castle if the previous attack on it was of the same type, regardless of when or by whom it was launched. A castle that hasn't been attacked can be targeted by any type of attack.
 
-The answer may be large, so calculate it modulo 998244353.
+The King who launches the last attack will be glorified as the conqueror of the Red Kingdom. The White King is planning his first attack, and you are responsible 
+for determining the number of possible first attack options that allow the White King to launch the last attack. Each option for the first attack is represented 
+by the targeted castle and the type of attack. Two options are different if the targeted castles or the types of attack are different.
 
-Create a C++ Function CalculateValidSubsets that will return an integer denoting the number of valid non-empty subsets. 
 
-Use appropriate error handling using the stdexcept library for the invalid test cases.
+Create a C++ function CalculateFirstAttackOptions that will return an integer denoting the number of possible options for the first attack of the
+White King (or 0 if the Black King can launch the last attack no matter how the White King acts). 
 
-Input Type:
+Use appropriate error handling using the stdexcept library for invalid test cases.
 
-A vectorvector<int>> interval_bounds where each pair denotes [li, ri] for each mercenary.
-A vectorvector<int>> pair_relationships where each pair denotes [ai, bi] indicating mercenaries that hate each other.
+Input Type
 
-Input Constraints:
+An Integer denoting length
+An Integer denoting x_value
+An Integer denoting y_value
+An Integer denoting z_value
+A vector of integers values representing the number of soldiers in each castle.
 
-The value of num_intervals should be at least 1 and at most 300,000 inclusive.
-The value of num_pairs should be at least 0 and at most the minimum of 20 and num_intervals * (num_intervals - 1) / 2 inclusive.
-Each value in interval_bounds[i] should satisfy 1 ≤ interval_bounds[i][0] ≤ interval_bounds[i][1] ≤ num_intervals.
-Each value in pair_relationships[i] should satisfy 1 ≤ pair_relationships[i][0] < pair_relationships[i][1] ≤ num_intervals.
+Input Constraints
+
+The length of values should be at least 1 and at most 300,000 inclusive.
+Each value of values[i] should be in the range [1, 10^18] inclusive.
+The values for length, x_value, y_value, and z_value should be in the range [1, 5] inclusive.
+The number of test cases should be at least 1 and at most 1000 inclusive.
+The sum of length values across all test cases should not exceed 300,000.
+
+
 */
 
 #include <iostream>
 #include <vector>
-#include <set>
-#include <map>
+#include <unordered_map>
 #include <stdexcept>
 #include <cassert>
-#include <cmath>
-#include <numeric>
-#include <cstdint> 
 
-int Power(int base, int exponent) {
-    int result = 1;
-    int modulo = 998244353;
-    while (exponent) {
-        if (exponent & 1) {
-            result = static_cast<int64_t>(result) * base % modulo;
-        }
-        base = static_cast<int64_t>(base) * base % modulo;
-        exponent >>= 1;
+
+long long SuffixGrundy(long long index, long long offset, const std::vector<std::vector<long long>>& grundy_values, long long first_cycle, long long cycle_length) {
+    if (index > first_cycle) {
+        index = first_cycle + (index - first_cycle) % cycle_length;
     }
-    return result;
+    return grundy_values[index][offset];
 }
 
-int BinomialCoefficient(int total, int choose, const std::vector<int>& factorial, const std::vector<int>& inverse_factorial) {
-    int modulo = 998244353;
-    return static_cast<int64_t>(factorial[total]) * inverse_factorial[choose] % modulo * inverse_factorial[total - choose] % modulo;
-}
-
-int CalculateValidSubsets(const std::vector<std::vector<int>>& interval_bounds, const std::vector<std::vector<int>>& pair_relationships) {
-
-    int num_intervals = intervals.size(),  num_pairs = pair_relationships.size();
-
-    if (num_intervals < 1 || num_intervals > 300000 || num_pairs < 0 || num_pairs > std::min(20, static_cast<int>(static_cast<int64_t>(num_intervals) * (num_intervals - 1) / 2))) {
-        throw std::invalid_argument("Invalid input values for num_intervals or num_pairs");
+int CalculateFirstAttackOptions(long long length, long long x_value, long long y_value, long long z_value, std::vector<long long>& values) {
+  
+    if (length < 1 || length > 300000){
+      throw std::invalid_argument("Invalid length");
     }
-
-    int modulo = 998244353;
-
-    for (int i = 0; i < num_intervals; ++i) {
-        if (interval_bounds[i][0] < 1 || interval_bounds[i][0] > num_intervals || interval_bounds[i][1] < interval_bounds[i][0] || interval_bounds[i][1] > num_intervals) {
-            throw std::invalid_argument("Invalid interval bounds");
+    if (x_value < 1 || x_value > 5 || y_value < 1 || y_value > 5 || z_value < 1 || z_value > 5){
+       throw std::invalid_argument("Invalid x, y, or z value");
+    }
+    for (long long value : values) {
+        if (value < 1 || value > 1000000000000000000){
+          throw std::invalid_argument("Invalid value in values");
         }
     }
 
-    for (int i = 0; i < num_pairs; ++i) {
-        if (pair_relationships[i][0] < 1 || pair_relationships[i][0] >= pair_relationships[i][1] || pair_relationships[i][1] > num_intervals) {
-            throw std::invalid_argument("Invalid pair relationships");
+    std::vector<std::vector<long long>> grundy_values(1010, std::vector<long long>(4));
+    std::vector<long long> visited(5);
+    long long first_cycle, cycle_length;
+    std::unordered_map<long long, long long> state_map;
+
+    for (int i = 5;; i++) {
+        for (int j = 0; j < 3; j++) grundy_values[i][j] = 0;
+        std::fill(visited.begin(), visited.end(), 0);
+        visited[grundy_values[i - x_value][0]] = visited[grundy_values[i - y_value][1]] = visited[grundy_values[i - z_value][2]] = 1;
+        while (visited[grundy_values[i][0]]) grundy_values[i][0]++;
+        std::fill(visited.begin(), visited.end(), 0);
+        visited[grundy_values[i - x_value][0]] = visited[grundy_values[i - z_value][2]] = 1;
+        while (visited[grundy_values[i][1]]) grundy_values[i][1]++;
+        std::fill(visited.begin(), visited.end(), 0);
+        visited[grundy_values[i - x_value][0]] = visited[grundy_values[i - y_value][1]] = 1;
+        while (visited[grundy_values[i][2]]) grundy_values[i][2]++;
+        grundy_values[i][3] = grundy_values[i][0] * 16 + grundy_values[i][1] * 4 + grundy_values[i][2];
+        long long state = 0;
+        for (int j = i - 4; j <= i; j++) state = state * 64 + grundy_values[j][3];
+        if (state_map[state]) {
+            first_cycle = state_map[state] - 4;
+            cycle_length = i - state_map[state];
+            break;
         }
+        state_map[state] = i;
     }
 
-    std::vector<int> left_bound(num_intervals + 1);
-    std::vector<int> right_bound(num_intervals + 1);
-    std::vector<int> color_count(num_intervals + 2);
-    std::vector<int> factorial(num_intervals + 1);
-    std::vector<int> inverse_factorial(num_intervals + 1);
-    std::vector<std::vector<int>> prefix_sum(num_pairs * 2 + 1, std::vector<int>(num_intervals + 1));
-    std::vector<int> start_positions(num_pairs);
-    std::vector<int> end_positions(num_pairs);
-
-    for (int i = 1; i <= num_intervals; ++i) {
-        left_bound[i] = interval_bounds[i - 1][0];
-        right_bound[i] = interval_bounds[i - 1][1];
-        color_count[left_bound[i]]++;
-        color_count[right_bound[i] + 1]--;
+    long long answer = 0, result = 0;
+    for (int i = 0; i < length; i++) {
+        values[i] += 4;
+        answer ^= SuffixGrundy(values[i], 0, grundy_values, first_cycle, cycle_length);
     }
 
-    for (int i = 1; i <= num_intervals; ++i) {
-        color_count[i] += color_count[i - 1];
-    }
-
-    for (int i = 0; i < num_pairs; ++i) {
-        start_positions[i] = pair_relationships[i][0];
-        end_positions[i] = pair_relationships[i][1];
-    }
-
-    factorial[0] = 1;
-    for (int i = 1; i <= num_intervals; ++i) {
-        factorial[i] = static_cast<int64_t>(factorial[i - 1]) * i % modulo;
-    }
-    inverse_factorial[num_intervals] = Power(factorial[num_intervals], modulo - 2);
-    for (int i = num_intervals - 1; i >= 0; --i) {
-        inverse_factorial[i] = static_cast<int64_t>(inverse_factorial[i + 1]) * (i + 1) % modulo;
-    }
-
-    for (int i = 0; i <= num_pairs * 2; ++i) {
-        for (int j = i; j <= num_intervals; ++j) {
-            prefix_sum[i][j] = (prefix_sum[i][j - 1] + (color_count[j] >= j ? BinomialCoefficient(color_count[j] - i, j - i, factorial, inverse_factorial) : 0)) % modulo;
-        }
-    }
-
-    int result = 0;
-    for (int i = 0; i < (1 << num_pairs); ++i) {
-        int lower_bound = 1;
-        int upper_bound = num_intervals;
-        std::set<int> unique_positions;
-
-        for (int j = 0; j < num_pairs; ++j) {
-            if (i >> j & 1) {
-                lower_bound = std::max(lower_bound, std::max(left_bound[start_positions[j]], left_bound[end_positions[j]]));
-                upper_bound = std::min(upper_bound, std::min(right_bound[start_positions[j]], right_bound[end_positions[j]]));
-                unique_positions.insert(start_positions[j]);
-                unique_positions.insert(end_positions[j]);
-            }
-        }
-
-        if (lower_bound <= upper_bound) {
-            result = (result + static_cast<int64_t>((__builtin_popcount(i) & 1) ? modulo - 1 : 1) * (prefix_sum[unique_positions.size()][upper_bound] - prefix_sum[unique_positions.size()][lower_bound - 1] + modulo)) % modulo;
-        }
+    for (int i = 0; i < length; i++) {
+        if (!(answer ^ SuffixGrundy(values[i], 0, grundy_values, first_cycle, cycle_length) ^ SuffixGrundy(values[i] - x_value, 0, grundy_values, first_cycle, cycle_length))) result++;
+        if (!(answer ^ SuffixGrundy(values[i], 0, grundy_values, first_cycle, cycle_length) ^ SuffixGrundy(values[i] - y_value, 1, grundy_values, first_cycle, cycle_length))) result++;
+        if (!(answer ^ SuffixGrundy(values[i], 0, grundy_values, first_cycle, cycle_length) ^ SuffixGrundy(values[i] - z_value, 2, grundy_values, first_cycle, cycle_length))) result++;
     }
 
     return result;
 }
 
 int main() {
-    int num_intervals;
-    int num_pairs;
+    std::ios::sync_with_stdio(0);
+    std::cin.tie(0);
+    std::cout.tie(0);
 
-    std::cin >> num_intervals >> num_pairs;
-
-    std::vector<std::vector<int>> interval_bounds(num_intervals, std::vector<int>(2));
-    std::vector<std::vector<int>> pair_relationships(num_pairs, std::vector<int>(2));
-
-    for (int i = 0; i < num_intervals; ++i) {
-        std::cin >> interval_bounds[i][0] >> interval_bounds[i][1];
+    long long test_cases;
+    std::cin >> test_cases;
+    while (test_cases--) {
+        long long length, x_value, y_value, z_value;
+        std::cin >> length >> x_value >> y_value >> z_value;
+        std::vector<long long> values(length);
+        for (int i = 0; i < length; i++) {
+            std::cin >> values[i];
+        }
+        std::cout << CalculateResult(length, x_value, y_value, z_value, values) << "\n";
     }
-
-    for (int i = 0; i < num_pairs; ++i) {
-        std::cin >> pair_relationships[i][0] >> pair_relationships[i][1];
-    }
-
-    int result = ComputeResult(num_intervals, num_pairs, interval_bounds, pair_relationships);
-    std::cout << result << '\n';
 
     return 0;
 }
