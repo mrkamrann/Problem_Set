@@ -41,7 +41,9 @@ Each value of positions[i] should be in the range [1, track_length] inclusive.
 The directions should be either 'L' or 'R'.
 */
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
@@ -110,18 +112,254 @@ std::vector<int> ComputeFinalPositions(int track_length, long long time, std::ve
     return result_positions;
 }
 
-int main() {
-    std::ios::sync_with_stdio(false);
-    int num_ants, track_length;
-    long long time;
-    std::cin >> num_ants >> track_length >> time;
-    std::vector<int> positions(num_ants);
-    std::vector<char> directions(num_ants);
-    for (int i = 0; i < num_ants; i++) {
-        std::cin >> positions[i];
-        std::cin >> directions[i];
-    }
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
 
-    Solve(num_ants, track_length, time, positions, directions);
+int main() {
+    
+  // TEST
+int track_length_1 = 10;
+long long time_1 = 5;
+std::vector<int> positions_1 = {2, 7};
+std::vector<char> directions_1 = {'L', 'R'};
+std::vector<int> expected_1 = {2, 7};
+std::vector<int> result_1 = ComputeFinalPositions(track_length_1, time_1, positions_1, directions_1);
+assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+int track_length_2 = 15;
+long long time_2 = 10;
+std::vector<int> positions_2 = {5, 12};
+std::vector<char> directions_2 = {'R', 'L'};
+std::vector<int> expected_2 = {2,15};
+std::vector<int> result_2 = ComputeFinalPositions(track_length_2, time_2, positions_2, directions_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+int track_length_3 = 20;
+long long time_3 = 18;
+std::vector<int> positions_3 = {10, 19};
+std::vector<char> directions_3 = {'L', 'R'};
+std::vector<int> expected_3 = {12, 17};
+std::vector<int> result_3 = ComputeFinalPositions(track_length_3, time_3, positions_3, directions_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+int track_length_4 = 25;
+long long time_4 = 50;
+std::vector<int> positions_4 = {8, 16};
+std::vector<char> directions_4 = {'R', 'L'};
+std::vector<int> expected_4 = {8, 16};
+std::vector<int> result_4 = ComputeFinalPositions(track_length_4, time_4, positions_4, directions_4);
+ assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+int track_length_5 = 1000000000;
+long long time_5 = 1000000000000000000LL;
+std::vector<int> positions_5 = {500000000, 1000000000};
+std::vector<char> directions_5 = {'L', 'R'};
+std::vector<int> expected_5 = {500000000, 1000000000};
+std::vector<int> result_5 = ComputeFinalPositions(track_length_5, time_5, positions_5, directions_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+int track_length_6 = 500;
+long long time_6 = 250;
+std::vector<int> positions_6 = {250, 25};
+std::vector<char> directions_6 = {'L', 'R'};
+std::vector<int> expected_6 = {275, 500};
+std::vector<int> result_6 = ComputeFinalPositions(track_length_6, time_6, positions_6, directions_6);
+assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+int track_length_7 = 100;
+long long time_7 = 1234567890;
+std::vector<int> positions_7 = {1, 100};
+std::vector<char> directions_7 = {'R', 'L'};
+std::vector<int> expected_7 = {10, 91};
+std::vector<int> result_7 = ComputeFinalPositions(track_length_7, time_7, positions_7, directions_7);
+assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+int track_length_8 = 2;
+long long time_8 = 1;
+std::vector<int> positions_8 = {1, 2};
+std::vector<char> directions_8 = {'L', 'R'};
+std::vector<int> expected_8 = {1, 2};
+std::vector<int> result_8 = ComputeFinalPositions(track_length_8, time_8, positions_8, directions_8);
+ assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+int track_length_9 = 999999999;
+long long time_9 = 99999999999999999;
+std::vector<int> positions_9 = {999999998, 999999999};
+std::vector<char> directions_9 = {'R', 'L'};
+std::vector<int> expected_9 = {900000000, 99999998};
+std::vector<int> result_9 = ComputeFinalPositions(track_length_9, time_9, positions_9, directions_9);
+assert(result_9 == expected_9);
+// TEST_END
+
+  
+
+// TEST
+   int track_length_10 = 1;
+    long long time_10 = 100;
+    std::vector<int> positions_10 = {1, 2};
+    std::vector<char> directions_10 = {'L', 'R'};
+try {
+ 
+    ComputeFinalPositions(track_length_10, time_10, positions_10, directions_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+    int track_length_11 = 10;
+    long long time_11 = 100;
+    std::vector<int> positions_11 = {0, 11}; 
+    std::vector<char> directions_11 = {'L', 'R'};
+try {
+  
+    ComputeFinalPositions(track_length_11, time_11, positions_11, directions_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+
+
+// TEST
+  
+  int track_length_12 = 10;
+    long long time_12 = -1; 
+    std::vector<int> positions_12 = {5, 6};
+    std::vector<char> directions_12 = {'L', 'R'};
+try {
+    
+    ComputeFinalPositions(track_length_12, time_12, positions_12, directions_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+    int track_length_13 = -10;
+    long long time_13 = 100;
+    std::vector<int> positions_13 = {5, 6};
+    std::vector<char> directions_13 = {'L', 'R'};
+try {
+
+    ComputeFinalPositions(track_length_13, time_13, positions_13, directions_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
+// TEST
+int track_length_14 = 1; 
+long long time_14 = 100;
+std::vector<int> positions_14 = {1, 2};
+std::vector<char> directions_14 = {'L', 'R'};
+try {
+    ComputeFinalPositions(track_length_14, time_14, positions_14, directions_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_15 = 10;
+long long time_15 = 100;
+std::vector<int> positions_15 = {0, 11}; 
+std::vector<char> directions_15 = {'L', 'R'};
+try {
+    ComputeFinalPositions(track_length_15, time_15, positions_15, directions_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_16 = 10;
+long long time_16 = 100;
+std::vector<int> positions_16 = {5, 6};
+std::vector<char> directions_16 = {'X', 'R'}; 
+try {
+    ComputeFinalPositions(track_length_16, time_16, positions_16, directions_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_17 = 10;
+long long time_17 = 100;
+std::vector<int> positions_17 = {5}; 
+std::vector<char> directions_17 = {'L'};
+try {
+    ComputeFinalPositions(track_length_17, time_17, positions_17, directions_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_18 = 10;
+long long time_18 = 100;
+std::vector<int> positions_18 = {5, 6, 7}; 
+std::vector<char> directions_18 = {'L', 'R'};
+try {
+    ComputeFinalPositions(track_length_18, time_18, positions_18, directions_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_19 = 10;
+long long time_19 = 100;
+std::vector<int> positions_19 = {5, 6};
+std::vector<char> directions_19 = {'L', 'R', 'R'};
+try {
+    ComputeFinalPositions(track_length_19, time_19, positions_19, directions_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+int track_length_20 = 10;
+long long time_20 = 1000000000000000001; 
+std::vector<int> positions_20 = {5, 6};
+std::vector<char> directions_20 = {'L', 'R'};
+try {
+    ComputeFinalPositions(track_length_20, time_20, positions_20, directions_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
     return 0;
 }
