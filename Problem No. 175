@@ -1,171 +1,106 @@
 /*
 Link: https://codeforces.com/contest/1634/problem/F
 
-Romario is fascinated with the Fibonacci sequence and its applications. He is working with two vectors, vec_a and vec_b, of the same length. 
 
-Fibonacci addition is an operation on an vector vec_x of integers, parametrized by indices start_idx and end_idx. Fibonacci addition increases vec_x[start_idx] 
-by F1, increases vec_x[start_idx + 1] by F2, and so on up to vec_x[end_idx] which is increased by F(end_idx - start_idx + 1).
-
-Here, Fi denotes the i-th Fibonacci number (F1 = 1, F2 = 1, Fi = Fi-1 + Fi-2 for i > 2), and all operations are performed modulo mod_value.
-He needs to perform several Fibonacci addition operations on these vectors with different  parameters and, after each operation, report whether vectors vec_a and 
-vec_b are equal modulo mod_value.
-
-Given, 
-
-An integer vec_size - the length of the vectors.
-An integer num_operations - the number of operations.
-An integer mod_value - the number modulo which all operations are performed.
-An vector vec_a of length vec_size containing integers (0 ≤ vec_a[i] < mod_value).
-An vector vec_b of length vec_size containing integers (0 ≤ vec_b[i] < mod_value).
-A list of num_operations operations, where each operation consists of:
-
-A character c ('A' or 'B'), indicating which array to perform the operation on (vec_a or vec_b).
-Two integers start_idx and end_idx (1 ≤ start_idx ≤ end_idx ≤ vec_size), indicating the range of indices for the Fibonacci addition.
-
-Return a vector<bool> denoring for each operation, return true if the vectors vec_a and vec_b are equal modulo mod_value, otherwise return "false. 
-
-
-Create a C++ Function   FibonacciAdditions that will return a vector<bool> denoting the vector result.
-
-Use appropriate Error Handling using the stdexcept library for the invalid test cases.
-
-Input Type:
-
-A long long integer mod_value.
-A std::vector<long long>& vec_a.
-A std::vector<long long>& vec_b.
-A std::vector<std::tuple<char, long long, long long>>& operations.
-
-Input Constraints:
-
-The length of vec_a and vec_b should be equal and  at least 1 and at most 3×10^5 inclusive.
-The number of operations should be at least 1 and at most 3×10^5 inclusive.
-The value of mod_value should be at least 1 and at most 10^9 + 7 inclusive.
-Each value of vec_a[i] and vec_b[i] should be in the range [0, mod_value) inclusive.
-The value of char in operations should be either 'A' or 'B'
-1 ≤ start_idx ≤ end_idx ≤ vec_size
-
-*/
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <map>
 #include <stdexcept>
 #include <cassert>
 
-void UpdateValue(long long index, long long factor, std::vector<long long>& vec, long long size, long long mod, long long sign, long long& zero_count) {
-    if (index <= size) {
-        zero_count -= !vec[index];
-        (vec[index] += sign * factor + mod) %= mod;
-        zero_count += !vec[index];
+
+
+std::vector<std::vector<long long>> ComputeCombinations(int max_value) {
+    std::vector<std::vector<long long>> combinations(max_value + 1, std::vector<long long>(max_value + 1, 0));
+    int modulus =  1000000007;
+    for (int i = 0; i <= max_value; ++i) {
+        for (int j = 0; j <= i; ++j) {
+            combinations[i][j] = j ? (combinations[i-1][j-1] + combinations[i-1][j]) % modulus  : 1;
+        }
     }
+    return combinations;
 }
 
-std::vector<bool> FibonacciAdditions(long long mod_value, std::vector<long long>& vec_a, std::vector<long long>& vec_b, std::vector<std::tuple<char, long long, long long>>& operations) {
-
-
-   long long vec_size = vec_a.size();
-   long long num_operations = operations.size();
-
-    if (vec_size < 1 || vec_size > 300000 || num_operations < 1 || num_operations > 300000 || mod_value < 1 || mod_value > 1000000007) {
-        throw std::invalid_argument("Invalid input constraints.");
-    }
-
-     if (vec_size != vec_b.size()) {
-        throw std::invalid_argument("Both given vectors should be equal sized");
-    }
-
-    for (long long i = 0; i < vec_size; i++) {
-        if (vec_a[i] < 0 || vec_a[i] >= mod_value) {
-            throw std::invalid_argument("Vector A element out of bounds.");
-        }
-        if (vec_b[i] < 0 || vec_b[i] >= mod_value) {
-            throw std::invalid_argument("Vector B element out of bounds.");
+std::vector<long long> ComputeFactorials(int max_value, const std::vector<std::vector<long long>>& combinations) {
+    std::vector<long long> factorials(max_value + 1, 0);
+    int modulus =  1000000007;
+    factorials[0] = factorials[1] = 1;
+    for (int i = 2; i <= max_value; ++i) {
+        for (int j = 0; j < i; ++j) {
+            factorials[i] = (factorials[i] + combinations[i-1][j] * factorials[j]) % modulus ;
         }
     }
-    
-    for (const auto& op : operations) {
-        char operation_type;
-        long long start_index, end_index;
-        std::tie(operation_type, start_index, end_index) = op;
-        if (operation_type != 'A' && operation_type != 'B') {
-            throw std::invalid_argument("Invalid operation type.");
-        }
-        if (start_index < 1 || start_index > end_index || end_index > vec_size) {
-            throw std::invalid_argument("Invalid operation indices.");
-        }
-    }
+    return factorials;
+}
 
-    std::vector<long long> vec(vec_size + 1), fibonacci(vec_size + 1);
-    long long zero_count = 0;
-
-    for (long long i = 1; i <= vec_size; i++) {
-        vec[i] = vec_a[i-1];
-        fibonacci[i] = (i == 1) ? 1 : (fibonacci[i - 1] + fibonacci[i - 2]) % mod_value;
-    }
-
-    for (long long i = 1; i <= vec_size; i++) {
-        (vec[i] -= vec_b[i - 1] - mod_value) %= mod_value;
-    }
-
-    for (long long i = vec_size; i > 1; i--) {
-        (vec[i] -= vec[i - 1] + vec[i - 2] - mod_value - mod_value) %= mod_value;
-    }
-
-    for (long long i = 1; i <= vec_size; i++) {
-        zero_count += !vec[i];
-    }
-
-    std::vector<bool> results;
+long long Solve(const std::vector<std::string>& binary_strings) {
   
-    for (long long i = 0; i < num_operations; i++) {
-        char operation_type;
-        long long start_index, end_index;
-        std::tie(operation_type, start_index, end_index) = operations[i];
-        long long sign = (operation_type == 'A') ? 1 : -1;
-        UpdateValue(start_index, 1, vec, vec_size, mod_value, sign, zero_count);
-        UpdateValue(end_index + 1, -fibonacci[end_index - start_index + 2], vec, vec_size, mod_value, sign, zero_count);
-        UpdateValue(end_index + 2, -fibonacci[end_index - start_index + 1], vec, vec_size, mod_value, sign, zero_count);
-        results.push_back(zero_count == vec_size ? 1 : 0);
+    int matrix_size = binary_strings[0].size(); 
+    int vector_size = binary_strings.size();
+  
+    if (matrix_size < 1 || matrix_size > 1000) {
+        throw std::invalid_argument("Matrix size must be between 1 and 1000 inclusive");
+    }
+    if (vector_size < 1 || vector_size > std::min(2 * matrix_size, 50)) {
+        throw std::invalid_argument("Vector size must be between 1 and min(2 * matrix_size, 50) inclusive");
+    }
+    if (binary_strings.size() != static_cast<size_t>(vector_size)) {
+        throw std::invalid_argument("Binary strings vector size does not match the vector size");
+    }
+    for (const std::string& str : binary_strings) {
+        if (str.size() != static_cast<size_t>(matrix_size)) {
+            throw std::invalid_argument("Each binary string must have length equal to matrix size");
+        }
+       for(const char character: str)
+       {
+         if (character != '0' && character != '1'){
+            throw std::invalid_argument("Binary strings must contain only '0' and '1'");
+        }
+       }
+        
     }
 
-    return results;
+   int modulus =  1000000007;
+    std::vector<long long> binary_numbers(matrix_size, 0);
+    for (int i = 0; i < vector_size; ++i) {
+        for (int j = 0; j < matrix_size; ++j) {
+            long long bit_value = 0;
+            if (binary_strings[i][j] == '1') bit_value = 1;
+            binary_numbers[j] |= bit_value << (vector_size - i - 1);
+        }
+    }
+
+    std::map<long long, long long> frequency_map;
+    for (int i = 0; i < matrix_size; ++i) {
+        ++frequency_map[binary_numbers[i]];
+    }
+
+    std::vector<std::vector<long long>> combinations = ComputeCombinations(matrix_size);
+    std::vector<long long> factorials = ComputeFactorials(matrix_size, combinations);
+    
+    long long answer = 1;
+    for (std::map<long long, long long>::iterator it = frequency_map.begin(); it != frequency_map.end(); ++it) {
+        answer = (answer * factorials[it->second]) % modulus;
+    }
+    return answer;
 }
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <cassert>
+
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
-    long long vec_size, num_operations, mod_value;
-    std::cin >> vec_size >> num_operations >> mod_value;
-
-    std::vector<long long> vec_a(vec_size);
-    std::vector<long long> vec_b(vec_size);
+    int matrix_size, vector_size;
+    std::cin >> matrix_size >> vector_size;
+    std::vector<std::string> binary_strings(vector_size);
+    for (int i = 0; i < vector_size; ++i) {
+        std::cin >> binary_strings[i];
+    }
+   
+     std::cout << Solve(binary_strings) << std::endl;
     
-    for (long long i = 0; i < vec_size; i++) {
-        std::cin >> vec_a[i];
-    }
-    
-    for (long long i = 0; i < vec_size; i++) {
-        std::cin >> vec_b[i];
-    }
-    
-    std::vector<std::tuple<char, long long, long long>> operations(num_operations);
-    for (long long i = 0; i < num_operations; i++) {
-        char operation_type;
-        long long start_index, end_index;
-        std::cin >> operation_type >> start_index >> end_index;
-        operations[i] = std::make_tuple(operation_type, start_index, end_index);
-    }
-
-    std::vector<std::string> results;
-    try {
-        results = ProcessOperations(vec_size, num_operations, mod_value, vec_a, vec_b, operations);
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-    
-    for (const std::string& result : results) {
-        std::cout << result << std::endl;
-    }
-
     return 0;
 }
