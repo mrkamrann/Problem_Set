@@ -24,6 +24,7 @@ A vector of long long counts denoting the counts of each type of rectangle.
 Input Constraints:
 
 The value of num_rectangles should be at least 1 and at most 200,000 inclusive.
+Size of widths, heights, and counts must be equal to num_rectangles
 Each value in widths, heights, and counts should be at least 1 and at most 10^12 inclusive.
 
 */
@@ -44,16 +45,24 @@ long long CalculateGcd(long long a_val, long long b_val) {
     return a_val;
 }
 
-long long CalculateRectanglePairs(const std::vector<long long>& widths, const std::vector<long long>& heights, const std::vector<long long>& counts, long long num_rectangles) {
+long long CalculateRectanglePairs(const std::vector<long long>& widths, const std::vector<long long>& heights, const std::vector<long long>& counts) {
+  
+   
+   long long num_rectangles = widths.size();
   
     if (num_rectangles < 1 || num_rectangles > 200000) {
         throw std::invalid_argument("num_rectangles must be between 1 and 200000");
     }
-    
+  
+    if(widths.size() != num_rectangles || heights.size() != num_rectangles || counts.size() != num_rectangles)
+    {
+      throw std::invalid_argument("size of widths, heights, and counts must be equal to num_rectangles");
+    }
+      
     for (long long i = 0; i < num_rectangles; ++i) {
-        if (widths[i] < 1 || widths[i] > 1000000000000 || 
-            heights[i] < 1 || heights[i] > 1000000000000 || 
-            counts[i] < 1 || counts[i] > 1000000000000) {
+      
+        if (widths[i] < 1 || widths[i] > 1000000000000 || heights[i] < 1 || heights[i] > 1000000000000 || counts[i] < 1 || counts[i] > 1000000000000)
+        {
             throw std::invalid_argument("widths, heights, and counts must be between 1 and 1000000000000");
         }
     }
@@ -86,22 +95,231 @@ long long CalculateRectanglePairs(const std::vector<long long>& widths, const st
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
 
-    long long num_rectangles;
-    std::cin >> num_rectangles;
-    
-    std::vector<long long> widths(num_rectangles), heights(num_rectangles), counts(num_rectangles);
+  //TEST
+std::vector<long long> widths_1 = {1, 2, 1};
+std::vector<long long> heights_1 = {1, 1, 1};
+std::vector<long long> counts_1 = {1, 1, 1};
+long long expected_1 = 0;
+long long result_1 = CalculateRectanglePairs(widths_1, heights_1, counts_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    for (long long i = 0; i < num_rectangles; ++i) {
-        std::cin >> widths[i] >> heights[i] >> counts[i];
-    }
+//TEST
+std::vector<long long> widths_2 = {1, 500000000000, 800000000000, 2, 3 , 4};
+std::vector<long long> heights_2 = {1000000000000, 500000000000, 800, 5, 7, 9};
+std::vector<long long> counts_2 = {1, 2, 1, 1, 2, 3};
+long long expected_2 = 0;
+long long result_2 = CalculateRectanglePairs(widths_2, heights_2, counts_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    long long result = ComputeAnswer(widths, heights, counts, num_rectangles);
-    std::cout << result << std::endl;
+//TEST
+std::vector<long long> widths_3 = {1};
+std::vector<long long> heights_3 = {1};
+std::vector<long long> counts_3 = {200000};
+long long expected_3 = 42;
+long long result_3 = CalculateRectanglePairs(widths_3, heights_3, counts_3);
+assert(result_3 == expected_3);
+//TEST_END
 
+//TEST
+std::vector<long long> widths_4 = {1000000000000};
+std::vector<long long> heights_4 = {1000000000000};
+std::vector<long long> counts_4 = {200000};
+long long expected_4 = 42;
+long long result_4 = CalculateRectanglePairs(widths_4, heights_4, counts_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<long long> widths_5 = {1, 1, 1, 1};
+std::vector<long long> heights_5 = {1, 1, 1, 1};
+std::vector<long long> counts_5 = {1000000000000, 1000000000000, 1000000000000, 1000000000000};
+long long expected_5 = 0;
+long long result_5 = CalculateRectanglePairs(widths_5, heights_5, counts_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<long long> widths_6 = {1, 2, 3, 4, 5};
+std::vector<long long> heights_6 = {1, 2, 3, 4, 5};
+std::vector<long long> counts_6 = {1, 1, 1, 1, 1};
+long long expected_6 = 0;
+long long result_6 = CalculateRectanglePairs(widths_6, heights_6, counts_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<long long> widths_7 = {1000000000000, 500000000000, 800000000000};
+std::vector<long long> heights_7 = {1000000000000, 500000000000, 800000000000};
+std::vector<long long> counts_7 = {200000, 100000, 150000};
+long long expected_7 = 0;
+long long result_7 = CalculateRectanglePairs(widths_7, heights_7, counts_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<long long> widths_8 = {1};
+std::vector<long long> heights_8 = {1};
+std::vector<long long> counts_8 = {1};
+long long expected_8 = 1;
+long long result_8 = CalculateRectanglePairs(widths_8, heights_8, counts_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+
+//TEST
+std::vector<long long> widths_9 = {2};
+std::vector<long long> heights_9 = {2};
+std::vector<long long> counts_9 = {2};
+long long expected_9 = 2;
+long long result_9 = CalculateRectanglePairs(widths_9, heights_9, counts_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<long long> widths_10 = {1};
+std::vector<long long> heights_10 = {1, 2}; 
+std::vector<long long> counts_10 = {1};
+long long num_rectangles_10 = 1;
+try {
+    long long result_10 = CalculateRectanglePairs(widths_10, heights_10, counts_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_11 = {1, 2};
+std::vector<long long> heights_11 = {1, 2};
+std::vector<long long> counts_11 = {1};
+long long num_rectangles_11 = 2;
+try {
+    long long result_11 = CalculateRectanglePairs(widths_11, heights_11, counts_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_12 = {1, 2};
+std::vector<long long> heights_12 = {1, -2};
+std::vector<long long> counts_12 = {1, 2};
+long long num_rectangles_12 = 3; 
+try {
+    long long result_12 = CalculateRectanglePairs(widths_12, heights_12, counts_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_13 = {-4444}; 
+std::vector<long long> heights_13 = {1};
+std::vector<long long> counts_13 = {1};
+long long num_rectangles_13 = 1;
+try {
+    long long result_13 = CalculateRectanglePairs(widths_13, heights_13, counts_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_14 = {1};
+std::vector<long long> heights_14 = {-8888};
+std::vector<long long> counts_14 = {1};
+long long num_rectangles_14 = 1;
+try {
+    long long result_14 = CalculateRectanglePairs(widths_14, heights_14, counts_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_15 = {1};
+std::vector<long long> heights_15 = {1};
+std::vector<long long> counts_15 = {-999}; 
+long long num_rectangles_15 = 1;
+try {
+    long long result_15 = CalculateRectanglePairs(widths_15, heights_15, counts_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_16 = {1};
+std::vector<long long> heights_16 = {1};
+std::vector<long long> counts_16 = {};
+long long num_rectangles_16 = 0; 
+try {
+    long long result_16 = CalculateRectanglePairs(widths_16, heights_16, counts_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_17 = {};
+std::vector<long long> heights_17 = {1, 2};
+std::vector<long long> counts_17 = {1, 2};
+long long num_rectangles_17 = 200001; 
+try {
+    long long result_17 = CalculateRectanglePairs(widths_17, heights_17, counts_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_18 = {1000000000001}; 
+std::vector<long long> heights_18 = {1};
+std::vector<long long> counts_18 = {1};
+long long num_rectangles_18 = 1;
+try {
+    long long result_18 = CalculateRectanglePairs(widths_18, heights_18, counts_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_19 = {1};
+std::vector<long long> heights_19 = {1000000000001}; 
+std::vector<long long> counts_19 = {1};
+long long num_rectangles_19 = 1;
+try {
+    long long result_19 = CalculateRectanglePairs(widths_19, heights_19, counts_19);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> widths_20 = {1};
+std::vector<long long> heights_20 = {1};
+std::vector<long long> counts_20 = {1000000000001};
+long long num_rectangles_20 = 1;
+try {
+    long long result_20 = CalculateRectanglePairs(widths_20, heights_20, counts_20);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
 
