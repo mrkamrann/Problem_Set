@@ -186,15 +186,174 @@ long long modulus = 998244353;
 
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
+  
+  //TEST
+int num_terms_1 = 3;
+int max_value_1 = 10;
+int result_index_1 = 50;
+long long expected_1 = 0;  
+long long result_1 = CalculateBeautifulMultisets(num_terms_1, max_value_1, result_index_1);
+assert(result_1 == expected_1);
 
-    int num_terms, max_value, result_index;
-    std::cin >> num_terms >> max_value >> result_index;
+//TEST_END
 
-    long long result = Solve(num_terms, max_value, result_index);
-    std::cout << result << std::endl;
+//TEST
+int num_terms_2 = 5;
+int max_value_2 = 1500;
+int result_index_2 = 100;
+long long expected_2 = 895872020;  
+long long result_2 = CalculateBeautifulMultisets(num_terms_2, max_value_2, result_index_2);
+assert(result_2 == expected_2);
+
+//TEST_END
+
+//TEST
+int num_terms_3 = 1;
+int max_value_3 = 20;
+int result_index_3 = 1;
+long long expected_3 = 2;  
+long long result_3 = CalculateBeautifulMultisets(num_terms_3, max_value_3, result_index_3);
+assert(result_3 == expected_3);
+
+//TEST_END
+
+//TEST
+int num_terms_4 = 15;
+int max_value_4 = 100;
+int result_index_4 = 50;
+long long expected_4 = 909837823; 
+long long result_4 = CalculateBeautifulMultisets(num_terms_4, max_value_4, result_index_4);
+assert(result_4 == expected_4);
+
+//TEST_END
+
+//TEST
+int num_terms_5 = 7;
+int max_value_5 = 120;
+int result_index_5 = 30;
+long long expected_5 = 919725264; 
+long long result_5 = CalculateBeautifulMultisets(num_terms_5, max_value_5, result_index_5);
+assert(result_5 == expected_5);
+
+//TEST_END
+
+//TEST
+int num_terms_6 = 10;
+int max_value_6 = 90;
+int result_index_6 = 60;
+long long expected_6 = 592574928; 
+long long result_6 = CalculateBeautifulMultisets(num_terms_6, max_value_6, result_index_6);
+assert(result_6 == expected_6);
+
+//TEST_END
+
+//TEST
+int num_terms_7 = 4;
+int max_value_7 = 500;
+int result_index_7 = 40;
+long long expected_7 = 82739158;
+long long result_7 = CalculateBeautifulMultisets(num_terms_7, max_value_7, result_index_7);
+assert(result_7 == expected_7);
+
+//TEST_END
+
+//TEST
+int num_terms_8 = 12;
+int max_value_8 = 20;
+int result_index_8 = 150;
+long long expected_8 = 0;  
+long long result_8 = CalculateBeautifulMultisets(num_terms_8, max_value_8, result_index_8);
+assert(result_8 == expected_8);
+
+//TEST_END
+
+//TEST
+int num_terms_9 = 9;
+int max_value_9 = 750;
+int result_index_9 = 30;
+long long expected_9 = 911912801;  
+long long result_9 = CalculateBeautifulMultisets(num_terms_9, max_value_9, result_index_9);
+assert(result_9 == expected_9);
+
+//TEST_END
+
+//TEST
+int num_terms_10 = 16;
+int max_value_10 = 1000;
+int result_index_10 = 50;
+try {
+    CalculateBeautifulMultisets(num_terms_10, max_value_10, result_index_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_terms_11 = 3;
+int max_value_11 = 200001;
+int result_index_11 = 50;
+try {
+    CalculateBeautifulMultisets(num_terms_11, max_value_11, result_index_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_terms_12 = 5;
+int max_value_12 = 150000;
+int result_index_12 = 200001;
+try {
+    CalculateBeautifulMultisets(num_terms_12, max_value_12, result_index_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_terms_13 = -999;
+int max_value_13 = 150000;
+int result_index_13 = 100000;
+try {
+    CalculateBeautifulMultisets(num_terms_13, max_value_13, result_index_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_terms_14 = 5;
+int max_value_14 = -100;
+int result_index_14 = 100;
+try {
+    CalculateBeautifulMultisets(num_terms_14, max_value_14, result_index_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
+
+//TEST
+int num_terms_15 = 6;
+int max_value_15 = 150000;
+int result_index_15 = -10;
+try {
+    CalculateBeautifulMultisets(num_terms_15, max_value_15, result_index_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+
+//TEST_END
 
     return 0;
 }
