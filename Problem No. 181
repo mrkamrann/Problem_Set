@@ -1,3 +1,100 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1187/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+#include <algorithm>
+
+
+
+int QuickPower(int base, int exponent) {
+    const int modulus = 1000000007;
+    int result = 1;
+    for (; exponent; exponent >>= 1, base = 1LL * base * base % modulus) {
+        if (exponent & 1) result = 1LL * result * base % modulus;
+    }
+    return result;
+}
+
+
+int CalculateAnswer(const std::vector<int>& left_vec, const std::vector<int>& right_vec) {
+
+    int vec_size = left_vec.size();
+
+    if (vec_size <= 0 || vec_size > 200000) {
+        throw std::invalid_argument("Invalid vector size");
+    }
+    
+      if (vec_size != right_vec.size()) {
+        throw std::invalid_argument("Size of both vectors should be equal");
+    }
+
+    for (int i = 0; i < vec_size; ++i) {
+        if (left_vec[i] < 1 || left_vec[i] > 1000000000 || right_vec[i] < left_vec[i] || right_vec[i] > 1000000000) {
+            throw std::invalid_argument("Invalid vector values.");
+        }
+    }
+
+    const int modulus = 1000000007;
+    std::vector<int> len(vec_size + 1, 1), prob(vec_size + 1, 0), l_vec(vec_size + 1, 0), r_vec(vec_size + 1, 0);
+
+    for (int i = 0; i < vec_size; ++i) {
+        l_vec[i + 1] = left_vec[i];
+        r_vec[i + 1] = right_vec[i];
+    }
+
+    int answer = 0;
+
+    for (int i = 1; i <= vec_size; i++) {
+        len[i] = QuickPower(r_vec[i] - l_vec[i] + 1, modulus - 2);
+    }
+
+    for (int i = 1; i <= vec_size; i++) {
+        prob[i] = 1LL * std::max(std::min(r_vec[i], r_vec[i - 1]) - std::max(l_vec[i], l_vec[i - 1]) + 1, 0) * len[i] % modulus * len[i - 1] % modulus;
+        answer = (answer + 1 - prob[i]) % modulus;
+    }
+
+    for (int i = 3, sum = 0; i <= vec_size; i++) {
+        sum = (sum + (1 - prob[i - 2])) % modulus;
+        answer = (answer + 2LL * sum * (1 - prob[i]) % modulus) % modulus;
+    }
+
+    for (int i = 1; i < vec_size; i++) {
+        answer = (answer + 2LL * (1 - prob[i] - prob[i + 1] + 1LL * std::max(std::min({r_vec[i + 1], r_vec[i], r_vec[i - 1]}) - std::max({l_vec[i + 1], l_vec[i], l_vec[i - 1]}) + 1, 0) * len[i + 1] % modulus * len[i] % modulus * len[i - 1] % modulus) % modulus) % modulus;
+    }
+
+    return (answer + modulus) % modulus;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+#include <algorithm>
+
+int main() {
+    int vec_size;
+    std::cin >> vec_size;
+    std::vector<int> left_vec(vec_size), right_vec(vec_size);
+
+    for (int i = 0; i < vec_size; i++) {
+        std::cin >> left_vec[i];
+    }
+
+    for (int i = 0; i < vec_size; i++) {
+        std::cin >> right_vec[i];
+    }
+
+    //TEST
+    int answer = CalculateAnswer(left_vec, right_vec);
+    std::cout << answer << std::endl;
+    //TEST_END
+
+    return 0;
+}
+
