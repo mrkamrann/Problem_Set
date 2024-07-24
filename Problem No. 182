@@ -1,3 +1,84 @@
 /*
 Link:
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <sstream>
+#include <cassert>
+
+int ComputeResult(int num_elements, int target_sum) {
+    if (target_sum <= 0) return num_elements == 0;
+    if (num_elements < target_sum) return 0;
+    return ((num_elements - 1) & (target_sum - 1)) == (target_sum - 1);
+}
+
+std::string ProcessData(int target_sum, const std::vector<int>& elements) {
+   
+    int num_elements = elements.size();
+    
+    if (num_elements <= 0 || num_elements > 1048576) {
+        throw std::invalid_argument("Invalid number of elements.");
+    }
+    if (target_sum < 0 || target_sum >= num_elements) {
+        throw std::invalid_argument("Invalid target sum.");
+    }
+    for (int element : elements) {
+        if (element < 1 || element >= 1048576) {
+            throw std::invalid_argument("Invalid element value.");
+        }
+    }
+    const int max_elements = (1 << 20) + 5;
+    const int mask_value = (1 << 20) - 1;
+    
+    std::vector<int> results(max_elements, 0);
+    int max_index = mask_value;
+
+    for (int i = 0; i < num_elements; i++) {
+        for (int j = i, current_sum = 0; j < num_elements; current_sum += elements[++j]) {
+            if (current_sum >= 20 || (mask_value >> current_sum) < elements[i]) break;
+            int extra_term = (i > 0) + (j < num_elements - 1);
+            results[elements[i] << current_sum] ^= ComputeResult(num_elements - 1 - (j - i) - extra_term, target_sum - extra_term);
+        }
+    }
+
+    while (max_index && !results[max_index]) --max_index;
+
+    std::stringstream result_stream;
+    while (~max_index) result_stream << results[max_index--];
+    return result_stream.str();
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <sstream>
+#include <cassert>
+
+int main() {
+
+    int num_elements, target_sum;
+    std::cin >> num_elements >> target_sum;
+    if (num_elements <= 0 || num_elements > 1048576) {
+        throw std::invalid_argument("Invalid number of elements.");
+    }
+    if (target_sum < 0 || target_sum >= num_elements) {
+        throw std::invalid_argument("Invalid target sum.");
+    }
+
+    std::vector<int> elements(num_elements);
+    for (int i = 0; i < num_elements; i++) {
+        std::cin >> elements[i];
+        if (elements[i] < 1 || elements[i] >= 1048576) {
+            throw std::invalid_argument("Invalid element value.");
+        }
+    }
+
+    //TEST
+    std::string result = ProcessData(target_sum, elements);
+    std::cout << result;
+    //TEST_END
+
+    return 0;
+}
