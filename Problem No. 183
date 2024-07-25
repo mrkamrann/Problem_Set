@@ -83,6 +83,12 @@ std::vector<long long> ProcessInput(int queries_count, int distance, std::vector
     return ExecuteQueries(queries_count, distance, vec, queries);
 }
 
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
     int queries_count, distance;
     std::cin >> queries_count >> distance;
