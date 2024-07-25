@@ -131,24 +131,146 @@ std::vector<long long> ProcessQueries (int distance, std::vector<int>& queries) 
 #include <cassert>
 
 int main() {
-    int queries_count, distance;
-    std::cin >> queries_count >> distance;
-    
-    if (queries_count < 1 || queries_count > 200000 || distance < 1 || distance > 200000) {
-        throw std::invalid_argument("Invalid input parameters.");
-    }
-    
-    std::vector<int> queries(queries_count);
-    for (int i = 0; i < queries_count; ++i) {
-        std::cin >> queries[i];
-        if (queries[i] < 1 || queries[i] > 200000) {
-            throw std::invalid_argument("Invalid query value.");
-        }
-    }
+  
+  //TEST
+    int distance_1 = 5;
+    std::vector<int> queries_1 = {8,5,3,2,1,5,6};
+    std::vector<long long> expected_1 = {0,0,1,2,5,1,5};
+    std::vector<long long> result_1 = ProcessQueries(distance_1, queries_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-    std::vector<long long> result = ProcessInput(queries_count, distance, queries);
-    for (std::vector<long long>::iterator it = result.begin(); it != result.end(); ++it) {
-        std::cout << *it << std::endl;
+    //TEST
+    int distance_2 = 2;
+    std::vector<int> queries_2 = {10,6,3,1,2,8,6,7,5};
+    std::vector<long long> expected_2 = {0,0,0,0,1,1,1,1,1};
+    std::vector<long long> result_2 = ProcessQueries(distance_2, queries_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    int distance_3 = 3;
+    std::vector<int> queries_3 = {5,4,3,2,1,6,8,9,7};
+    std::vector<long long> expected_3 = {0,0,1,4,7,10,11,12,19};
+    std::vector<long long> result_3 = ProcessQueries(distance_3, queries_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    int distance_4 = 2;
+    std::vector<int> queries_4 = {2, 3};
+    std::vector<long long> expected_4 = {0,0};
+    std::vector<long long> result_4 = ProcessQueries(distance_4, queries_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    int distance_5 = 6;
+    std::vector<int> queries_5 = {1,5,3,2,1,1,1,6,3,2,1}; 
+    std::vector<long long> expected_5 = {0,0,1,4,1,4,1,4,1,0,1};
+    std::vector<long long> result_5 = ProcessQueries(distance_5, queries_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+  
+     //TEST
+    int distance_6 = 2;
+    std::vector<int> queries_6 = {1,2,5,6,4,2,3};
+    std::vector<long long> expected_6 = {0,0,0,0,1,1,2};
+    std::vector<long long> result_6 = ProcessQueries(distance_6, queries_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    int distance_7 = 2;
+    std::vector<int> queries_7 = {2, 4, 6, 1, 1};
+    std::vector<long long> expected_7 = {0,0,0,0,0};
+    std::vector<long long> result_7 = ProcessQueries(distance_7, queries_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    int distance_8 = 2;
+    std::vector<int> queries_8 = {1, 2, 3, 4, 5};
+    std::vector<long long> expected_8 = {0,0,1,2,3};
+    std::vector<long long> result_8 = ProcessQueries(distance_8, queries_8);
+   assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    int distance_9 = 6;
+    std::vector<int> queries_9 = {10,9,8,7,6,5,4,3,2,1};
+    std::vector<long long> expected_9 = {0,0,1,4,10,20,35,50,65,80};
+    std::vector<long long> result_9 = ProcessQueries(distance_9, queries_9);
+     assert(result_9 == expected_9);
+    //TEST_END
+  
+    //TEST
+    int distance_10 = 2;
+    std::vector<int> queries_10(1e6, 1);
+    try {
+        ProcessQueries(distance_10, queries_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
+
+    //TEST
+    int distance_11 = 200001; 
+    std::vector<int> queries_11 = {1, 2, 3};
+    try {
+        ProcessQueries(distance_11, queries_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int distance_12 = 1;
+    std::vector<int> queries_12 = {0, 2, 3}; 
+    try {
+        ProcessQueries(distance_12, queries_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int distance_13 = 1;
+    std::vector<int> queries_13 = {1, 2, 200001};
+    try {
+        ProcessQueries(distance_13, queries_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+
+    //TEST
+    int distance_14 = -100; 
+    std::vector<int> queries_14 = {1, 2, 3};
+    try {
+        ProcessQueries(distance_14, queries_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int distance_15 = 1;
+    std::vector<int> queries_15 = {-1, 2, 3};
+    try {
+        ProcessQueries(distance_15, queries_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+
     return 0;
 }
