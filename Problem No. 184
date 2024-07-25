@@ -1,5 +1,46 @@
 /*
 Link: https://codeforces.com/contest/1096/problem/E
+
+Henry loves playing games and has recently discovered a game called TopScore. In this soccer-like game, there are players players doing penalty shoot-outs. 
+The winner is the one who scores the most. In case of ties, one of the top-scorers will be declared the winner randomly with equal probability.
+
+They have just finished the game and now are waiting for the result. But there's a tiny problem! The judges have lost the paper of scores! Fortunately, they have 
+calculated the sum of the scores before they got lost, and also for some of the players, they have remembered a lower bound on how much they scored. However, 
+the information about the bounds is private, so Henry only got to know his bound.
+
+According to the available data, he knows that his score is at least player_score and the sum of the scores is score_sum.
+
+Thus the final state of the game can be represented in the form of a sequence of players integers scores_1, scores_2, ..., scores_p (0 ≤ scores_i) — players' 
+scores. Henry is player number 1, so scores_1 ≥ player_score. Also, scores_1 + scores_2 + ... + scores_p = score_sum. Two states are considered different if there 
+exists some position i such that the value of scores_i differs in these states.
+
+Once again, Henry doesn't know the exact scores (he doesn't know his exact score as well). So he considers each of the final states to be equally probable to achieve.
+
+Help Henry find the probability of him winning.
+
+It can be shown that it is in the form of P/Q where P and Q are non-negative integers and Q ≠ 0, P ≤ Q. Report the value of P * Q^(-1) (mod 998244353).
+
+Your are given three integers players, score_sum, and player_score  — the number of players, the sum of scores of all players, and Henry's score, respectively.
+
+Return a single number — the probability of Henry winning.
+
+It can be shown that it is in the form of P/Q where P and Q are non-negative integers and Q ≠ 0, P ≤ Q. Report the value of P * Q^(-1) (mod 998244353).
+
+Create a C++ function CalculateWinningProbability that will return a long long denoting the probability of Henry winning.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An Integer denoting players
+An Integer denoting score_sum
+An Integer denoting player_score
+
+Input Constraints
+
+The value of players should be at least 1 and at most 100 inclusive.
+The value of score_sum should be at least 0 and at most 5000 inclusive.
+The value of player_score should be at least 0 and at most score_sum inclusive.
 */
 
 
@@ -25,7 +66,7 @@ std::tuple<std::vector<long long>, std::vector<long long>, std::vector<long long
     return std::make_tuple(inverses, factorial, factorial_inv);
 }
 
-long long CalculateResult(int players, int score_sum, int player_score) {
+long long CalculateWinningProbability(int players, int score_sum, int player_score) {
     if (players < 1 || players > 100) {
         throw std::invalid_argument("Invalid number of players.");
     }
