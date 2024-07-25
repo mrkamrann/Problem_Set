@@ -1,5 +1,37 @@
 /*
 Link: https://codeforces.com/contest/1187/problem/F
+
+
+Below is the rewritten problem statement with the specified changes:
+
+Anderson has a vector of integers called vector_x where vector_x = [x_1, x_2, ..., x_n]. The task is to determine the minimal size of a partition of vector_x 
+into subsegments such that all elements in each subsegment are equal. This minimal size is denoted as B(x). For example, B([3, 3, 6, 1, 6, 6, 6]) = 4 using the 
+partition: [3, 3 | 6 | 1 | 6, 6, 6].
+
+Anderson does not know the exact values of vector_x, but he knows that each x_i can be any integer value from [l_i, r_i] (where l_i ≤ r_i) uniformly at random. 
+All x_i are independent of each other.
+
+Anderson needs to calculate the expected value of (B(x))^2, denoted as E((B(x))^2). It is guaranteed that the expected value can be represented as a rational 
+fraction P / Q where (P, Q) = 1. Anderson needs to print the value of P * Q^{-1} mod 10^9 + 7.
+
+Given two vectors left_vec and right_vec both of size vec_size return the single integer — E((B(x))^2) as P * Q^{-1} mod 10^9 + 7.
+
+Create a C++ Function CalculateExpectedB that will return an integer denoting the expected value of (B(x))^2.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+vector<int> denoting left_vec
+vector<int> denoting right_vec
+
+Input Constraints
+
+The length of vec_size should be at least 1 and at most 2 * 10^5 inclusive.
+Both the vectors should be of equal size
+Each value of left_vec should be in the range [1, 10^9] inclusive.
+Each value of right_vec should be in the range [1, 10^9] inclusive.
+Each left_vec[i] should be less than or equal to right_vec[i].
 */
 
 #include <iostream>
@@ -21,7 +53,7 @@ int QuickPower(int base, int exponent) {
 }
 
 
-int CalculateAnswer(const std::vector<int>& left_vec, const std::vector<int>& right_vec) {
+int CalculateExpectedB(const std::vector<int>& left_vec, const std::vector<int>& right_vec) {
 
     int vec_size = left_vec.size();
 
