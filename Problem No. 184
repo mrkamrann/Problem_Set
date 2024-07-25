@@ -100,6 +100,12 @@ long long CalculateWinningProbability(int players, int score_sum, int player_sco
     return result;
 }
 
+#include <vector>
+#include <tuple>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
     std::ios::sync_with_stdio(0);
     std::cin.tie(0);
