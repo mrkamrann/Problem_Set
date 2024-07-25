@@ -1,3 +1,107 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1701/problem/F
 */
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+struct SqrtDecomposition {
+    long long num_elements, block_size, answer;
+    std::vector<long long> vec_1, vec_2, block_sum, block_add, block_sum_product, block_sum_square;
+
+    void Build(int elements_count, int block_size_param) {
+        num_elements = elements_count;
+        block_size = block_size_param;
+        vec_1.assign(num_elements, 0);
+        vec_2.assign(num_elements, 0);
+        block_sum.assign((num_elements - 1) / block_size + 1, 0);
+        block_add.assign((num_elements - 1) / block_size + 1, 0);
+        block_sum_product.assign((num_elements - 1) / block_size + 1, 0);
+        block_sum_square.assign((num_elements - 1) / block_size + 1, 0);
+    }
+
+    long long Update(int left, int right, long long value) {
+        int block_id = (left - 1) / block_size;
+        vec_1[left - 1] += value;
+        block_sum[block_id] += value;
+        block_sum_product[block_id] += value * vec_2[left - 1];
+        block_sum_square[block_id] += value * vec_2[left - 1] * vec_2[left - 1];
+        
+        for (int i = left / block_size, block_left, block_right; i <= right / block_size && left <= right; i++) {
+            block_left = i * block_size;
+            block_right = std::min(num_elements - 1, block_left + block_size - 1);
+            if (left <= block_left && block_right <= right) {
+                block_add[i] += value;
+            } else {
+                block_sum_product[i] = block_sum_square[i] = 0;
+                for (int j = std::max(left, block_left); j <= std::min(right, block_right); j++) {
+                    vec_2[j] += value;
+                }
+                for (int j = block_left; j <= block_right; j++) {
+                    if (vec_1[j]) {
+                        block_sum_product[i] += vec_2[j];
+                        block_sum_square[i] += vec_2[j] * vec_2[j];
+                    }
+                }
+            }
+        }
+        answer = 0;
+        for (int i = 0; i <= (num_elements - 1) / block_size; i++) {
+            answer += block_sum_square[i] + (2 * block_add[i] - 1) * block_sum_product[i] + (block_add[i] * block_add[i] - block_add[i]) * block_sum[i];
+        }
+        return answer / 2;
+    }
+};
+
+std::vector<long long> ExecuteQueries(int queries_count, int distance, std::vector<int>& vec, std::vector<int>& queries) {
+    int num_elements = vec.size();
+    SqrtDecomposition sqrt_decomp;
+    sqrt_decomp.Build(num_elements, 450);
+    std::vector<long long> result;
+    int query_index = 0;
+    
+    for (int x_val; queries_count; queries_count--) {
+        x_val = queries[query_index];
+        x_val--;
+        query_index++;
+        long long y_val = sqrt_decomp.Update(x_val + 1, std::min(num_elements - 1, x_val + distance), sqrt_decomp.vec_1[x_val] ? -1 : 1);
+        result.push_back(y_val);
+    }
+    return result;
+}
+
+std::vector<long long> ProcessInput(int queries_count, int distance, std::vector<int>& queries) {
+    if (queries_count < 1 || queries_count > 200000 || distance < 1 || distance > 200000) {
+        throw std::invalid_argument("Invalid input parameters.");
+    }
+    
+    int num_elements = 200000;
+    std::vector<int> vec(num_elements, 0);
+    return ExecuteQueries(queries_count, distance, vec, queries);
+}
+
+int main() {
+    int queries_count, distance;
+    std::cin >> queries_count >> distance;
+    
+    if (queries_count < 1 || queries_count > 200000 || distance < 1 || distance > 200000) {
+        throw std::invalid_argument("Invalid input parameters.");
+    }
+    
+    std::vector<int> queries(queries_count);
+    for (int i = 0; i < queries_count; ++i) {
+        std::cin >> queries[i];
+        if (queries[i] < 1 || queries[i] > 200000) {
+            throw std::invalid_argument("Invalid query value.");
+        }
+    }
+
+    std::vector<long long> result = ProcessInput(queries_count, distance, queries);
+    for (std::vector<long long>::iterator it = result.begin(); it != result.end(); ++it) {
+        std::cout << *it << std::endl;
+    }
+    return 0;
+}
