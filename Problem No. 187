@@ -1,11 +1,49 @@
 /*
 Link: https://codeforces.com/problemset/problem/710/D
+
+Harry is working with two arithmetic progressions. The first arithmetic progression is defined by period_1k + offset_1 and the second by period_2l + offset_2.
+He needs to find the number of integers x such that lower_bound ≤ x ≤ upper_bound and x = period_1k' + offset_1 = period_2l' + offset_2 for some 
+integers k', l' ≥ 0.
+
+Harry knows the following:
+
+period_1 and period_2 are the common differences of the arithmetic progressions.
+offset_1 and offset_2 are the initial terms of the arithmetic progressions.
+lower_bound and upper_bound are the lower and upper bounds of the range within which he needs to find the common terms.
+Help Harry find the number of integers x that satisfy the given conditions.
+
+As mentioned you are given six integers period_1, offset_1, period_2, offset_2, lower_bound, upper_bound
+
+Return the desired number of integers x.
+
+Create a C++ function FindCommonElements that will return a long long denoting the number of common elements in the given range.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A long long denoting period_1
+A long long denoting  offset_1
+A long long denoting period_2
+A long long denoting offset_2
+A long long denoting lower_bound
+A long long denoting upper_bound
+
+Input Constraints
+
+The value of period_1 should be greater than 0 and at most 2⋅10^9 inclusive.
+The value of period_2 should be greater than 0 and at most 2⋅10^9 inclusive.
+The values of offset_1, offset_2, lower_bound, and upper_bound should be at least -2⋅10^9 and at most 2⋅10^9 inclusive.
+The value of lower_bound should be less than or equal to upper_bound.
+
 */
+
+
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
 
-long long CalculateMatches(long long period_1, long long offset_1, long long period_2, long long offset_2, long long lower_bound, long long upper_bound) {
+long long FindCommonElements(long long period_1, long long offset_1, long long period_2, long long offset_2, long long lower_bound, long long upper_bound) {
     long long match_count = 0;
     const long long large_number = 20000000000;
 
