@@ -1,5 +1,30 @@
 /*
 Link: https://codeforces.com/contest/792/problem/E
+
+Gilchrist has length boxes with colored balls on the table. Colors are numbered from 1 to length. The i-th box contains values_i balls, all of which have color i. 
+You have to write a program that will divide all balls into sets such that:
+
+Each ball belongs to exactly one of the sets.
+There are no empty sets.
+There is no set containing two (or more) balls of different colors (each set contains only balls of one color).
+There are no two sets such that the difference between their sizes is greater than 1.
+
+You are given length integers represented by vector called values - denoting boxes 
+
+Return one long long — the minimum possible number of sets.
+
+Create a C++ function CalculateMinSets that will return a long long denoting the minimum number of sets required.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+vector<int> denoting values
+
+Input Constraints
+
+The value of length should be at least 1 and at most 500 inclusive.
+Each value of values_i should be at least 1 and at most 10^9 inclusive.
 */
 
 #include <iostream>
@@ -21,7 +46,10 @@ long long CalculateDivision(int divisor, int length, const std::vector<int>& val
     return result;
 }
 
-long long CalculateResult(int length, const std::vector<int>& values) {
+long long CalculateMinSets(const std::vector<int>& values) {
+
+  int length = values.size();
+
     if (length < 1 || length > 500) {
         throw std::invalid_argument("Invalid length.");
     }
