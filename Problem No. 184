@@ -1,3 +1,83 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1096/problem/E
 */
+
+
+#include <vector>
+#include <tuple>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+
+
+std::tuple<std::vector<long long>, std::vector<long long>, std::vector<long long>> ComputeInversesAndFactorials(int max_value) {
+    std::vector<long long> inverses(max_value + 1, 1);
+    std::vector<long long> factorial(max_value + 1, 1);
+    std::vector<long long> factorial_inv(max_value + 1, 1);
+    const long long modulus = 998244353;
+    for (int i = 2; i <= max_value; ++i) {
+        inverses[i] = (modulus - modulus / i) * inverses[modulus % i] % modulus;
+        factorial[i] = factorial[i - 1] * i % modulus;
+        factorial_inv[i] = factorial_inv[i - 1] * inverses[i] % modulus;
+    }
+
+    return std::make_tuple(inverses, factorial, factorial_inv);
+}
+
+long long CalculateResult(int players, int score_sum, int player_score) {
+    if (players < 1 || players > 100) {
+        throw std::invalid_argument("Invalid number of players.");
+    }
+    if (player_score < 0 || player_score > score_sum) {
+        throw std::invalid_argument("Invalid player score.");
+    }
+    if (score_sum > 5000) {
+        throw std::invalid_argument("Invalid score sum.");
+    }
+    const long long modulus = 998244353;
+    std::tuple<std::vector<long long>, std::vector<long long>, std::vector<long long>> computed_values = ComputeInversesAndFactorials(5100);
+    std::vector<long long> inverses = std::get<0>(computed_values);
+    std::vector<long long> factorial = std::get<1>(computed_values);
+    std::vector<long long> factorial_inv = std::get<2>(computed_values);
+  
+    long long result = 0;
+
+    for (int i = 1; i <= players && score_sum - player_score * i >= 0; ++i) {
+        long long term = (i & 1 ? 1 : -1) * factorial[score_sum - player_score * i + players - 1] % modulus;
+        term = term * factorial_inv[score_sum - player_score * i] % modulus;
+        term = term * factorial_inv[i] % modulus;
+        term = term * factorial_inv[players - i] % modulus;
+        result = (result + term) % modulus;
+    }
+
+    result = (result % modulus + modulus) % modulus;
+    result = result * factorial[players - 1] % modulus;
+    result = result * factorial[score_sum - player_score] % modulus;
+    result = result * factorial_inv[score_sum - player_score + players - 1] % modulus;
+
+    return result;
+}
+
+int main() {
+    std::ios::sync_with_stdio(0);
+    std::cin.tie(0);
+
+    int players, score_sum, player_score;
+    std::cin >> players >> score_sum >> player_score;
+
+    if (players < 1 || players > 100) {
+        throw std::invalid_argument("Invalid number of players.");
+    }
+    if (player_score < 0 || player_score > score_sum) {
+        throw std::invalid_argument("Invalid player score.");
+    }
+    if (score_sum > 5000) {
+        throw std::invalid_argument("Invalid score sum.");
+    }
+
+    long long result = CalculateResult(players, score_sum, player_score);
+    std::cout << result;
+
+    return 0;
+}
