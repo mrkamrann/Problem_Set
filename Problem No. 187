@@ -1,3 +1,73 @@
 /*
-Link:
+Link: https://codeforces.com/problemset/problem/710/D
 */
+#include <iostream>
+#include <stdexcept>
+#include <algorithm>
+
+long long CalculateMatches(long long period_1, long long offset_1, long long period_2, long long offset_2, long long lower_bound, long long upper_bound) {
+    long long match_count = 0;
+    const long long large_number = 20000000000;
+
+    if (period_1 <= 0 || period_1 > 2000000000) {
+        throw std::invalid_argument("Invalid value for period_1.");
+    }
+    if (period_2 <= 0 || period_2 > 2000000000) {
+        throw std::invalid_argument("Invalid value for period_2.");
+    }
+    if (offset_1 < -2000000000 || offset_1 > 2000000000) {
+        throw std::invalid_argument("Invalid value for offset_1.");
+    }
+    if (offset_2 < -2000000000 || offset_2 > 2000000000) {
+        throw std::invalid_argument("Invalid value for offset_2.");
+    }
+    if (lower_bound < -2000000000 || lower_bound > 2000000000) {
+        throw std::invalid_argument("Invalid value for lower_bound.");
+    }
+    if (upper_bound < -2000000000 || upper_bound > 2000000000) {
+        throw std::invalid_argument("Invalid value for upper_bound.");
+    }
+
+    lower_bound = std::max(lower_bound, std::max(offset_1, offset_2));
+
+    if (period_1 > period_2) {
+        std::swap(period_1, period_2);
+        std::swap(offset_1, offset_2);
+    }
+
+    if (period_2 < 1000) {
+        for (long long i = lower_bound; i <= lower_bound + period_1 * period_2 - 1 && i <= upper_bound; ++i) {
+            if ((i % period_1 + period_1) % period_1 == (offset_1 % period_1 + period_1) % period_1 &&
+                (i % period_2 + period_2) % period_2 == (offset_2 % period_2 + period_2) % period_2) {
+                match_count += (upper_bound - i) / (period_1 * period_2) + 1;
+            }
+        }
+    } else {
+        for (long long i = -large_number / period_2; i <= large_number / period_2; ++i) {
+            long long candidate = i * period_2 + offset_2;
+            if (((candidate % period_1 + period_1) % period_1 == (offset_1 % period_1 + period_1) % period_1) &&
+                candidate >= lower_bound && candidate <= upper_bound && candidate >= offset_1 && candidate >= offset_2) {
+                match_count++;
+            }
+        }
+    }
+
+    return match_count;
+}
+
+int main() {
+    long long period_1, offset_1, period_2, offset_2, lower_bound, upper_bound;
+    std::cin >> period_1 >> offset_1 >> period_2 >> offset_2 >> lower_bound >> upper_bound;
+
+    if (period_1 <= 0 || period_1 > 2000000000 || period_2 <= 0 || period_2 > 2000000000 || 
+        offset_1 < -2000000000 || offset_1 > 2000000000 || offset_2 < -2000000000 || offset_2 > 2000000000 ||
+        lower_bound < -2000000000 || lower_bound > 2000000000 || upper_bound < -2000000000 || upper_bound > 2000000000) {
+        throw std::invalid_argument("Invalid input values.");
+    }
+
+    long long result = CalculateMatches(period_1, offset_1, period_2, offset_2, lower_bound, upper_bound);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
