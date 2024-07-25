@@ -1,3 +1,62 @@
 /*
-Link:
+Link: https://codeforces.com/contest/792/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+
+long long CalculateDivision(int divisor, int length, const std::vector<int>& values) {
+    long long result = 0;
+    for (int i = 0; i < length; ++i) {
+        if (values[i] % divisor == 0) {
+            result += values[i] / divisor;
+        } else if (values[i] / divisor + values[i] % divisor >= divisor - 1) {
+            result += values[i] / divisor + 1;
+        } else {
+            return -1;
+        }
+    }
+    return result;
+}
+
+long long CalculateResult(int length, const std::vector<int>& values) {
+    if (length < 1 || length > 500) {
+        throw std::invalid_argument("Invalid length.");
+    }
+    for (int value : values) {
+        if (value < 1 || value > 1000000000) {
+            throw std::invalid_argument("Invalid value in values.");
+        }
+    }
+
+    int min_value = *std::min_element(values.begin(), values.end());
+    for (int i = 1; i <= min_value; ++i) {
+        long long result_1 = CalculateDivision(min_value / i + 1, length, values);
+        long long result_2 = CalculateDivision(min_value / i, length, values);
+        if (result_1 != -1) return result_1;
+        else if (result_2 != -1) return result_2;
+    }
+    return -1;
+}
+
+int main() {
+    int length;
+    std::cin >> length;
+    if (length < 1 || length > 500) {
+        throw std::invalid_argument("Invalid length.");
+    }
+
+    std::vector<int> values(length);
+    for (int i = 0; i < length; ++i) {
+        std::cin >> values[i];
+        if (values[i] < 1 || values[i] > 1000000000) {
+            throw std::invalid_argument("Invalid value in values.");
+        }
+    }
+
+    long long result = CalculateResult(length, values);
+    std::cout << result;
+    return 0;
+}
