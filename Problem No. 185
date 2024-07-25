@@ -1,3 +1,86 @@
 /*
-Link:
+Link: https://codeforces.com/contest/1037/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+
+int Calculate(int left, int right, int k_value) {
+    int u_value = left / k_value;
+    int v_value = right / k_value;
+    left %= k_value;
+    right %= k_value;
+   const int modulus = 1000000007;
+    return (std::max(left + right + 1 - k_value, 0) + u_value + v_value + static_cast<long long>(u_value) * v_value * k_value + static_cast<long long>(u_value) * right + static_cast<long long>(v_value) * left) % modulus;
+}
+
+int CalculateAnswer(int length, int k_value, const std::vector<int>& vec) {
+    if (length < 2 || length > 1e6) {
+        throw std::invalid_argument("Invalid length");
+    }
+  
+    if ( k_value < 2  || k_value > 1e6 || k_value > length) {
+        throw std::invalid_argument("Invalid  k_value.");
+    }
+  
+    for (int value : vec) {
+        if (value < 1 || value > 1000000000) {
+            throw std::invalid_argument("Invalid element in vec.");
+        }
+    }
+    
+    std::vector<int> left_bound(length + 1);
+    std::vector<int> right_bound(length + 1);
+    std::vector<int> q_vec(length + 1);
+    int answer = 0;
+    k_value--;
+    const int modulus = 1000000007;
+    std::vector<int> extended_vec(length + 1);
+    extended_vec[0] = modulus;
+    for (int i = 1; i <= length; i++) {
+        extended_vec[i] = vec[i - 1];
+    }
+
+    q_vec[0] = 0;
+    for (int i = 1, j = 0; i <= length; left_bound[i] = q_vec[j], q_vec[++j] = i++) {
+        right_bound[i] = length + 1;
+        while (extended_vec[i] >= extended_vec[q_vec[j]]) {
+            right_bound[q_vec[j--]] = i;
+        }
+    }
+
+    for (int i = 1; i <= length; ++i) {
+        answer = (answer + static_cast<long long>(extended_vec[i]) * Calculate(i - left_bound[i] - 1, right_bound[i] - i - 1, k_value)) % modulus;
+    }
+
+    return answer;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
+    int length, k_value;
+    std::cin >> length >> k_value;
+    if (length < 2 || k_value < 2 || k_value > length) {
+        throw std::invalid_argument("Invalid input parameters.");
+    }
+
+    std::vector<int> vec(length);
+    for (int i = 0; i < length; ++i) {
+        std::cin >> vec[i];
+        if (vec[i] < 1 || vec[i] > 1000000000) {
+            throw std::invalid_argument("Invalid element in vec.");
+        }
+    }
+
+    int result = CalculateAnswer(length, k_value, vec);
+    std::cout << result << '\n';
+
+    return 0;
+}
