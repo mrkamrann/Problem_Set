@@ -18,7 +18,10 @@ int Calculate(int left, int right, int k_value) {
     return (std::max(left + right + 1 - k_value, 0) + u_value + v_value + static_cast<long long>(u_value) * v_value * k_value + static_cast<long long>(u_value) * right + static_cast<long long>(v_value) * left) % modulus;
 }
 
-int CalculateAnswer(int length, int k_value, const std::vector<int>& vec) {
+int CalculateAnswer(int k_value, const std::vector<int>& vec) {
+
+   int length = vec.size();
+
     if (length < 2 || length > 1e6) {
         throw std::invalid_argument("Invalid length");
     }
@@ -59,6 +62,11 @@ int CalculateAnswer(int length, int k_value, const std::vector<int>& vec) {
 
     return answer;
 }
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
 
 int main() {
     std::ios::sync_with_stdio(false);
