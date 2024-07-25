@@ -107,24 +107,160 @@ long long CalculateWinningProbability(int players, int score_sum, int player_sco
 #include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(0);
-    std::cin.tie(0);
+  
+    //TEST
+    int players_1 = 1;
+    int score_sum_1 = 0;
+    int player_score_1 = 0;
+    long long expected_1 = 1;
+    long long result_1 = CalculateWinningProbability(players_1, score_sum_1, player_score_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-    int players, score_sum, player_score;
-    std::cin >> players >> score_sum >> player_score;
+    //TEST
+    int players_2 = 100;
+    int score_sum_2 = 5000;
+    int player_score_2 = 5000;
+    long long expected_2 = 1;
+    long long result_2 = CalculateWinningProbability(players_2, score_sum_2, player_score_2);
+    assert(result_2 == expected_2);
+    //TEST_END
 
-    if (players < 1 || players > 100) {
-        throw std::invalid_argument("Invalid number of players.");
-    }
-    if (player_score < 0 || player_score > score_sum) {
-        throw std::invalid_argument("Invalid player score.");
-    }
-    if (score_sum > 5000) {
-        throw std::invalid_argument("Invalid score sum.");
-    }
+    //TEST
+    int players_3 = 50;
+    int score_sum_3 = 2500;
+    int player_score_3 = 1250;
+    long long expected_3 = 358509577;
+    long long result_3 = CalculateWinningProbability(players_3, score_sum_3, player_score_3);
+    assert(result_3 == expected_3);
+    //TEST_END
 
-    long long result = CalculateResult(players, score_sum, player_score);
-    std::cout << result;
+    //TEST
+    int players_4 = 2;
+    int score_sum_4 = 10;
+    int player_score_4 = 5;
+    long long expected_4 = 415935148;
+    long long result_4 = CalculateWinningProbability(players_4, score_sum_4, player_score_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    int players_5 = 3;
+    int score_sum_5 = 15;
+    int player_score_5 = 5;
+    long long expected_5 = 836911933;
+    long long result_5 = CalculateWinningProbability(players_5, score_sum_5, player_score_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    int players_6 = 10;
+    int score_sum_6 = 100;
+    int player_score_6 = 50;
+    long long expected_6 = 507987432;
+    long long result_6 = CalculateWinningProbability(players_6, score_sum_6, player_score_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    int players_7 = 25;
+    int score_sum_7 = 250;
+    int player_score_7 = 125;
+    long long expected_7 = 198517613;
+    long long result_7 = CalculateWinningProbability(players_7, score_sum_7, player_score_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    int players_8 = 5;
+    int score_sum_8 = 50;
+    int player_score_8 = 25;
+    long long expected_8 = 427861039;
+    long long result_8 = CalculateWinningProbability(players_8, score_sum_8, player_score_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    int players_9 = 20;
+    int score_sum_9 = 200;
+    int player_score_9 = 100;
+    long long expected_9 = 98735916;
+    long long result_9 = CalculateWinningProbability(players_9, score_sum_9, player_score_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+  
+    //TEST
+    int players_10 = -99; 
+    int score_sum_10 = 500;
+    int player_score_10 = 250;
+    try {
+        CalculateWinningProbability(players_10, score_sum_10, player_score_10);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int players_11 = 101; 
+    int score_sum_11 = 500;
+    int player_score_11 = 250;
+    try {
+        CalculateWinningProbability(players_11, score_sum_11, player_score_11);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int players_12 = 10;
+    int score_sum_12 = -999; 
+    int player_score_12 = 5;
+    try {
+        CalculateWinningProbability(players_12, score_sum_12, player_score_12);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int players_13 = 10;
+    int score_sum_13 = 5001;
+    int player_score_13 = 2500;
+    try {
+        CalculateWinningProbability(players_13, score_sum_13, player_score_13);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int players_14 = 10;
+    int score_sum_14 = 500;
+    int player_score_14 = -999; 
+    try {
+        CalculateWinningProbability(players_14, score_sum_14, player_score_14);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int players_15 = 10;
+    int score_sum_15 = 500;
+    int player_score_15 = 501; 
+    try {
+        CalculateWinningProbability(players_15, score_sum_15, player_score_15);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
