@@ -94,6 +94,13 @@ long long CalculateRectanglePairs(const std::vector<long long>& widths, const st
     return answer;
 }
 
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
 
   //TEST
