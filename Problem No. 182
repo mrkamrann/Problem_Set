@@ -1,5 +1,38 @@
 /*
 Link: https://codeforces.com/contest/1673/problem/E
+
+Brock has an ambiguous expression expr = a_1 ∧ a_2 ∧ a_3 ∧ ... ∧ a_n. The symbol ∧ can be replaced with either a power operation or an XOR operation to get an
+unambiguous expression expr_prime.
+
+The value of this expression expr_prime is determined according to the following rules:
+
+All power operations are performed before any XOR operation. In other words, the power operation takes precedence over the XOR operation. For example, 4 XOR 6 
+Power 2 = 4 ⊕ (6^2) = 4 ⊕ 36 = 32.
+Consecutive powers are calculated from left to right. For example, 2 Power 3 Power 4 = (2^3)^4 = 8^4 = 4096.
+
+You are given a vector elements of length num_elements and an integer target_sum. The vector vec_a is given by a_i = 2^b_i, and the expression expr is given by
+expr = a_1 ∧ a_2 ∧ a_3 ∧ ... ∧ a_n. You need to find the XOR of the values of all possible unambiguous expressions expr_prime which can be obtained from expr 
+and has at least target_sum ∧ symbols used as XOR operations. Since the answer can be very large, you need to find it modulo 2^(2^20). Since this number can also 
+be very large, you need to print its binary representation without leading zeroes. If the answer is equal to 0, print 0.
+
+Given an integer target_sum and a vector<int> elements of size num_elements return a binary string without leading zeroes denoting the answer to the problem. 
+If the answer is equal to 0, print 0.
+
+Create a C++ function CalculateExprValue that will return a string denoting the expected value.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An Integer denoting target_sum
+vector<int> denoting elements
+
+Input Constraints
+
+The length of elements should be at least 1 and at most 2^20 inclusive.
+Each value of elements should be in the range [1, 2^20) inclusive.
+The values for target_sum should be in the range [0, num_elements) inclusive.
+
 */
 
 #include <iostream>
@@ -14,7 +47,7 @@ int ComputeResult(int num_elements, int target_sum) {
     return ((num_elements - 1) & (target_sum - 1)) == (target_sum - 1);
 }
 
-std::string ProcessData(int target_sum, const std::vector<int>& elements) {
+std::string CalculateExprValue(int target_sum, const std::vector<int>& elements) {
    
     int num_elements = elements.size();
     
