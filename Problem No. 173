@@ -103,6 +103,11 @@ std::vector<int> FindProfile(const std::string& str) {
     return {-1};
 }
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
    
   // TEST
