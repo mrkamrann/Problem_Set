@@ -10,9 +10,9 @@ Calculate the number of beautiful triples consisting of points belonging to the 
 
 A triple of points i, j, and k on a coordinate line is called beautiful if i < j < k and k - i ≤ d.
 
-The first line contains two integers queries_count and distance (1 ≤ queries_count, distance ≤ 2 * 10^5) — the number of queries and the parameter for defining if a triple is beautiful, respectively.
+You are given two integers queries_count and distance  — the number of queries and the parameter for defining if a triple is beautiful, respectively.
 
-The second line contains queries_count integers query_1, query_2, ..., query_q (1 ≤ query_i ≤ 2 * 10^5) denoting the queries. The integer query_i denotes the i-th query in the following way:
+Also,  queries_count integers query_1, query_2, ..., query_q  denoting the queries. The integer query_i denotes the i-th query in the following way:
 
 If the point query_i belongs to the set, remove it; otherwise, add it.
 
