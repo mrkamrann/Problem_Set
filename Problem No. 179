@@ -91,6 +91,14 @@ long long CalculateMinActivationCost(const std::vector<int>& platform_colors, co
     return total_cost - CalculateMaximumValue((1ll << num_colors) - 1, color_connections, activation_costs, memo);
 }
 
+#include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
 int main() {
     
   //TEST
