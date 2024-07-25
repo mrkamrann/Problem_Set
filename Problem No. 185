@@ -1,5 +1,43 @@
 /*
 Link: https://codeforces.com/contest/1037/problem/F
+
+Johnny has a vector vec of length integers and an integer k_value (2 ≤ k_value ≤ length), where each element of the vector is denoted by 
+element_i (0 ≤ i < length). Perform the operation operation_z given below on vec and print the value of operation_z(vec, k_value) modulo 10^9 + 7.
+
+function operation_z(vector vec, integer k_value):
+    if length(vec) < k_value:
+        return 0
+    else:
+        new_vector = empty vector
+        result = 0
+        for i = 0 .. (length(vec) - k_value):
+            temp = vec[i]
+            for j = i .. (i + k_value - 1):
+                temp = max(temp, vec[j])
+            append temp to the end of new_vector
+            result = result + temp
+        return result + operation_z(new_vector, k_value)
+
+You are given an integer k_value  — the length of the initial vector vec and the parameter k_value.
+You are also given length number of integers element_0, element_1, ..., element_(length-1)  — the elements of the vector vec.
+
+Return the only integer, the value of operation_z(vec, k_value) modulo 10^9 + 7.
+
+Create a C++ function CalculateZValue that will return an integer denoting the value of operation_z(vec, k_value).
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An Integer denoting k_value;
+vector<int> denoting vec
+
+Input Constraints
+
+The value of length should be at least 2 and at most 10^6 inclusive.
+The value of k_value should be at least 2 and at most length inclusive.
+Each value of vec should be at least 1 and at most 10^9 inclusive.
+
 */
 
 #include <iostream>
@@ -18,7 +56,7 @@ int Calculate(int left, int right, int k_value) {
     return (std::max(left + right + 1 - k_value, 0) + u_value + v_value + static_cast<long long>(u_value) * v_value * k_value + static_cast<long long>(u_value) * right + static_cast<long long>(v_value) * left) % modulus;
 }
 
-int CalculateAnswer(int k_value, const std::vector<int>& vec) {
+int CalculateZValue(int k_value, const std::vector<int>& vec) {
 
    int length = vec.size();
 
