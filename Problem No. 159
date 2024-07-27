@@ -33,10 +33,10 @@ A vector<int> speeds
 
 Input Constraints:
 
-The value of len should be at least 1 and at most 10^9 inclusive.
-The value of duration should be at least 1 and at most 10^9 inclusive.
-The value of num_swimmers should be at least 2 and at most 2×10^5 inclusive.
-Each value of speeds[i] should be at least 1 and at most 2×10^5 inclusive.
+The value of len should be at least 1 and at most 1000 inclusive.
+The value of duration should be at least 1 and at most 1000 inclusive.
+The value of num_swimmers should be at least 2 and at most 1000 inclusive.
+Each value of speeds[i] should be at least 1 and at most 1000 inclusive.
 All speeds are pairwise distinct.
 
 */
@@ -78,7 +78,7 @@ void NumberTheoreticTransform(std::vector<int>& vec, int transform_type) {
         }
     }
 
-    for (int t = 0; t < 19; ++t) {
+    for (int t = 0; t < 12; ++t) {
         int root = ModularExponentiation(transform_type == 1 ? generator : inverse_generator, (modulus - 1) >> (t + 1), modulus);
         int segment_length = 1 << t;
 
@@ -105,20 +105,20 @@ int CalculateMeetingMoments(int len, int duration, const std::vector<int>& speed
 
 int num_swimmers = speeds.size();
 
-if (len < 1 || len > 1000000000) {
+if (len < 1 || len > 1000) {
     throw std::invalid_argument("Invalid length of the pool: must be between 1 and 1,000,000,000.");
 }
 
-if (duration < 1 || duration > 1000000000) {
+if (duration < 1 || duration > 1000) {
     throw std::invalid_argument("Invalid duration: must be between 1 and 1,000,000,000 seconds.");
 }
 
-if (num_swimmers < 2 || num_swimmers > 200000) {
+if (num_swimmers < 2 || num_swimmers > 1000) {
     throw std::invalid_argument("Invalid number of swimmers: must be between 2 and 200,000.");
 }
 
 for (int speed : speeds) {
-    if (speed < 1 || speed > 200000) {
+    if (speed < 1 || speed > 1000) {
         throw std::invalid_argument("Invalid speed value: must be between 1 and 200,000.");
     }
 }
@@ -131,8 +131,8 @@ if (unique_speeds.size() != speeds.size()) {
 
 
     const int modulus = 998244353;
-    const int max_index = 200000;
-    const int ntt_size = 1 << 19;
+    const int max_index = 2000;
+    const int ntt_size = 1 << 12;
 
     std::vector<int> a_vec(ntt_size, 0);
     std::vector<int> b_vec(ntt_size, 0);
@@ -210,8 +210,7 @@ int len_1 = 100;
 int duration_1 = 10;
 std::vector<int> speeds_1 = {2, 3, 5};
 int expected_1 = 0;
-int result_1 = CalculateMeetingMoments(len_1, duration_1, speeds_1);
-assert(result_1 == expected_1);
+int result_1 = CalculateMeetingMoments(len_1, duration_1, speeds_1);assert(result_1 == expected_1);
 //TEST_END
 
 //TEST
@@ -229,7 +228,7 @@ int duration_3 = 500;
 std::vector<int> speeds_3 = {10, 20, 30, 40, 50};
 int expected_3 = 70;
 int result_3 = CalculateMeetingMoments(len_3, duration_3, speeds_3);
- assert(result_3 == expected_3);
+assert(result_3 == expected_3);
 //TEST_END
 
 //TEST
@@ -408,4 +407,3 @@ try {
 
     return 0;
 }
-
