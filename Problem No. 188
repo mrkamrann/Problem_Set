@@ -1,3 +1,127 @@
 /*
 Link: https://codeforces.com/contest/1948/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+
+long long QuickPower(long long base, long long exponent) {
+    long long result = 1;
+    int modulus = 998244353;
+    while (exponent) {
+        if (exponent & 1) result = result * base % modulus;
+        base = base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+std::vector<long long> ProcessQueries(std::vector<int>& gold_coins, std::vector<int>& silver_coins, std::vector<std::vector<int>>& queries) {
+ if (gold_coins.empty() || silver_coins.empty() || queries.empty()) {
+        throw std::invalid_argument("Input vectors must not be empty.");
+    }
+
+    int num_bags = static_cast<int>(gold_coins.size());
+    if (num_bags != static_cast<int>(silver_coins.size())) {
+        throw std::invalid_argument("Gold and silver coins vectors must be of the same size.");
+    }
+
+    if (num_bags < 1 || num_bags > 300000) {
+        throw std::invalid_argument("The number of bags must be between 1 and 300000.");
+    }
+
+    for (int i = 0; i < num_bags; ++i) {
+        if (gold_coins[i] < 0 || gold_coins[i] > 1000000) {
+            throw std::invalid_argument("Gold coins count must be between 0 and 1000000.");
+        }
+        if (silver_coins[i] < 0 || silver_coins[i] > 1000000) {
+            throw std::invalid_argument("Silver coins count must be between 0 and 1000000.");
+        }
+    }
+
+    int num_queries = static_cast<int>(queries.size());
+  
+    if (num_queries < 1 || num_queries > 300000) {
+        throw std::invalid_argument("The number of queries must be between 1 and 300000.");
+    }
+    int modulus = 998244353;
+  
+    std::vector<int> prefix_gold(num_bags + 1, 0), prefix_silver(num_bags + 1, 0);
+    for (int i = 1; i <= num_bags; i++) {
+        prefix_gold[i] = gold_coins[i - 1];
+        prefix_gold[i] += prefix_gold[i - 1];
+    }
+    for (int i = 1; i <= num_bags; i++) {
+        prefix_silver[i] = silver_coins[i - 1];
+        prefix_silver[i] += prefix_silver[i - 1];
+    }
+    
+    std::vector<long long> sum(prefix_silver[num_bags] + 1);
+    long long x = 1;
+    sum[0] = 1;
+    for (int i = 1; i <= prefix_silver[num_bags]; i++) {
+        x = x * (prefix_silver[num_bags] - i + 1) % modulus * QuickPower(i, modulus - 2) % modulus;
+        sum[i] = (sum[i - 1] + x) % modulus;
+    }
+    
+    long long inv = QuickPower(QuickPower(2, prefix_silver[num_bags]), modulus - 2);
+    std::vector<long long> answers;
+
+    for (std::vector<int>& query : queries) {
+        if (query.size() != 2 || query[0] < 1 || query[1] > num_bags || query[0] > query[1]) {
+            throw std::invalid_argument("Invalid query parameters.");
+        }
+        int left = query[0], right = query[1];
+        int w = prefix_silver[right] - prefix_silver[left - 1] - (prefix_gold[num_bags] - prefix_gold[right] * 2 + prefix_gold[left - 1] * 2) - 1;
+        if (w < 0) {
+            answers.push_back(0);
+        } else {
+            answers.push_back(sum[std::min(w, prefix_silver[num_bags])] * inv % modulus);
+        }
+    }
+    return answers;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+  
+  
+  int n, q;
+    std::cin >> n >> q;
+    
+    std::vector<int> a(n), b(n);
+    for (int i = 0; i < n; i++) {
+        std::cin >> a[i];
+      
+    }
+    for (int i = 0; i < n; i++) {
+        std::cin >> b[i]; 
+    }
+  
+    std::vector<std::vector<int>>vec;
+  
+    for(int i = 0;i<q;++i)
+    {
+      int l,r;
+      std::cin>>l>>r;
+      vec.push_back({l,r});
+    }
+    
+
+    std::vector<long long> results = ProcessQueries(a,b,vec);
+
+    for (long long result : results) {
+        std::cout << result << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
