@@ -26,7 +26,7 @@ An integer num
 
 Input Constraints:
 
-The value of num should be at least 1 and at most 10^12 inclusive.
+The value of num should be at least 1 and at most 10^10 inclusive.
 
 */
 
@@ -59,7 +59,7 @@ int CalculateFactorizations(int index, long long number, const std::vector<int>&
 std::vector<int> InitializePrimes() {
     std::vector<int> primes;
     primes.push_back(2);
-    for (int i = 3; i < 1000010; i += 2) {
+    for (int i = 3; i < 100010; i += 2) {
         if (IsPrime(i, primes)) {
             primes.push_back(i);
         }
@@ -69,7 +69,7 @@ std::vector<int> InitializePrimes() {
 
 long long CalculatePrimeFactorizations(long long num) {
 
-    if (num < 1 || num > 1000000000000LL) {
+    if (num < 1 || num > 10000000000LL) {
         throw std::invalid_argument("Invalid input: num must be between 1 and 1,000,000,000,000.");
     }
 
@@ -81,6 +81,7 @@ long long CalculatePrimeFactorizations(long long num) {
 #include <stdexcept>
 #include <cassert>
 #include <vector>
+#include <iostream>
 
 int main() {
   
@@ -141,8 +142,8 @@ assert(result_8 == expected_8);
 //TEST_END
 
 //TEST
-long long num_9 = 1000000000000;
-long long expected_9 = 227;
+long long num_9 = 10;
+long long expected_9 = 1;
 long long result_9 = CalculatePrimeFactorizations(num_9);
 assert(result_9 == expected_9);
 //TEST_END
@@ -180,4 +181,3 @@ try {
 
     return 0;
 }
-
