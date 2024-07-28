@@ -223,3 +223,252 @@ try {
    
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Link: https://codeforces.com/contest/833/problem/C
+
+Recently, a wild Bear appeared at Jelly Castle. It is, truth to be told, always eager to have something for dinner.
+
+Its favorite meal is natural numbers (typically served with honey sauce), or, to be more precise, the zeros in their corresponding decimal representations. 
+As for other digits, Bear dislikes them; moreover, they often cause it indigestion! So, as a necessary precaution, Bear prefers to sort the digits of a number 
+in non-descending order before proceeding to feast. Then, the leading zeros of the resulting number are eaten and the remaining part is discarded as an inedible tail.
+
+For example, if Bear is to have the number 57040 for dinner, its inedible tail would be the number 457.
+
+Slastyona is not really fond of the idea of Bear living in her castle. However, her natural hospitality prevents her from leaving her guest without food. 
+Slastyona has a range of natural numbers from left to right, which she is going to feed the guest with. Help her determine how many distinct inedible tails are going to be discarded by Bear by the end of the dinner.
+
+The numbers left and right are given – the boundaries of the range
+
+Return the sole number – the number of distinct inedible tails that will be discarded by Bear.
+
+Create a C++ Function CountDistinctInedibleTails that will return a long long representing the number of distinct inedible tails. 
+
+Use appropriate Error Handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A long long denoting left 
+A long long denoting right
+
+Input Constraints
+
+left and right should be in the range [1, 10^12] inclusive.
+left ≤ right
+
+*/
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+using namespace std;
+ 
+bool CheckConditions(int index, bool condition1, bool condition2, std::vector<int>& left_digits, std::vector<int>& right_digits, std::vector<int>& digit_count) {
+    if (condition1 && condition2)
+        return true;
+    if (index > 12)
+        return true;
+    for (int digit = 0; digit < 10; ++digit) {
+        if (!digit_count[digit] || (!condition1 && digit < left_digits[index]) || (!condition2 && digit > right_digits[index]))
+            continue;
+        --digit_count[digit];
+        bool result = CheckConditions(index + 1, condition1 || digit > left_digits[index], condition2 || digit < right_digits[index], left_digits, right_digits, digit_count);
+        ++digit_count[digit];
+        if (result)
+            return true;
+    }
+    return false;
+}
+ 
+int CalculateCombinations(int index, int digit, std::vector<int>& left_digits, std::vector<int>& right_digits, std::vector<int>& digit_count) {
+    if (index > 12)
+        return CheckConditions(0, 0, 0, left_digits, right_digits, digit_count);
+    int count = 0;
+    for (; digit < 10; ++digit) {
+        ++digit_count[digit];
+        count += CalculateCombinations(index + 1, digit, left_digits, right_digits, digit_count);
+        --digit_count[digit];
+    }
+    return count;
+}
+ 
+long long CountDistinctInedibleTails(long long left, long long right) {
+  
+    if (left < 1 || right > 1000000000000LL || left > right) {
+        throw std::invalid_argument("Invalid input values");
+    }
+  
+    std::vector<int> left_digits(13, 0), right_digits(13, 0), digit_count(10, 0);
+    for (int i = 12; i >= 0; --i, left /= 10)
+        left_digits[i] = static_cast<int>(left % 10);
+    for (int i = 12; i >= 0; --i, right /= 10)
+        right_digits[i] = static_cast<int>(right % 10);
+  
+    return CalculateCombinations(0, 0, left_digits, right_digits, digit_count);
+}
+
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+   
+
+//TEST
+long long left_1 = 1;
+long long right_1 = 10;
+long long expected_1 = 9;
+long long result_1 = CountDistinctInedibleTails(left_1, right_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+long long left_2 = 10;
+long long right_2 = 20;
+long long expected_2 = 11;
+long long result_2 = CountDistinctInedibleTails(left_2, right_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+long long left_3 = 1;
+long long right_3 = 1;
+long long expected_3 = 1;
+long long result_3 = CountDistinctInedibleTails(left_3, right_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long left_4 = 5;
+long long right_4 = 10;
+long long expected_4 = 6;
+long long result_4 = CountDistinctInedibleTails(left_4, right_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long left_5 = 12345;
+long long right_5 = 67890;
+long long expected_5 = 1934;
+long long result_5 = CountDistinctInedibleTails(left_5, right_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long left_6 = 99;
+long long right_6 = 1000;
+long long expected_6 = 219;
+long long result_6 = CountDistinctInedibleTails(left_6, right_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long left_7 = 1234;
+long long right_7 = 12345;
+long long expected_7 = 924;
+long long result_7 = CountDistinctInedibleTails(left_7, right_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long left_8 = 9786;
+long long right_8 = 54321;
+long long expected_8 = 1831;
+long long result_8 = CountDistinctInedibleTails(left_8, right_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long left_9 = 1;
+long long right_9 = 2;
+long long expected_9 = 2;
+long long result_9 = CountDistinctInedibleTails(left_9, right_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+
+//TEST
+long long left_10 = 10;
+long long right_10 = 1;
+try {
+    CountDistinctInedibleTails(left_10, right_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long left_11 = 0;
+long long right_11 = 0;
+try {
+    CountDistinctInedibleTails(left_11, right_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long left_12 = 999999999999;
+long long right_12 = 0;
+try {
+    CountDistinctInedibleTails(left_12, right_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+long long left_13 = 99;
+long long right_13 = -99;
+try {
+    CountDistinctInedibleTails(left_13, right_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+  
+//TEST
+long long left_14 = -9;
+long long right_14 = 12;
+try {
+    CountDistinctInedibleTails(left_14, right_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+   
+    return 0;
+}
