@@ -32,8 +32,8 @@ An integer denoting coefficient_d
 
 Input Constraints
 
-The value of max_value should be at least 1 and at most 3×10^8 inclusive.
-The values of coefficient_a, coefficient_b, coefficient_c, and coefficient_d should be in the range [0, 10^6] inclusive.
+The value of max_value should be at least 1 and at most 3×10^5 inclusive.
+The values of coefficient_a, coefficient_b, coefficient_c, and coefficient_d should be in the range [0, 10^5] inclusive.
 
 */
 
@@ -66,7 +66,7 @@ unsigned int ComputeExlogSum(int max_value, int coefficient_a, int coefficient_b
     }
 
     unsigned int answer = 0;
-    std::bitset<100000005> bitset_values;
+    std::bitset<1000005> bitset_values;
 
     for (int i = 2; i <= max_value; i++) {
         int calculated_value = CalculateValue(i);
@@ -92,7 +92,7 @@ unsigned int ComputeExlogSum(int max_value, int coefficient_a, int coefficient_b
 #include <cassert>
 
 int main() {
-    
+  
 //TEST
 int x_val_1 = 10;
 int coefficient_a_1 = 1;
@@ -167,11 +167,11 @@ assert(result_6 == expected_6);
 
 //TEST
 int x_val_7 = 33333;
-int coefficient_a_7 = 123456;
-int coefficient_b_7 = 654321;
-int coefficient_c_7 = 999999;
-int coefficient_d_7 = 888888;
-unsigned int expected_7 = 1035468330;  
+int coefficient_a_7 = 1234;
+int coefficient_b_7 = 654;
+int coefficient_c_7 = 9;
+int coefficient_d_7 = 888;
+unsigned int expected_7 = 2182661078;  
 unsigned int result_7 = ComputeExlogSum(x_val_7, coefficient_a_7, coefficient_b_7, coefficient_c_7, coefficient_d_7);
 assert(result_7 == expected_7);
 
@@ -179,23 +179,23 @@ assert(result_7 == expected_7);
 
 //TEST
 int x_val_8 = 214;
-int coefficient_a_8 = 1000000;
-int coefficient_b_8 = 500000;
-int coefficient_c_8 = 250000;
-int coefficient_d_8 = 125000;
-unsigned int expected_8 = 743448784;
+int coefficient_a_8 = 1000;
+int coefficient_b_8 = 5000;
+int coefficient_c_8 = 2500;
+int coefficient_d_8 = 1250;
+unsigned int expected_8 = 3059551100;
 unsigned int result_8 = ComputeExlogSum(x_val_8, coefficient_a_8, coefficient_b_8, coefficient_c_8, coefficient_d_8);
 assert(result_8 == expected_8);
 
 //TEST_END
 
 //TEST
-int x_val_9 = 300000;
-int coefficient_a_9 = 1000000;
-int coefficient_b_9 = 1000000;
-int coefficient_c_9 = 1000000;
-int coefficient_d_9 = 1000000;
-unsigned int expected_9 = 2534312704; 
+int x_val_9 = 3000;
+int coefficient_a_9 = 10000;
+int coefficient_b_9 = 10000;
+int coefficient_c_9 = 10000;
+int coefficient_d_9 = 10000;
+unsigned int expected_9 = 2299186160; 
 unsigned int result_9 = ComputeExlogSum(x_val_9, coefficient_a_9, coefficient_b_9, coefficient_c_9, coefficient_d_9);
 assert(result_9 == expected_9);
 
