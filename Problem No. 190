@@ -1,3 +1,77 @@
 /*
 Link: https://codeforces.com/problemset/problem/1956/E1
 */
+
+#include <bits/stdc++.h>
+#include <cstdio>
+#include <stdexcept>
+#include <cassert>
+
+std::vector<int> Solve(const std::vector<int>& energy_levels, int num_monsters) {
+    if (num_monsters < 2 || num_monsters > 200000) {
+        throw std::invalid_argument("num_monsters out of range");
+    }
+
+    for (int energy : energy_levels) {
+        if (energy < 0 || energy > 200000) {
+            throw std::invalid_argument("energy level out of range");
+        }
+    }
+
+    std::vector<int> local_levels(energy_levels);
+
+    for (int iteration = 1; iteration <= 1000; ++iteration) {
+        for (int index = 1; index <= num_monsters; ++index) {
+            local_levels[index % num_monsters + 1] = std::max(0, local_levels[index % num_monsters + 1] - local_levels[index]);
+        }
+    }
+
+    for (int index = 1; index <= num_monsters; ++index) {
+        if (local_levels[index] && local_levels[index % num_monsters + 1]) {
+            local_levels[index % num_monsters + 1] = 0;
+        }
+    }
+
+    std::vector<int> results;
+    for (int index = 1; index <= num_monsters; ++index) {
+        if (local_levels[index]) {
+            results.push_back(index);
+        }
+    }
+
+    return results;
+}
+
+int main() {
+    int num_test_cases;
+    std::scanf("%d", &num_test_cases);
+
+    while (num_test_cases--) {
+        int num_monsters;
+        std::scanf("%d", &num_monsters);
+
+        if (num_monsters < 2 || num_monsters > 200000) {
+            throw std::invalid_argument("num_monsters out of range");
+        }
+
+        std::vector<int> energy_levels(num_monsters + 1); // 1-based index
+
+        for (int index = 1; index <= num_monsters; ++index) {
+            std::scanf("%d", &energy_levels[index]);
+            if (energy_levels[index] < 0 || energy_levels[index] > 200000) {
+                throw std::invalid_argument("energy level out of range");
+            }
+        }
+
+        std::vector<int> results = Solve(energy_levels, num_monsters);
+        
+        std::printf("%d\n", static_cast<int>(results.size()));
+        for (int result_index : results) {
+            std::printf("%d ", result_index);
+        }
+        std::puts("");
+    }
+
+    return 0;
+}
+
