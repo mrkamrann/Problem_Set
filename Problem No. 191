@@ -1,0 +1,75 @@
+/*
+Link: https://codeforces.com/problemset/problem/1548/C
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+std::vector<int> ComputeValues(int convention_minutes, int query_count, const std::vector<int>& pigs_eaten_per_query) {
+  
+    if (convention_minutes < 1 || convention_minutes > 1000000) {
+        throw std::invalid_argument("convention_minutes out of range");
+    }
+    if (query_count < 1 || query_count > 200000) {
+        throw std::invalid_argument("query_count out of range");
+    }
+    for (int pigs_eaten : pigs_eaten_per_query) {
+        if (pigs_eaten < 1 || pigs_eaten > 3 * convention_minutes) {
+            throw std::invalid_argument("pigs_eaten_per_query value out of range");
+        }
+    }
+
+    int max_pigs = convention_minutes * 3;
+    int modulus = 1000000007;
+    std::vector<int> result_vec(max_pigs + 10);
+    std::vector<int> inverse_vec(max_pigs + 10);
+    const int inverse_three = 333333336;
+
+    result_vec[0] = ++convention_minutes;
+    convention_minutes *= 3;
+    int bm_val = static_cast<long long>(convention_minutes) * (convention_minutes - 1) / 2 % modulus;
+    result_vec[1] = static_cast<long long>(bm_val - convention_minutes + modulus) * inverse_three % modulus;
+    inverse_vec[1] = 1;
+
+    for (int i = 2; i <= convention_minutes; ++i) {
+      
+        inverse_vec[i] = static_cast<long long>(modulus - modulus / i) * inverse_vec[modulus % i] % modulus;
+    }
+
+    for (int i = 2; i < convention_minutes; ++i) {
+        bm_val = static_cast<long long>(bm_val) * inverse_vec[i + 1] % modulus * (convention_minutes - i) % modulus;
+        result_vec[i] = (bm_val + (modulus - 3LL) * result_vec[i - 1] - result_vec[i - 2]) % modulus * inverse_three % modulus;
+    }
+
+    std::vector<int> results;
+    for (int pigs_eaten : pigs_eaten_per_query) {
+        results.push_back(result_vec[pigs_eaten]);
+    }
+
+    return results;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int convention_minutes;
+    int query_count;
+    std::cin >> convention_minutes >> query_count;
+
+    std::vector<int> pigs_eaten_per_query(query_count);
+    for (int i = 0; i < query_count; ++i) {
+        std::cin >> pigs_eaten_per_query[i];
+    }
+
+    std::vector<int> results = ComputeValues(convention_minutes, query_count, pigs_eaten_per_query);
+    for (int result : results) {
+        std::cout << result << std::endl;
+    }
+
+    return 0;
+}
