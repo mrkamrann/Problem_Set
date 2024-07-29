@@ -6,61 +6,60 @@ Link: https://codeforces.com/contest/1174/problem/E
 #include <stdexcept>
 #include <cassert>
 
-struct PermutationCalculator {
-    static const long long p = 1e9 + 7;
 
-    long long Inverse(long long x) {
-        return x == 1 ? 1 : p - (p / x) * Inverse(p % x) % p;
+
+long long Inverse(long long x_val) {
+    long long p_val = 1e9 + 7;
+    return x_val == 1 ? 1 : p_val - (p_val / x_val) * Inverse(p_val % x_val) % p_val;
+}
+
+long long Calculate(long long x_val, long long num) {
+    return (x_val == 0) ? 0 : num / x_val;
+}
+
+long long ComputeAnswer(long long num) {
+    if (num < 2 || num > 1e6) {
+        throw std::invalid_argument("num must be between 2 and 1e6");
     }
 
-    long long Calculate(long long x, long long num) {
-        return (x == 0) ? 0 : num / x;
+    long long answer = 0, factorial = 1, top_index = 0;
+    long long log_value = std::log2(num);
+    std::vector<long long> permutation(50, 0);
+    std::vector<long long> prefix(50, 0);
+    long long p_val = 1e9 + 7;
+  
+    for (long long i = 1; i <= num; ++i) {
+        factorial = factorial * i % p_val;
     }
 
-    long long ComputeAnswer(long long num) {
-        if (num < 2 || num > 1e6) {
-            throw std::invalid_argument("num must be between 2 and 1e6");
-        }
+    for (long long i = 1; i <= log_value; ++i) {
+        permutation[++top_index] = 2;
+    }
 
-        long long answer = 0, factorial = 1, top_index = 0;
-        long long log_value = std::log2(num);
-        std::vector<long long> permutation(50, 0);
-        std::vector<long long> prefix(50, 0);
+    if ((1 << (log_value - 1)) * 3 <= num) {
+        permutation[++top_index] = 3;
+    }
 
-        for (long long i = 1; i <= num; ++i) {
-            factorial = factorial * i % p;
-        }
-
+    do {
+        prefix[0] = 1;
         for (long long i = 1; i <= log_value; ++i) {
-            permutation[++top_index] = 2;
+            prefix[i] = prefix[i - 1] * permutation[i] % p_val;
         }
 
-        if ((1 << (log_value - 1)) * 3 <= num) {
-            permutation[++top_index] = 3;
+        long long temp = factorial;
+        for (long long i = 1; i <= log_value; ++i) {
+            temp = temp * (Calculate(prefix[i], num) - Calculate(prefix[i + 1], num)) % p_val * Inverse(num - Calculate(prefix[i + 1], num)) % p_val;
         }
 
-        do {
-            prefix[0] = 1;
-            for (long long i = 1; i <= log_value; ++i) {
-                prefix[i] = prefix[i - 1] * permutation[i] % p;
-            }
+        answer = (answer + temp) % p_val;
+    } while (std::next_permutation(permutation.begin() + 1, permutation.begin() + 1 + top_index));
 
-            long long temp = factorial;
-            for (long long i = 1; i <= log_value; ++i) {
-                temp = temp * (Calculate(prefix[i], num) - Calculate(prefix[i + 1], num)) % p * Inverse(num - Calculate(prefix[i + 1], num)) % p;
-            }
-
-            answer = (answer + temp) % p;
-        } while (std::next_permutation(permutation.begin() + 1, permutation.begin() + 1 + top_index));
-
-        return answer;
-    }
-};
+    return answer;
+}
 
 int main() {
     long long num;
     std::cin >> num;
-    PermutationCalculator calculator;
-    std::cout << calculator.ComputeAnswer(num) << std::endl;
+    std::cout << ComputeAnswer(num) << std::endl;
     return 0;
 }
