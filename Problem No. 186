@@ -70,21 +70,118 @@ long long CalculateMinSets(const std::vector<int>& values) {
 }
 
 int main() {
-    int length;
-    std::cin >> length;
-    if (length < 1 || length > 500) {
-        throw std::invalid_argument("Invalid length.");
-    }
+   
+  //TEST
+std::vector<int> values_1 = {1};
+long long expected_1 = 1;
+long long result_1 = CalculateMinSets(values_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<int> values(length);
-    for (int i = 0; i < length; ++i) {
-        std::cin >> values[i];
-        if (values[i] < 1 || values[i] > 1000000000) {
-            throw std::invalid_argument("Invalid value in values.");
-        }
-    }
+//TEST
+std::vector<int> values_2 = {2, 2};
+long long expected_2 = 2;
+long long result_2 = CalculateMinSets(values_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    long long result = CalculateResult(length, values);
-    std::cout << result;
+//TEST
+std::vector<int> values_3 = {3, 3, 3};
+long long expected_3 = 3; 
+long long result_3 = CalculateMinSets(values_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> values_4 = {1, 2, 3, 4};
+long long expected_4 = 6; 
+long long result_4 = CalculateMinSets(values_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> values_5 = {5, 5, 5, 5, 5};
+long long expected_5 = 5; 
+long long result_5 = CalculateMinSets(values_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> values_6 = {1, 1, 1, 1, 1, 1};
+long long expected_6 = 6; 
+long long result_6 = CalculateMinSets(values_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> values_7 = {1, 2, 3, 4, 5, 6, 7};
+long long expected_7 = 16;
+long long result_7 = CalculateMinSets(values_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> values_8 = {8, 8, 8, 8, 8, 8, 8, 8};
+long long expected_8 = 8; 
+long long result_8 = CalculateMinSets(values_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> values_9 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+long long expected_9 = 25; 
+long long result_9 = CalculateMinSets(values_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> values_10 = {0}; 
+try {
+    CalculateMinSets(values_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> values_11 = {1000000001}; 
+try {
+    CalculateMinSets(values_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> values_12 = std::vector<int>(501, 1);
+try {
+    CalculateMinSets(values_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> values_13 = {};
+try {
+    CalculateMinSets(values_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> values_14 = {1, 2, -3}; 
+try {
+    CalculateMinSets(values_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
