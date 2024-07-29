@@ -69,6 +69,11 @@ long long CalculateMinSets(const std::vector<int>& values) {
     return -1;
 }
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+
 int main() {
    
   //TEST
