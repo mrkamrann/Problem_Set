@@ -1,0 +1,93 @@
+/*
+Link: https://codeforces.com/contest/1305/problem/F
+*/
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+void Check(long long value, long long num_elements, std::vector<long long>& elements, long long& result) {
+  
+    long long count;
+  
+    for (long long divisor = 2; divisor * divisor <= value; ++divisor) {
+        if (value % divisor == 0) {
+            while (value % divisor == 0) value /= divisor;
+            count = 0;
+            for (int index = 0; index < num_elements; ++index) {
+                if (elements[index] < divisor) {
+                    count += divisor - elements[index];
+                } else {
+                    count += std::min(elements[index] % divisor, divisor - elements[index] % divisor);
+                }
+            }
+            result = std::min(result, count);
+        }
+    }
+    if (value > 1) {
+        long long divisor = value;
+        count = 0;
+        for (long long index = 0; index < num_elements; ++index) {
+            if (elements[index] < divisor) {
+                count += divisor - elements[index];
+            } else {
+                count += std::min(elements[index] % divisor, divisor - elements[index] % divisor);
+            }
+        }
+        result = std::min(result, count);
+    }
+}
+
+long long CalculateMinOperations(long long num_elements, std::vector<long long>& elements) {
+  
+    if (num_elements < 2 || num_elements > 200000) {
+        throw std::invalid_argument("Number of elements out of range (2 ≤ num_elements ≤ 200000).");
+    }
+  
+    for (int index = 0; index < num_elements; ++index) {
+    
+        if (elements[index] < 1 || elements[index] > 1e12) {
+            throw std::invalid_argument("Element value out of range (1 ≤ element ≤ 1e12).");
+        }
+    }
+
+    long long result = 1e18;
+
+    std::srand(20091207);
+    std::random_shuffle(elements.begin(), elements.end());
+
+    for (long long index = std::min(num_elements, 50LL); index > 0; --index) {
+        Check(elements[index - 1] - 1, num_elements, elements, result);
+        Check(elements[index - 1], num_elements, elements, result);
+        Check(elements[index - 1] + 1, num_elements, elements, result);
+    }
+
+    assert(result <= num_elements);
+    return result;
+}
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    long long num_elements;
+    std::cin >> num_elements;
+
+    if (num_elements < 2 || num_elements > 200000) {
+        throw std::invalid_argument("Number of elements out of range (2 ≤ num_elements ≤ 200000).");
+    }
+
+    std::vector<long long> elements(num_elements);
+    for (long long index = 0; index < num_elements; ++index) {
+        std::cin >> elements[index];
+        if (elements[index] < 1 || elements[index] > 1e12) {
+            throw std::invalid_argument("Element value out of range (1 ≤ element ≤ 1e12).");
+        }
+    }
+
+    long long result = CalculateMinOperations(num_elements, elements);
+    std::cout << result << std::endl;
+
+    return 0;
+}
