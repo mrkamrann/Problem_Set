@@ -65,6 +65,10 @@ long long FindCommonElements(long long period_1, long long offset_1, long long p
     if (upper_bound < -2000000000 || upper_bound > 2000000000) {
         throw std::invalid_argument("Invalid value for upper_bound.");
     }
+  
+    if (upper_bound < lower_bound) {
+        throw std::invalid_argument("The value of lower_bound should be less than or equal to upper_bound");
+    }
 
     lower_bound = std::max(lower_bound, std::max(offset_1, offset_2));
 
@@ -93,19 +97,255 @@ long long FindCommonElements(long long period_1, long long offset_1, long long p
     return match_count;
 }
 
+
+#include <iostream>
+#include <stdexcept>
+#include <algorithm>
+
 int main() {
-    long long period_1, offset_1, period_2, offset_2, lower_bound, upper_bound;
-    std::cin >> period_1 >> offset_1 >> period_2 >> offset_2 >> lower_bound >> upper_bound;
+   
+  //TEST
+long long period_1_1 = 1;
+long long offset_1_1 = 0;
+long long period_2_1 = 1;
+long long offset_2_1 = 0;
+long long lower_bound_1 = 1;
+long long upper_bound_1 = 10;
+long long expected_1 = 10; 
+long long result_1 = FindCommonElements(period_1_1, offset_1_1, period_2_1, offset_2_1, lower_bound_1, upper_bound_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    if (period_1 <= 0 || period_1 > 2000000000 || period_2 <= 0 || period_2 > 2000000000 || 
-        offset_1 < -2000000000 || offset_1 > 2000000000 || offset_2 < -2000000000 || offset_2 > 2000000000 ||
-        lower_bound < -2000000000 || lower_bound > 2000000000 || upper_bound < -2000000000 || upper_bound > 2000000000) {
-        throw std::invalid_argument("Invalid input values.");
-    }
+//TEST
+long long period_1_2 = 2;
+long long offset_1_2 = 1;
+long long period_2_2 = 2;
+long long offset_2_2 = 1;
+long long lower_bound_2 = 5;
+long long upper_bound_2 = 20;
+long long expected_2 = 8; 
+long long result_2 = FindCommonElements(period_1_2, offset_1_2, period_2_2, offset_2_2, lower_bound_2, upper_bound_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    long long result = CalculateMatches(period_1, offset_1, period_2, offset_2, lower_bound, upper_bound);
-    std::cout << result << std::endl;
+//TEST
+long long period_1_3 = 3;
+long long offset_1_3 = 2;
+long long period_2_3 = 3;
+long long offset_2_3 = 2;
+long long lower_bound_3 = 10;
+long long upper_bound_3 = 30;
+long long expected_3 = 7; 
+long long result_3 = FindCommonElements(period_1_3, offset_1_3, period_2_3, offset_2_3, lower_bound_3, upper_bound_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long period_1_4 = 5;
+long long offset_1_4 = 3;
+long long period_2_4 = 5;
+long long offset_2_4 = 3;
+long long lower_bound_4 = 20;
+long long upper_bound_4 = 50;
+long long expected_4 = 6; 
+long long result_4 = FindCommonElements(period_1_4, offset_1_4, period_2_4, offset_2_4, lower_bound_4, upper_bound_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long period_1_5 = 10;
+long long offset_1_5 = 5;
+long long period_2_5 = 10;
+long long offset_2_5 = 5;
+long long lower_bound_5 = 50;
+long long upper_bound_5 = 100;
+long long expected_5 = 5; 
+long long result_5 = FindCommonElements(period_1_5, offset_1_5, period_2_5, offset_2_5, lower_bound_5, upper_bound_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long period_1_6 = 100;
+long long offset_1_6 = 50;
+long long period_2_6 = 100;
+long long offset_2_6 = 50;
+long long lower_bound_6 = 1000;
+long long upper_bound_6 = 2000;
+long long expected_6 = 10; 
+long long result_6 = FindCommonElements(period_1_6, offset_1_6, period_2_6, offset_2_6, lower_bound_6, upper_bound_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long period_1_7 = 500;
+long long offset_1_7 = 250;
+long long period_2_7 = 500;
+long long offset_2_7 = 250;
+long long lower_bound_7 = 5000;
+long long upper_bound_7 = 10000;
+long long expected_7 = 10;
+long long result_7 = FindCommonElements(period_1_7, offset_1_7, period_2_7, offset_2_7, lower_bound_7, upper_bound_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long period_1_8 = 200;
+long long offset_1_8 = 100;
+long long period_2_8 = 200;
+long long offset_2_8 = 100;
+long long lower_bound_8 = 10000;
+long long upper_bound_8 = 20000;
+long long expected_8 = 50;
+long long result_8 = FindCommonElements(period_1_8, offset_1_8, period_2_8, offset_2_8, lower_bound_8, upper_bound_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long period_1_9 = 1000;
+long long offset_1_9 = 500;
+long long period_2_9 = 1000;
+long long offset_2_9 = 500;
+long long lower_bound_9 = 100000;
+long long upper_bound_9 = 200000;
+long long expected_9 = 100; 
+long long result_9 = FindCommonElements(period_1_9, offset_1_9, period_2_9, offset_2_9, lower_bound_9, upper_bound_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+//TEST
+long long period_1_10 = -1;
+long long offset_1_10 = 0;
+long long period_2_10 = 1;
+long long offset_2_10 = 0;
+long long lower_bound_10 = 0;
+long long upper_bound_10 = 10;
+try {
+    FindCommonElements(period_1_10, offset_1_10, period_2_10, offset_2_10, lower_bound_10, upper_bound_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_11 = 1;
+long long offset_1_11 = -2;
+long long period_2_11 = 1;
+long long offset_2_11 = 0;
+long long lower_bound_11 = 99999;
+long long upper_bound_11 = 10;
+try {
+    FindCommonElements(period_1_11, offset_1_11, period_2_11, offset_2_11, lower_bound_11, upper_bound_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_12 = 1;
+long long offset_1_12 = 0;
+long long period_2_12 = -1;
+long long offset_2_12 = 0;
+long long lower_bound_12 = 0;
+long long upper_bound_12 = 10;
+try {
+    FindCommonElements(period_1_12, offset_1_12, period_2_12, offset_2_12, lower_bound_12, upper_bound_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_13 = 1;
+long long offset_1_13 = 0;
+long long period_2_13 = 1;
+long long offset_2_13 = 0;
+long long lower_bound_13 = 10;
+long long upper_bound_13 = 5;
+try {
+    FindCommonElements(period_1_13, offset_1_13, period_2_13, offset_2_13, lower_bound_13, upper_bound_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_14 = 5000000009;
+long long offset_1_14 = -56454;
+long long period_2_14 = 1;
+long long offset_2_14 = 0;
+long long lower_bound_14 = -10;
+long long upper_bound_14 = 10;
+try {
+    FindCommonElements(period_1_14, offset_1_14, period_2_14, offset_2_14, lower_bound_14, upper_bound_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_15 = 1;
+long long offset_1_15 = 0;
+long long period_2_15 = 1;
+long long offset_2_15 = 0;
+long long lower_bound_15 = 0;
+long long upper_bound_15 = 2000000001;
+try {
+    FindCommonElements(period_1_15, offset_1_15, period_2_15, offset_2_15, lower_bound_15, upper_bound_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_16 = 2000000001;
+long long offset_1_16 = 0;
+long long period_2_16 = 1;
+long long offset_2_16 = 0;
+long long lower_bound_16 = 0;
+long long upper_bound_16 = 10;
+try {
+    FindCommonElements(period_1_16, offset_1_16, period_2_16, offset_2_16, lower_bound_16, upper_bound_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long period_1_17 = 1;
+long long offset_1_17 = 2000000009;
+long long period_2_17 = 1;
+long long offset_2_17 = 0;
+long long lower_bound_17 = 0;
+long long upper_bound_17 = 0;
+try {
+    FindCommonElements(period_1_17, offset_1_17, period_2_17, offset_2_17, lower_bound_17, upper_bound_17);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+long long period_1_18 = 1;
+long long offset_1_18 = 0;
+long long period_2_18 = 1;
+long long offset_2_18 = 0;
+long long lower_bound_18 = 0;
+long long upper_bound_18 = -9884654;
+try {
+    FindCommonElements(period_1_18, offset_1_18, period_2_18, offset_2_18, lower_bound_18, upper_bound_18);
+    assert(false); 
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
-
