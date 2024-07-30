@@ -7,8 +7,20 @@ Link: https://codeforces.com/problemset/problem/1548/C
 #include <stdexcept>
 #include <cassert>
 
+int ComputeInverse(int value, int modulus) {
+    int result = 1;
+    int power = modulus - 2;
+    while (power) {
+        if (power & 1) {
+            result = static_cast<long long>(result) * value % modulus;
+        }
+        value = static_cast<long long>(value) * value % modulus;
+        power >>= 1;
+    }
+    return result;
+}
+
 std::vector<int> ComputeValues(int convention_minutes, int query_count, const std::vector<int>& pigs_eaten_per_query) {
-  
     if (convention_minutes < 1 || convention_minutes > 1000000) {
         throw std::invalid_argument("convention_minutes out of range");
     }
@@ -25,7 +37,7 @@ std::vector<int> ComputeValues(int convention_minutes, int query_count, const st
     int modulus = 1000000007;
     std::vector<int> result_vec(max_pigs + 10);
     std::vector<int> inverse_vec(max_pigs + 10);
-    const int inverse_three = 333333336;
+    const int inverse_three = ComputeInverse(3, modulus);
 
     result_vec[0] = ++convention_minutes;
     convention_minutes *= 3;
@@ -34,7 +46,6 @@ std::vector<int> ComputeValues(int convention_minutes, int query_count, const st
     inverse_vec[1] = 1;
 
     for (int i = 2; i <= convention_minutes; ++i) {
-      
         inverse_vec[i] = static_cast<long long>(modulus - modulus / i) * inverse_vec[modulus % i] % modulus;
     }
 
@@ -50,11 +61,6 @@ std::vector<int> ComputeValues(int convention_minutes, int query_count, const st
 
     return results;
 }
-
-#include <iostream>
-#include <vector>
-#include <stdexcept>
-#include <cassert>
 
 int main() {
     int convention_minutes;
