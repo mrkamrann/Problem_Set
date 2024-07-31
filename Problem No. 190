@@ -7,7 +7,10 @@ Link: https://codeforces.com/problemset/problem/1956/E1
 #include <stdexcept>
 #include <cassert>
 
-std::vector<int> Solve(const std::vector<int>& energy_levels, int num_monsters) {
+std::vector<int> Solve(const std::vector<int>& energy_levels) {
+   
+    int num_monsters = energy_levels.size();
+  
     if (num_monsters < 2 || num_monsters > 200000) {
         throw std::invalid_argument("num_monsters out of range");
     }
@@ -18,7 +21,12 @@ std::vector<int> Solve(const std::vector<int>& energy_levels, int num_monsters) 
         }
     }
 
-    std::vector<int> local_levels(energy_levels);
+    std::vector<int> local_levels(num_monsters + 1);
+  
+    for(int i = 0; i < num_monsters; ++i)
+    {
+      local_levels[i+1] = energy_levels[i];
+    }
 
     for (int iteration = 1; iteration <= 1000; ++iteration) {
         for (int index = 1; index <= num_monsters; ++index) {
@@ -54,16 +62,16 @@ int main() {
             throw std::invalid_argument("num_monsters out of range");
         }
 
-        std::vector<int> energy_levels(num_monsters + 1); // 1-based index
+        std::vector<int> energy_levels(num_monsters); // 1-based index
 
-        for (int index = 1; index <= num_monsters; ++index) {
+        for (int index = 0; index < num_monsters; ++index) {
             std::scanf("%d", &energy_levels[index]);
             if (energy_levels[index] < 0 || energy_levels[index] > 200000) {
                 throw std::invalid_argument("energy level out of range");
             }
         }
 
-        std::vector<int> results = Solve(energy_levels, num_monsters);
+        std::vector<int> results = Solve(energy_levels);
         
         std::printf("%d\n", static_cast<int>(results.size()));
         for (int result_index : results) {
@@ -74,4 +82,3 @@ int main() {
 
     return 0;
 }
-
