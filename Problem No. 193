@@ -1,3 +1,101 @@
 /*
 Link: https://codeforces.com/problemset/problem/662/C
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+std::vector<int> ProcessInput(int row_count, int column_count, const std::vector<std::string>& binary_strings) {
+  
+    std::vector<int> num(column_count + 1, 0);
+    for (int i = 0; i < row_count; ++i) {
+        const std::string& str = binary_strings[i];
+       
+        for (int j = 0; j < str.size(); ++j) {
+            num[j + 1] = (num[j + 1] << 1) + (str[j] - '0');
+        }
+    }
+    return num;
+}
+
+std::vector<std::vector<int>> InitializeDpTable(int column_count, const std::vector<int>& num) {
+    std::vector<std::vector<int>> dp_table(25, std::vector<int>((1 << 20) + 5, 0));
+    for (int i = 1; i <= column_count; ++i) {
+        dp_table[0][num[i]]++;
+    }
+    return dp_table;
+}
+
+void FillDpTable(int row_count, int column_count, std::vector<std::vector<int>>& dp_table) {
+    for (int i = 0; i < row_count; ++i) {
+        for (int j = row_count; j >= 1; --j) {
+            for (int k = 0; k < (1 << row_count); ++k) {
+                dp_table[j][k] += dp_table[j - 1][k ^ (1 << i)];
+            }
+        }
+    }
+}
+
+int CalculateAnswer(int row_count, int column_count, const std::vector<std::vector<int>>& dp_table) {
+    int answer = row_count * column_count;
+    for (int i = 0; i < (1 << row_count); ++i) {
+        int temp = 0;
+        for (int j = 0; j <= row_count; ++j) {
+            temp += dp_table[j][i] * std::min(j, row_count - j);
+        }
+        answer = std::min(answer, temp);
+    }
+    return answer;
+}
+
+int Solve(const std::vector<std::string>& binary_strings) {
+  
+    int row_count = binary_strings.size();
+    int column_count  = binary_strings[0].size();
+  
+    if (row_count < 1 || row_count > 20 || column_count < 1 || column_count > 100000) {
+        throw std::invalid_argument("row_count or column_count out of bounds");
+    } 
+
+    for (int i = 0; i < row_count; ++i) {
+        const std::string& str = binary_strings[i];
+        if (str.size() != column_count) {
+            throw std::invalid_argument("binary string length does not match column_count");
+        }
+        for (char character : str) {
+            if (character != '0' && character != '1') {
+                throw std::invalid_argument("binary strings must contain only '0' and '1'");
+            }
+        }
+    }
+    std::vector<int> num = ProcessInput(row_count, column_count, binary_strings);
+    std::vector<std::vector<int>> dp_table = InitializeDpTable(column_count, num);
+    FillDpTable(row_count, column_count, dp_table);
+    return CalculateAnswer(row_count, column_count, dp_table);
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main(){
+  
+    int row_count, column_count;
+    std::cin >> row_count >> column_count;
+
+    std::vector<std::string> binary_strings(row_count);
+    for (int i = 0; i < row_count; ++i) {
+        std::cin >> binary_strings[i];
+    }
+
+
+        int result = Solve(binary_strings);
+        std::cout << result << std::endl;
+    
+
+    return 0;
+}
+
