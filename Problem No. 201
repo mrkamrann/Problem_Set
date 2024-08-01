@@ -1,3 +1,82 @@
 /*
 Link: https://codeforces.com/contest/1153/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+int Power(int base, int exponent) {
+    int result = 1;
+    const int modulus = 998244353;
+    while (exponent > 0) {
+        if (exponent & 1) {
+            result = 1LL * result * base % modulus;
+        }
+        base = 1LL * base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+int Solve(int num_elements, int min_elements, int multiplier) {
+    if (num_elements < 1 || num_elements > 2000) {
+        throw std::invalid_argument("num_elements must be between 1 and 2000");
+    }
+    if (min_elements < 1 || min_elements > num_elements) {
+        throw std::invalid_argument("min_elements must be between 1 and num_elements");
+    }
+    if (multiplier < 1 || multiplier > 1000000000) {
+        throw std::invalid_argument("multiplier must be between 1 and 1000000000");
+    }
+    const int modulus = 998244353;
+    const int max_size = 4005;
+    std::vector<std::vector<int>> ways(max_size, std::vector<int>(max_size, 0));
+    std::vector<int> factorial(max_size, 1);
+
+    for (int i = 1; i < max_size; i++) {
+        factorial[i] = 1LL * factorial[i - 1] * i % modulus;
+    }
+
+    ways[0][0] = 1;
+    for (int i = 1; i <= num_elements * 2; i++) {
+        for (int j = 0; j <= num_elements * 2; j++) {
+            ways[i][j] = 1LL * ways[i - 1][j + 1] * (j + 1) % modulus;
+            if (j > 0) {
+                ways[i][j] = (ways[i][j] + ways[i - 1][j - 1]) % modulus;
+            }
+        }
+    }
+
+    int result = 0;
+    for (int i = 1; i <= 2 * num_elements - 1; i++) {
+        for (int j = min_elements; j <= num_elements; j++) {
+            result = (result + 1LL * ways[i][j] * ways[2 * num_elements - i][j] % modulus * factorial[j]) % modulus;
+        }
+    }
+
+    result = 1LL * result * Power(ways[num_elements * 2][0], modulus - 2) % modulus;
+    result = 1LL * result * multiplier % modulus * Power(2 * num_elements + 1, modulus - 2) % modulus;
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_elements, min_elements, multiplier;
+    std::cin >> num_elements >> min_elements >> multiplier;
+
+    if (num_elements < 1 || num_elements > 2000 || min_elements < 1 || min_elements > num_elements || multiplier < 1 || multiplier > 1000000000) {
+        throw std::invalid_argument("Input values out of valid range");
+    }
+
+    int result = Solve(num_elements, min_elements, multiplier);
+    std::cout << result << std::endl;
+
+    return 0;
+}
