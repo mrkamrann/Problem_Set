@@ -1,5 +1,30 @@
 /*
 Link: https://codeforces.com/problemset/problem/662/C
+
+Kavish is given a table consisting of row_count rows and column_count columns. Each cell of the table contains either 0 or 1. In one move, Kavish is allowed to 
+pick any row or any column and invert all values, that is, replace 0 by 1 and vice versa.
+
+What is the minimum number of cells with value 1 you can get after applying some number of operations?
+
+The first line of the input contains two integers row_count and column_count — the number of rows and the number 
+of columns, respectively. Then row_count lines follow with the descriptions of the rows. Each line has length column_count and contains only digits '0' and '1'.
+
+Output a single integer — the minimum possible number of ones you can get after applying some sequence of operations.
+
+Create a C++ function MinimizeOnes that will return an integer denoting the minimum possible number of ones you can get after applying some sequence of operations.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vectorstd::string denoting binary_strings.
+
+Input Constraints:
+
+The value of row_count should be in the range [1, 20] inclusive.
+The value of column_count should be in the range [1, 100000] inclusive.
+Each string in binary_strings should have a length equal to column_count and contain only '0' or '1'.
+
 */
 
 #include <iostream>
@@ -50,7 +75,7 @@ int CalculateAnswer(int row_count, int column_count, const std::vector<std::vect
     return answer;
 }
 
-int Solve(const std::vector<std::string>& binary_strings) {
+int MinimizeOnes(const std::vector<std::string>& binary_strings) {
   
     int row_count = binary_strings.size();
     int column_count  = binary_strings[0].size();
