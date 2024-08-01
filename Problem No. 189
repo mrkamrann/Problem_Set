@@ -1,5 +1,27 @@
 /*
 Link: https://codeforces.com/contest/1174/problem/E
+
+You are given a permutation p of integers 1 to num. John defines a function f(p) as follows: let g_i be the greatest common divisor (GCD) of 
+elements p_1, p_2, ..., p_i (in other words, it is the GCD of the prefix of length i). Then f(p) is the number of distinct elements among g_1, g_2, ..., g_num.
+
+Let f_max(num) be the maximum value of f(p) among all permutations p of integers 1, 2, ..., num.
+
+Given an integer num, count the number of permutations p of integers 1, 2, ..., n, such that f(p) is equal to f_max(num). Since the answer may be large, print 
+the remainder of its division by 1000000007.
+
+Return a single number your answer modulo 1000000007.
+
+Create a C++ function CountPermutations that will return an integer denoting the number of permutations where f(p) is equal to f_max(num).
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting num.
+
+Input Constraints
+
+The value of num should be in the range [2, 10^6] inclusive.
 */
 
 #include <bits/stdc++.h>
@@ -17,7 +39,7 @@ long long Calculate(long long x_val, long long num) {
     return (x_val == 0) ? 0 : num / x_val;
 }
 
-long long ComputeAnswer(long long num) {
+long long CountPermutations(long long num) {
     if (num < 2 || num > 1e6) {
         throw std::invalid_argument("num must be between 2 and 1e6");
     }
@@ -56,6 +78,10 @@ long long ComputeAnswer(long long num) {
 
     return answer;
 }
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
 
 int main() {
     long long num;
