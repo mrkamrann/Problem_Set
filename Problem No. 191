@@ -1,5 +1,42 @@
 /*
 Link: https://codeforces.com/problemset/problem/1548/C
+
+Three little pigs from all over the world are meeting for a convention! Every minute, a triple of 3 new pigs arrives on the convention floor. After the 
+convention_minutes-th minute, the convention ends.
+
+The big bad wolf has learned about this convention, and he has an attack plan. At some minute in the convention, he will arrive and eat exactly pigs_eaten pigs.
+Then he will get away.
+
+The wolf wants Gregor to help him figure out the number of possible attack plans that involve eating exactly pigs_eaten pigs for various values
+of pigs_eaten. Two attack plans are considered different if they occur at different times or if the sets of little 
+pigs to eat are different.
+
+Note that all queries are independent, that is, the wolf does not eat the little pigs, he only makes plans!
+
+You are given convention_minutes, the number of minutes the convention lasts
+
+You are also given a vector pigs_eaten_per_query of length query_count contains a single integer pigs_eaten , the number of pigs the wolf will eat in the i-th 
+query.
+
+You should return query_count integers, with line i representing the number of attack plans if the wolf wants to eat pigs_eaten pigs. 
+Since each query answer can be large, output each answer modulo 10^9 + 7.
+
+Create a C++ function CalculateAttackPlans that will return a vector of integers denoting the number of possible attack plans for each query.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting convention_minutes.
+An integer denoting query_count.
+A vector<int> denoting pigs_eaten_per_query.
+
+Input Constraints:
+
+The value of convention_minutes should be in the range [1, 10^6] inclusive.
+The value of query_count should be in the range [1, 2 * 10^5] inclusive.
+The value of pigs_eaten_per_query[i] should be in the range [1, 3 * convention_minutes] inclusive.
+
 */
 
 #include <iostream>
@@ -20,7 +57,7 @@ int ComputeInverse(int value, int modulus) {
     return result;
 }
 
-std::vector<int> ComputeValues(int convention_minutes, int query_count, const std::vector<int>& pigs_eaten_per_query) {
+std::vector<int> CalculateAttackPlans(int convention_minutes, int query_count, const std::vector<int>& pigs_eaten_per_query) {
     if (convention_minutes < 1 || convention_minutes > 1000000) {
         throw std::invalid_argument("convention_minutes out of range");
     }
