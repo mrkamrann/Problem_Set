@@ -1,3 +1,85 @@
 /*
 Link: https://codeforces.com/problemset/problem/1835/C
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+#include <random>
+
+
+std::vector<long long> Solve(int bits, const std::vector<long long>& vec) {
+    if (bits < 0 || bits > 17) {
+        throw std::invalid_argument("bits must be between 0 and 17 inclusive.");
+    }
+
+    int size = 1 << (bits + 1);
+    if (vec.size() != size) {
+        throw std::invalid_argument("vec size does not match expected size.");
+    }
+    std::mt19937 random_gen(time(0));
+    std::vector<long long> xor_prefix(size + 1, 0);
+    std::map<long long, std::vector<long long>> prefix_map;
+    
+    for (int i = 1; i <= size; ++i) {
+        xor_prefix[i] = vec[i - 1] ^ xor_prefix[i - 1];
+        prefix_map[xor_prefix[i]].push_back(i);
+    }
+    
+    while (true) {
+        int x_val = random_gen() % (size + 1);
+        int y_val = random_gen() % (size + 1);
+        int z_val = random_gen() % (size + 1);
+        
+        for (long long w_val : prefix_map[xor_prefix[x_val] ^ xor_prefix[y_val] ^ xor_prefix[z_val]]) {
+            std::vector<long long> result = {x_val, y_val, z_val, w_val};
+            std::sort(result.begin(), result.end());
+            if (result[0] < result[1] && result[2] < result[3]) {
+                return {result[0] + 1, result[1], result[2] + 1, result[3]};
+            }
+        }
+    }
+}
+
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+#include <random>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    long long test_cases;
+    std::cin >> test_cases;
+
+    if (test_cases < 1) {
+        throw std::invalid_argument("test_cases should be at least 1.");
+    }
+
+    for (long long t = 0; t < test_cases; ++t) {
+        int bits;
+        std::cin >> bits;
+
+        int size = 1 << (bits + 1);
+        std::vector<long long> vec(size);
+        for (int i = 0; i < size; ++i) {
+            std::cin >> vec[i];
+        }
+
+        try {
+            std::vector<long long> result = Solve(bits, vec);
+            for (std::vector<long long>::iterator it = result.begin(); it != result.end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid input: " << e.what() << std::endl;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
