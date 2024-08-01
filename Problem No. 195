@@ -1,3 +1,81 @@
 /*
 Link: https://codeforces.com/contest/1523/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+long long CalculatePower(long long base, long long exponent) {
+    long long result = 1;
+    const long long modulus = 1000000007;
+    while (exponent) {
+        if (exponent & 1) {
+            result = result * base % modulus;
+        }
+        base = base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+long long ComputeCombination(long long m_val, long long n_val, const std::vector<long long>& factorials) {
+    if (n_val < 0 || m_val < 0 || m_val < n_val) {
+        return 0;
+    }
+    const long long modulus = 1000000007;
+    return factorials[m_val] * CalculatePower(factorials[n_val], modulus - 2) % modulus * CalculatePower(factorials[m_val - n_val], modulus - 2) % modulus;
+}
+
+long long ComputeAnswer(long long row_count, long long k_value) {
+    if (row_count < 2 || row_count > 100000) {
+        throw std::invalid_argument("row_count is out of bounds");
+    }
+    if (k_value < 2 || k_value > row_count) {
+        throw std::invalid_argument("k_value is out of bounds");
+    }
+    const long long modulus = 1000000007;
+    const long long max_size = 100100;
+  
+    std::vector<long long> factorials(max_size, 1);
+    for (long long i = 1; i < max_size; ++i) {
+        factorials[i] = factorials[i - 1] * i % modulus;
+    }
+
+    long long answer = 1;
+    for (long long i = 1; i < row_count; ++i) {
+        answer = (answer + ComputeCombination(row_count - (i - 1) * (k_value - 1), i, factorials) * CalculatePower(ComputeCombination(row_count, i, factorials), modulus - 2) % modulus) % modulus;
+    }
+    return answer;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    long long test_cases;
+    std::cin >> test_cases;
+
+    if (test_cases < 1) {
+        throw std::invalid_argument("test_cases should be at least 1");
+    }
+
+    for (long long t = 0; t < test_cases; ++t) {
+        long long row_count, k_value;
+        std::cin >> row_count >> k_value;
+
+        try {
+            long long result = ComputeAnswer(row_count, k_value);
+            std::cout << result << std::endl;
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid input: " << e.what() << std::endl;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
