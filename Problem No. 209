@@ -1,3 +1,119 @@
 /*
 Link: https://codeforces.com/contest/1292/problem/D
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+
+std::vector<std::vector<int>> ComputeCount(int max_val) {
+    const int max_size = 5000 + 10;
+    std::vector<std::vector<int>> count(max_val, std::vector<int>(max_val, 0));
+    for (int i = 1; i < max_val; i++) {
+        for (int j = 1; j < max_val; j++) {
+            count[i][j] += count[i - 1][j];
+        }
+        int value = i;
+        for (int j = 2; j <= value; j++) {
+            while (value % j == 0) {
+                value /= j;
+                ++count[i][j];
+            }
+        }
+    }
+    return count;
+}
+
+long long SolveProblem(int num_fragments, const std::vector<int>& fragments) {
+    if (num_fragments < 1 || num_fragments > 1000000) {
+        throw std::invalid_argument("Invalid number of fragments. Must be between 1 and 1000000.");
+    }
+    for (int fragment : fragments) {
+        if (fragment < 0 || fragment > 5000) {
+            throw std::invalid_argument("Invalid fragment value. Must be between 0 and 5000.");
+        }
+    }
+    const int max_size = 5000 + 10;
+    std::vector<std::vector<int>> count = ComputeCount(max_size);
+    std::vector<int> size_vec(max_size, 0), max_vec(max_size, 0), freq_vec(max_size, 0);
+    long long answer = 0;
+
+    for (int i = 0; i < num_fragments; i++) {
+        ++size_vec[fragments[i]];
+    }
+
+    for (int i = 1; i < max_size; i++) {
+        for (int j = 1; j <= i; j++) {
+            if (count[i][j]) {
+                max_vec[i] = j;
+                answer += 1LL * size_vec[i] * count[i][j];
+            }
+        }
+    }
+
+    while (true) {
+        std::fill(freq_vec.begin(), freq_vec.end(), 0);
+        for (int i = 1; i < max_size; i++) {
+            freq_vec[max_vec[i]] += size_vec[i];
+        }
+
+        int max_index = 2;
+        for (int i = 2; i < max_size; i++) {
+            if (freq_vec[i] > freq_vec[max_index]) {
+                max_index = i;
+            }
+        }
+
+        if (freq_vec[max_index] * 2 <= num_fragments) {
+            break;
+        }
+
+        answer += num_fragments - freq_vec[max_index] - freq_vec[max_index];
+        for (int i = 1; i < max_size; i++) {
+            if (max_vec[i] != max_index) {
+                max_vec[i] = 1;
+            }
+            if (max_vec[i] == 1) {
+                continue;
+            }
+            --count[i][max_index];
+            while (max_vec[i] > 1 && !count[i][max_vec[i]]) {
+                --max_vec[i];
+            }
+        }
+    }
+
+    return answer;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int num_fragments;
+    std::cin >> num_fragments;
+
+    std::vector<int> fragments(num_fragments);
+    for (int i = 0; i < num_fragments; i++) {
+        std::cin >> fragments[i];
+    }
+
+    try {
+        std::cout << SolveProblem(num_fragments, fragments) << '\n';
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+
