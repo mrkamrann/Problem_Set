@@ -1,3 +1,68 @@
 /*
 Link: https://codeforces.com/problemset/problem/961/G
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+long long QuickPower(long long base, int exponent) {
+    long long result = 1;
+    const int modulus_val = 1000000007;
+    while (exponent) {
+        if (exponent & 1) result = result * base % modulus_val;
+        base = base * base % modulus_val;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+long long CalculateAnswer(int num_elements, int num_subsets, const std::vector<int>& weights) {
+    if (num_elements < 1 || num_elements > 200000 || num_subsets < 1 || num_subsets > num_elements) {
+        throw std::invalid_argument("Invalid input values for number of elements or subsets.");
+    }
+    for (int weight : weights) {
+        if (weight < 1 || weight > 1000000000) {
+            throw std::invalid_argument("Weight values must be between 1 and 1000000000.");
+        }
+    }
+    const int modulus_val = 1000000007;
+    std::vector<long long> inverse(num_elements + 1, 1);
+    for (int i = 1; i <= num_elements; ++i) {
+        inverse[i] = inverse[i - 1] * QuickPower(i, modulus_val - 2) % modulus_val;
+    }
+
+    long long answer = 0;
+    for (int i = 0; i <= num_subsets; ++i) {
+        long long term = ((num_subsets - i) & 1 ? -1 : 1) * (QuickPower(i, num_elements) + (num_elements - 1) * QuickPower(i, num_elements - 1)) % modulus_val;
+        term = term * inverse[i] % modulus_val * inverse[num_subsets - i] % modulus_val;
+        answer = (answer + term + modulus_val) % modulus_val;
+    }
+
+    long long weight_sum = 0;
+    for (int i = 0; i < num_elements; ++i) {
+        weight_sum = (weight_sum + weights[i]) % modulus_val;
+    }
+
+    return (answer * weight_sum % modulus_val + modulus_val) % modulus_val;
+}
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int num_elements, num_subsets;
+    std::cin >> num_elements >> num_subsets;
+
+    std::vector<int> weights(num_elements);
+    for (int i = 0; i < num_elements; ++i) {
+        std::cin >> weights[i];
+    }
+
+    std::cout << CalculateAnswer(num_elements, num_subsets, weights) << std::endl;
+    return 0;
+}
+
