@@ -1,3 +1,137 @@
 /*
 Link: https://codeforces.com/contest/1257/problem/G
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+
+int QuickPower(long long base, int exponent) {
+    long long result = 1;
+    const int modulus_val = 998244353;
+    const int max_n = 1 << 18;
+    while (exponent) {
+        if (exponent & 1) result = result * base % modulus_val;
+        base = base * base % modulus_val;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+void Initialize(int length, std::vector<int>& omega, std::vector<int>& inv_omega, std::vector<int>& positions, const std::vector<int>& f, const std::vector<int>& g) {
+    const int modulus_val = 998244353;
+    const int max_n = 1 << 18;
+    int offset = length >> 1, factor = max_n / length;
+
+    for (int i = 0, j = 0; i < length; ++i, j += factor) {
+        omega[i] = f[j];
+        inv_omega[i] = g[j];
+        positions[i] = positions[i >> 1] >> 1 | (i & 1 ? offset : 0);
+    }
+}
+
+void NumberTheoreticTransform(std::vector<int>& vec, const std::vector<int>& omega, int length, const std::vector<int>& positions) {
+    const int modulus_val = 998244353;
+    const int max_n = 1 << 18; 
+    for (int i = 0; i < length; i++) {
+        if (i < positions[i]) std::swap(vec[i], vec[positions[i]]);
+    }
+    for (int i = 2; i <= length; i <<= 1) {
+        int mid = i >> 1;
+        for (int* p = vec.data(); p != vec.data() + length; p += i) {
+            for (int j = 0; j < mid; ++j) {
+                int temp = 1LL * omega[length / i * j] * p[j + mid] % modulus_val;
+                p[j + mid] = p[j] - temp;
+                if (p[j + mid] < 0) p[j + mid] += modulus_val;
+                p[j] += temp;
+                if (p[j] >= modulus_val) p[j] -= modulus_val;
+            }
+        }
+    }
+}
+
+std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std::vector<int>& f, std::vector<int>& g) {
+    const int modulus_val = 998244353;
+    const int max_n = 1 << 18;
+    if (left == right) {
+        std::vector<int> result;
+        for (int i = 0; i <= primes[left]; ++i) result.push_back(1);
+        return result;
+    }
+    int mid = (left + right) >> 1;
+    std::vector<int> left_part = Solve(left, mid, primes, f, g);
+    std::vector<int> right_part = Solve(mid + 1, right, primes, f, g);
+    int len1 = left_part.size(), len2 = right_part.size();
+    int length = 1;
+    while (length < len1 + len2) length <<= 1;
+    
+    std::vector<int> vec_a(length), vec_b(length), omega(length), inv_omega(length), positions(length);
+    for (int i = 0; i < len1; ++i) vec_a[i] = left_part[i];
+    for (int i = 0; i < len2; ++i) vec_b[i] = right_part[i];
+    
+    Initialize(length, omega, inv_omega, positions, f, g);
+    NumberTheoreticTransform(vec_a, omega, length, positions);
+    NumberTheoreticTransform(vec_b, omega, length, positions);
+    
+    for (int i = 0; i < length; ++i) vec_a[i] = 1LL * vec_a[i] * vec_b[i] % modulus_val;
+    NumberTheoreticTransform(vec_a, inv_omega, length, positions);
+    
+    int inv_length = QuickPower(length, modulus_val - 2);
+    std::vector<int> result;
+    for (int i = 0; i < len1 + len2 - 1; ++i) {
+        int res = 1LL * vec_a[i] * inv_length % modulus_val;
+        result.push_back(res);
+        vec_a[i] = 0;
+    }
+    return result;
+}
+
+int ComputeResult(std::vector<int>& primes) {
+
+    int num_primes = primes.size();
+    const int modulus_val = 998244353;
+    const int max_n = 1 << 18;
+
+     if (num_primes < 1 || num_primes > 200000) {
+        throw std::invalid_argument("Number of primes must be between 1 and 200000.");
+    }
+    
+    for (int i = 0; i < num_primes; ++i) {
+
+        if (primes[i] < 2 || primes[i] > 3000000) {
+            throw std::invalid_argument("Prime factors must be between 2 and 3000000.");
+        }
+    }
+
+    int num = QuickPower(3, (modulus_val - 1) / max_n);
+    int inv_num = QuickPower(num, modulus_val - 2);
+    std::vector<int> f(max_n, 1), g(max_n, 1);
+    for (int i = 1; i < max_n; ++i) {
+        f[i] = 1LL * f[i - 1] * num % modulus_val;
+        g[i] = 1LL * g[i - 1] * inv_num % modulus_val;
+    }
+    int n = primes.size();
+    std::vector<int> count(3e6, 0);
+    for (int i = 0; i < n; ++i) ++count[primes[i]];
+    int cnt = 0;
+    for (int i = 0; i < 3e6; ++i) {
+        if (count[i]) count[cnt++] = count[i];
+    }
+    std::vector<int> result = Solve(0, cnt - 1, count, f, g);
+    return result[n / 2];
+}
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_primes;
+    std::cin >> num_primes;
+   
+
+    std::cout << ComputeResult(primes) << std::endl;
+    return 0;
+}
