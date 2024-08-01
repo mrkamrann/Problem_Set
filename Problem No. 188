@@ -1,5 +1,49 @@
 /*
 Link: https://codeforces.com/contest/1948/problem/F
+
+You are given num_bags bags numbered from 1 to num_bags. The i-th bag contains gold_coins[i] golden coins and silver_coins[i] silver coins.
+
+The value of a gold coin is 1. The value of a silver coin is either 0 or 1, determined for each silver coin independently (0 with probability 1/2, 1 with 
+probability 1/2).
+
+You have to answer num_queries independent queries. Each query is the following:
+
+queries[j] = [l, r] Calculate the probability that the total value of coins in bags from l to r is strictly greater than the total value in all other bags.
+
+Input:
+
+The first line contains two integers num_bags and num_queries (1 ≤ num_bags, num_queries ≤ 3⋅10^5) — the number of bags and the number of queries, respectively.
+The second line contains num_bags integers gold_coins[0], gold_coins[1], ..., gold_coins[num_bags-1] (0 ≤ gold_coins[i] ≤ 10^6) — the number of gold coins in each bag.
+The third line contains num_bags integers silver_coins[0], silver_coins[1], ..., silver_coins[num_bags-1] (0 ≤ silver_coins[i] ≤ 10^6) — the number of silver coins in each bag.
+The next num_queries lines contain queries. The j-th of the next num_queries lines contains two integers queries[j][0] and queries[j][1] (1 ≤ queries[j][0] ≤ queries[j][1] ≤ num_bags) —
+- the description of the j-th query.
+
+Output:
+
+For each query, return one integer — the probability that the total value of coins in bags from l to r is strictly greater than the total value in all other bags, 
+taken modulo 998244353.
+
+Formally, the probability can be expressed as an irreducible fraction x/y. You have to print the value of x⋅y^−1 mod 998244353, where y^−1 is an integer such 
+that y⋅y^−1 mod 998244353 = 1.
+
+Create a C++ function CalculateProbability that will return a vector<long long> denoting the probability of the total value in the given range of bags being greater than 
+the total value in all other bags.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<int> denoting gold_coins.
+A vector<int> denoting silver_coins.
+A vector<vector<int>> denoting queries.
+
+Input Constraints:
+
+Each value of gold_coins[i] should be in the range [0, 10^6] inclusive.
+Each value of silver_coins[i] should be in the range [0, 10^6] inclusive.
+The values for num_bags and num_queries should be in the range [1, 3⋅10^5] inclusive.
+The sum of the vector gold_coins should not exceed 10^6.
+The sum of the vector silver_coins should not exceed 10^6.
 */
 
 #include <iostream>
@@ -20,12 +64,13 @@ long long QuickPower(long long base, long long exponent) {
     return result;
 }
 
-std::vector<long long> ProcessQueries(std::vector<int>& gold_coins, std::vector<int>& silver_coins, std::vector<std::vector<int>>& queries) {
+std::vector<long long> CalculateProbability(std::vector<int>& gold_coins, std::vector<int>& silver_coins, std::vector<std::vector<int>>& queries) {
  if (gold_coins.empty() || silver_coins.empty() || queries.empty()) {
         throw std::invalid_argument("Input vectors must not be empty.");
     }
 
     int num_bags = static_cast<int>(gold_coins.size());
+
     if (num_bags != static_cast<int>(silver_coins.size())) {
         throw std::invalid_argument("Gold and silver coins vectors must be of the same size.");
     }
