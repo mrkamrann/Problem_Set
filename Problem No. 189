@@ -6,7 +6,7 @@ elements p_1, p_2, ..., p_i (in other words, it is the GCD of the prefix of leng
 
 Let f_max(num) be the maximum value of f(p) among all permutations p of integers 1, 2, ..., num.
 
-Given an integer num, count the number of permutations p of integers 1, 2, ..., n, such that f(p) is equal to f_max(num). Since the answer may be large, print 
+Given an integer num, count the number of permutations p of integers 1, 2, ..., num, such that f(p) is equal to f_max(num). Since the answer may be large, print 
 the remainder of its division by 1000000007.
 
 Return a single number your answer modulo 1000000007.
