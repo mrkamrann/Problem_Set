@@ -1,3 +1,75 @@
 /*
 Link: https://codeforces.com/problemset/problem/995/F
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+std::vector<int> CalculateInverse(int num_elements) {
+    const int modulus_val = 1000000007;
+    std::vector<int> inverse(num_elements + 1, 1);
+    for (int i = 2; i <= num_elements; ++i) {
+        inverse[i] = 1LL * (modulus_val - modulus_val / i) * inverse[modulus_val % i] % modulus_val;
+    }
+    return inverse;
+}
+
+int CalculateAnswer(int num_elements, int divisor, const std::vector<int>& parent_arr) {
+
+    if (num_elements < 1 || num_elements > 3000 || divisor < 1 || divisor > 1000000000) {
+        throw std::invalid_argument("Input constraints violated");
+    }
+    const int modulus_val = 1000000007;
+    int max_size = num_elements + 2;
+    std::vector<int> parent(num_elements + 1);
+    for (int i = 2; i <= num_elements; ++i) {
+       parent[i] = parent_arr[i - 2];
+    }
+    std::vector<std::vector<int>> function_val(num_elements + 1, std::vector<int>(max_size + 1, 1));
+    std::vector<int> inverse = CalculateInverse(max_size);
+    
+    for (int i = num_elements; i > 0; --i) {
+        for (int j = 1; j < max_size; ++j) {
+            function_val[i][j + 1] = (function_val[i][j + 1] + function_val[i][j]) % modulus_val;
+        }
+        for (int j = 1; j <= max_size; ++j) {
+            function_val[parent[i]][j] = 1LL * function_val[parent[i]][j] * function_val[i][j] % modulus_val;
+        }
+    }
+    
+    int result = 0;
+    for (int i = 1; i <= max_size; ++i) {
+        int temp_val = function_val[1][i];
+        for (int j = 1; j <= max_size; ++j) {
+            if (j != i) {
+                temp_val = 1LL * (divisor + modulus_val - j) * (i > j ? inverse[i - j] : modulus_val - inverse[j - i]) % modulus_val * temp_val % modulus_val;
+            }
+        }
+        result = (result + temp_val) % modulus_val;
+    }
+    return result;
+}
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_elements, divisor;
+    std::cin >> num_elements >> divisor;
+    
+    std::vector<int> parent_arr(num_elements - 1);
+    for (int i = 0; i < num_elements - 1; ++i) {
+        std::cin >> parent_arr[i];
+    }
+    
+    try {
+        std::cout << CalculateAnswer(num_elements, divisor, parent_arr) << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    
+    return 0;
+}
