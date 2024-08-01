@@ -1,3 +1,94 @@
 /*
 Link: https://codeforces.com/contest/241/problem/B
 */
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+const int modulus = 1000000007;
+
+long long CalculateSolution(int friend_count, int picture_count, std::vector<int>& attractiveness_values) {
+    if (friend_count < 1 || friend_count > 50000) {
+        throw std::invalid_argument("friend_count must lie between 1 to 50000");
+    }
+    if (picture_count < 0 || picture_count > (1LL * friend_count*(friend_count - 1))/2 ){
+        throw std::invalid_argument("picture_count must lie between 0 to friend_count*(friend_count - 1)/2 ");
+    }
+    for (int value : attractiveness_values) {
+        if (value < 0 || value > 1000000000) {
+            throw std::invalid_argument("attractiveness values must be between 0 and 1000000000");
+        }
+    }
+
+    int bit_count = 0;
+
+    for (int bit_position = 29; bit_position >= 0; bit_position--) {
+        std::map<int, int> bit_hash;
+        int pair_count = 0;
+
+        for (int i = 0; i < friend_count; i++) {
+            bit_hash[attractiveness_values[i] >> bit_position]++;
+        }
+
+        bit_count <<= 1;
+
+        for (std::map<int, int>::const_iterator it = bit_hash.begin(); it != bit_hash.end(); ++it) {
+            int x_val = it->first;
+            int y_val = (bit_count + 1) ^ x_val;
+            if (x_val < y_val) {
+                pair_count += it->second * bit_hash[y_val];
+            }
+        }
+
+        if (pair_count >= picture_count) {
+            bit_count++;
+        } else {
+            picture_count -= pair_count;
+        }
+    }
+
+    long long total_sum = 0;
+    std::sort(attractiveness_values.begin(), attractiveness_values.end());
+
+    for (int i = 0; i < friend_count; i++) {
+        for (int j = i + 1; j < friend_count; j++) {
+            int xor_value = attractiveness_values[i] ^ attractiveness_values[j];
+            if (xor_value > bit_count) {
+                total_sum += xor_value;
+            }
+        }
+    }
+
+    return (total_sum + 1LL * picture_count * bit_count) % modulus;
+}
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <stdexcept>
+#include <algorithm>
+#include <cassert>
+
+int main() {
+    int friend_count, picture_count;
+    std::cin >> friend_count >> picture_count;
+
+    
+    std::vector<int> attractiveness_values(friend_count);
+    for (int i = 0; i < friend_count; i++) {
+        std::cin >> attractiveness_values[i];
+        if (attractiveness_values[i] < 0 || attractiveness_values[i] > 1000000000) {
+            throw std::invalid_argument("Invalid input value for attractiveness_values");
+        }
+    }
+
+    long long result = CalculateSolution(friend_count, picture_count, attractiveness_values);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
