@@ -1,3 +1,67 @@
 /*
 Link: https://codeforces.com/contest/1380/problem/G
 */
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+std::vector<long long> ComputeResults(int num_rooms, std::vector<long long>& treasure_values) {
+    if (num_rooms < 2 || num_rooms > 300000) {
+        throw std::invalid_argument("num_rooms must be between 2 and 300000");
+    }
+    for (long long value : treasure_values) {
+        if (value < 1 || value > 1000000) {
+            throw std::invalid_argument("treasure_values must be between 1 and 1000000");
+        }
+    }
+    const int p_modulus = 998244353;
+    std::vector<long long> inverse_values(num_rooms + 1);
+    inverse_values[1] = 1;
+    for (int i = 2; i <= num_rooms; i++) {
+        inverse_values[i] = (p_modulus - p_modulus / i) * inverse_values[p_modulus % i] % p_modulus;
+    }
+
+    std::sort(treasure_values.begin(), treasure_values.begin() + num_rooms);
+    for (int i = 1; i < num_rooms; i++) {
+        treasure_values[i] = (treasure_values[i] + treasure_values[i - 1]) % p_modulus;
+    }
+
+    long long result = 0;
+    std::vector<long long> results;
+    for (int i = 1; i <= num_rooms; i++) {
+        for (int j = num_rooms - i - 1; j >= 0; j -= i) {
+            result = (result + treasure_values[j]) % p_modulus;
+        }
+        results.push_back(inverse_values[num_rooms] * result % p_modulus);
+        result = 0;
+    }
+    return results;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_rooms;
+    std::cin >> num_rooms;
+
+    std::vector<long long> treasure_values(num_rooms);
+    for (int i = 0; i < num_rooms; i++) {
+        std::cin >> treasure_values[i];
+    }
+
+    std::vector<long long> results = ComputeResults(num_rooms, treasure_values);
+    for (std::size_t i = 0; i < results.size(); ++i) {
+        std::cout << results[i] << " ";
+    }
+
+    return 0;
+}
+
