@@ -1,3 +1,82 @@
 /*
 Link: https://codeforces.com/contest/1536/problem/F
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+
+int ComputePower(int base_val, int exponent_val = modulus_val - 2) {
+    int result_val = 1;
+    const int modulus_val = 1000000007;
+    while (exponent_val) {
+        if (exponent_val & 1) {
+            result_val = static_cast<long long>(result_val) * base_val % modulus_val;
+        }
+        base_val = static_cast<long long>(base_val) * base_val % modulus_val;
+        exponent_val >>= 1;
+    }
+    return result_val;
+}
+
+void ComputeFactorials(int max_value, std::vector<int>& factorials, std::vector<int>& inverses) {
+    factorials[0] = 1;
+    const int modulus_val = 1000000007;
+    for (int i = 1; i <= max_value; ++i) {
+        factorials[i] = static_cast<long long>(factorials[i - 1]) * i % modulus_val;
+    }
+    inverses[max_value] = ComputePower(factorials[max_value]);
+    for (int i = max_value; i > 0; --i) {
+        inverses[i - 1] = static_cast<long long>(inverses[i]) * i % modulus_val;
+    }
+}
+
+int ComputeCombination(int x_val, int y_val, const std::vector<int>& factorials, const std::vector<int>& inverses) {
+    if (y_val < 0 || x_val < y_val) {
+        return 0;
+    }
+    const int modulus_val = 1000000007;
+    return static_cast<long long>(factorials[x_val]) * inverses[y_val] % modulus_val * inverses[x_val - y_val] % modulus_val;
+}
+
+int ComputeResult(int num) {
+    if (num < 2 || num > 1000000) {
+        throw std::invalid_argument("num must be between 2 and 1000000 inclusive.");
+    }
+
+    std::vector<int> factorials(num + 1);
+    std::vector<int> inverses(num + 1);
+    ComputeFactorials(num, factorials, inverses);
+    const int modulus_val = 1000000007;
+
+    int result_val = 0;
+    for (int i = 2; i <= num; i += 2) {
+        result_val = (2LL * factorials[i] % modulus_val * 
+                     (ComputeCombination(i, num - i, factorials, inverses) + 
+                      ComputeCombination(i - 1, num - i - 1, factorials, inverses)) + result_val) % modulus_val;
+    }
+    return result_val;
+}
+
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int num_elements;
+    std::cin >> num_elements;
+
+    try {
+        int result_val = ComputeResult(num_elements);
+        std::cout << result_val << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid input: " << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+
