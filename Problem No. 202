@@ -1,3 +1,104 @@
 /*
 Link: https://codeforces.com/contest/1530/problem/F
 */
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+
+int ModMult(int multiplicand, int multiplier, int mod) {
+    return (1LL * multiplicand * multiplier) % mod;
+}
+
+int CalculateSolution(int dimension_count, const std::vector<std::vector<int>>& matrix) {
+    if (dimension_count < 2 || dimension_count > 21) {
+        throw std::invalid_argument("dimension_count must be between 2 and 21");
+    }
+     for (int row = 0; row < dimension_count; ++row) {
+        for (int col = 0; col < dimension_count; ++col) {
+            if (matrix[row][col] <= 0 || matrix[row][col] >= 10000) {
+                throw std::invalid_argument("matrix values must be between 0 and 10000");
+            }
+        }
+    }
+   const int modulus = 31607;
+   const int value_modulus = 3973;
+
+    const int subset_count = 1 << dimension_count;
+    std::vector<std::vector<int>> precomputed_values(dimension_count, std::vector<int>(subset_count, 1));
+    std::vector<int> temp_values(subset_count);
+    int result = 0;
+
+    std::vector<std::vector<int>> modified_matrix(dimension_count, std::vector<int>(dimension_count));
+
+    for (int i = 0; i < dimension_count; ++i) {
+        for (int j = 0; j < dimension_count; ++j) {
+            modified_matrix[i][j] = matrix[i][j];
+            modified_matrix[i][j] = ModMult(modified_matrix[i][j], value_modulus, modulus);
+        }
+    }
+
+    for (int row = 0; row < dimension_count; ++row) {
+        for (int subset = 1; subset < subset_count; ++subset) {
+            precomputed_values[row][subset] = ModMult(precomputed_values[row][subset ^ (subset & -subset)],
+                                                      modified_matrix[row][__builtin_ctz(subset & -subset)],
+                                                      modulus);
+        }
+    }
+
+    for (int type : {0, 1, 2, 3}) {
+        for (int subset = 0; subset < subset_count; ++subset) {
+            temp_values[subset] = (__builtin_popcount(subset * 4 + type) & 1) ? -1 : 1;
+        }
+
+        for (int row = 0; row < dimension_count; ++row) {
+            for (int subset = 0; subset < subset_count; ++subset) {
+                temp_values[subset] = ModMult(temp_values[subset],
+                                              (precomputed_values[row][subset | ((type > 1) << row) |
+                                                                      ((type & 1) << (dimension_count - 1 - row))] -
+                                               precomputed_values[row][subset_count - 1] + modulus) % modulus,
+                                              modulus);
+            }
+        }
+
+        for (int subset = 0; subset < subset_count; ++subset) {
+            result = (result + temp_values[subset]) % modulus;
+        }
+    }
+
+    return (1 - result + modulus) % modulus;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int dimension_count;
+    std::cin >> dimension_count;
+
+    if (dimension_count < 2 || dimension_count > 21) {
+        throw std::invalid_argument("dimension_count must be between 2 and 21");
+    }
+
+    std::vector<std::vector<int>> matrix(dimension_count, std::vector<int>(dimension_count));
+
+    for (int row = 0; row < dimension_count; ++row) {
+        for (int col = 0; col < dimension_count; ++col) {
+            std::cin >> matrix[row][col];
+            if (matrix[row][col] <= 0 || matrix[row][col] >= 10000) {
+                throw std::invalid_argument("matrix values must be between 0 and 10000");
+            }
+        }
+    }
+
+    int result = CalculateSolution(dimension_count, matrix);
+    std::cout << result << std::endl;
+
+    return 0;
+}
+
