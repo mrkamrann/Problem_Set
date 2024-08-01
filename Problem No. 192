@@ -1,5 +1,28 @@
 /*
 Link: https://codeforces.com/contest/1305/problem/F
+
+Kavish is very angry at the other setters for using him as a theme! As a punishment, he forced them to solve the following problem:
+
+You have a vector elements consisting of num_elements positive integers. An operation consists of choosing an element and either adding 1 to it or subtracting 1 
+from it, such that the element remains positive. We say the vector is good if the greatest common divisor of all its elements is not 1. Find the minimum number of
+operations needed to make the vector good.
+
+Unable to match Kavish's intellect, the setters failed to solve the problem. Help them escape from Kavish's punishment!
+
+Return a single integer — the minimum number of operations required to make the vector good.
+
+Create a C++ function MakeVectorGood that will return an integer denoting the minimum number of operations required to make the vector good.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<long long> denoting elements.
+
+Input Constraints:
+
+The value of num_elements should be in the range [2, 2⋅10^5] inclusive.
+The value of elements[i] should be in the range [1, 10^12] inclusive.
 */
 
 #include <bits/stdc++.h>
