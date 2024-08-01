@@ -1,3 +1,49 @@
 /*
 Link: https://codeforces.com/contest/838/problem/D
 */
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+const int modulus_val = 1000000007;
+
+int Power(int base, int exponent) {
+    int result = 1;
+    while (exponent) {
+        if (exponent & 1) {
+            result = 1LL * result * base % modulus_val;
+        }
+        base = 1LL * base * base % modulus_val;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+int CalculateResult(int seats, int passengers) {
+
+    if (passengers < 1 || passengers > seats || seats > 1000000) {
+        throw std::invalid_argument("Input constraints violated");
+    }
+    int part_1 = seats + 1 - passengers;
+    int part_2 = Power(seats + 1, modulus_val - 2);
+    int part_3 = Power(seats + seats + 2, passengers);
+
+    int result = 1LL * part_1 % modulus_val;
+    result = 1LL * result * part_2 % modulus_val;
+    result = 1LL * result * part_3 % modulus_val;
+    return result;
+}
+
+int main() {
+    int seats, passengers;
+    std::cin >> seats >> passengers;
+    
+    try {
+        std::cout << CalculateResult(seats, passengers) << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    
+    return 0;
+}
