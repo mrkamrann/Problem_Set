@@ -1,3 +1,112 @@
 /*
 Link: https://codeforces.com/contest/914/problem/G
 */
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+
+void OrTransform(std::vector<int>& vec, int val, int size) {
+  const int modulus_val = 1000000007;
+    for (int step = 1; step < size; step *= 2)
+        for (int j = 0, len = step * 2; j < size; j += len)
+            for (int k = j, p = j + step; k < p; ++k)
+                vec[step + k] = (vec[step + k] + vec[k] * val) % modulus_val;
+}
+
+void AndTransform(std::vector<int>& vec, int val, int size) {
+  const int modulus_val = 1000000007;
+    for (int step = 1; step < size; step *= 2)
+        for (int j = 0, len = step * 2; j < size; j += len)
+            for (int k = j, p = j + step; k < p; ++k)
+                vec[k] = (vec[k] + vec[step + k] * val) % modulus_val;
+}
+
+void XorTransform(std::vector<int>& vec, int val, int size) {
+  const int modulus_val = 1000000007;
+    for (int step = 1; step < size; step *= 2)
+        for (int j = 0, len = step * 2; j < size; j += len)
+            for (int k = j, p = j + step; k < p; ++k) {
+                int temp = vec[step + k];
+                vec[step + k] = (vec[k] - temp) * 1ll * val % modulus_val;
+                vec[k] = (vec[k] + temp) * 1ll * val % modulus_val;
+            }
+}
+
+int ComputeFunction(std::vector<int>& input_vec) {
+    int vec_size = input_vec.size();
+    int max_val = 0, log_val = 0;
+    int power_size = 1;
+   const int modulus_val = 1000000007;
+  
+      if (vec_size < 1 || vec_size > 1000000) {
+        throw std::invalid_argument("vec_size must be between 1 and 1000000 inclusive.");
+    }
+  
+   for (int i = 0; i < vec_size; ++i) {
+        if (input_vec[i] < 0 || input_vec[i] >= (1 << 17)) {
+            throw std::invalid_argument("Each element in input_vec must be between 0 and 131071 inclusive.");
+        }
+    }
+
+    for (int i = 0; i < vec_size; ++i) max_val = std::max(max_val, input_vec[i]);
+    while (power_size <= max_val) power_size <<= 1, ++log_val;
+
+    std::vector<int> count_vec(power_size + 10, 0), fib_vec(power_size + 10, 0), popcount_vec(power_size + 10, 0), y_vec(power_size + 10, 0), x_vec(power_size + 10, 0);
+    std::vector<std::vector<int>> transform_vec(log_val + 10, std::vector<int>(power_size + 10, 0));
+    std::vector<int> h_vec(power_size + 10, 0);
+
+    for (int i = 0; i < vec_size; ++i) ++count_vec[input_vec[i]];
+    fib_vec[1] = popcount_vec[1] = 1;
+    for (int i = 2; i < power_size; ++i) fib_vec[i] = (fib_vec[i - 1] + fib_vec[i - 2]) % modulus_val, popcount_vec[i] = popcount_vec[i >> 1] + (i & 1);
+    for (int i = 0; i < power_size; ++i) transform_vec[popcount_vec[i]][i] = count_vec[i], y_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus_val;
+    for (int i = 0; i <= log_val; ++i) OrTransform(transform_vec[i], 1, power_size);
+    for (int i = 0; i <= log_val; ++i) {
+        std::fill(h_vec.begin(), h_vec.end(), 0);
+        for (int j = 0; j <= i; ++j)
+            for (int k = 0; k < power_size; ++k)
+                h_vec[k] = (h_vec[k] + transform_vec[j][k] * 1ll * transform_vec[i - j][k]) % modulus_val;
+        OrTransform(h_vec, -1, power_size);
+        for (int j = 0; j < power_size; ++j) if (popcount_vec[j] == i) x_vec[j] = h_vec[j] * 1ll * fib_vec[j] % modulus_val;
+    }
+    XorTransform(count_vec, 1, power_size);
+    for (int i = 0; i < power_size; ++i) count_vec[i] = count_vec[i] * 1ll * count_vec[i] % modulus_val;
+    XorTransform(count_vec, (modulus_val + 1) >> 1, power_size);
+    for (int i = 0; i < power_size; ++i) count_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus_val;
+    AndTransform(x_vec, 1, power_size);
+    AndTransform(y_vec, 1, power_size);
+    AndTransform(count_vec, 1, power_size);
+    for (int i = 0; i < power_size; ++i) x_vec[i] = x_vec[i] * 1ll * y_vec[i] % modulus_val * count_vec[i] % modulus_val;
+    AndTransform(x_vec, -1, power_size);
+    int result_val = 0;
+    for (int i = 0; i <= log_val; ++i) result_val = (result_val + x_vec[1 << i]) % modulus_val;
+    return (result_val + modulus_val) % modulus_val;
+}
+
+#include <bits/stdc++.h>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int num_elements;
+    std::cin >> num_elements;
+
+   
+
+    std::vector<int> input_vec(num_elements);
+
+    for (int i = 0; i < num_elements; ++i) std::cin >> input_vec[i];
+
+   
+    try {
+        int result_val = ComputeFunction(input_vec);
+        std::cout << result_val << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid input: " << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
