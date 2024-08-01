@@ -1,5 +1,46 @@
 /*
 Link: https://codeforces.com/problemset/problem/1956/E1
+
+Babar is fighting with num_monsters, located in a circle. These monsters are numbered from 1 to num_monsters, and the i-th (1 ≤ i ≤ num_monsters) monster's 
+current energy level is energy_levels[i].
+
+Since the monsters are too strong, Babar decided to fight with them using the Attack Your Neighbour spell. When Babar uses this spell, the following actions 
+happen in the following order one by one:
+
+The 1-st monster attacks the 2-nd monster;
+The 2-nd monster attacks the 3-rd monster;
+...
+The (num_monsters−1)-th monster attacks the num_monsters-th monster;
+The num_monsters-th monster attacks the 1-st monster.
+
+When the monster with energy level x attacks the monster with the energy level y, the energy level of the defending monster becomes max(0, y−x) 
+(the energy level of the attacking monster remains equal to x).
+
+Babar is going to use this spell 10^100 times and deal with the monsters that will still have a non-zero energy level himself. 
+He wants you to determine which monsters will have a non-zero energy level once he will use the described spell 10^100 times.
+
+Input
+
+You are given num_monsters integers energy_levels[0], energy_levels[1], ..., energy_levels[num_monsters−1] (0 ≤ energy_levels[i] ≤ 2⋅10^5) — the current 
+energy levels of monsters.
+
+Return m integers i_1, i_2, ..., i_m (1 ≤ i_1 < i_2 < ... < i_m ≤ num_monsters) — the indices of these monsters in increasing order. 
+If m=0, output {-1}.
+
+Create a C++ function SurvivingMonsters that will return a vector<int> denoting the number of monsters with non-zero energy level after 10^100 uses of the spell.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+vector<int> representing energy_levels.
+
+Input Constraints:
+
+The value of num_test_cases should be in the range [1, 10^4] inclusive.
+The value of num_monsters should be in the range [2, 2⋅10^5] inclusive.
+The value of energy_levels[i] should be in the range [0, 2⋅10^5] inclusive.
+The sum of num_monsters over all test cases should not exceed 2⋅10^5.
 */
 
 #include <bits/stdc++.h>
@@ -7,7 +48,7 @@ Link: https://codeforces.com/problemset/problem/1956/E1
 #include <stdexcept>
 #include <cassert>
 
-std::vector<int> Solve(const std::vector<int>& energy_levels) {
+std::vector<int> SurvivingMonsters(const std::vector<int>& energy_levels) {
    
     int num_monsters = energy_levels.size();
   
@@ -46,7 +87,7 @@ std::vector<int> Solve(const std::vector<int>& energy_levels) {
             results.push_back(index);
         }
     }
-
+    if(results.size() == 0) return {-1};
     return results;
 }
 
