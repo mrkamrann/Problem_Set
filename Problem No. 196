@@ -1,5 +1,35 @@
 /*
 Link: https://codeforces.com/problemset/problem/1835/C
+
+Famous worldwide astrophysicist Benjamin Lincoln recently read about the existence of twin galaxy clusters. Before he shares this knowledge with the broader 
+audience in his podcast called S.tarT-ok, he wants to prove their presence on his own. Benjamin is aware that the vastness of the universe is astounding 
+(almost as astounding as his observation skills) and decides to try his luck and find some new pair of twin clusters.
+
+To do so, he used his telescope to observe a part of the night sky that was not yet examined by humanity in which there are exactly 2 * bits + 1 galaxies in a row.
+Each of them consists of exactly 0 ≤ vec[i] < 4 * bits stars.
+
+A galaxy cluster is any non-empty contiguous segment of galaxies. Moreover, its trait is said to be equal to the bitwise XOR of all values in vec within this range.
+
+Two galaxy clusters are considered twins if and only if they have the same traits and their corresponding segments are disjoint.
+
+Create a C++ function FindTwinClusters that will return a vector<long long> denoting the location of two intervals belonging to some twin clusters pair, or a single value -1 if no such pair 
+exists.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer bits denoting the value of k
+A vector of integers vec representing the stars in each galaxy
+
+Input Constraints
+
+The value of bits should be in the range [0, 17] inclusive.
+The length of vec should be 2 * bits + 1.
+The sum of values 2 * bits + 1 over all test cases does not exceed 218.
+Each value in vec should be in the range [0, 4 * bits] inclusive.
+
+
 */
 
 #include <bits/stdc++.h>
@@ -8,7 +38,7 @@ Link: https://codeforces.com/problemset/problem/1835/C
 #include <random>
 
 
-std::vector<long long> Solve(int bits, const std::vector<long long>& vec) {
+std::vector<long long> FindTwinClusters(int bits, const std::vector<long long>& vec) {
     if (bits < 0 || bits > 17) {
         throw std::invalid_argument("bits must be between 0 and 17 inclusive.");
     }
