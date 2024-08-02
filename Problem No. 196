@@ -2,15 +2,15 @@
 Link: https://codeforces.com/contest/1987/problem/F1
 
 
-Bob has a vector of integers nums of length len. In one operation, Bob will perform the following two-step process:
+Brock has a vector of integers nums of length len. In one operation, Brock will perform the following two-step process:
 
-1. Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
+Step 1 ->  Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
 
-2. Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
+Step 2 -> Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
 
-Your task is to find the maximum number of times that Bob can perform the operation above.
+Brock wants to find the maximum number of times that Bob can perform the operation above.
 
-Create a C++ function MaximumRemovals that will return an integer denoting the the maximum number of times that Bob can perform the operation.
+Create a C++ function MaximumRemovals that will return an integer denoting the the maximum number of times that Brock can perform the operation.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
@@ -20,7 +20,7 @@ A vector<int> denoting nums
 
 Input Constraints:
 
-The value of len should be at least 1 and at most 800 inclusive.
+The value of len should be at least 1 and at most 100 inclusive.
 Each value of nums[i] should be in the range [1, len] inclusive.
 
 */
@@ -34,7 +34,7 @@ Each value of nums[i] should be in the range [1, len] inclusive.
 int MaximumRemovals(std::vector<int>& nums) {
     int len = nums.size();
 
-    if (len < 1 || len > 800) {
+    if (len < 1 || len > 100) {
         throw std::invalid_argument("Invalid length of nums");
     }
 
@@ -158,7 +158,7 @@ try {
 //TEST_END
   
 // TEST 
-std::vector<int> nums_11(801, 1);
+std::vector<int> nums_11(105, 1);
 try {
     MaximumRemovals(nums_11);
     assert(false);
@@ -178,7 +178,7 @@ try {
 //TEST_END
   
 // TEST
-std::vector<int> nums_13 = {-9999,3, 5};
+std::vector<int> nums_13 = {-888888,3, 5};
 try {
     MaximumRemovals(nums_13);
     assert(false);
@@ -198,7 +198,7 @@ try {
 //TEST_END
   
 // TEST 
-std::vector<int> nums_15 = {1, 465468, 2};
+std::vector<int> nums_15 = {1, 99999999, 2};
 try {
     MaximumRemovals(nums_15);
     assert(false);
