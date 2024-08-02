@@ -108,18 +108,158 @@ int MinimizeOnes(const std::vector<std::string>& binary_strings) {
 
 int main(){
   
-    int row_count, column_count;
-    std::cin >> row_count >> column_count;
+   //TEST
+std::vector<std::string> binary_strings_1 = {"1100", "1010", "1001"};
+int expected_1 = 3; 
+int result_1 = MinimizeOnes(binary_strings_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<std::string> binary_strings(row_count);
-    for (int i = 0; i < row_count; ++i) {
-        std::cin >> binary_strings[i];
-    }
+//TEST
+std::vector<std::string> binary_strings_2 = {"1111", "1111", "1111"};
+int expected_2 = 0; 
+int result_2 = MinimizeOnes(binary_strings_2);
+assert(result_2 == expected_2);
+//TEST_END
 
+//TEST
+std::vector<std::string> binary_strings_3 = {"0000", "0000", "0000"};
+int expected_3 = 0; 
+int result_3 = MinimizeOnes(binary_strings_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-        int result = Solve(binary_strings);
-        std::cout << result << std::endl;
-    
+//TEST
+std::vector<std::string> binary_strings_4 = {"100000", "010000", "001000", "000100", "000010", "000001"};
+int expected_4 = 6;
+int result_4 = MinimizeOnes(binary_strings_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_5 = {"111000", "000111"};
+int expected_5 = 0; 
+int result_5 = MinimizeOnes(binary_strings_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_6 = {"1010101010", "0101010101"};
+int expected_6 = 0; 
+int result_6 = MinimizeOnes(binary_strings_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_7 = {"1", "1", "1"};
+int expected_7 = 0; 
+int result_7 = MinimizeOnes(binary_strings_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_8 = {"01", "10", "11"};
+int expected_8 = 1; 
+int result_8 = MinimizeOnes(binary_strings_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_9 = {"1100110011", "0011001100"};
+int expected_9 = 0; 
+int result_9 = MinimizeOnes(binary_strings_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_10 = {"2"};
+try {
+    MinimizeOnes(binary_strings_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_11 = {"1", "2"};
+try {
+    MinimizeOnes(binary_strings_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_12(1e6, "1");
+try {
+    MinimizeOnes(binary_strings_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_13 = {"?"};
+try {
+    MinimizeOnes(binary_strings_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_14 = {"1", "-1"};
+try {
+    MinimizeOnes(binary_strings_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_15 = {"101", "10a"};
+try {
+    MinimizeOnes(binary_strings_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_16 = {"10", "1"};
+try {
+    MinimizeOnes(binary_strings_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_17 = {"101", "1011"};
+try {
+    MinimizeOnes(binary_strings_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::string> binary_strings_18 = {"1", "-"};
+try {
+    MinimizeOnes(binary_strings_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
