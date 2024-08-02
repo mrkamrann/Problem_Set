@@ -1,5 +1,26 @@
 /*
 Link: https://codeforces.com/problemset/problem/1656/F
+
+Jessie is analyzing a series of graphs to understand their properties better. For each graph, she considers num_elements integers elements[0], elements[1], ..., 
+elements[num_elements-1]. For any real number t, she constructs the complete weighted graph on num_elements vertices, denoted as Kn(t), with the weight of the 
+edge between vertices i and j equal to wij(t) = elements[i] * elements[j] + t * (elements[i] + elements[j]).
+
+Jessie is interested in the cost function f(t), which is the cost of the minimum spanning tree of Kn(t). She wants to determine whether f(t) is bounded above and,
+if so, find the maximum value it attains.
+
+Create a C++ function FindMaxSpanningTreeCost that will return a string denoting the maximum value of f(t) or the string "INF" if f(t) is not bounded above.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<long long> elements representing the weights associated with each vertex
+
+Input Constraints
+
+The value of num_elements should be in the range [2, 2 * 10^5] inclusive.
+The sum of num_elements for all test cases should not exceed 2 * 10^5.
+Each value in elements should be in the range [-10^6, 10^6] inclusive.
 */
 
 #include <bits/stdc++.h>
@@ -7,7 +28,7 @@ Link: https://codeforces.com/problemset/problem/1656/F
 #include <cassert>
 
 
-std::string ComputeAnswer(std::vector<long long>& elements) {
+std::string FindMaxSpanningTreeCost(std::vector<long long>& elements) {
   
     int num_elements = elements.size();
     if (num_elements < 2 || num_elements > 200000) {
