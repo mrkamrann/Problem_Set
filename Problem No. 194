@@ -1,5 +1,28 @@
 /*
 Link: https://codeforces.com/contest/1278/problem/F
+
+Kylie is conducting an experiment with a deck of cards. The deck consists of column_count cards, and exactly one card is a joker. Kylie performs the following
+experiment row_count times: she shuffles the deck, takes the top card of the deck, looks at it, and then returns it into the deck.
+
+Let x_count be the number of times Julie takes the joker out of the deck during this experiment. Assuming that every time Julie shuffles the deck, 
+all column_count! possible permutations of cards are equally probable, what is the expected value of x_count^k_value? Print the answer modulo 998244353.
+
+Create a C++ function CalculateExpectedValue that will return an integer denoting the expected value of x_count^k_value modulo 998244353.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer row_count denoting the number of times Julie performs the experiment
+An integer column_count denoting the number of cards in the deck
+An integer k_value denoting the exponent
+
+Input Constraints
+
+The value of row_count should be in the range [1, 998244352] inclusive.
+The value of column_count should be in the range [1, 998244352] inclusive.
+The value of k_value should be in the range [1, 5000] inclusive.
+
 */
 
 #include <iostream>
@@ -23,7 +46,7 @@ int CalculatePower(int base, int exponent) {
     return result;
 }
 
-int ComputeResult(int row_count, int column_count, int k_value) {
+int CalculateExpectedValue (int row_count, int column_count, int k_value) {
   
     const int modulus = 998244353; 
   
