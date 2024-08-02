@@ -1,5 +1,34 @@
 /*
 Link: https://codeforces.com/contest/1536/problem/F
+
+Jessica and her friend James are playing a game on a circular board with num cells. The cells are numbered from 1 to num_cells such that each 
+cell i (1 ≤ i ≤ num_cells-1) is adjacent to cell i+1 and cell 1 is adjacent to cell num. Initially, each cell is empty.
+
+Jessica and James take turns placing either an A or a B on the board, with Akmar going first. The letter must be placed on an empty cell. 
+In addition, the letter cannot be placed adjacent to a cell containing the same letter.
+
+A player loses when it is their turn and there are no more valid moves.
+
+Output the number of possible distinct games where both players play optimally modulo 10^9 + 7. Note that we only consider games where some player has lost 
+and there are no more valid moves.
+
+Two games are considered distinct if the number of turns is different or for some turn, the letter or cell number that the letter is placed on were different.
+
+A move is considered optimal if the move maximizes the player's chance of winning, assuming the other player plays optimally as well. More formally, if the 
+player who has to move has a winning strategy, they have to make a move after which they will still have a winning strategy. If they do not, they can make any move.
+
+Create a C++ function CountDistinctGames that will return an integer denoting the number of possible distinct games where both players play optimally 
+modulo 10^9 + 7.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer num denoting the number of cells on the board
+
+Input Constraints
+
+The value of num should be in the range [2, 10^6] inclusive.
 */
 
 #include <bits/stdc++.h>
@@ -41,7 +70,7 @@ int ComputeCombination(int x_val, int y_val, const std::vector<int>& factorials,
     return static_cast<long long>(factorials[x_val]) * inverses[y_val] % modulus_val * inverses[x_val - y_val] % modulus_val;
 }
 
-int ComputeResult(int num) {
+int CountDistinctGames(int num) {
     if (num < 2 || num > 1000000) {
         throw std::invalid_argument("num must be between 2 and 1000000 inclusive.");
     }
