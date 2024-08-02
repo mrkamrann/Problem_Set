@@ -83,17 +83,196 @@ int CalculateExpectedValue (int row_count, int column_count, int k_value) {
 #include <cassert>
 
 int main() {
-    int row_count, column_count, k_value;
-    std::cin >> row_count >> column_count >> k_value;
+  
+//TEST
+int row_count_1 = 1;
+int column_count_1 = 1;
+int k_value_1 = 1;
+int expected_1 = 1; 
+int result_1 = CalculateExpectedValue(row_count_1, column_count_1, k_value_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    try {
-        int result = ComputeResult(row_count, column_count, k_value);
-        std::cout << result << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Invalid input: " << e.what() << std::endl;
-        return 1;
-    }
+//TEST
+int row_count_2 = 10;
+int column_count_2 = 10;
+int k_value_2 = 2;
+int expected_2 = 698771049;
+int result_2 = CalculateExpectedValue(row_count_2, column_count_2, k_value_2);
+assert(result_2 == expected_2);
+//TEST_END
 
+//TEST
+int row_count_3 = 100;
+int column_count_3 = 100;
+int k_value_3 = 3;
+int expected_3 = 615517473; 
+int result_3 = CalculateExpectedValue(row_count_3, column_count_3, k_value_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int row_count_4 = 1000;
+int column_count_4 = 1000;
+int k_value_4 = 4;
+int expected_4 = 815466927;
+int result_4 = CalculateExpectedValue(row_count_4, column_count_4, k_value_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int row_count_5 = 10000;
+int column_count_5 = 10000;
+int k_value_5 = 5;
+int expected_5 = 334698248; 
+int result_5 = CalculateExpectedValue(row_count_5, column_count_5, k_value_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int row_count_6 = 998244352;
+int column_count_6 = 1;
+int k_value_6 = 6;
+int expected_6 = 1;
+int result_6 = CalculateExpectedValue(row_count_6, column_count_6, k_value_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int row_count_7 = 1;
+int column_count_7 = 998244352;
+int k_value_7 = 7;
+int expected_7 = 998244352; 
+int result_7 = CalculateExpectedValue(row_count_7, column_count_7, k_value_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int row_count_8 = 100000;
+int column_count_8 = 100000;
+int k_value_8 = 8;
+int expected_8 = 556432248; 
+int result_8 = CalculateExpectedValue(row_count_8, column_count_8, k_value_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int row_count_9 = 5000;
+int column_count_9 = 5000;
+int k_value_9 = 9;
+int expected_9 = 713038332; 
+int result_9 = CalculateExpectedValue(row_count_9, column_count_9, k_value_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+  
+//TEST
+int row_count_10 = 0;
+int column_count_10 = 10;
+int k_value_10 = 1;
+try {
+    CalculateExpectedValue(row_count_10, column_count_10, k_value_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_11 = 10;
+int column_count_11 = 0;
+int k_value_11 = 1;
+try {
+    CalculateExpectedValue(row_count_11, column_count_11, k_value_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_12 = 10;
+int column_count_12 = 10;
+int k_value_12 = 0;
+try {
+    CalculateExpectedValue(row_count_12, column_count_12, k_value_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_13 = -10;
+int column_count_13 = 10;
+int k_value_13 = 1;
+try {
+    CalculateExpectedValue(row_count_13, column_count_13, k_value_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_14 = 10;
+int column_count_14 = -10;
+int k_value_14 = 1;
+try {
+    CalculateExpectedValue(row_count_14, column_count_14, k_value_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_15 = 10;
+int column_count_15 = 10;
+int k_value_15 = -1;
+try {
+    CalculateExpectedValue(row_count_15, column_count_15, k_value_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_16 = 998244353;
+int column_count_16 = 10;
+int k_value_16 = 1;
+try {
+    CalculateExpectedValue(row_count_16, column_count_16, k_value_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_17 = 10;
+int column_count_17 = 998244353;
+int k_value_17 = 1;
+try {
+    CalculateExpectedValue(row_count_17, column_count_17, k_value_17);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int row_count_18 = 10;
+int column_count_18 = 10;
+int k_value_18 = 5001;
+try {
+    CalculateExpectedValue(row_count_18, column_count_18, k_value_18);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
 
