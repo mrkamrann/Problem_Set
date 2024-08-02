@@ -31,13 +31,13 @@ Input Constraints
 The value of num should be in the range [2, 10^6] inclusive.
 */
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 
 
-int ComputePower(int base_val, int exponent_val = modulus_val - 2) {
+int ComputePower(int base_val, int exponent_val = 1000000005) {
     int result_val = 1;
     const int modulus_val = 1000000007;
     while (exponent_val) {
@@ -90,21 +90,126 @@ int CountDistinctGames(int num) {
 }
 
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 int main() {
-    int num_elements;
-    std::cin >> num_elements;
+   
+  //TEST
+    int num_1 = 2;
+    int expected_1 = 4;
+    int result_1 = CountDistinctGames(num_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
+    //TEST
+    int num_2 = 10;
+    int expected_2 = 10116000;
+    int result_2 = CountDistinctGames(num_2);
+     assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    int num_3 = 100;
+    int expected_3 = 418894687;
+    int result_3 = CountDistinctGames(num_3);
+   assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    int num_4 = 1000;
+    int expected_4 = 213404205;
+    int result_4 = CountDistinctGames(num_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    int num_5 = 5000;
+    int expected_5 = 237524386;
+    int result_5 = CountDistinctGames(num_5);
+   assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    int num_6 = 10000;
+    int expected_6 = 751662175;
+    int result_6 = CountDistinctGames(num_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    int num_7 = 50000;
+    int expected_7 = 916881997;
+    int result_7 = CountDistinctGames(num_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    int num_8 = 100000;
+    int expected_8 = 53713907;
+    int result_8 = CountDistinctGames(num_8);
+  assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    int num_9 = 1000000;
+    int expected_9 = 948343669;
+    int result_9 = CountDistinctGames(num_9);
+   assert(result_9 == expected_9);
+    //TEST_END
+
+
+
+    //TEST
+    int num_10 = 1;
     try {
-        int result_val = ComputeResult(num_elements);
-        std::cout << result_val << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Invalid input: " << e.what() << std::endl;
-        return 1;
+        CountDistinctGames(num_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
+
+    //TEST
+    int num_11 = 1000001;
+    try {
+        CountDistinctGames(num_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int num_12 = 0;
+    try {
+        CountDistinctGames(num_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int num_13 = -100;
+    try {
+        CountDistinctGames(num_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    int num_14 = -1;
+    try {
+        CountDistinctGames(num_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
