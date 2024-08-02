@@ -23,7 +23,8 @@ The sum of num_elements for all test cases should not exceed 2 * 10^5.
 Each value in elements should be in the range [-10^6, 10^6] inclusive.
 */
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
@@ -63,38 +64,138 @@ std::string FindMaxSpanningTreeCost(std::vector<long long>& elements) {
     return std::to_string(max_result);
 }
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
 #include <stdexcept>
-#include <cassert> 
+#include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    
+  
+   //TEST
+    std::vector<long long> elements_1 = {3,-1,-2};
+    std::string expected_1 = "-6";
+    std::string result_1 = FindMaxSpanningTreeCost(elements_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-    long long test_cases;
-    std::cin >> test_cases;
+    //TEST
+    std::vector<long long> elements_2 = {-1000000, 1000000};
+    std::string expected_2 = "-1000000000000";
+    std::string result_2 = FindMaxSpanningTreeCost(elements_2);
+    assert(result_2 == expected_2);
+    //TEST_END
 
-    if (test_cases < 1) {
-        throw std::invalid_argument("test_cases should be at least 1.");
+    //TEST
+    std::vector<long long> elements_3 = {100, 200, 300, 400, 500};
+    std::string expected_3 = "INF";
+    std::string result_3 = FindMaxSpanningTreeCost(elements_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_4 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    std::string expected_4 = "INF";
+    std::string result_4 = FindMaxSpanningTreeCost(elements_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_5 = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+    std::string expected_5 = "INF";
+    std::string result_5 = FindMaxSpanningTreeCost(elements_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_6 = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10};
+    std::string expected_6 = "INF";
+    std::string result_6 = FindMaxSpanningTreeCost(elements_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_7 = {123456, 234567, 345678, 456789, 567890};
+    std::string expected_7 = "INF";
+    std::string result_7 = FindMaxSpanningTreeCost(elements_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_8 = {10, -20, 30, -40, 50};
+    std::string expected_8 = "-4600";
+    std::string result_8 = FindMaxSpanningTreeCost(elements_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_9 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::string expected_9 = "0";
+    std::string result_9 = FindMaxSpanningTreeCost(elements_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+
+
+    //TEST
+    std::vector<long long> elements_10 = {};
+    try {
+        FindMaxSpanningTreeCost(elements_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
 
-    for (long long t = 0; t < test_cases; ++t) {
-        int num_elements;
-        std::cin >> num_elements;
-
-        std::vector<long long> elements(num_elements);
-        for (int i = 0; i < num_elements; ++i) {
-            std::cin >> elements[i];
-        }
-
-        try {
-            std::string result = ComputeAnswer(elements);
-            std::cout << result << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid input: " << e.what() << std::endl;
-            return 1;
-        }
+    //TEST
+    std::vector<long long> elements_11(2 * 100000 + 1, 1);
+    try {
+        FindMaxSpanningTreeCost(elements_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_12 = {1000001, 2};
+    try {
+        FindMaxSpanningTreeCost(elements_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_13 = {-1000001, 2};
+    try {
+        FindMaxSpanningTreeCost(elements_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_14(1e6,1);
+    try {
+        FindMaxSpanningTreeCost(elements_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> elements_15 = {-1};
+    try {
+        FindMaxSpanningTreeCost(elements_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
