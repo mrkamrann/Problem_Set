@@ -1,115 +1,210 @@
- /*
-Link: https://codeforces.com/problemset/problem/1835/C
+/*
+Link: https://codeforces.com/contest/1987/problem/F1
 
-Famous worldwide astrophysicist Benjamin Lincoln recently read about the existence of twin galaxy clusters. Before he shares this knowledge with the broader 
-audience in his podcast called S.tarT-ok, he wants to prove their presence on his own. Benjamin is aware that the vastness of the universe is astounding 
-(almost as astounding as his observation skills) and decides to try his luck and find some new pair of twin clusters.
 
-To do so, he used his telescope to observe a part of the night sky that was not yet examined by humanity in which there are exactly 2 * bits + 1 galaxies in a row.
-Each of them consists of exactly 0 ≤ vec[i] < 4 * bits stars.
+Bob has a vector of integers nums of length len. In one operation, Bob will perform the following two-step process:
 
-A galaxy cluster is any non-empty contiguous segment of galaxies. Moreover, its trait is said to be equal to the bitwise XOR of all values in vec within this range.
+1. Choose an index i such that 1 ≤ i < len and nums nums[i] = i.
 
-Two galaxy clusters are considered twins if and only if they have the same traits and their corresponding segments are disjoint.
+2. Remove nums[i] and nums[i+1] from the vector and concatenate the remaining parts.
 
-Create a C++ function FindTwinClusters that will return a vector<long long> denoting the location of two intervals belonging to some twin clusters pair, or a single value -1 if no such pair 
-exists.
+Your task is to find the maximum number of times that Bob can perform the operation above.
+
+Create a C++ function MaximumRemovals that will return an integer denoting the the maximum number of times that Bob can perform the operation.
 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
-Input Type
+Input Type:
 
-An integer bits denoting the value of k
-A vector of integers vec representing the stars in each galaxy
+A vector<int> denoting nums
 
-Input Constraints
+Input Constraints:
 
-The value of bits should be in the range [0, 17] inclusive.
-The length of vec should be 2 * bits + 1.
-The sum of values 2 * bits + 1 over all test cases does not exceed 218.
-Each value in vec should be in the range [0, 4 * bits] inclusive.
-
+The value of len should be at least 1 and at most 800 inclusive.
+Each value of nums[i] should be in the range [1, len] inclusive.
 
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 #include <stdexcept>
-#include <cassert>
-#include <random>
+#include <climits>
 
 
-std::vector<long long> FindTwinClusters(int bits, const std::vector<long long>& vec) {
-    if (bits < 0 || bits > 17) {
-        throw std::invalid_argument("bits must be between 0 and 17 inclusive.");
+int MaximumRemovals(std::vector<int>& nums) {
+    int len = nums.size();
+
+    if (len < 1 || len > 800) {
+        throw std::invalid_argument("Invalid length of nums");
     }
 
-    int size = 1 << (bits + 1);
-    if (vec.size() != size) {
-        throw std::invalid_argument("vec size does not match expected size.");
+    for (int i = 1; i <= len; ++i) {
+        if (nums[i-1] < 1 || nums[i-1] > len) {
+            throw std::invalid_argument("Invalid value in nums");
+        }
     }
-    std::mt19937 random_gen(time(0));
-    std::vector<long long> xor_prefix(size + 1, 0);
-    std::map<long long, std::vector<long long>> prefix_map;
-    
-    for (int i = 1; i <= size; ++i) {
-        xor_prefix[i] = vec[i - 1] ^ xor_prefix[i - 1];
-        prefix_map[xor_prefix[i]].push_back(i);
+
+    std::vector<std::vector<int>> dp_table(len + 2, std::vector<int>(len + 2, INT_MAX));
+    std::vector<int> max_possible_value(len + 1, 0);
+
+    for (int i = 1; i <= len + 1; ++i) {
+        dp_table[i][i - 1] = 0;
     }
-    
-    while (true) {
-        int x_val = random_gen() % (size + 1);
-        int y_val = random_gen() % (size + 1);
-        int z_val = random_gen() % (size + 1);
-        
-        for (long long w_val : prefix_map[xor_prefix[x_val] ^ xor_prefix[y_val] ^ xor_prefix[z_val]]) {
-            std::vector<long long> result = {x_val, y_val, z_val, w_val};
-            std::sort(result.begin(), result.end());
-            if (result[0] < result[1] && result[2] < result[3]) {
-                return {result[0] + 1, result[1], result[2] + 1, result[3]};
+
+    for (int length = 2; length <= len; length += 2) {
+        for (int left = 1; left + length - 1 <= len; ++left) {
+            if (left - nums[left-1] < 0 || (left - nums[left-1]) % 2 != 0) {
+                continue;
+            }
+            int right = left + length - 1;
+            for (int mid = left + 1; mid <= right; mid += 2) {
+                if (dp_table[left + 1][mid - 1] <= (left - nums[left-1]) / 2) {
+                    dp_table[left][right] = std::min(dp_table[left][right], std::max((left - nums[left-1]) / 2, dp_table[mid + 1][right] - (mid - left + 1) / 2));
+                }
             }
         }
     }
+
+    for (int i = 1; i <= len; ++i) {
+        max_possible_value[i] = max_possible_value[i - 1];
+        for (int j = i - 1; j >= 1; j -= 2) {
+            if (max_possible_value[j - 1] >= dp_table[j][i]) {
+                max_possible_value[i] = std::max(max_possible_value[i], max_possible_value[j - 1] + (i - j + 1) / 2);
+            }
+        }
+    }
+
+    return max_possible_value[len];
 }
 
-
-#include <bits/stdc++.h>
-#include <stdexcept>
 #include <cassert>
-#include <random>
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    
+// TEST 
+std::vector<int> nums_1 = {1,2,4,3};
+int expected_1 = 2;
+int result_1 = MaximumRemovals(nums_1);
+assert(result_1 == expected_1);
 
-    long long test_cases;
-    std::cin >> test_cases;
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_2 = {10,1,2,9,6,4,3,8,5,7,12,9,11};
+int expected_2 = 1;
+int result_2 = MaximumRemovals(nums_2);
+assert(result_2 == expected_2);
+  
+//TEST_END
 
-    if (test_cases < 1) {
-        throw std::invalid_argument("test_cases should be at least 1.");
-    }
+// TEST 
+std::vector<int> nums_3 = {2, 1};
+int expected_3 = 0;
+int result_3 = MaximumRemovals(nums_3);
+assert(result_3 == expected_3);
 
-    for (long long t = 0; t < test_cases; ++t) {
-        int bits;
-        std::cin >> bits;
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_4 = {2, 1, 3, 4, 5, 6, 7, 8};
+int expected_4 = 3;
+int result_4 = MaximumRemovals(nums_4);
+assert(result_4 == expected_4);
+  
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_5 = {1, 2, 3, 4, 5};
+int expected_5 = 2;
+int result_5 = MaximumRemovals(nums_5);
+assert(result_5 == expected_5);
 
-        int size = 1 << (bits + 1);
-        std::vector<long long> vec(size);
-        for (int i = 0; i < size; ++i) {
-            std::cin >> vec[i];
-        }
+// TEST 
+std::vector<int> nums_6 = {5, 4, 3, 2, 1};
+int expected_6 = 1;
+int result_6 = MaximumRemovals(nums_6);
+assert(result_6 == expected_6);
+//TEST_END
 
-        try {
-            std::vector<long long> result = Solve(bits, vec);
-            for (std::vector<long long>::iterator it = result.begin(); it != result.end(); ++it) {
-                std::cout << *it << " ";
-            }
-            std::cout << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid input: " << e.what() << std::endl;
-            return 1;
-        }
-    }
-
+// TEST 
+std::vector<int> nums_7 = {3, 1, 4, 2, 5, 6, 8, 7};
+int expected_7 = 2;
+int result_7 = MaximumRemovals(nums_7);
+assert(result_7 == expected_7);
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_8 = {1, 3, 2, 4};
+int expected_8 = 1;
+int result_8 = MaximumRemovals(nums_8);
+ assert(result_8 == expected_8);
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_9 = {4, 3, 2, 1};
+int expected_9 = 0;
+int result_9 = MaximumRemovals(nums_9);
+assert(result_9 == expected_9);
+//TEST_END
+  
+// TEST
+std::vector<int> nums_10 = {};
+try {
+    MaximumRemovals(nums_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_11(801, 1);
+try {
+    MaximumRemovals(nums_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_12 = {0, 1, 2, 3};
+try {
+    MaximumRemovals(nums_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST
+std::vector<int> nums_13 = {-9999,3, 5};
+try {
+    MaximumRemovals(nums_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_14 = {-1, 1, 2};
+try {
+    MaximumRemovals(nums_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+// TEST 
+std::vector<int> nums_15 = {1, 465468, 2};
+try {
+    MaximumRemovals(nums_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END   
     return 0;
 }
-
