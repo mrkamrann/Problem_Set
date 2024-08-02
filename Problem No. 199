@@ -32,6 +32,7 @@ The value of vec_size should be in the range [1, 10^6] inclusive.
 The value of input_vec[i] should be in the range [0, 2^17) inclusive.
 
 */
+
 #include <bits/stdc++.h>
 #include <stdexcept>
 #include <cassert>
@@ -39,105 +40,241 @@ The value of input_vec[i] should be in the range [0, 2^17) inclusive.
 
 
 void OrTransform(std::vector<int>& vec, int val, int size) {
-  const int modulus_val = 1000000007;
-    for (int step = 1; step < size; step *= 2)
-        for (int j = 0, len = step * 2; j < size; j += len)
-            for (int k = j, p = j + step; k < p; ++k)
-                vec[step + k] = (vec[step + k] + vec[k] * val) % modulus_val;
+  int modulus = 1000000007;
+    for (int step = 1; step < size; step *= 2) {
+        for (int j = 0, len = step * 2; j < size; j += len) {
+            for (int k = j, p = j + step; k < p; ++k) {
+                vec[step + k] = (vec[step + k] + vec[k] * val) % modulus;
+            }
+        }
+    }
 }
 
 void AndTransform(std::vector<int>& vec, int val, int size) {
-  const int modulus_val = 1000000007;
-    for (int step = 1; step < size; step *= 2)
-        for (int j = 0, len = step * 2; j < size; j += len)
-            for (int k = j, p = j + step; k < p; ++k)
-                vec[k] = (vec[k] + vec[step + k] * val) % modulus_val;
+   int modulus = 1000000007;
+    for (int step = 1; step < size; step *= 2) {
+        for (int j = 0, len = step * 2; j < size; j += len) {
+            for (int k = j, p = j + step; k < p; ++k) {
+                vec[k] = (vec[k] + vec[step + k] * val) % modulus;
+            }
+        }
+    }
 }
 
 void XorTransform(std::vector<int>& vec, int val, int size) {
-  const int modulus_val = 1000000007;
-    for (int step = 1; step < size; step *= 2)
-        for (int j = 0, len = step * 2; j < size; j += len)
+   int modulus = 1000000007;
+    for (int step = 1; step < size; step *= 2) {
+        for (int j = 0, len = step * 2; j < size; j += len) {
             for (int k = j, p = j + step; k < p; ++k) {
                 int temp = vec[step + k];
-                vec[step + k] = (vec[k] - temp) * 1ll * val % modulus_val;
-                vec[k] = (vec[k] + temp) * 1ll * val % modulus_val;
+                vec[step + k] = (vec[k] - temp) * 1ll * val % modulus;
+                vec[k] = (vec[k] + temp) * 1ll * val % modulus;
             }
+        }
+    }
 }
 
 int CalculateSum(std::vector<int>& input_vec) {
     int vec_size = input_vec.size();
     int max_val = 0, log_val = 0;
     int power_size = 1;
-   const int modulus_val = 1000000007;
-  
-      if (vec_size < 1 || vec_size > 1000000) {
+    
+    if (vec_size < 1 || vec_size > 1000000) {
         throw std::invalid_argument("vec_size must be between 1 and 1000000 inclusive.");
     }
-  
-   for (int i = 0; i < vec_size; ++i) {
+
+    for (int i = 0; i < vec_size; ++i) {
         if (input_vec[i] < 0 || input_vec[i] >= (1 << 17)) {
             throw std::invalid_argument("Each element in input_vec must be between 0 and 131071 inclusive.");
         }
     }
 
-    for (int i = 0; i < vec_size; ++i) max_val = std::max(max_val, input_vec[i]);
-    while (power_size <= max_val) power_size <<= 1, ++log_val;
-
+    for (int i = 0; i < vec_size; ++i) {
+        max_val = std::max(max_val, input_vec[i]);
+    }
+    
+    while (power_size <= max_val) {
+        power_size <<= 1;
+        ++log_val;
+    }
+     int modulus = 1000000007;
     std::vector<int> count_vec(power_size + 10, 0), fib_vec(power_size + 10, 0), popcount_vec(power_size + 10, 0), y_vec(power_size + 10, 0), x_vec(power_size + 10, 0);
     std::vector<std::vector<int>> transform_vec(log_val + 10, std::vector<int>(power_size + 10, 0));
     std::vector<int> h_vec(power_size + 10, 0);
 
-    for (int i = 0; i < vec_size; ++i) ++count_vec[input_vec[i]];
+    for (int i = 0; i < vec_size; ++i) {
+        ++count_vec[input_vec[i]];
+    }
+    
     fib_vec[1] = popcount_vec[1] = 1;
-    for (int i = 2; i < power_size; ++i) fib_vec[i] = (fib_vec[i - 1] + fib_vec[i - 2]) % modulus_val, popcount_vec[i] = popcount_vec[i >> 1] + (i & 1);
-    for (int i = 0; i < power_size; ++i) transform_vec[popcount_vec[i]][i] = count_vec[i], y_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus_val;
-    for (int i = 0; i <= log_val; ++i) OrTransform(transform_vec[i], 1, power_size);
+    for (int i = 2; i < power_size; ++i) {
+        fib_vec[i] = (fib_vec[i - 1] + fib_vec[i - 2]) % modulus;
+        popcount_vec[i] = popcount_vec[i >> 1] + (i & 1);
+    }
+    
+    for (int i = 0; i < power_size; ++i) {
+        transform_vec[popcount_vec[i]][i] = count_vec[i];
+        y_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus;
+    }
+    
+    for (int i = 0; i <= log_val; ++i) {
+        OrTransform(transform_vec[i], 1, power_size);
+    }
+    
     for (int i = 0; i <= log_val; ++i) {
         std::fill(h_vec.begin(), h_vec.end(), 0);
-        for (int j = 0; j <= i; ++j)
-            for (int k = 0; k < power_size; ++k)
-                h_vec[k] = (h_vec[k] + transform_vec[j][k] * 1ll * transform_vec[i - j][k]) % modulus_val;
+        for (int j = 0; j <= i; ++j) {
+            for (int k = 0; k < power_size; ++k) {
+                h_vec[k] = (h_vec[k] + transform_vec[j][k] * 1ll * transform_vec[i - j][k]) % modulus;
+            }
+        }
         OrTransform(h_vec, -1, power_size);
-        for (int j = 0; j < power_size; ++j) if (popcount_vec[j] == i) x_vec[j] = h_vec[j] * 1ll * fib_vec[j] % modulus_val;
+        for (int j = 0; j < power_size; ++j) {
+            if (popcount_vec[j] == i) {
+                x_vec[j] = h_vec[j] * 1ll * fib_vec[j] % modulus;
+            }
+        }
     }
+    
     XorTransform(count_vec, 1, power_size);
-    for (int i = 0; i < power_size; ++i) count_vec[i] = count_vec[i] * 1ll * count_vec[i] % modulus_val;
-    XorTransform(count_vec, (modulus_val + 1) >> 1, power_size);
-    for (int i = 0; i < power_size; ++i) count_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus_val;
+    for (int i = 0; i < power_size; ++i) {
+        count_vec[i] = count_vec[i] * 1ll * count_vec[i] % modulus;
+    }
+    XorTransform(count_vec, (modulus + 1) >> 1, power_size);
+    for (int i = 0; i < power_size; ++i) {
+        count_vec[i] = count_vec[i] * 1ll * fib_vec[i] % modulus;
+    }
+    
     AndTransform(x_vec, 1, power_size);
     AndTransform(y_vec, 1, power_size);
     AndTransform(count_vec, 1, power_size);
-    for (int i = 0; i < power_size; ++i) x_vec[i] = x_vec[i] * 1ll * y_vec[i] % modulus_val * count_vec[i] % modulus_val;
+    
+    for (int i = 0; i < power_size; ++i) {
+        x_vec[i] = x_vec[i] * 1ll * y_vec[i] % modulus * count_vec[i] % modulus;
+    }
     AndTransform(x_vec, -1, power_size);
+    
     int result_val = 0;
-    for (int i = 0; i <= log_val; ++i) result_val = (result_val + x_vec[1 << i]) % modulus_val;
-    return (result_val + modulus_val) % modulus_val;
+    for (int i = 0; i <= log_val; ++i) {
+        result_val = (result_val + x_vec[1 << i]) % modulus;
+    }
+    return (result_val + modulus) % modulus;
 }
 
-#include <bits/stdc++.h>
-#include <stdexcept>
-#include <cassert>
-
-
 int main() {
-    int num_elements;
-    std::cin >> num_elements;
+    //TEST
+std::vector<int> input_vec_1 = {1, 2, 3};
+int expected_1 = 80;
+int result_1 = CalculateSum(input_vec_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-   
+//TEST
+std::vector<int> input_vec_2 = {0, 131071, 65536, 32768, 16384};
+int expected_2 = 869124007; 
+int result_2 = CalculateSum(input_vec_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::vector<int> input_vec(num_elements);
+//TEST
+std::vector<int> input_vec_3 = {2, 4, 8, 16, 32, 64};
+int expected_3 = 811720984; 
+int result_3 = CalculateSum(input_vec_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-    for (int i = 0; i < num_elements; ++i) std::cin >> input_vec[i];
+//TEST
+std::vector<int> input_vec_4 = {131070, 1, 2, 3, 4, 5, 6};
+int expected_4 = 861532872; 
+int result_4 = CalculateSum(input_vec_4);
+assert(result_4 == expected_4);
+//TEST_END
 
-   
-    try {
-        int result_val = ComputeFunction(input_vec);
-        std::cout << result_val << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Invalid input: " << e.what() << std::endl;
-        return 1;
-    }
+//TEST
+std::vector<int> input_vec_5 = {100000, 50000, 25000, 12500, 6250};
+int expected_5 = 0; 
+int result_5 = CalculateSum(input_vec_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_6 = {65535, 65534, 65533, 65532, 65531};
+int expected_6 = 0;
+int result_6 = CalculateSum(input_vec_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_7 = {0, 0, 0, 0, 0, 0, 0};
+int expected_7 = 0; 
+int result_7 = CalculateSum(input_vec_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_8 = {1, 3, 7, 15, 31, 63, 127};
+int expected_8 = 0;
+int result_8 = CalculateSum(input_vec_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_9 = {2, 4, 6, 8, 10, 12, 14};
+int expected_9 = 949134540; 
+int result_9 = CalculateSum(input_vec_9);
+assert(result_9 == expected_9);
+  
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_10 = {};
+try {
+    CalculateSum(input_vec_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_11 = {0, 131072};
+try {
+    CalculateSum(input_vec_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_12 = {-1, 2, 3};
+try {
+    CalculateSum(input_vec_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_13 = {1, -2, 3};
+try {
+    CalculateSum(input_vec_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> input_vec_14(3e6, 5);
+try {
+    CalculateSum(input_vec_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
