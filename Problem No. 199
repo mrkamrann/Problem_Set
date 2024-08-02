@@ -1,5 +1,36 @@
 /*
 Link: https://codeforces.com/contest/914/problem/G
+
+Cameron is given a vector input_vec of vec_size non-negative integers.
+
+A 5-tuple of integers (a, b, c, d, e) is said to be valid if it satisfies the following conditions:
+
+1 ≤ a, b, c, d, e ≤ vec_size
+(input_vec[a-1] | input_vec[b-1]) & input_vec[c-1] & (input_vec[d-1] ^ input_vec[e-1]) = 2^i for some integer i
+input_vec[a-1] & input_vec[b-1] = 0
+
+Here, '|' is the bitwise OR, '&' is the bitwise AND and '^' is the bitwise XOR operation.
+
+Find the sum of f(input_vec[a-1] | input_vec[b-1]) * f(input_vec[c-1]) * f(input_vec[d-1] ^ input_vec[e-1]) over all valid 5-tuples (a, b, c, d, e), 
+where f(i) is the i-th Fibonacci number (f(0) = 0, f(1) = 1, f(i) = f(i-1) + f(i-2)).
+
+Since the answer can be huge, output it modulo 10^9 + 7.
+
+Return the sum as described above, modulo 10^9 + 7.
+
+Create a C++ function CalculateSum that will return an integer denoting the required sum.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+A vector<long long> denoting input_vec.
+
+Input Constraints:
+
+The value of vec_size should be in the range [1, 10^6] inclusive.
+The value of input_vec[i] should be in the range [0, 2^17) inclusive.
+
 */
 #include <bits/stdc++.h>
 #include <stdexcept>
@@ -34,7 +65,7 @@ void XorTransform(std::vector<int>& vec, int val, int size) {
             }
 }
 
-int ComputeFunction(std::vector<int>& input_vec) {
+int CalculateSum(std::vector<int>& input_vec) {
     int vec_size = input_vec.size();
     int max_val = 0, log_val = 0;
     int power_size = 1;
