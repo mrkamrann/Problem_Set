@@ -28,7 +28,6 @@ Use appropriate error handling using the stdexcept library for the invalid test 
 Input Type:
 
 An integer denoting convention_minutes.
-An integer denoting query_count.
 A vector<int> denoting pigs_eaten_per_query.
 
 Input Constraints:
@@ -57,7 +56,9 @@ int ComputeInverse(int value, int modulus) {
     return result;
 }
 
-std::vector<int> CalculateAttackPlans(int convention_minutes, int query_count, const std::vector<int>& pigs_eaten_per_query) {
+std::vector<int> CalculateAttackPlans(int convention_minutes, const std::vector<int>& pigs_eaten_per_query) {
+     int query_count = pigs_eaten_per_query.size();
+  
     if (convention_minutes < 1 || convention_minutes > 1000000) {
         throw std::invalid_argument("convention_minutes out of range");
     }
@@ -99,20 +100,161 @@ std::vector<int> CalculateAttackPlans(int convention_minutes, int query_count, c
     return results;
 }
 
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
-    int convention_minutes;
-    int query_count;
-    std::cin >> convention_minutes >> query_count;
+  
+//TEST
+int convention_minutes_1 = 10;
+std::vector<int> pigs_eaten_per_query_1 = {5, 10, 15};
+std::vector<int> expected_1 = {298584, 40842099, 173863965};
+std::vector<int> result_1 = CalculateAttackPlans(convention_minutes_1, pigs_eaten_per_query_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<int> pigs_eaten_per_query(query_count);
-    for (int i = 0; i < query_count; ++i) {
-        std::cin >> pigs_eaten_per_query[i];
-    }
+//TEST
+int convention_minutes_2 = 20;
+std::vector<int> pigs_eaten_per_query_2 = {5, 10, 60};
+std::vector<int> expected_2 = {20433588, 511152863, 1};
+std::vector<int> result_2 = CalculateAttackPlans(convention_minutes_2, pigs_eaten_per_query_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::vector<int> results = ComputeValues(convention_minutes, query_count, pigs_eaten_per_query);
-    for (int result : results) {
-        std::cout << result << std::endl;
-    }
+//TEST
+int convention_minutes_3 = 1;
+std::vector<int> pigs_eaten_per_query_3 = {3, 2, 1};
+std::vector<int> expected_3 = {1, 3, 3};
+std::vector<int> result_3 = CalculateAttackPlans(convention_minutes_3, pigs_eaten_per_query_3);
+assert(result_3 == expected_3);
+//TEST_END
 
+//TEST
+int convention_minutes_4 = 1000000;
+std::vector<int> pigs_eaten_per_query_4 = {1000000, 2000000, 3000000};
+std::vector<int> expected_4 = {123564383, 375541543, 1};
+std::vector<int> result_4 = CalculateAttackPlans(convention_minutes_4, pigs_eaten_per_query_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int convention_minutes_5 = 500000;
+std::vector<int> pigs_eaten_per_query_5 = {500000, 1000000, 1500000};
+std::vector<int> expected_5 = {830097351, 562377581, 1};
+std::vector<int> result_5 = CalculateAttackPlans(convention_minutes_5, pigs_eaten_per_query_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int convention_minutes_6 = 2;
+std::vector<int> pigs_eaten_per_query_6 = {6};
+std::vector<int> expected_6 = {1};
+std::vector<int> result_6 = CalculateAttackPlans(convention_minutes_6, pigs_eaten_per_query_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int convention_minutes_7 = 100;
+std::vector<int> pigs_eaten_per_query_7 = {50, 100, 200};
+std::vector<int> expected_7 = {972586846, 959500551, 693201663};
+std::vector<int> result_7 = CalculateAttackPlans(convention_minutes_7, pigs_eaten_per_query_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int convention_minutes_8 = 10;
+std::vector<int> pigs_eaten_per_query_8 = {1, 2, 3};
+std::vector<int> expected_8 = {165, 1650, 11935};
+std::vector<int> result_8 = CalculateAttackPlans(convention_minutes_8, pigs_eaten_per_query_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int convention_minutes_9 = 1000000;
+std::vector<int> pigs_eaten_per_query_9 = {1, 2, 3, 1000000, 2000000, 3000000};
+std::vector<int> expected_9 = {1489500, 499989577, 804879417, 123564383, 375541543, 1};
+std::vector<int> result_9 = CalculateAttackPlans(convention_minutes_9, pigs_eaten_per_query_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+  
+//TEST
+int convention_minutes_10 = 10;
+std::vector<int> pigs_eaten_per_query_10 = {};
+try {
+    CalculateAttackPlans(convention_minutes_10, pigs_eaten_per_query_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int convention_minutes_11 = 0;
+std::vector<int> pigs_eaten_per_query_11 = {5, 10, 15};
+try {
+    CalculateAttackPlans(convention_minutes_11, pigs_eaten_per_query_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int convention_minutes_12 = 1000001;
+std::vector<int> pigs_eaten_per_query_12 = {100, 200, 300};
+try {
+    CalculateAttackPlans(convention_minutes_12, pigs_eaten_per_query_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int convention_minutes_13 = 100;
+std::vector<int> pigs_eaten_per_query_13 = {5, 10, 301};
+try {
+    CalculateAttackPlans(convention_minutes_13, pigs_eaten_per_query_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int convention_minutes_14 = 100;
+std::vector<int> pigs_eaten_per_query_14 = {0, 0, -99999};
+try {
+    CalculateAttackPlans(convention_minutes_14, pigs_eaten_per_query_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int convention_minutes_15 = -1;
+std::vector<int> pigs_eaten_per_query_15 = {5, 10, 15};
+try {
+    CalculateAttackPlans(convention_minutes_15, pigs_eaten_per_query_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+  
+//TEST
+int convention_minutes_16 = 1;
+std::vector<int> pigs_eaten_per_query_16(1e6, 6);
+try {
+    CalculateAttackPlans(convention_minutes_16, pigs_eaten_per_query_16);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
