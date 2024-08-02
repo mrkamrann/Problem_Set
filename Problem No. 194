@@ -13,7 +13,7 @@ Use appropriate error handling using the stdexcept library for invalid test case
 
 Input Type
 
-An integer row_count denoting the number of times Julie performs the experiment
+An integer row_count denoting the number of times Kylie performs the experiment
 An integer column_count denoting the number of cards in the deck
 An integer k_value denoting the exponent
 
