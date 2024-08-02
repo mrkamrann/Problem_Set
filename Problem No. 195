@@ -1,28 +1,33 @@
 /*
 Link: https://codeforces.com/contest/1523/problem/E
 
-Jim is conducting an experiment with a deck of cards. The deck consists of column_count cards, and exactly one card is a joker. Jim performs the following 
-experiment row_count times: he shuffles the deck, takes the top card of the deck, looks at it, and then returns it into the deck.
+Nobita, a cryptocurrency trader, invented a wonderful device consisting of row_count lights arranged in a row. The device functions in the following way:
 
-Let x_count be the number of times Jim takes the joker out of the deck during this experiment. Assuming that every time Jim shuffles the deck, all column_count!
-possible permutations of cards are equally probable, what is the expected value of x_count^k_value? Print the answer modulo 998244353.
+Initially, all lights on Nobita's device are turned off. At the beginning of a new iteration, the device randomly, with a uniform distribution, picks a light
+that is turned off and turns it on, telling Nobita which cryptocurrency he should invest in. After this iteration, if any k_value consecutive lights contain more
+than one turned on light, then the device finishes working.
 
-Create a C++ function CalculateExpectedValue that will return a long long denoting the expected value of x_count^k_value modulo 998244353.
+Nobita doesn't like uncertainty, so he wants you to calculate the expected value of the number of lights that are turned on in the device after it finishes working.
 
-Use appropriate error handling using the stdexcept library for invalid test cases.
+Return the answer, modulo 10^9+7.
+
+Formally, let M=10^9+7. It can be shown that the answer can be expressed as an irreducible fraction p/q, where p and q are integers and q≢0(modM). 
+Output the integer equal to p⋅q−1modM. In other words, output such an integer x that 0 ≤ x < M and x⋅q≡p(modM).
+
+Create a C++ function CalculateExpectedValue that will return an integer denoting the expected value of the number of lights that are turned on after 
+the device finishes working.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
 
 Input Type
 
-An integer row_count denoting the number of times Jim performs the experiment
-An integer column_count denoting the number of cards in the deck
-An integer k_value denoting the exponent
+An Integer denoting row_count
+An Integer denoting k_value
 
 Input Constraints
 
-The value of row_count should be in the range [1, 998244352] inclusive.
-The value of column_count should be in the range [1, 998244352] inclusive.
-The value of k_value should be in the range [1, 5000] inclusive.
-
+The value of row_count should be at least 2 and at most 10^5 inclusive.
+The value of k_value should be at least 2 and at most row_count inclusive.
 
 */
 
@@ -80,25 +85,133 @@ long long CalculateExpectedValue(long long row_count, long long k_value) {
 #include <cassert>
 
 int main() {
-    long long test_cases;
-    std::cin >> test_cases;
+   
+  //TEST
+long long row_count_1 = 5;
+long long k_value_1 = 2;
+long long expected_1 = 900000009; 
+long long result_1 = CalculateExpectedValue(row_count_1, k_value_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    if (test_cases < 1) {
-        throw std::invalid_argument("test_cases should be at least 1");
-    }
+//TEST
+long long row_count_2 = 10;
+long long k_value_2 = 3;
+long long expected_2 = 793650802; 
+long long result_2 = CalculateExpectedValue(row_count_2, k_value_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    for (long long t = 0; t < test_cases; ++t) {
-        long long row_count, k_value;
-        std::cin >> row_count >> k_value;
+//TEST
+long long row_count_3 = 50;
+long long k_value_3 = 5;
+long long expected_3 = 809185297; 
+long long result_3 = CalculateExpectedValue(row_count_3, k_value_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-        try {
-            long long result = ComputeAnswer(row_count, k_value);
-            std::cout << result << std::endl;
-        } catch (const std::invalid_argument& e) {
-            std::cerr << "Invalid input: " << e.what() << std::endl;
-            return 1;
-        }
-    }
+//TEST
+long long row_count_4 = 100;
+long long k_value_4 = 10;
+long long expected_4 = 761488986; 
+long long result_4 = CalculateExpectedValue(row_count_4, k_value_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long row_count_5 = 200;
+long long k_value_5 = 20;
+long long expected_5 = 764410020; 
+long long result_5 = CalculateExpectedValue(row_count_5, k_value_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long row_count_6 = 1000;
+long long k_value_6 = 100;
+long long expected_6 = 586290565; 
+long long result_6 = CalculateExpectedValue(row_count_6, k_value_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long row_count_7 = 10000;
+long long k_value_7 = 500;
+long long expected_7 = 294477350; 
+long long result_7 = CalculateExpectedValue(row_count_7, k_value_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long row_count_8 = 50000;
+long long k_value_8 = 2000;
+long long expected_8 = 77867248; 
+long long result_8 = CalculateExpectedValue(row_count_8, k_value_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long row_count_9 = 100000;
+long long k_value_9 = 5000;
+long long expected_9 = 281325513;
+long long result_9 = CalculateExpectedValue(row_count_9, k_value_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+long long row_count_10 = 1; 
+long long k_value_10 = 2;
+try {
+    CalculateExpectedValue(row_count_10, k_value_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long row_count_11 = 100; 
+long long k_value_11 = 101; 
+try {
+    CalculateExpectedValue(row_count_11, k_value_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long row_count_12 = -50; 
+long long k_value_12 = 5;
+try {
+    CalculateExpectedValue(row_count_12, k_value_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long row_count_13 = 50;
+long long k_value_13 = -5; 
+try {
+    CalculateExpectedValue(row_count_13, k_value_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+long long row_count_14 = 200000;
+long long k_value_14 = 1000;
+try {
+    CalculateExpectedValue(row_count_14, k_value_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
