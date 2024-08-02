@@ -19,11 +19,6 @@ When the monster with energy level x attacks the monster with the energy level y
 Babar is going to use this spell 10^100 times and deal with the monsters that will still have a non-zero energy level himself. 
 He wants you to determine which monsters will have a non-zero energy level once he will use the described spell 10^100 times.
 
-Input
-
-You are given num_monsters integers energy_levels[0], energy_levels[1], ..., energy_levels[num_monsters−1] (0 ≤ energy_levels[i] ≤ 2⋅10^5) — the current 
-energy levels of monsters.
-
 Return m integers i_1, i_2, ..., i_m (1 ≤ i_1 < i_2 < ... < i_m ≤ num_monsters) — the indices of these monsters in increasing order. 
 If m=0, output {-1}.
 
