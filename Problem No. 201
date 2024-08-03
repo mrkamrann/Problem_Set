@@ -1,6 +1,33 @@
 /*
 Link: https://codeforces.com/contest/1153/problem/F
+
+Asha is becoming a university student majoring in math at Japari University. In her Calculus class, her teacher taught her how to calculate the expected length of a random subsegment of a given segment. Then, as a bonus problem, the teacher left a homework challenge with the award of a garage kit from IOI. The bonus problem extends this challenge as follows:
+
+You are given a segment with length multiplier. We randomly choose num_elements segments by choosing two points (maybe with non-integer coordinates) from the given segment equiprobably, and the interval between the two points forms a segment. You are given the number of random segments num_elements, and another integer min_elements. The 2 * num_elements endpoints of the chosen segments split the segment into (2 * num_elements + 1) intervals. Your task is to calculate the expected total length of those intervals that are covered by at least min_elements segments of the num_elements random segments.
+
+You should find the answer modulo 998244353.
+
+Return one integer — the expected total length of all the intervals covered by at least min_elements segments of the num_elements random segments modulo 998244353.
+
+Formally, let m = 998244353. It can be shown that the answer can be expressed as an irreducible fraction p/q, where p and q are integers and q ≢ 0 (mod m). Output the integer equal to p * q^-1 mod m. In other words, output such an integer x that 0 ≤ x < m and x * q ≡ p (mod m).
+
+Create a C++ function ExpectedIntervalLength that will return an integer denoting the expected total length of all the intervals covered by at least min_elements segments of the num_elements random segments modulo 998244353.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An integer denoting num_elements.
+An integer denoting min_elements.
+An integer denoting multiplier.
+
+Input Constraints:
+
+The value of num_elements should be in the range [1, 2000] inclusive.
+The value of min_elements should be in the range [1, num_elements] inclusive.
+The value of multiplier should be in the range [1, 10^9] inclusive.
 */
+
 
 #include <iostream>
 #include <vector>
@@ -21,7 +48,7 @@ int Power(int base, int exponent) {
     return result;
 }
 
-int Solve(int num_elements, int min_elements, int multiplier) {
+int ExpectedIntervalLength(int num_elements, int min_elements, int multiplier) {
     if (num_elements < 1 || num_elements > 2000) {
         throw std::invalid_argument("num_elements must be between 1 and 2000");
     }
@@ -68,15 +95,197 @@ int Solve(int num_elements, int min_elements, int multiplier) {
 #include <cassert>
 
 int main() {
-    int num_elements, min_elements, multiplier;
-    std::cin >> num_elements >> min_elements >> multiplier;
+   //TEST
+int num_elements_1 = 1;
+int min_elements_1 = 1;
+int multiplier_1 = 1;
+int expected_1 = 332748118;
+int result_1 = ExpectedIntervalLength(num_elements_1, min_elements_1, multiplier_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    if (num_elements < 1 || num_elements > 2000 || min_elements < 1 || min_elements > num_elements || multiplier < 1 || multiplier > 1000000000) {
-        throw std::invalid_argument("Input values out of valid range");
-    }
+//TEST
+int num_elements_2 = 2000;
+int min_elements_2 = 1;
+int multiplier_2 = 1000000000;
+int expected_2 = 282557058;
+int result_2 = ExpectedIntervalLength(num_elements_2, min_elements_2, multiplier_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    int result = Solve(num_elements, min_elements, multiplier);
-    std::cout << result << std::endl;
+//TEST
+int num_elements_3 = 1000;
+int min_elements_3 = 500;
+int multiplier_3 = 500000000;
+int expected_3 = 380915829;
+int result_3 = ExpectedIntervalLength(num_elements_3, min_elements_3, multiplier_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_elements_4 = 200;
+int min_elements_4 = 200;
+int multiplier_4 = 1000000000;
+int expected_4 = 220165035;
+int result_4 = ExpectedIntervalLength(num_elements_4, min_elements_4, multiplier_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_elements_5 = 1500;
+int min_elements_5 = 750;
+int multiplier_5 = 1;
+int expected_5 = 645291437;
+int result_5 = ExpectedIntervalLength(num_elements_5, min_elements_5, multiplier_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_elements_6 = 100;
+int min_elements_6 = 10;
+int multiplier_6 = 1000000000;
+int expected_6 = 677818065;
+int result_6 = ExpectedIntervalLength(num_elements_6, min_elements_6, multiplier_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_elements_7 = 500;
+int min_elements_7 = 250;
+int multiplier_7 = 100000;
+int expected_7 = 154958434;
+int result_7 = ExpectedIntervalLength(num_elements_7, min_elements_7, multiplier_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_elements_8 = 999;
+int min_elements_8 = 333;
+int multiplier_8 = 333333333;
+int expected_8 = 25109087;
+int result_8 = ExpectedIntervalLength(num_elements_8, min_elements_8, multiplier_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_elements_9 = 150;
+int min_elements_9 = 75;
+int multiplier_9 = 123456789;
+int expected_9 = 886261980;
+int result_9 = ExpectedIntervalLength(num_elements_9, min_elements_9, multiplier_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+
+//TEST
+int num_elements_10 = 0;
+int min_elements_10 = 1;
+int multiplier_10 = 1;
+try {
+    ExpectedIntervalLength(num_elements_10, min_elements_10, multiplier_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_11 = 2001;
+int min_elements_11 = 1;
+int multiplier_11 = 1;
+try {
+    int result_11 = ExpectedIntervalLength(num_elements_11, min_elements_11, multiplier_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+   assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_12 = 1;
+int min_elements_12 = 0;
+int multiplier_12 = 1;
+try {
+    int result_12 = ExpectedIntervalLength(num_elements_12, min_elements_12, multiplier_12);
+   
+} catch(const std::invalid_argument& e) {
+   assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_13 = 1;
+int min_elements_13 = 2;
+int multiplier_13 = 1;
+try {
+    int result_13 = ExpectedIntervalLength(num_elements_13, min_elements_13, multiplier_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+  assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_14 = 1;
+int min_elements_14 = 1;
+int multiplier_14 = 0;
+try {
+    int result_14 = ExpectedIntervalLength(num_elements_14, min_elements_14, multiplier_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_15 = 1;
+int min_elements_15 = 1;
+int multiplier_15 = 1000000001;
+try {
+    int result_15 = ExpectedIntervalLength(num_elements_15, min_elements_15, multiplier_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+//TEST
+int num_elements_16 = -1;
+int min_elements_16 = 1;
+int multiplier_16 = 1;
+try {
+    int result_16 = ExpectedIntervalLength(num_elements_16, min_elements_16, multiplier_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_17 = 1;
+int min_elements_17 = -1;
+int multiplier_17 = 1;
+try {
+    int result_17 = ExpectedIntervalLength(num_elements_17, min_elements_17, multiplier_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_elements_18 = 1;
+int min_elements_18 = 1;
+int multiplier_18 = -1;
+try {
+    int result_18 = ExpectedIntervalLength(num_elements_18, min_elements_18, multiplier_18);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
