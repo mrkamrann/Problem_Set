@@ -28,18 +28,12 @@ The value of mod_value should be at least 1 and at most 1,000,000,000 inclusive.
 
 */
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 std::vector<long long> ComputeResultVector(int seats, long long mod_value) {
 
-    if (seats < 1 || seats > 50) {
-        throw std::invalid_argument("Invalid number of seats. Must be between 1 and 50.");
-    }
-    if (mod_value < 1 || mod_value > 1000000000) {
-        throw std::invalid_argument("Invalid mod value. Must be between 1 and 1000000000.");
-    }
     
     const int midpoint = 150000;
     std::vector<long long> result(seats + 1, 0);
@@ -69,28 +63,140 @@ std::vector<long long> ComputeResultVector(int seats, long long mod_value) {
 }
 
 long long CountPermutationPairs(int seats, long long mod_value) {
+  
+     if (seats < 1 || seats > 50) {
+        throw std::invalid_argument("Invalid number of seats. Must be between 1 and 50.");
+    }
+    if (mod_value < 1 || mod_value > 1000000000) {
+        throw std::invalid_argument("Invalid mod value. Must be between 1 and 1000000000.");
+    }
     std::vector<long long> result = ComputeResultVector(seats, mod_value);
     return (result[seats] + mod_value) % mod_value;
 }
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 
 int main() {
-    int seats;
-    long long mod_value;
-    
-    std::cin >> seats >> mod_value;
+   
+  //TEST
+int seats_1 = 1;
+long long mod_value_1 = 1;
+long long expected_1 = 0; 
+long long result_1 = CountPermutationPairs(seats_1, mod_value_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    try {
-        std::cout << CalculateResult(seats, mod_value) << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
-    
+//TEST
+int seats_2 = 2;
+long long mod_value_2 = 1000000000;
+long long expected_2 = 0; 
+long long result_2 = CountPermutationPairs(seats_2, mod_value_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int seats_3 = 3;
+long long mod_value_3 = 1000000000;
+long long expected_3 = 0; 
+long long result_3 = CountPermutationPairs(seats_3, mod_value_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int seats_4 = 4;
+long long mod_value_4 = 1000000000;
+long long expected_4 = 17; 
+long long result_4 = CountPermutationPairs(seats_4, mod_value_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int seats_5 = 5;
+long long mod_value_5 = 1000000000;
+long long expected_5 = 904; 
+long long result_5 = CountPermutationPairs(seats_5, mod_value_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int seats_6 = 6;
+long long mod_value_6 = 1000000000;
+long long expected_6 = 45926; 
+long long result_6 = CountPermutationPairs(seats_6, mod_value_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int seats_7 = 7;
+long long mod_value_7 = 1000000000;
+long long expected_7 = 2725016; 
+long long result_7 = CountPermutationPairs(seats_7, mod_value_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int seats_8 = 8;
+long long mod_value_8 = 1000000000;
+long long expected_8 = 196884712; 
+long long result_8 = CountPermutationPairs(seats_8, mod_value_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int seats_9 = 9;
+long long mod_value_9 = 1000000000;
+long long expected_9 = 350671831; 
+long long result_9 = CountPermutationPairs(seats_9, mod_value_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+int seats_10 = -1;
+long long mod_value_10 = 1000000000;
+try {
+    CountPermutationPairs(seats_10, mod_value_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_11 = 1;
+long long mod_value_11 = -1000000000;
+try {
+    CountPermutationPairs(seats_11, mod_value_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_12 = -999999999;
+long long mod_value_12 = 1000000000;
+try {
+    CountPermutationPairs(seats_12, mod_value_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_13 = 50;
+long long mod_value_13 = -999999999999;
+try {
+    CountPermutationPairs(seats_13, mod_value_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     return 0;
 }
 
