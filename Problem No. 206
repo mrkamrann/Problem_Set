@@ -1,15 +1,39 @@
 /*
 Link: https://codeforces.com/contest/838/problem/D
+
+Carl is boarding an airplane which has seats rows from front to back. There will be passengers people boarding this airplane.
+
+This airplane has an entrance at the very front and very back of the plane.
+
+Each person has some assigned seat. It is possible for multiple people to have the same assigned seat. The people will then board the plane one by one starting with person 1. Each person can independently choose either the front entrance or back entrance to enter the plane.
+
+When a person walks into the plane, they walk directly to their assigned seat and will try to sit in it. If it is occupied, they will continue walking in the direction they walked in until they are at an empty seat - they will take the earliest empty seat that they can find. If they get to the end of the row without finding a seat, they will be angry.
+
+Find the number of ways to assign tickets to the passengers and board the plane without anyone getting angry. Two ways are different if there exists a passenger who chose a different entrance in both ways, or the assigned seat is different. Print this count modulo 10^9 + 7.
+
+Create a C++ Function CalculateBoardingWays that will return an integer denoting the number of ways, modulo 10^9 + 7.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting seats
+An integer denoting passengers
+
+Input Constraints
+
+The value of seats should be at least 1 and at most 1,000,000 inclusive.
+The value of passengers should be at least 1 and at most 1,000,000 inclusive.
 */
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
-const int modulus_val = 1000000007;
 
 int Power(int base, int exponent) {
     int result = 1;
+    const int modulus_val = 1000000007;
     while (exponent) {
         if (exponent & 1) {
             result = 1LL * result * base % modulus_val;
@@ -20,14 +44,16 @@ int Power(int base, int exponent) {
     return result;
 }
 
-int CalculateResult(int seats, int passengers) {
+int CalculateBoardingWays(int seats, int passengers) {
 
     if (passengers < 1 || passengers > seats || seats > 1000000) {
         throw std::invalid_argument("Input constraints violated");
     }
+    const int modulus_val = 1000000007;
     int part_1 = seats + 1 - passengers;
     int part_2 = Power(seats + 1, modulus_val - 2);
     int part_3 = Power(seats + seats + 2, passengers);
+    
 
     int result = 1LL * part_1 % modulus_val;
     result = 1LL * result * part_2 % modulus_val;
@@ -35,15 +61,149 @@ int CalculateResult(int seats, int passengers) {
     return result;
 }
 
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
 int main() {
-    int seats, passengers;
-    std::cin >> seats >> passengers;
-    
-    try {
-        std::cout << CalculateResult(seats, passengers) << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
+   
+  //TEST
+int seats_1 = 1;
+int passengers_1 = 1;
+int expected_1 = 2; 
+int result_1 = CalculateBoardingWays(seats_1, passengers_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int seats_2 = 2;
+int passengers_2 = 1;
+int expected_2 = 4; 
+int result_2 = CalculateBoardingWays(seats_2, passengers_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int seats_3 = 3;
+int passengers_3 = 2;
+int expected_3 = 32; 
+int result_3 = CalculateBoardingWays(seats_3, passengers_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int seats_4 = 4;
+int passengers_4 = 2;
+int expected_4 = 60;
+int result_4 = CalculateBoardingWays(seats_4, passengers_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int seats_5 = 5;
+int passengers_5 = 3;
+int expected_5 = 864; 
+int result_5 = CalculateBoardingWays(seats_5, passengers_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int seats_6 = 6;
+int passengers_6 = 4;
+int expected_6 = 16464; 
+int result_6 = CalculateBoardingWays(seats_6, passengers_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int seats_7 = 7;
+int passengers_7 = 5;
+int expected_7 = 393216; 
+int result_7 = CalculateBoardingWays(seats_7, passengers_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int seats_8 = 8;
+int passengers_8 = 6;
+int expected_8 = 11337408; 
+int result_8 = CalculateBoardingWays(seats_8, passengers_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int seats_9 = 9;
+int passengers_9 = 7;
+int expected_9 = 384000000; 
+int result_9 = CalculateBoardingWays(seats_9, passengers_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int seats_10 = 0;
+int passengers_10 = 1;
+try {
+    CalculateBoardingWays(seats_10, passengers_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_11 = 1;
+int passengers_11 = 0;
+try {
+    CalculateBoardingWays(seats_11, passengers_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_12 = 1000001;
+int passengers_12 = 1;
+try {
+    CalculateBoardingWays(seats_12, passengers_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_13 = 1;
+int passengers_13 = 1000001;
+try {
+    CalculateBoardingWays(seats_13, passengers_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_14 = -1;
+int passengers_14 = 1;
+try {
+    CalculateBoardingWays(seats_14, passengers_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int seats_15 = 1;
+int passengers_15 = -1;
+try {
+    CalculateBoardingWays(seats_15, passengers_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     
     return 0;
 }
