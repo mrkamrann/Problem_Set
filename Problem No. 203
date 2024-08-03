@@ -1,5 +1,28 @@
 /*
 Link: https://codeforces.com/contest/1257/problem/G
+
+Neena is given an integer x represented as a product of num_primes, its prime divisors p1, p2, ..., pn represented be a 0 based vector named primes. Let S be 
+the set of all positive integer divisors of x (including 1 and x itself).
+
+We call a set of integers d good if (and only if) there is no pair a ∈ d, b ∈ d such that a ≠ b and a divides b.
+
+Find a good subset of S with maximum possible size. Since the answer can be large, return the size of the subset modulo 998244353.
+
+Return the maximum possible size of a good subset modulo 998244353.
+
+Create a C++ function FindMaxGoodSubsetSize that will return an integer denoting the size of the good subset modulo 998244353.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+A vector<int> denoting primes
+
+Input Constraints
+
+The value of num_primes should be at least 1 and at most 200,000 inclusive.
+Each value in the primes vector should be in the range [2, 3,000,000] inclusive.
+
 */
 
 #include <vector>
@@ -41,19 +64,19 @@ void NumberTheoreticTransform(std::vector<int>& vec, const std::vector<int>& ome
     }
     for (int i = 2; i <= length; i <<= 1) {
         int mid = i >> 1;
-        for (int* p = vec.data(); p != vec.data() + length; p += i) {
+        for (int* p_val = vec.data(); p_val != vec.data() + length; p_val += i) {
             for (int j = 0; j < mid; ++j) {
-                int temp = 1LL * omega[length / i * j] * p[j + mid] % modulus_val;
-                p[j + mid] = p[j] - temp;
-                if (p[j + mid] < 0) p[j + mid] += modulus_val;
-                p[j] += temp;
-                if (p[j] >= modulus_val) p[j] -= modulus_val;
+                int temp = 1LL * omega[length / i * j] * p_val[j + mid] % modulus_val;
+                p_val[j + mid] = p_val[j] - temp;
+                if (p_val[j + mid] < 0) p_val[j + mid] += modulus_val;
+                p_val[j] += temp;
+                if (p_val[j] >= modulus_val) p_val[j] -= modulus_val;
             }
         }
     }
 }
 
-std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std::vector<int>& f, std::vector<int>& g) {
+std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std::vector<int>& f_vec, std::vector<int>& g_vec) {
     const int modulus_val = 998244353;
     const int max_n = 1 << 18;
     if (left == right) {
@@ -62,17 +85,17 @@ std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std:
         return result;
     }
     int mid = (left + right) >> 1;
-    std::vector<int> left_part = Solve(left, mid, primes, f, g);
-    std::vector<int> right_part = Solve(mid + 1, right, primes, f, g);
-    int len1 = left_part.size(), len2 = right_part.size();
+    std::vector<int> left_part = Solve(left, mid, primes, f_vec, g_vec);
+    std::vector<int> right_part = Solve(mid + 1, right, primes, f_vec, g_vec);
+    int len_1 = left_part.size(), len_2 = right_part.size();
     int length = 1;
-    while (length < len1 + len2) length <<= 1;
+    while (length < len_1 + len_2) length <<= 1;
     
     std::vector<int> vec_a(length), vec_b(length), omega(length), inv_omega(length), positions(length);
-    for (int i = 0; i < len1; ++i) vec_a[i] = left_part[i];
-    for (int i = 0; i < len2; ++i) vec_b[i] = right_part[i];
+    for (int i = 0; i < len_1; ++i) vec_a[i] = left_part[i];
+    for (int i = 0; i < len_2; ++i) vec_b[i] = right_part[i];
     
-    Initialize(length, omega, inv_omega, positions, f, g);
+    Initialize(length, omega, inv_omega, positions, f_vec, g_vec);
     NumberTheoreticTransform(vec_a, omega, length, positions);
     NumberTheoreticTransform(vec_b, omega, length, positions);
     
@@ -81,7 +104,7 @@ std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std:
     
     int inv_length = QuickPower(length, modulus_val - 2);
     std::vector<int> result;
-    for (int i = 0; i < len1 + len2 - 1; ++i) {
+    for (int i = 0; i < len_1 + len_2 - 1; ++i) {
         int res = 1LL * vec_a[i] * inv_length % modulus_val;
         result.push_back(res);
         vec_a[i] = 0;
@@ -89,7 +112,7 @@ std::vector<int> Solve(int left, int right, const std::vector<int>& primes, std:
     return result;
 }
 
-int ComputeResult(std::vector<int>& primes) {
+int FindMaxGoodSubsetSize(std::vector<int>& primes) {
 
     int num_primes = primes.size();
     const int modulus_val = 998244353;
@@ -108,20 +131,20 @@ int ComputeResult(std::vector<int>& primes) {
 
     int num = QuickPower(3, (modulus_val - 1) / max_n);
     int inv_num = QuickPower(num, modulus_val - 2);
-    std::vector<int> f(max_n, 1), g(max_n, 1);
+    std::vector<int> f_vec(max_n, 1), g_vec(max_n, 1);
     for (int i = 1; i < max_n; ++i) {
-        f[i] = 1LL * f[i - 1] * num % modulus_val;
-        g[i] = 1LL * g[i - 1] * inv_num % modulus_val;
+        f_vec[i] = 1LL * f_vec[i - 1] * num % modulus_val;
+        g_vec[i] = 1LL * g_vec[i - 1] * inv_num % modulus_val;
     }
-    int n = primes.size();
+
     std::vector<int> count(3e6, 0);
-    for (int i = 0; i < n; ++i) ++count[primes[i]];
+    for (int i = 0; i < num_primes; ++i) ++count[primes[i]];
     int cnt = 0;
     for (int i = 0; i < 3e6; ++i) {
         if (count[i]) count[cnt++] = count[i];
     }
-    std::vector<int> result = Solve(0, cnt - 1, count, f, g);
-    return result[n / 2];
+    std::vector<int> result = Solve(0, cnt - 1, count, f_vec, g_vec);
+    return result[num_primes / 2];
 }
 
 #include <vector>
@@ -130,14 +153,118 @@ int ComputeResult(std::vector<int>& primes) {
 #include <cassert>
 
 int main() {
-    int num_primes;
-    std::cin >> num_primes;
-    
-    std::vector<int> primes(num_primes);
-    for (int i = 0; i < num_primes; ++i) {
-        std::cin >> primes[i];
-       
-    }
- 
-    std::cout << ComputeResult(primes) << std::endl;
+    // TEST
+std::vector<int> primes_1 = {2, 3, 5};
+int expected_1 = 3;
+int result_1 = FindMaxGoodSubsetSize(primes_1);
+ assert(result_1 == expected_1);
+// TEST_END
+
+// TEST
+std::vector<int> primes_2 = {2, 2, 3, 3};
+int expected_2 = 3;
+int result_2 = FindMaxGoodSubsetSize(primes_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+std::vector<int> primes_3 = {7};
+int expected_3 = 1;
+int result_3 = FindMaxGoodSubsetSize(primes_3);
+ assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+std::vector<int> primes_4 = {2, 11, 13};
+int expected_4 = 3;
+int result_4 = FindMaxGoodSubsetSize(primes_4);
+ assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+std::vector<int> primes_5 = {5, 5, 5};
+int expected_5 = 1;
+int result_5 = FindMaxGoodSubsetSize(primes_5);
+ assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+std::vector<int> primes_6 = {2, 2, 2, 2, 2, 2};
+int expected_6 = 1;
+int result_6 = FindMaxGoodSubsetSize(primes_6);
+ assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+std::vector<int> primes_7 = {13, 17, 19, 23, 29};
+int expected_7 = 10;
+int result_7 = FindMaxGoodSubsetSize(primes_7);
+ assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+std::vector<int> primes_8 = {2, 3, 5, 7, 11, 13, 17};
+int expected_8 = 35;
+int result_8 = FindMaxGoodSubsetSize(primes_8);
+ assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+std::vector<int> primes_9 = {2, 3, 3, 5, 5, 7};
+int expected_9 = 10;
+int result_9 = FindMaxGoodSubsetSize(primes_9);
+ assert(result_9 == expected_9);
+// TEST_END
+
+// Error test cases starting from 10
+// TEST
+std::vector<int> primes_10 = {2, -3, 5};
+try {
+    FindMaxGoodSubsetSize(primes_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> primes_11 = {};
+try {
+    FindMaxGoodSubsetSize(primes_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> primes_12 = {-1};
+try {
+    FindMaxGoodSubsetSize(primes_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> primes_13 = {2, 3, 3000001};
+try {
+    FindMaxGoodSubsetSize(primes_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+std::vector<int> primes_14(200001, 2); 
+try {
+    FindMaxGoodSubsetSize(primes_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+    return 0;
 }
