@@ -32,7 +32,7 @@ A vector<long long> denoting treasure_values.
 
 Input Constraints:
 
-2 ≤ num_rooms ≤ 3⋅10^5
+2 ≤ tresure_values.length(num_rooms) ≤ 3⋅10^5
 1 ≤ treasure_values[i] ≤ 10^6
 
 */
@@ -44,7 +44,10 @@ Input Constraints:
 #include <cassert>
 
 
-std::vector<long long> MinimizeEarnings(int num_rooms, std::vector<long long>& treasure_values) {
+std::vector<long long> MinimizeEarnings(std::vector<long long>& treasure_values) {
+  
+    int num_rooms = treasure_values.size();
+  
     if (num_rooms < 2 || num_rooms > 300000) {
         throw std::invalid_argument("num_rooms must be between 2 and 300000");
     }
@@ -84,19 +87,131 @@ std::vector<long long> MinimizeEarnings(int num_rooms, std::vector<long long>& t
 #include <cassert>
 
 int main() {
-    int num_rooms;
-    std::cin >> num_rooms;
 
-    std::vector<long long> treasure_values(num_rooms);
-    for (int i = 0; i < num_rooms; i++) {
-        std::cin >> treasure_values[i];
+  //TEST
+    std::vector<long long> treasure_values_1 = {1, 2};
+    std::vector<long long> expected_1 = {499122177,0};
+    std::vector<long long> result_1 = MinimizeEarnings(treasure_values_1);
+    assert(result_1 == expected_1);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_2 = {10, 20, 30};
+    std::vector<long long> expected_2 = {332748131,332748121,0};
+    std::vector<long long> result_2 = MinimizeEarnings(treasure_values_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_3 = {100, 200, 300, 400, 500};
+    std::vector<long long> expected_3 = {400,140,60,20,0};
+    std::vector<long long> result_3 = MinimizeEarnings(treasure_values_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_4 = {999999, 1000000, 999999};
+    std::vector<long long> expected_4 = {999999,333333,0};
+    std::vector<long long> result_4 = MinimizeEarnings(treasure_values_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_5 = {1, 1, 1, 1, 1, 1};
+    std::vector<long long> expected_5 = {499122179,1,499122177,332748118,166374059,0};
+    std::vector<long long> result_5 = MinimizeEarnings(treasure_values_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_6 = {500000, 500000, 500000, 500000};
+    std::vector<long long> expected_6 = {750000,250000,125000,0};
+    std::vector<long long> result_6 = MinimizeEarnings(treasure_values_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_7 = {1000000, 1000000};
+    std::vector<long long> expected_7 = {500000,0};
+    std::vector<long long> result_7 = MinimizeEarnings(treasure_values_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_8 = {1, 1000000};
+    std::vector<long long> expected_8 = {499122177,0};
+    std::vector<long long> result_8 = MinimizeEarnings(treasure_values_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_9 = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+    std::vector<long long> expected_9 = {1650,700,390,240,150,100,60,30,10,0};
+    std::vector<long long> result_9 = MinimizeEarnings(treasure_values_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+  
+
+    //TEST
+    std::vector<long long> treasure_values_10 = {1};
+    try {
+        MinimizeEarnings(treasure_values_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
 
-    std::vector<long long> results = ComputeResults(num_rooms, treasure_values);
-    for (std::size_t i = 0; i < results.size(); ++i) {
-        std::cout << results[i] << " ";
+    //TEST
+    std::vector<long long> treasure_values_11(3 * 100000 + 1, 1);
+    try {
+        MinimizeEarnings(treasure_values_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
 
+    //TEST
+    std::vector<long long> treasure_values_12 = {1000001, 2, 3};
+    try {
+        MinimizeEarnings(treasure_values_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_13 = {1, -2, 3};
+    try {
+        MinimizeEarnings(treasure_values_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_14 = {};
+    try {
+        MinimizeEarnings(treasure_values_14);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> treasure_values_15 = {-1, -2, -3, -4, -5};
+    try {
+        MinimizeEarnings(treasure_values_15);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
     return 0;
 }
 
