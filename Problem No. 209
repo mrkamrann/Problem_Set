@@ -32,6 +32,7 @@ Input Type
 A vector of integers denoting fragments
 
 Input Constraints
+
 The value of num_fragments should be at least 1 and at most 1,000,000 inclusive.
 Each value in fragments should be in the range [0, 5000] inclusive.
 
@@ -127,30 +128,125 @@ long long CalculateMinimalPathSum( const std::vector<int>& fragments) {
     return answer;
 }
 
-
 #include <iostream>
 #include <vector>
 #include <stdexcept>
 #include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+   
+  //TEST
+std::vector<int> fragments_1 = {0};
+long long expected_1 = 0; 
+long long result_1 = CalculateMinimalPathSum(fragments_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    int num_fragments;
-    std::cin >> num_fragments;
+//TEST
+std::vector<int> fragments_2 = {1, 2, 3};
+long long expected_2 = 3; 
+long long result_2 = CalculateMinimalPathSum(fragments_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::vector<int> fragments(num_fragments);
-    for (int i = 0; i < num_fragments; i++) {
-        std::cin >> fragments[i];
-    }
+//TEST
+std::vector<int> fragments_3 = {5,1,3};
+long long expected_3 = 7; 
+long long result_3 = CalculateMinimalPathSum(fragments_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-    try {
-        std::cout << SolveProblem(num_fragments, fragments) << '\n';
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
+//TEST
+std::vector<int> fragments_4 = {1, 2, 5};
+long long expected_4 = 6; 
+long long result_4 = CalculateMinimalPathSum(fragments_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_5 = {1, 3, 5, 7, 9};
+long long expected_5 = 28; 
+long long result_5 = CalculateMinimalPathSum(fragments_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_6 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+long long expected_6 = 51;
+long long result_6 = CalculateMinimalPathSum(fragments_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_7 = {1,2};
+long long expected_7 = 1;
+long long result_7 = CalculateMinimalPathSum(fragments_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_8 = {0};
+long long expected_8 = 0;
+long long result_8 = CalculateMinimalPathSum(fragments_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_9 = {10, 20};
+long long expected_9 = 51; 
+long long result_9 = CalculateMinimalPathSum(fragments_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> fragments_10 = {-1, 1, 2}; 
+try {
+    CalculateMinimalPathSum(fragments_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> fragments_11 = {0, 5001};
+try {
+    CalculateMinimalPathSum(fragments_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> fragments_12 = {}; 
+try {
+    CalculateMinimalPathSum(fragments_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> fragments_13(1000001, 0); 
+try {
+    CalculateMinimalPathSum(fragments_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> fragments_14 = {0, 1, -1}; 
+try {
+    CalculateMinimalPathSum(fragments_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
