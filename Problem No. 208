@@ -1,5 +1,32 @@
 /*
 Link: https://codeforces.com/contest/1781/problem/F
+
+Julie likes playing with bracket sequences. Today she wants to create a new bracket sequence using the following algorithm. Initially, Julie's sequence is an empty
+string, and then she will repeat the following actions operations times:
+
+Choose a place in the current bracket sequence to insert new brackets uniformly at random. If the length of the current sequence is k, then there are k+1 such 
+places: before the first bracket, between the first and the second brackets, … , after the k-th bracket. In particular, there is one such place in an empty bracket sequence.
+Choose string "()" with probability probability or string ")(" with probability 1 - probability and insert it into the chosen place. The length of the bracket s
+equence will increase by 2.
+A bracket sequence is called regular if it is possible to obtain a correct arithmetic expression by inserting characters '+' and '1' into it. For example, sequences 
+"(())()", "()", and "(()(()))" are regular, while ")(", "(()", and "(()))(" are not.
+
+Julie wants to know the probability that her bracket sequence will be a regular one at the end. Help her and find this probability modulo 998244353.
+
+Create a C++ function CalculateRegularBracketProbability that will return an integer denoting the probability that the final bracket sequence will be regular, 
+modulo 998244353.
+
+Use appropriate error handling using the std::invalid_argument library for invalid test cases.
+
+Input Type
+
+An integer denoting operations
+An integer denoting probability
+
+Input Constraints
+
+The value of operations should be at least 1 and at most 500 inclusive.
+The value of probability should be at least 0 and at most 10,000 inclusive.
 */
 #include <iostream>
 #include <vector>
@@ -17,7 +44,7 @@ std::vector<int> ComputeInverses(int max_val) {
     return inverses;
 }
 
-int ComputeAnswer(int num_seats, int passengers) {
+int CalculateRegularBracketProbability(int num_seats, int passengers) {
 
     if (num_seats < 1 || num_seats > 500) {
         throw std::invalid_argument("Invalid number of seats. Must be between 1 and 500.");
