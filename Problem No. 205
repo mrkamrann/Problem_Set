@@ -1,8 +1,30 @@
 /*
 Link: https://codeforces.com/problemset/problem/995/F
+
+Ana, having graduated from the MOO Institute of Techcowlogy (MIT), has started a startup! Ana is the president of her startup. She also hires num_elements − 1 other employees, each of whom is assigned a direct superior. If ana_superior is a superior of ana_employee and ana_employee is a superior of ana_worker, then also ana_superior is a superior of ana_worker. Additionally, there are no ana_superior and ana_employee such that ana_superior is the superior of ana_employee and ana_employee is the superior of ana_superior. Ana herself has no superior. Ana is employee number 1, and the others are employee numbers 2 through num_elements.
+
+Finally, Ana must assign salaries to each employee in the company including herself. Due to budget constraints, each employee's salary is an integer between 1 and divisor. Additionally, no employee can make strictly more than their superior.
+
+Help Ana find the number of ways to assign salaries. As this number may be large, output it modulo 10^9+7.
+
+Create a C++ Function CalculateSalaryAssignments that will return an integer denoting the number of ways to assign salaries modulo 10^9+7.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+An integer denoting divisor
+A vector of integers parent_arr of size num_elements-1 denoting direct superiors
+
+Input Constraints
+
+The value of num_elements should be at least 1 and at most 3000 inclusive.
+The value of divisor should be at least 1 and at most 10^9 inclusive.
+The value of parent_arr[i] should be in the range [1, i+1] inclusive.
+
 */
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
@@ -16,10 +38,19 @@ std::vector<int> CalculateInverse(int num_elements) {
     return inverse;
 }
 
-int CalculateAnswer(int num_elements, int divisor, const std::vector<int>& parent_arr) {
+int CalculateSalaryAssignments(int divisor, const std::vector<int>& parent_arr) {
 
+    int num_elements = parent_arr.size() + 1;
+  
     if (num_elements < 1 || num_elements > 3000 || divisor < 1 || divisor > 1000000000) {
         throw std::invalid_argument("Input constraints violated");
+    }
+    for(int i = 0;i<parent_arr.size();++i)
+    {
+      if(parent_arr[i] < 1 || parent_arr[i] > i+1)
+      {
+          throw std::invalid_argument("The value of parent_arr[i] should be in the range [1, i+1] inclusive.");
+      }
     }
     const int modulus_val = 1000000007;
     int max_size = num_elements + 2;
@@ -52,24 +83,149 @@ int CalculateAnswer(int num_elements, int divisor, const std::vector<int>& paren
     return result;
 }
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 int main() {
-    int num_elements, divisor;
-    std::cin >> num_elements >> divisor;
-    
-    std::vector<int> parent_arr(num_elements - 1);
-    for (int i = 0; i < num_elements - 1; ++i) {
-        std::cin >> parent_arr[i];
-    }
-    
-    try {
-        std::cout << CalculateAnswer(num_elements, divisor, parent_arr) << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
+
+//TEST
+std::vector<int> parent_arr_1 = {1};
+int divisor_1 = 2;
+int expected_1 = 3; 
+int result_1 = CalculateSalaryAssignments(divisor_1, parent_arr_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_2 = {1, 1};
+int divisor_2 = 2;
+int expected_2 = 5; 
+int result_2 = CalculateSalaryAssignments(divisor_2, parent_arr_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_3 = {1, 1, 2};
+int divisor_3 = 3;
+int expected_3 = 25; 
+int result_3 = CalculateSalaryAssignments(divisor_3, parent_arr_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_4 = {1, 2, 3};
+int divisor_4 = 4;
+int expected_4 = 35; 
+int result_4 = CalculateSalaryAssignments(divisor_4, parent_arr_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_5 = {1, 2, 1, 2};
+int divisor_5 = 5;
+int expected_5 = 448; 
+int result_5 = CalculateSalaryAssignments(divisor_5, parent_arr_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_6 = {1, 1, 1, 1, 1};
+int divisor_6 = 6;
+int expected_6 = 12201; 
+int result_6 = CalculateSalaryAssignments(divisor_6, parent_arr_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_7 = {1, 2, 3, 4, 5, 6};
+int divisor_7 = 7;
+int expected_7 = 1716; 
+int result_7 = CalculateSalaryAssignments(divisor_7, parent_arr_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_8 = {1, 1, 2, 2, 3, 3, 4};
+int divisor_8 = 8;
+int expected_8 = 251922; 
+int result_8 = CalculateSalaryAssignments(divisor_8, parent_arr_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_9 = {1, 2, 3, 4, 5, 6, 7, 8};
+int divisor_9 = 9;
+int expected_9 = 24310; 
+int result_9 = CalculateSalaryAssignments(divisor_9, parent_arr_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_10 = {1, 1, 1, 1};
+int divisor_10 = -1;
+try {
+    CalculateSalaryAssignments(divisor_10, parent_arr_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_11 = {1, 1, 1, 1};
+int divisor_11 = 1'000'000'001;
+try {
+    CalculateSalaryAssignments(divisor_11, parent_arr_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_12 = {1, 1, 1, 458};
+int divisor_12 = 2;
+try {
+    CalculateSalaryAssignments(divisor_12, parent_arr_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_13 = {1, 1, 1, 5};
+int divisor_13 = 2;
+try {
+    CalculateSalaryAssignments(divisor_13, parent_arr_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_14 = {-1, 1, 1, 1};
+int divisor_14 = 2;
+try {
+    CalculateSalaryAssignments(divisor_14, parent_arr_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<int> parent_arr_15(1e6, 4);
+int divisor_15 = 2;
+try {
+    CalculateSalaryAssignments(divisor_15, parent_arr_15);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     
     return 0;
 }
