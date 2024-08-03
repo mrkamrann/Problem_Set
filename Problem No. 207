@@ -1,5 +1,31 @@
 /*
 Link: https://codeforces.com/contest/1542/problem/E1
+
+Ana, having a love for permutations, has started an investigation into sequences! Ana wants to explore permutations of the integers 1,2,…,n. For example,
+[2,3,1,4] is a permutation of 1,2,3,4, but [1,4,2,2] isn't because 2 appears twice in it.
+
+Recall that the number of inversions in a permutation a1,a2,…,an is the number of pairs of indices (i,j) such that i<j and ai>aj.
+
+Let p and q be two permutations of 1,2,…,n. Find the number of permutation pairs (p,q) that satisfy the following conditions:
+
+p is lexicographically smaller than q.
+
+The number of inversions in p is greater than the number of inversions in q.
+Return the number of such pairs modulo mod_value. Note that mod_value may not be a prime.
+
+Create a C++ function CountPermutationPairs that will return a long long denoting the number of permutation pairs that meet the criteria.
+
+Use appropriate error handling using the std::invalid_argument library for invalid test cases.
+
+Input Type
+An integer denoting seats
+A long long integer denoting mod_value
+
+Input Constraints
+
+The value of seats should be at least 1 and at most 50 inclusive.
+The value of mod_value should be at least 1 and at most 1,000,000,000 inclusive.
+
 */
 
 #include <bits/stdc++.h>
@@ -42,7 +68,7 @@ std::vector<long long> ComputeResultVector(int seats, long long mod_value) {
     return result;
 }
 
-long long CalculateResult(int seats, long long mod_value) {
+long long CountPermutationPairs(int seats, long long mod_value) {
     std::vector<long long> result = ComputeResultVector(seats, mod_value);
     return (result[seats] + mod_value) % mod_value;
 }
