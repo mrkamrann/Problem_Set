@@ -1,5 +1,40 @@
 /*
 Link: https://codeforces.com/contest/1292/problem/D
+
+Cassie has planned everything out, and the condition of Cytus is also perfect.
+
+The time right now... 00:01:12...
+
+It's time.
+
+The system inside A.R.C.'s Library core can be considered as an undirected graph with an infinite number of processing nodes, numbered with all positive integers 
+(1,2,3,…). The node with a number x (where x > 1), is directly connected with a node with number x*f(x), where f(x) is the lowest prime divisor of x.
+
+Cassie's mind is divided into num_fragments fragments. Due to more than 500 years of coma, the fragments have been scattered: the i-th fragment is now located at 
+the node with a number fragment[i]! (the factorial of fragment[i]).
+
+To maximize the chance of successful awakening, Cassie decides to place the samples in a node P, so that the total length of paths from each fragment to P is the
+smallest possible. If there are multiple fragments located at the same node, the path from that node to P needs to be counted multiple times.
+
+In the world of zeros and ones, such a requirement is very simple for Cassie. Not longer than a second later, she has already figured out such a node.
+
+But for a mere human like you, is this still possible?
+
+For simplicity, please answer the minimal sum of paths' lengths from every fragment to the emotion samples' assembly node P.
+
+Create a C++ function CalculateMinimalPathSum that will return a long long denoting the minimal sum of paths from every fragment to the node with the emotion 
+samples (a.k.a. node P).
+
+Use appropriate error handling using the std::invalid_argument library for invalid test cases.
+
+Input Type
+
+A vector of integers denoting fragments
+
+Input Constraints
+The value of num_fragments should be at least 1 and at most 1,000,000 inclusive.
+Each value in fragments should be in the range [0, 5000] inclusive.
+
 */
 
 #include <iostream>
@@ -27,7 +62,10 @@ std::vector<std::vector<int>> ComputeCount(int max_val) {
     return count;
 }
 
-long long SolveProblem(int num_fragments, const std::vector<int>& fragments) {
+long long CalculateMinimalPathSum( const std::vector<int>& fragments) {
+
+   int num_fragments = fragments.size();
+
     if (num_fragments < 1 || num_fragments > 1000000) {
         throw std::invalid_argument("Invalid number of fragments. Must be between 1 and 1000000.");
     }
