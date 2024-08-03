@@ -27,7 +27,9 @@ Input Constraints
 
 The value of operations should be at least 1 and at most 500 inclusive.
 The value of probability should be at least 0 and at most 10,000 inclusive.
+
 */
+
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -44,34 +46,35 @@ std::vector<int> ComputeInverses(int max_val) {
     return inverses;
 }
 
-int CalculateRegularBracketProbability(int num_seats, int passengers) {
 
-    if (num_seats < 1 || num_seats > 500) {
-        throw std::invalid_argument("Invalid number of seats. Must be between 1 and 500.");
+int CalculateRegularBracketProbability(int operations, int probability) {
+
+    if (operations < 1 || operations > 500) {
+        throw std::invalid_argument("Invalid number of operations. Must be between 1 and 500.");
     }
-    if (passengers < 0 || passengers > 10000) {
-        throw std::invalid_argument("Invalid number of passengers. Must be between 0 and 10000.");
+    if (probability < 0 || probability > 10000) {
+        throw std::invalid_argument("Invalid probability. Must be between 0 and 10000.");
     }
     const long long mod_value = 998244353;
     std::vector<int> inverses = ComputeInverses(10000);
-    passengers = 1LL * passengers * inverses[10000] % mod_value;
+    probability = 1LL * probability * inverses[10000] % mod_value;
 
-    std::vector<std::vector<int>> dp_table(num_seats + 1, std::vector<int>(num_seats + 1, 0));
+    std::vector<std::vector<int>> dp_table(operations + 1, std::vector<int>(operations + 1, 0));
 
-    for (int i = 0; i <= num_seats; ++i) {
+    for (int i = 0; i <= operations; ++i) {
         dp_table[0][i] = 1;
     }
 
-    for (int i = 1; i <= num_seats; ++i) {
-        for (int j = 0; j <= num_seats - i; ++j) {
+    for (int i = 1; i <= operations; ++i) {
+        for (int j = 0; j <= operations - i; ++j) {
             for (int k = 1; k <= i; ++k) {
-                dp_table[i][j] = (dp_table[i][j] + (1LL * passengers * dp_table[k - 1][j + 1] + (j ? 1LL * (mod_value + 1 - passengers) * dp_table[k - 1][j - 1] : 0)) % mod_value * dp_table[i - k][j] % mod_value * inverses[k]) % mod_value;
+                dp_table[i][j] = (dp_table[i][j] + (1LL * probability * dp_table[k - 1][j + 1] + (j ? 1LL * (mod_value + 1 - probability) * dp_table[k - 1][j - 1] : 0)) % mod_value * dp_table[i - k][j] % mod_value * inverses[k]) % mod_value;
             }
         }
     }
 
-    int result = dp_table[num_seats][0];
-    for (int i = 2; i <= num_seats; ++i) {
+    int result = dp_table[operations][0];
+    for (int i = 2; i <= operations; ++i) {
         result = 1LL * result * i % mod_value * inverses[(i << 1) - 1] % mod_value;
     }
 
@@ -84,17 +87,133 @@ int CalculateRegularBracketProbability(int num_seats, int passengers) {
 #include <cassert>
 
 int main() {
-    int num_seats;
-    int passengers;
-    
-    std::cin >> num_seats >> passengers;
+   
+  //TEST
+int operations_1 = 1;
+int probability_1 = 0;
+int expected_1 = 0; 
+int result_1 = CalculateRegularBracketProbability(operations_1, probability_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    try {
-        std::cout << ComputeAnswer(num_seats, passengers) << '\n';
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
+//TEST
+int operations_2 = 2;
+int probability_2 = 5000;
+int expected_2 = 332748118; 
+int result_2 = CalculateRegularBracketProbability(operations_2, probability_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int operations_3 = 5;
+int probability_3 = 10000;
+int expected_3 = 1;
+int result_3 = CalculateRegularBracketProbability(operations_3, probability_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int operations_4 = 10;
+int probability_4 = 1234;
+int expected_4 = 393656780;
+int result_4 = CalculateRegularBracketProbability(operations_4, probability_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int operations_5 = 50;
+int probability_5 = 9999;
+int expected_5 = 663953029; 
+int result_5 = CalculateRegularBracketProbability(operations_5, probability_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int operations_6 = 300;
+int probability_6 = 6000;
+int expected_6 = 557079420;
+int result_6 = CalculateRegularBracketProbability(operations_6, probability_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int operations_7 = 100;
+int probability_7 = 7500;
+int expected_7 = 144403710;
+int result_7 = CalculateRegularBracketProbability(operations_7, probability_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int operations_8 = 200;
+int probability_8 = 3000;
+int expected_8 = 416994173;
+int result_8 = CalculateRegularBracketProbability(operations_8, probability_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int operations_9 = 400;
+int probability_9 = 8000;
+int expected_9 = 50416801; 
+int result_9 = CalculateRegularBracketProbability(operations_9, probability_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+int operations_10 = 1;
+int probability_10 = 10001; 
+try {
+    CalculateRegularBracketProbability(operations_10, probability_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int operations_11 = 501;
+int probability_11 = 5000;
+try {
+    CalculateRegularBracketProbability(operations_11, probability_11);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int operations_12 = -1; 
+int probability_12 = 5000;
+try {
+    CalculateRegularBracketProbability(operations_12, probability_12);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int operations_13 = 500;
+int probability_13 = -1; 
+try {
+    CalculateRegularBracketProbability(operations_13, probability_13);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int operations_14 = 500;
+int probability_14 = 10001;
+try {
+    CalculateRegularBracketProbability(operations_14, probability_14);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
     
     return 0;
 }
