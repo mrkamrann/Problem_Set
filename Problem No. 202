@@ -1,5 +1,38 @@
 /*
 Link: https://codeforces.com/contest/1530/problem/F
+
+Alice is getting ready for VK Fest 2021 and has prepared a table with dimension_count rows and dimension_count columns. She filled each cell of this table with 
+some event related to the festival that could either happen or not: for example, whether she will win a prize at the festival, or whether it will rain.
+
+Forecasting algorithms used in VK have already estimated the probability for each event to happen. The event in row i and column j will happen with probability 
+matrix[i][j] * 10^-4. All of the events are mutually independent.
+
+Let's call the table winning if there exists a line such that all dimension_count events on it happen. The line could be any horizontal line (cells (i,1), 
+(i,2), …, (i,dimension_count) for some i), any vertical line (cells (1,j), (2,j), …, (dimension_count,j) for some j), the main diagonal (cells (1,1), (2,2), …, 
+(dimension_count,dimension_count)), or the antidiagonal (cells (1,dimension_count), (2,dimension_count−1), …, (dimension_count,1)).
+
+Find the probability of Alice's table being winning, and output it modulo 31607.
+
+Return the probability that Alice's table will be winning, modulo 31607.
+
+Formally, let m = 31607. It can be shown that the answer can be expressed as an irreducible fraction p/q, where p and q are integers and q ≢ 0 (mod m). 
+Return the integer equal to p * q^-1 mod m. In other words, output such an integer x that 0 ≤ x < m and x * q ≡ p (mod m).
+
+Create a C++ function CalculateWinningProbability that will return an integer denoting the probability that Alice table will be winning, modulo 31607.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+An Integer denoting dimension_count.
+A vector<vector<int>> denoting matrix.
+
+Input Constraints:
+
+The value of dimension_count should be in the range [2, 21] inclusive.
+Each row and size of the matrix must be of size dimension_count
+Each value of matrix[i][j] should be in the range (0, 10000) exclusive.
+
 */
 
 #include <iostream>
@@ -13,12 +46,18 @@ int ModMult(int multiplicand, int multiplier, int mod) {
     return (1LL * multiplicand * multiplier) % mod;
 }
 
-int CalculateSolution(int dimension_count, const std::vector<std::vector<int>>& matrix) {
+int CalculateWinningProbability(const std::vector<std::vector<int>>& matrix) {
+  
+  int dimension_count = matrix.size();
     if (dimension_count < 2 || dimension_count > 21) {
         throw std::invalid_argument("dimension_count must be between 2 and 21");
     }
      for (int row = 0; row < dimension_count; ++row) {
         for (int col = 0; col < dimension_count; ++col) {
+          if(matrix[row].size()!=dimension_count)
+          {
+            throw std::invalid_argument("Each row in the matrix must be of size dimension_count");
+          }
             if (matrix[row][col] <= 0 || matrix[row][col] >= 10000) {
                 throw std::invalid_argument("matrix values must be between 0 and 10000");
             }
@@ -78,26 +117,162 @@ int CalculateSolution(int dimension_count, const std::vector<std::vector<int>>& 
 #include <cassert>
 
 int main() {
-    int dimension_count;
-    std::cin >> dimension_count;
+  
+//TEST
+std::vector<std::vector<int>> matrix_1 = {{1, 2}, {3, 4}};
+int expected_1 = 21435; 
+int result_1 = CalculateWinningProbability(matrix_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    if (dimension_count < 2 || dimension_count > 21) {
-        throw std::invalid_argument("dimension_count must be between 2 and 21");
-    }
+//TEST
+std::vector<std::vector<int>> matrix_2 = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+int expected_2 = 6433; 
+int result_2 = CalculateWinningProbability(matrix_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::vector<std::vector<int>> matrix(dimension_count, std::vector<int>(dimension_count));
+//TEST
+std::vector<std::vector<int>> matrix_3 = {{1, 2, 3, 4}, {4, 3, 2, 1}, {2, 3, 4, 1}, {1, 4, 3, 2}};
+int expected_3 = 19607; 
+int result_3 = CalculateWinningProbability(matrix_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-    for (int row = 0; row < dimension_count; ++row) {
-        for (int col = 0; col < dimension_count; ++col) {
-            std::cin >> matrix[row][col];
-            if (matrix[row][col] <= 0 || matrix[row][col] >= 10000) {
-                throw std::invalid_argument("matrix values must be between 0 and 10000");
-            }
-        }
-    }
+//TEST
+std::vector<std::vector<int>> matrix_4 = {{9, 8, 7, 6, 5}, {5, 6, 7, 8, 9}, {4, 3, 2, 1, 2}, {5, 1, 2, 3, 4}, {5, 5, 5, 5, 5}};
+int expected_4 = 17536; 
+int result_4 = CalculateWinningProbability(matrix_4);
+assert(result_4 == expected_4);
+//TEST_END
 
-    int result = CalculateSolution(dimension_count, matrix);
-    std::cout << result << std::endl;
+//TEST
+std::vector<std::vector<int>> matrix_5 = {{2, 4, 6}, {8, 10, 12}, {14, 16, 18}};
+int expected_5 = 24740; 
+int result_5 = CalculateWinningProbability(matrix_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_6 = {{7, 8}, {9, 10}};
+int expected_6 = 26377; 
+int result_6 = CalculateWinningProbability(matrix_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_7 = {{8, 8, 8, 8}, {7, 7, 7, 7}, {6, 6, 6, 6}, {5, 5, 5, 5}};
+int expected_7 = 14333; 
+int result_7 = CalculateWinningProbability(matrix_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_8 = {{1, 3, 5, 7}, {2, 4, 6, 8}, {3, 5, 7, 9}, {4, 6, 8, 10}};
+int expected_8 = 10120;
+int result_8 = CalculateWinningProbability(matrix_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_9 = {{9999, 9998}, {9997, 9996}};
+int expected_9 = 22956; 
+int result_9 = CalculateWinningProbability(matrix_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_10 = {{1}};
+try {
+    CalculateWinningProbability(matrix_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_11 = std::vector<std::vector<int>>(22, std::vector<int>(22, 1));
+try {
+    int result_11 = CalculateWinningProbability(matrix_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_12 = {{0, 1}, {2, 3}};
+try {
+    int result_12 = CalculateWinningProbability(matrix_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_13 = {{1, 10000}, {2, 3}};
+try {
+    int result_13 = CalculateWinningProbability(matrix_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+
+//TEST
+std::vector<std::vector<int>> matrix_14 = {{-1, 1}, {2, 3}};
+try {
+     CalculateWinningProbability(matrix_14);
+      assert(false);
+} catch(const std::invalid_argument& e) {
+   assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_15 = {{1, 2}, {-3, 4}};
+try {
+    CalculateWinningProbability(matrix_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_16 = {{1, 2}, {3, -4}};
+try {
+    CalculateWinningProbability(matrix_16);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_17 = {{-1, -2}, {-3, -4}};
+try {
+    CalculateWinningProbability(matrix_17);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<std::vector<int>> matrix_18 = {{0, -1}, {10000, 9999}};
+try {
+   CalculateWinningProbability(matrix_18);
+   assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
 
     return 0;
 }
