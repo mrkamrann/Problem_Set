@@ -1,8 +1,29 @@
 /*
 Link: https://codeforces.com/problemset/problem/961/G
+
+Meena is given a set of num_elements elements indexed from 1 to num_elements. The weight of the i-th element weights[i] is denoted by 0 based vector named weights. The weight of some subset of a given set is denoted as the sum of the weights of its elements. The weight of some partition R of a given set into num_subsets subsets is the sum of the weights of its subsets (recall that a partition of a given set is a set of its subsets such that every element of the given set belongs to exactly one subset in the partition).
+
+Calculate the sum of weights of all partitions of a given set into exactly num_subsets non-empty subsets, and print it modulo 10^9 + 7. Two partitions are considered different if there exist two elements x and y such that they belong to the same set in one of the partitions, and to different sets in another partition.
+
+Return one long long integer — the sum of weights of all partitions of a given set into num_subsets non-empty subsets, taken modulo 10^9 + 7.
+
+Create a C++ function SumOfPartitionWeights that will return a long long integer denoting the sum of weights of all partitions of a given set into num_subsets non-empty subsets modulo 10^9 + 7.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+
+An integer denoting num_subsets
+A vector<int> denoting weights
+
+Input Constraints
+
+The value of num_elements should be at least 1 and at most 200,000 inclusive.
+The value of num_subsets should be at least 1 and at most num_elements inclusive.
+Each value in the weights vector should be in the range [1, 1,000,000,000] inclusive.
 */
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
@@ -18,7 +39,10 @@ long long QuickPower(long long base, int exponent) {
     return result;
 }
 
-long long CalculateAnswer(int num_elements, int num_subsets, const std::vector<int>& weights) {
+long long SumOfPartitionWeights(int num_subsets, const std::vector<int>& weights) {
+  
+   int num_elements = weights.size();
+  
     if (num_elements < 1 || num_elements > 200000 || num_subsets < 1 || num_subsets > num_elements) {
         throw std::invalid_argument("Invalid input values for number of elements or subsets.");
     }
@@ -48,21 +72,165 @@ long long CalculateAnswer(int num_elements, int num_subsets, const std::vector<i
     return (answer * weight_sum % modulus_val + modulus_val) % modulus_val;
 }
 
-#include <bits/stdc++.h>
+#include <vector>
 #include <stdexcept>
 #include <cassert>
 
 
 int main() {
-    int num_elements, num_subsets;
-    std::cin >> num_elements >> num_subsets;
+ 
+// TEST
+int num_subsets_1 = 2;
+std::vector<int> weights_1 = {1, 2, 3, 4};
+long long expected_1 = 160;
+long long result_1 = SumOfPartitionWeights(num_subsets_1, weights_1);
+ assert(result_1 == expected_1);
+// TEST_END
 
-    std::vector<int> weights(num_elements);
-    for (int i = 0; i < num_elements; ++i) {
-        std::cin >> weights[i];
-    }
+// TEST
 
-    std::cout << CalculateAnswer(num_elements, num_subsets, weights) << std::endl;
+int num_subsets_2 = 1;
+std::vector<int> weights_2 = {5, 10, 15};
+long long expected_2 = 90;
+long long result_2 = SumOfPartitionWeights(num_subsets_2, weights_2);
+assert(result_2 == expected_2);
+// TEST_END
+
+// TEST
+
+int num_subsets_3 = 3;
+std::vector<int> weights_3 = {2, 4, 6, 8, 10};
+long long expected_3 = 1470;
+long long result_3 = SumOfPartitionWeights(num_subsets_3, weights_3);
+assert(result_3 == expected_3);
+// TEST_END
+
+// TEST
+
+int num_subsets_4 = 2;
+std::vector<int> weights_4 = {1, 1, 1, 1, 1, 1};
+long long expected_4 = 636;
+long long result_4 = SumOfPartitionWeights(num_subsets_4, weights_4);
+ assert(result_4 == expected_4);
+// TEST_END
+
+// TEST
+
+int num_subsets_5 = 4;
+std::vector<int> weights_5 = {3, 3, 3, 3, 3, 3, 3};
+long long expected_5 = 15540;
+long long result_5 = SumOfPartitionWeights(num_subsets_5, weights_5);
+assert(result_5 == expected_5);
+// TEST_END
+
+// TEST
+
+int num_subsets_6 = 2;
+std::vector<int> weights_6 = {7, 7};
+long long expected_6 = 14;
+long long result_6 = SumOfPartitionWeights(num_subsets_6, weights_6);
+ assert(result_6 == expected_6);
+// TEST_END
+
+// TEST
+
+int num_subsets_7 = 5;
+std::vector<int> weights_7 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+long long expected_7 = 1050840;
+long long result_7 = SumOfPartitionWeights(num_subsets_7, weights_7);
+ assert(result_7 == expected_7);
+// TEST_END
+
+// TEST
+
+int num_subsets_8 = 4;
+std::vector<int> weights_8 = {1, 2, 3, 4, 5, 6, 7, 8};
+long long expected_8 = 149436;
+long long result_8 = SumOfPartitionWeights(num_subsets_8, weights_8);
+assert(result_8 == expected_8);
+// TEST_END
+
+// TEST
+
+int num_subsets_9 = 3;
+std::vector<int> weights_9 = {100, 200, 300};
+long long expected_9 = 600;
+long long result_9 = SumOfPartitionWeights(num_subsets_9, weights_9);
+ assert(result_9 == expected_9);
+// TEST_END
+
+
+// TEST
+
+int num_subsets_10 = 0; 
+std::vector<int> weights_10 = {1, 2, 3};
+try {
+    SumOfPartitionWeights(num_subsets_10, weights_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+
+int num_subsets_11 = 1;
+std::vector<int> weights_11 = {};
+try {
+    SumOfPartitionWeights(num_subsets_11, weights_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+
+int num_subsets_12 = 4; 
+std::vector<int> weights_12 = {1, 2, 3};
+try {
+    SumOfPartitionWeights(num_subsets_12, weights_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+
+int num_subsets_13 = 2;
+std::vector<int> weights_13(200001, 1);
+try {
+    SumOfPartitionWeights(num_subsets_13, weights_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+
+int num_subsets_14 = 1;
+std::vector<int> weights_14 = {1, -2, 3}; 
+try {
+    SumOfPartitionWeights(num_subsets_14, weights_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+
+// TEST
+
+int num_subsets_15 = 2;
+std::vector<int> weights_15 = {1, 1000000001}; 
+try {
+    SumOfPartitionWeights(num_subsets_15, weights_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+// TEST_END
+  
     return 0;
 }
-
