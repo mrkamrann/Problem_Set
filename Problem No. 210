@@ -1,5 +1,31 @@
 /*
 Link: https://codeforces.com/contest/241/problem/B
+
+Camella has friend_count friends and wants to take picture_count pictures of them. Each picture should contain exactly two of her friends, and no two pictures 
+should feature the same pair of friends. For example, if Camella has friend_count = 3 friends, she can take 3 different pictures, each containing a unique pair 
+of friends.
+
+Each friend has an attractiveness level specified by the integer ai for the i-th friend. The attractiveness of a picture containing the i-th and j-th friends is 
+defined as the exclusive-or (xor operation) of integers ai and aj.
+
+Camella wants to take pictures in such a way that the total sum of attractiveness of her pictures is maximized. You need to calculate this value. Since the result 
+may not fit in a 32-bit integer, print it modulo 1000000007 (10^9 + 7).
+
+Create a C++ function MaximizePictureAttractiveness that will return an integer denoting the optimal total sum of attractiveness of Camella's pictures.
+
+Use appropriate error handling using the stdexcept library for invalid test cases.
+
+Input Type
+An integer denoting friend_count
+An integer denoting picture_count
+A vector of integers denoting attractiveness_values
+
+Input Constraints
+
+The value of friend_count should be at least 2 and at most 100,000 inclusive.
+The value of picture_count should be at least 1 and at most friend_count * (friend_count - 1) / 2 inclusive.
+Each value in attractiveness_values should be in the range [0, 10^9] inclusive.
+
 */
 
 #include <iostream>
@@ -11,7 +37,10 @@ Link: https://codeforces.com/contest/241/problem/B
 
 const int modulus = 1000000007;
 
-long long CalculateSolution(int friend_count, int picture_count, std::vector<int>& attractiveness_values) {
+long long MaximizePictureAttractiveness(int picture_count, std::vector<int>& attractiveness_values) {
+
+    int friend_count = attractiveness_values.size();
+
     if (friend_count < 1 || friend_count > 50000) {
         throw std::invalid_argument("friend_count must lie between 1 to 50000");
     }
