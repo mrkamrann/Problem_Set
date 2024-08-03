@@ -2,7 +2,8 @@
 Link: https://codeforces.com/contest/1257/problem/G
 */
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
 #include <stdexcept>
 #include <cassert>
 
@@ -123,15 +124,20 @@ int ComputeResult(std::vector<int>& primes) {
     return result[n / 2];
 }
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
 #include <stdexcept>
 #include <cassert>
 
 int main() {
     int num_primes;
     std::cin >> num_primes;
-   
-
+    
+    std::vector<int> primes(num_primes);
+    for (int i = 0; i < num_primes; ++i) {
+        std::cin >> primes[i];
+       
+    }
+ 
     std::cout << ComputeResult(primes) << std::endl;
-    return 0;
 }
