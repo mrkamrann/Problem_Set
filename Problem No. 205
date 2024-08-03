@@ -1,9 +1,14 @@
 /*
 Link: https://codeforces.com/problemset/problem/995/F
 
-Ana, having graduated from the MOO Institute of Techcowlogy (MIT), has started a startup! Ana is the president of her startup. She also hires num_elements − 1 other employees, each of whom is assigned a direct superior. If ana_superior is a superior of ana_employee and ana_employee is a superior of ana_worker, then also ana_superior is a superior of ana_worker. Additionally, there are no ana_superior and ana_employee such that ana_superior is the superior of ana_employee and ana_employee is the superior of ana_superior. Ana herself has no superior. Ana is employee number 1, and the others are employee numbers 2 through num_elements.
+Ana, having graduated from the MOO Institute of Techcowlogy (MIT), has started a startup! Ana is the president of her startup. She also hires num_elements − 1 
+other employees, each of whom is assigned a direct superior. If ana_superior is a superior of ana_employee and ana_employee is a superior of ana_worker, then also
+ana_superior is a superior of ana_worker. Additionally, there are no ana_superior and ana_employee such that ana_superior is the superior of ana_employee 
+and ana_employee is the superior of ana_superior. Ana herself has no superior. Ana is employee number 1, and the others are employee numbers 2 
+through num_elements.
 
-Finally, Ana must assign salaries to each employee in the company including herself. Due to budget constraints, each employee's salary is an integer between 1 and divisor. Additionally, no employee can make strictly more than their superior.
+Finally, Ana must assign salaries to each employee in the company including herself. Due to budget constraints, each employee's salary is an integer between 1 
+and divisor. Additionally, no employee can make strictly more than their superior.
 
 Help Ana find the number of ways to assign salaries. As this number may be large, output it modulo 10^9+7.
 
