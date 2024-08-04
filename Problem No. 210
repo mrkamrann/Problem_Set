@@ -22,7 +22,7 @@ A vector of integers denoting attractiveness_values
 
 Input Constraints
 
-The value of friend_count should be at least 2 and at most 100,000 inclusive.
+The value of attractiveness_values.length(friend_count) should be at least 2 and at most 100,000 inclusive.
 The value of picture_count should be at least 1 and at most friend_count * (friend_count - 1) / 2 inclusive.
 Each value in attractiveness_values should be in the range [0, 10^9] inclusive.
 
@@ -35,12 +35,12 @@ Each value in attractiveness_values should be in the range [0, 10^9] inclusive.
 #include <algorithm>
 #include <cassert>
 
-const int modulus = 1000000007;
+
 
 long long MaximizePictureAttractiveness(int picture_count, std::vector<int>& attractiveness_values) {
 
     int friend_count = attractiveness_values.size();
-
+    const int modulus = 1000000007;
     if (friend_count < 1 || friend_count > 50000) {
         throw std::invalid_argument("friend_count must lie between 1 to 50000");
     }
@@ -103,20 +103,146 @@ long long MaximizePictureAttractiveness(int picture_count, std::vector<int>& att
 #include <cassert>
 
 int main() {
-    int friend_count, picture_count;
-    std::cin >> friend_count >> picture_count;
+   
 
-    
-    std::vector<int> attractiveness_values(friend_count);
-    for (int i = 0; i < friend_count; i++) {
-        std::cin >> attractiveness_values[i];
-        if (attractiveness_values[i] < 0 || attractiveness_values[i] > 1000000000) {
-            throw std::invalid_argument("Invalid input value for attractiveness_values");
-        }
-    }
+//TEST
+int picture_count_1 = 1;
+std::vector<int> attractiveness_values_1 = {5, 8};
+int expected_1 = 13;
+int result_1 = MaximizePictureAttractiveness(picture_count_1, attractiveness_values_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    long long result = CalculateSolution(friend_count, picture_count, attractiveness_values);
-    std::cout << result << std::endl;
+//TEST
+int picture_count_2 = 3;
+std::vector<int> attractiveness_values_2 = {10, 3, 7, 2};
+int expected_2 = 30;
+int result_2 = MaximizePictureAttractiveness(picture_count_2, attractiveness_values_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int picture_count_3 = 6;
+std::vector<int> attractiveness_values_3 = {100, 200, 300, 400, 500, 600, 700};
+int expected_3 = 5356;
+int result_3 = MaximizePictureAttractiveness(picture_count_3, attractiveness_values_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int picture_count_4 = 10;
+std::vector<int> attractiveness_values_4 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int expected_4 = 138;
+int result_4 = MaximizePictureAttractiveness(picture_count_4, attractiveness_values_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int picture_count_5 = 45;
+std::vector<int> attractiveness_values_5 = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90};
+int expected_5 = 5568;
+int result_5 = MaximizePictureAttractiveness(picture_count_5, attractiveness_values_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int picture_count_6 = 100000;
+std::vector<int> attractiveness_values_6(10000, 1000000000);
+int expected_6 = 0;
+int result_6 = MaximizePictureAttractiveness(picture_count_6, attractiveness_values_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int picture_count_7 = 1;
+std::vector<int> attractiveness_values_7 = {0, 1000000000};
+int expected_7 = 1000000000;
+int result_7 = MaximizePictureAttractiveness(picture_count_7, attractiveness_values_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int picture_count_8 = 1;
+std::vector<int> attractiveness_values_8 = {1, 2};
+int expected_8 = 3;
+int result_8 = MaximizePictureAttractiveness(picture_count_8, attractiveness_values_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int picture_count_9 = 3;
+std::vector<int> attractiveness_values_9 = {1, 2, 3, 4};
+int expected_9 = 18;
+int result_9 = MaximizePictureAttractiveness(picture_count_9, attractiveness_values_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+int picture_count_10 = 2; 
+std::vector<int> attractiveness_values_10 = {1, 99999999};
+try {
+    MaximizePictureAttractiveness(picture_count_10, attractiveness_values_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int picture_count_11 = 100001; 
+std::vector<int> attractiveness_values_11(100001, 1);
+try {
+    MaximizePictureAttractiveness(picture_count_11, attractiveness_values_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int picture_count_12 = 3;
+std::vector<int> attractiveness_values_12 = {-1, 2, 3}; 
+try {
+    MaximizePictureAttractiveness(picture_count_12, attractiveness_values_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int picture_count_13 = 3;
+std::vector<int> attractiveness_values_13 = {1000000001, 2, 3}; 
+try {
+    MaximizePictureAttractiveness(picture_count_13, attractiveness_values_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int picture_count_14 = 1;
+std::vector<int> attractiveness_values_14 = {}; 
+try {
+    MaximizePictureAttractiveness(picture_count_14, attractiveness_values_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int picture_count_15 = -1; 
+std::vector<int> attractiveness_values_15 = {1, 2};
+try {
+    MaximizePictureAttractiveness(picture_count_15, attractiveness_values_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
 
     return 0;
 }
