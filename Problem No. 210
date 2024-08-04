@@ -16,7 +16,7 @@ Create a C++ function MaximizePictureAttractiveness that will return an integer 
 Use appropriate error handling using the stdexcept library for invalid test cases.
 
 Input Type
-An integer denoting friend_count
+
 An integer denoting picture_count
 A vector of integers denoting attractiveness_values
 
